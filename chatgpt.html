@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="使用ChatGPT接口，实现简单HTML网页版在线聊天" />
+
+<head>
+    <meta charset="UTF-8">
+    <title>ChatGPT</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #edeff2;
+        }
+
+        .chat_window {
+            position: absolute;
+            width: calc(100% - 20px);
+            max-width: 1000px;
+            height: 800px;
+            border-radius: 10px;
+            background-color: #fff;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .top_menu {
+            background-color: #fff;
+            width: 100%;
+            padding: 20px 0 15px;
+            box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .top_menu .buttons {
+            margin: 3px 0 0 20px;
+            position: absolute;
+        }
+
+        .top_menu .buttons .button {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+        }
+
+        .top_menu .buttons .button.close {
+            background-color: #e15b64;
+        }
+
+        .top_menu .buttons .button.minimize {
+            background-color: #f8b26a;
+        }
+
+        .top_menu .buttons .button.maximize {
+            background-color: #99c959;
+        }
+
+        .top_menu .title {
+            text-align: center;
+            color: #909090;
+            font-size: 20px;
+        }
+
+        .messages {
+            position: relative;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            height: 647px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background-clip: padding-box;
+            background: transparent;
+            border: solid transparent;
+            border-width: 1px;
+        }
+
+        .messages::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            background-clip: padding-box;
+            border: solid transparent;
+            border-radius: 10px;
+        }
+
+        .messages::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .messages .message {
+            clear: both;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: all 0.5s linear;
+            opacity: 0;
+        }
+
+        .messages .message.left .avatar {
+            background-color: #f5886e;
+            float: left;
+        }
+
+        .messages .message.left .text_wrapper {
+            background-color: #ffe6cb;
+            margin-left: 20px;
+        }
+
+        .messages .message.left .text_wrapper::after,
+        .messages .message.left .text_wrapper::before {
+            right: 100%;
+            border-right-color: #ffe6cb;
+        }
+
+        .messages .message.left .text {
+            color: #c48843;
+        }
+
+        .messages .message.right .avatar {
+            background-color: #fdbf68;
+            float: right;
+        }
+
+        .messages .message.right .text_wrapper {
+            background-color: #c7eafc;
+            margin-right: 20px;
+            float: right;
+        }
+
+        .messages .message.right .text_wrapper::after,
+        .messages .message.right .text_wrapper::before {
+            left: 100%;
+            border-left-color: #c7eafc;
+        }
+
+        .messages .message.right .text {
+            color: #45829b;
+        }
+
+        .messages .message.appeared {
+            opacity: 1;
+        }
+
+        .messages .message .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .messages .message .text_wrapper {
+            display: inline-block;
+            padding: 20px;
+            border-radius: 6px;
+            width: calc(100% - 85px);
+            min-width: 100px;
+            position: relative;
+        }
+
+        .messages .message .text_wrapper::after,
+        .messages .message .text_wrapper:before {
+            top: 18px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .messages .message .text_wrapper::after {
+            border-width: 13px;
+            margin-top: 0px;
+        }
+
+        .messages .message .text_wrapper::before {
+            border-width: 15px;
+            margin-top: -2px;
+        }
+
+        .messages {
+            font-size: 16px;
+            color: #343541;
+        }
+
+        #chatlog>div {
+            padding-top: 25px;
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+
+        #chatlog .response {
+            background: #f7f7f8;
+        }
+
+        #chatlog .response>pre {
+            overflow-x: auto;
+            padding: 10px;
+            background: rgba(180, 180, 180, 0.1);
+        }
+
+        #chatlog .response>pre::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        #chatlog .response>pre::-webkit-scrollbar-track {
+            background-clip: padding-box;
+            background: transparent;
+            border: solid transparent;
+            border-width: 1px;
+        }
+
+        #chatlog .response>pre::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+
+        #chatlog .response>pre::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            background-clip: padding-box;
+            border: solid transparent;
+            border-radius: 10px;
+        }
+
+        #chatlog .response>pre::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .bottom_wrapper {
+            position: relative;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px 20px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .bottom_wrapper .message_input_wrapper {
+            display: flex;
+            border: none;
+            width: calc(100% - 200px);
+            position: relative;
+            text-align: left;
+        }
+
+        .bottom_wrapper .message_input_wrapper .message_input_text {
+            border-radius: 6px;
+            border: 1px solid #d9d9e3;
+            border-color: rgba(0, 0, 0, .1);
+            box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+            outline: none;
+            resize: none;
+            box-sizing: border-box;
+            height: 50px;
+            font-size: 16px;
+            overflow-y: hidden;
+            max-height: 200px;
+            padding: 13px 0 16px 16px;
+            width: 100%;
+        }
+
+        .bottom_wrapper .message_input_wrapper .message_input_text::placeholder {
+            color: gray;
+        }
+
+        .bottom_wrapper .send_message {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+            width: 140px;
+            height: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            background-color: #99c959;
+            border: none;
+            padding: 0;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            text-align: center;
+            float: right;
+            position: absolute;
+            right: 70px;
+            bottom: 20px;
+        }
+
+        .bottom_wrapper .send_message:hover {
+            background-color: #90c050;
+        }
+
+        .bottom_wrapper .send_message .text {
+            font-size: 18px;
+            font-weight: 300;
+            display: inline-block;
+            line-height: 48px;
+        }
+
+        .message_template {
+            display: none;
+        }
+
+        #continueConv {
+            position: absolute;
+            right: 10px;
+            top: 22px;
+            color: gray;
+        }
+
+        #continueConv select {
+            outline: none;
+            border-color: gray;
+        }
+
+        #clearConv {
+            position: absolute;
+            right: 10px;
+            bottom: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+            width: 50px;
+            height: 50px;
+            font-size: 16px;
+            /* font-weight: bold; */
+            display: inline-block;
+            border-radius: 5px;
+            background-color: #909090;
+            border: 2px solid #909090;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            text-align: center;
+        }
+
+        #clearConv:hover {
+            background-color: gray;
+            border: 2px solid gray;
+        }
+
+        .loaded>span {
+            display: inline-block;
+        }
+
+        .loaded>svg {
+            display: none;
+        }
+
+        .loading {
+            background: #f7f7f8 !important;
+        }
+
+        .loading>span {
+            display: none;
+        }
+
+        .loading>svg {
+            display: block;
+        }
+
+        .switch-slide {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .switch-slide-label {
+            display: block;
+            width: 38px;
+            height: 18px;
+            background: #909090;
+            border-radius: 30px;
+            cursor: pointer;
+            position: relative;
+            -webkit-transition: 0.3s ease;
+            transition: 0.3s ease;
+        }
+
+        .switch-slide-label:after {
+            content: '';
+            display: block;
+            width: 16px;
+            height: 16px;
+            border-radius: 100%;
+            background: #fff;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transition: 0.3s ease;
+            transition: 0.3s ease;
+        }
+
+        .switch-slide input:checked+label {
+            background: #99c959;
+            transition: 0.3s ease;
+        }
+
+        .switch-slide input:checked+label:after {
+            left: 21px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="chat_window">
+            <div class="top_menu">
+                <div class="buttons">
+                    <div class="button close"></div>
+                    <div class="button minimize"></div>
+                    <div class="button maximize"></div>
+                </div>
+                <div class="title">ChatGPT</div>
+                <div id="continueConv">
+                    <span>连续对话</span>
+                    <label class="switch-slide">
+                        <input type="checkbox" id="isCont" checked hidden />
+                        <label for="isCont" class="switch-slide-label"></label>
+                    </label>
+                </div>
+            </div>
+            <ul class="messages">
+                <div style="text-align: left;">
+                    <pre style="white-space: pre-wrap; word-wrap:break-word" id="chatlog"></pre>
+                </div>
+            </ul>
+            <div class="bottom_wrapper clearfix">
+                <div class="message_input_wrapper">
+                    <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧"
+                        id="chatinput"></textarea>
+                </div>
+                <button class="send_message loaded" id="sendbutton">
+                    <span>发送</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        style="margin: 0 auto;height: 50px;" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid">
+                        <g transform="translate(50 50)">
+                            <circle cx="0" cy="0" r="15" fill="#e15b64">
+                                <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
+                                    calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0"
+                                    keyTimes="0;0.5;1" dur="1s" repeatCount="indefinite"></animateTransform>
+                            </circle>
+                        </g>
+                        <g transform="translate(100 50)">
+                            <circle cx="0" cy="0" r="15" fill="#f8b26a">
+                                <animateTransform attributeName="transform" type="scale" begin="-0.16666666666666666s"
+                                    calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0"
+                                    keyTimes="0;0.5;1" dur="1s" repeatCount="indefinite"></animateTransform>
+                            </circle>
+                        </g>
+                        <g transform="translate(150 50)">
+                            <circle cx="0" cy="0" r="15" fill="#99c959">
+                                <animateTransform attributeName="transform" type="scale" begin="0s" calcMode="spline"
+                                    keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s"
+                                    repeatCount="indefinite"></animateTransform>
+                            </circle>
+                        </g>
+                    </svg>
+                </button>
+                <button id="clearConv"><svg data-hk="s00-2-1-0" xmlns="http://www.w3.org/2000/svg"
+                        style="margin:0 auto;display:block" width="20px" height="20px" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M8 20v-5h2v5h9v-7H5v7h3zm-4-9h16V8h-6V4h-4v4H4v3zM3 21v-8H2V7a1 1 0 0 1 1-1h5V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h5a1 1 0 0 1 1 1v6h-1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z">
+                        </path>
+                    </svg></button>
+            </div>
+        </div>
+    </div>
+    <link href="https://cdn.bootcdn.net/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css"
+        rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.7.0/styles/github.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>
+        const API_URL = "/v1/chat/completions";
+        const messagsEle = document.getElementsByClassName("messages")[0];
+        const chatlog = document.getElementById("chatlog");
+        const contEle = document.getElementById("isCont");
+        const sendBtnEle = document.getElementById("sendbutton");
+        const textarea = document.getElementById("chatinput");
+        textarea.focus();
+        let data = [];
+        let loading = false;
+        let isCont = contEle.checked;
+        contEle.onchange = () => {
+            isCont = contEle.checked;
+        }
+        const md = markdownit({ // markdown高亮
+            highlight: function (str, lang) {
+                try {
+                    return hljs.highlightAuto(str).value;
+                } catch (__) { }
+
+                return ""; // use external default escaping
+            }
+        })
+        md.renderer.rules.image = function (tokens, idx, options, env, slf) {
+            var token = tokens[idx];
+            token.attrs[token.attrIndex("alt")][1] = slf.renderInlineAsText(token.children, options, env);
+            token.attrSet("onload", "messagsEle.scrollTo(0, messagsEle.scrollHeight);this.removeAttribute('onload')");
+            return slf.renderToken(tokens, idx, options)
+        }
+        document.getElementById("clearConv").onclick = () => {
+            if (!loading) {
+                data = [];
+                chatlog.innerHTML = "";
+            }
+        }
+        const delay = () => {
+            return new Promise((resolve) => setTimeout(resolve, 24));
+        }
+        const endAction = () => {
+            loading = false;
+            sendBtnEle.disabled = false;
+            sendBtnEle.classList.remove("loading");
+            sendBtnEle.classList.add("loaded");
+        }
+        let currentResEle;
+        let progressData = "";
+        let lastStr = "";
+        const streamGen = async () => {
+            const controller = new AbortController()
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+                endAction();
+            }, 10000)
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    messages: data,
+                    model: "gpt-3.5-turbo",
+                    stream: true
+                }),
+                signal: controller.signal
+            })
+            clearTimeout(timeoutId);
+            if (res.status !== 200) {
+                alert("触发API调用频率限制，请稍后重试！");
+                endAction();
+                return;
+            }
+            const decoder = new TextDecoderStream();
+            const stream = res.body.pipeThrough(decoder);
+            const reader = stream.getReader();
+            const readChunk = async () => {
+                return reader.read().then(async ({value, done}) => {
+                    if (!done) {
+                        if (lastStr) {
+                            value = lastStr + value;
+                            lastStr = "";
+                        }
+                        if (!currentResEle) {
+                            currentResEle = document.createElement("div");
+                            currentResEle.className = "response markdown-body";
+                            chatlog.appendChild(currentResEle);
+                        }
+                        let chunks = value.split(/\n{2}/g);
+                        chunks = chunks.filter(item => {
+                            return item.trim();
+                        })
+                        let lastData = chunks[chunks.length - 1];
+                        if (lastData) {
+                            lastStr = value.slice(value.lastIndexOf(lastData));
+                        }
+                        for (let i = 0; i < chunks.length - 1; i++) {
+                            let chunk = chunks[i];
+                            if (chunk) {
+                                let payload = JSON.parse(chunk.slice(6));
+                                if (payload.choices[0].finish_reason) {
+                                    break;
+                                } else {
+                                    let content = payload.choices[0].delta.content;
+                                    if (content) {
+                                        if (!progressData && !content.trim()) {
+                                            continue;
+                                        }
+                                        if (progressData) {
+                                            await delay();
+                                        }
+                                        progressData += content;
+                                        currentResEle.innerHTML = md.render(progressData);
+                                        messagsEle.scrollTo(0, messagsEle.scrollHeight);
+                                    }
+                                }
+                            }
+                        }
+                        return readChunk();
+                    } else {
+                        if (isCont) {
+                            data.push({role: "assistant", content: progressData});
+                        }
+                        currentResEle = null;
+                        lastStr = "";
+                        progressData = "";
+                        endAction();
+                    }
+                });
+            };
+            await readChunk();
+        }
+        const generateText = (message) => {
+            loading = true;
+            sendBtnEle.disabled = true;
+            sendBtnEle.classList.remove("loaded");
+            sendBtnEle.classList.add("loading");
+            data.push({role: "user", content: message.trim()});
+            let request = document.createElement("div");
+            request.className = "markdown-body";
+            request.innerHTML = md.render(message);
+            chatlog.appendChild(request);
+            messagsEle.scrollTo(0, messagsEle.scrollHeight);
+            streamGen();
+            if (!isCont) {
+                data = [];
+            }
+        };
+        textarea.onkeydown = (event) => {
+            if (event.keyCode === 13) {
+                if (!event.shiftKey) {
+                    event.preventDefault();
+                    genFunc();
+                }
+            }
+        }
+        textarea.oninput = (e) => {
+            textarea.style.height = "50px";
+            textarea.style.height = e.target.scrollHeight + "px";
+        };
+        const genFunc = function () {
+            let message = textarea.value;
+            if (message.length < 1) {
+                return;
+            } else {
+                if (loading === true) {
+                    return;
+                }
+                textarea.value = "";
+                textarea.style.height = "50px";
+                generateText(message);
+            }
+        }
+        sendBtnEle.onclick = genFunc;
+    </script>
+</body>
+
+</html>
