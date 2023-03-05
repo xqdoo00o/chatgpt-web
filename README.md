@@ -1,7 +1,11 @@
 # chatgpt-web
 Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
-参考项目: [chatgpt-html](https://github.com/slippersheepig/chatgpt-html)
+参考项目: 
+[markdown-it-copy](https://github.com/ReAlign/markdown-it-copy)
+
+[chatgpt-html](https://github.com/slippersheepig/chatgpt-html)
+
 
 ![示例](https://github.com/xqdoo00o/chatgpt-web/blob/main/example.png)
 ## 使用方法
