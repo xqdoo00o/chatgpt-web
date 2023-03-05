@@ -568,7 +568,7 @@
 
                 return ""; // use external default escaping
             }
-        })
+        });
         const x = {
             getCodeLang(str = '') {
                 const res = str.match(/ class="language-(.*?)"/);
@@ -587,28 +587,30 @@
                 .replace(/>/g, '&gt;')
                 .replace(/'/g, '\'')
                 .replace(/"/g, '&quot;');
-        }
+        };
         const getCodeLangFragment = (oriStr = '') => {
             return x.getFragment(x.getCodeLang(oriStr));
         };
-        const copyClickCode = `const input = document.createElement('textarea');
-            input.value = this.dataset.mdicContent;
-            const nDom = this.previousElementSibling;
-            const nDelay = this.dataset.mdicNotifyDelay;
+        const copyClickCode = (ele) => {
+            const input = document.createElement('textarea');
+            input.value = ele.dataset.mdicContent;
+            const nDom = ele.previousElementSibling;
+            const nDelay = ele.dataset.mdicNotifyDelay;
             const cDom = nDom.previousElementSibling;
             document.body.appendChild(input);
             input.select();
             input.setSelectionRange(0, 9999);
             document.execCommand('copy');
             document.body.removeChild(input);
-            if(nDom.style.display === 'none'){
+            if (nDom.style.display === 'none') {
                 nDom.style.display = 'block';
                 cDom && (cDom.style.display = 'none');
                 setTimeout(() => {
                     nDom.style.display = 'none';
                     cDom && (cDom.style.display = 'block');
                 }, nDelay);
-            }`
+            }
+        };
         const enhanceCode = (render, options = {}) => (...args) => {
             /* args = [tokens, idx, options, env, slf] */
             const {
@@ -629,7 +631,7 @@
                 'class="u-mdic-copy-btn j-mdic-copy-btn" ',
                 `data-mdic-content="${cont}" `,
                 `data-mdic-notify-delay="${successTextDelay}" `,
-                `onclick="${copyClickCode}">${btnText}</button>`,
+                `onclick="copyClickCode(this)">${btnText}</button>`,
                 '</div>',
             ];
             const LAST_TAG = '</pre>';
