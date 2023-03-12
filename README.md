@@ -16,6 +16,11 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 [markdown-it-texmath](https://github.com/goessner/markdown-it-texmath)
 
 ![示例](https://github.com/xqdoo00o/chatgpt-web/blob/main/example.png)
+
+## 可用配置
+
+1. 允许长回复，默认关闭，开启方式：修改HTML中`const enableLongReply = false;`的`false`为`true`，开启后可能导致api费用增加，对于部分要发送`继续`才完整的超长回复，不用发`继续`了。
+
 ## 使用方法
 需要配合nginx反代使用, 示例配置如下
 ```
