@@ -550,6 +550,7 @@
     <link rel="stylesheet" href="http://npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css">
     <script src="http://npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
     <script>
+        const enableLongReply = false; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
         const API_URL = "/v1/chat/completions";
         const messagsEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
@@ -560,6 +561,7 @@
         let data = [];
         let loading = false;
         let isCont = contEle.checked;
+        let longReplyFlag = false;
         contEle.onchange = () => {
             isCont = contEle.checked;
         }
@@ -727,8 +729,20 @@
                         for (let i = 0; i < chunks.length - 1; i++) {
                             let chunk = chunks[i];
                             if (chunk) {
-                                let payload = JSON.parse(chunk.slice(6));
+                                let payload;
+                                try {
+                                    payload = JSON.parse(chunk.slice(6));
+                                } catch (e) {
+                                    break;
+                                }
                                 if (payload.choices[0].finish_reason) {
+                                    if (enableLongReply) {
+                                        if (payload.choices[0].finish_reason === "length") {
+                                            longReplyFlag = true;
+                                        } else {
+                                            longReplyFlag = false;
+                                        }
+                                    }
                                     break;
                                 } else {
                                     let content = payload.choices[0].delta.content;
@@ -748,11 +762,20 @@
                         }
                         return readChunk();
                     } else {
+                        lastStr = "";
+                        if (longReplyFlag) {
+                            if (data[data.length - 1].role !== "assistant") {
+                                data.splice(0, data.length - 1);
+                                data.push({role: "assistant", content: progressData});
+                            } else {
+                                data[data.length - 1].content = progressData;
+                            }
+                            return streamGen();
+                        }
                         if (isCont) {
                             data.push({role: "assistant", content: progressData});
                         }
                         currentResEle = null;
-                        lastStr = "";
                         progressData = "";
                         endAction();
                     }
@@ -760,7 +783,7 @@
             };
             await readChunk();
         }
-        const generateText = (message) => {
+        const generateText = async (message) => {
             loading = true;
             sendBtnEle.disabled = true;
             sendBtnEle.classList.remove("loaded");
@@ -771,7 +794,7 @@
             request.innerHTML = md.render(message);
             chatlog.appendChild(request);
             messagsEle.scrollTo(0, messagsEle.scrollHeight);
-            streamGen();
+            await streamGen();
             if (!isCont) {
                 data = [];
             }
