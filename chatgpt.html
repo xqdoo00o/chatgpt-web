@@ -19,9 +19,10 @@
 
         .chat_window {
             position: absolute;
-            width: calc(100% - 20px);
+            width: calc(100% - 10px);
             max-width: 1000px;
-            height: 800px;
+            height: calc(100% - 10px);
+            max-height: 888px;
             border-radius: 10px;
             background-color: #fff;
             left: 50%;
@@ -120,17 +121,6 @@
             float: left;
         }
 
-        .messages .message.left .text_wrapper {
-            background-color: #ffe6cb;
-            margin-left: 20px;
-        }
-
-        .messages .message.left .text_wrapper::after,
-        .messages .message.left .text_wrapper::before {
-            right: 100%;
-            border-right-color: #ffe6cb;
-        }
-
         .messages .message.left .text {
             color: #c48843;
         }
@@ -138,18 +128,6 @@
         .messages .message.right .avatar {
             background-color: #fdbf68;
             float: right;
-        }
-
-        .messages .message.right .text_wrapper {
-            background-color: #c7eafc;
-            margin-right: 20px;
-            float: right;
-        }
-
-        .messages .message.right .text_wrapper::after,
-        .messages .message.right .text_wrapper::before {
-            left: 100%;
-            border-left-color: #c7eafc;
         }
 
         .messages .message.right .text {
@@ -165,36 +143,6 @@
             height: 60px;
             border-radius: 50%;
             display: inline-block;
-        }
-
-        .messages .message .text_wrapper {
-            display: inline-block;
-            padding: 20px;
-            border-radius: 6px;
-            width: calc(100% - 85px);
-            min-width: 100px;
-            position: relative;
-        }
-
-        .messages .message .text_wrapper::after,
-        .messages .message .text_wrapper:before {
-            top: 18px;
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none;
-        }
-
-        .messages .message .text_wrapper::after {
-            border-width: 13px;
-            margin-top: 0px;
-        }
-
-        .messages .message .text_wrapper::before {
-            border-width: 15px;
-            margin-top: -2px;
         }
 
         .messages {
@@ -374,8 +322,6 @@
         .message_template {
             display: none;
         }
-
-
 
         #clearConv {
             position: absolute;
@@ -581,7 +527,8 @@
                             <div style="display: inline-block;">系统角色</div>
                             <div style="display: inline-block;">
                                 <label for="preSetSystem">预设角色</label>
-                                <select id="preSetSystem" style="text-align-last: left;">
+                                <select id="preSetSystem"
+                                    style="text-align-last: left;outline: none;border-radius: 3px;">
                                     <option value="">--选择--</option>
                                     <option value="normal">助手</option>
                                     <option value="cat">猫娘</option>
