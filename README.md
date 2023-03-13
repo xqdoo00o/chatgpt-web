@@ -19,7 +19,15 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 ## 可用配置
 
-1. 允许长回复，默认关闭，开启方式：修改HTML中`const enableLongReply = false;`的`false`为`true`，开启后可能导致api费用增加，对于部分要发送`继续`才完整的超长回复，不用发`继续`了。
+1. 可选系统角色，默认不设置，可在设置里开启，有两个预设角色。
+
+2. 可选API key，默认不设置。
+
+3. 修改打字机速度，进度越长速度越快。
+
+4. 允许连续对话，默认开启，对话包含上下文信息。
+
+5. 允许长回复，默认关闭，开启后可能导致api费用增加，对于部分要发送`继续`才完整的超长回复，不用发`继续`了。
 
 ## 使用方法
 需要配合nginx反代使用, 示例配置如下
@@ -27,6 +35,7 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 location ^~ /v1 {
     proxy_pass https://api.openai.com;
     proxy_set_header Host api.openai.com;
+    #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
 }
@@ -42,6 +51,7 @@ location / {
 location ^~ /v1 {
     proxy_pass https://127.0.0.1:8443;
     proxy_set_header Host api.openai.com;
+    #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
 }
