@@ -21,7 +21,7 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 1. 可选系统角色，默认不设置，可在设置里开启，有两个预设角色。
 
-2. 可选API key，默认不设置。
+2. 可选API key，默认不设置，如需使用，建议Nginx一定要配置https，公网以http方式明文传输API key极易被中间人截获。
 
 3. 修改打字机速度，值越大速度越快。
 
