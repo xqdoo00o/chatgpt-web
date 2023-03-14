@@ -76,7 +76,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            height: 647px;
+            height: calc(100% - 152px);
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -531,14 +531,14 @@
                 </div>
                 <div class="title">ChatGPT</div>
                 <div id="setting">
-                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display: block;" width="30"
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:block;" width="30"
                         height="30">
                         <circle cx="50" cy="20" r="10" fill="#e15b64" />
                         <circle cx="50" cy="50" r="10" fill="#f8b26a" />
                         <circle cx="50" cy="80" r="10" fill="#99c959" />
                     </svg>
                 </div>
-                <div id="setDialog" style="display: none;">
+                <div id="setDialog" style="display:none;">
                     <div>
                         <div class="presetSelect">
                             <div>系统角色</div>
@@ -579,8 +579,8 @@
                 </div>
             </div>
             <ul class="messages">
-                <div style="text-align: left;">
-                    <pre style="white-space: pre-wrap; word-wrap:break-word" id="chatlog"></pre>
+                <div style="text-align:left;">
+                    <pre style="white-space:pre-wrap;word-wrap:break-word;margin-bottom:0;" id="chatlog"></pre>
                 </div>
             </ul>
             <div class="bottom_wrapper clearfix">
@@ -590,7 +590,7 @@
                 </div>
                 <button class="send_message loaded" id="sendbutton">
                     <span>发送</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;height: 50px;" viewBox="0 0 200 100"
+                    <svg xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;height:50px;" viewBox="0 0 200 100"
                         preserveAspectRatio="xMidYMid">
                         <g transform="translate(50 50)">
                             <circle cx="0" cy="0" r="15" fill="#e15b64">
