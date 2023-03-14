@@ -676,11 +676,16 @@
                 }
             }
             const preEle = document.getElementById("preSetSystem");
-            Object.keys(presetRoleData).map(key=>{
-                let option = document.createElement("option");
-                option.text = key;
-                preEle.options.add(option);
-            })
+
+            if($presetRoleData){
+                Object.keys($presetRoleData).map(key=>{
+                    let option = document.createElement("option");
+                    option.text = key;
+                    option.value = key;
+                    preEle.options.add(option);
+                })
+            }
+ 
 
             preEle.onchange = () => {
                 let val = preEle.value;
