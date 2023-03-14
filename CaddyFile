@@ -1,32 +1,12 @@
-// # Global options
-// {
-//     # 打印反向代理 upstream 信息日志(upstream 这个位置随便起名)
-//     log upstream {
-//         level DEBUG
-//         format json {
-//             time_format "iso8601"
-//         }
-//         output file /var/wwwroot/logs/upstream.log {
-//             roll_size 100mb
-//             roll_keep 3
-//             roll_keep_for 7d
-//         }
-//         # 需要指定 Namespace 才能打印
-//         include "http.handlers.reverse_proxy"
-//     }
-// }
+yourdomain.example.com {
+	reverse_proxy /v1/* https://api.openai.com {
+		header_up Host api.openai.com
+		header_up Authorization "{http.request.header.Authorization}"
+		header_up Authorization "Bearer sk-your-token"
+	}
 
-
-chat.yiq.pub {
- 
-    reverse_proxy /v1/* https://api.openai.com {
-        header_up Host api.openai.com
-        header_up Authorization "Bearer sk-your-token"
-    }
- 
-
-    file_server / {
-        root /var/wwwroot/chatgpt-web
-        index chatgpt.html
-    }
+	file_server / {
+		root /var/wwwroot/chatgpt-web
+		index chatgpt.html
+	}
 }
