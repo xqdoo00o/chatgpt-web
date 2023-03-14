@@ -616,6 +616,7 @@
     <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
     <link rel="stylesheet" href="//npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css">
     <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
+    <script src="./role.js"></script>
     <script>
         const API_URL = "/v1/chat/completions";
         const messagsEle = document.getElementsByClassName("messages")[0];
@@ -627,10 +628,11 @@
         textarea.focus();
         let data = [];
         let loading = false;
-        let presetRoleData = {
+        let presetRoleData = Object.assign({
             "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
             "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'"
-        }
+        },window.$presetRoleData);
+        
         let systemRole; // 自定义系统角色
         let presetRole; // 预设的系统角色
         let customAPIKey; // 自定义apiKey
