@@ -76,7 +76,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            height: 647px;
+            height: calc(100% - 152px);
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -500,6 +500,23 @@
             border: none;
             background: transparent;
         }
+
+        .presetSelect {
+            text-align: justify;
+            text-align-last: justify;
+        }
+
+        .presetSelect>div {
+            display: inline-block;
+        }
+
+        .presetSelect select {
+            text-align-last: left;
+            outline: none;
+            border-radius: 3px;
+            width: 100px;
+            border-color: rgba(0, 0, 0, .3);
+        }
     </style>
 </head>
 
@@ -514,22 +531,21 @@
                 </div>
                 <div class="title">ChatGPT</div>
                 <div id="setting">
-                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display: block;" width="30"
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:block;" width="30"
                         height="30">
                         <circle cx="50" cy="20" r="10" fill="#e15b64" />
                         <circle cx="50" cy="50" r="10" fill="#f8b26a" />
                         <circle cx="50" cy="80" r="10" fill="#99c959" />
                     </svg>
                 </div>
-                <div id="setDialog" style="display: none;">
+                <div id="setDialog" style="display:none;">
                     <div>
-                        <div style="text-align: justify;text-align-last: justify;">
-                            <div style="display: inline-block;">系统角色</div>
-                            <div style="display: inline-block;">
+                        <div class="presetSelect">
+                            <div>系统角色</div>
+                            <div>
                                 <label for="preSetSystem">预设角色</label>
-                                <select id="preSetSystem"
-                                    style="text-align-last: left;outline: none;border-radius: 3px;">
-                                    <option value="">--选择--</option>
+                                <select id="preSetSystem">
+                                    <option value="">默认</option>
                                     <option value="normal">助手</option>
                                     <option value="cat">猫娘</option>
                                 </select>
@@ -540,7 +556,7 @@
                     </div>
                     <div>
                         <div>自定义API key</div>
-                        <input class="inputTextClass" id="keyInput" />
+                        <input class="inputTextClass" type="password" id="keyInput" />
                     </div>
                     <div>
                         <span>打字机速度</span>
@@ -563,8 +579,8 @@
                 </div>
             </div>
             <ul class="messages">
-                <div style="text-align: left;">
-                    <pre style="white-space: pre-wrap; word-wrap:break-word" id="chatlog"></pre>
+                <div style="text-align:left;">
+                    <pre style="white-space:pre-wrap;word-wrap:break-word;margin-bottom:0;" id="chatlog"></pre>
                 </div>
             </ul>
             <div class="bottom_wrapper clearfix">
@@ -574,8 +590,8 @@
                 </div>
                 <button class="send_message loaded" id="sendbutton">
                     <span>发送</span>
-                    <svg xmlns="//www.w3.org/2000/svg" xmlns:xlink="//www.w3.org/1999/xlink"
-                        style="margin: 0 auto;height: 50px;" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;height:50px;" viewBox="0 0 200 100"
+                        preserveAspectRatio="xMidYMid">
                         <g transform="translate(50 50)">
                             <circle cx="0" cy="0" r="15" fill="#e15b64">
                                 <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
@@ -599,8 +615,8 @@
                         </g>
                     </svg>
                 </button>
-                <button id="clearConv"><svg data-hk="s00-2-1-0" xmlns="//www.w3.org/2000/svg"
-                        style="margin:0 auto;display:block" width="20px" height="20px" viewBox="0 0 24 24">
+                <button id="clearConv"><svg xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;display:block"
+                        width="20px" height="20px" viewBox="0 0 24 24">
                         <path fill="currentColor"
                             d="M8 20v-5h2v5h9v-7H5v7h3zm-4-9h16V8h-6V4h-4v4H4v3zM3 21v-8H2V7a1 1 0 0 1 1-1h5V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h5a1 1 0 0 1 1 1v6h-1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z">
                         </path>
@@ -635,7 +651,6 @@
 
         
         let systemRole; // 自定义系统角色
-        let presetRole; // 预设的系统角色
         let customAPIKey; // 自定义apiKey
         let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
         let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
@@ -643,15 +658,22 @@
         let textSpeed; // 打字机速度，越小越快
         const clearData = () => {
             if (systemRole) {
-                data.splice(1);
+                data.length = 1;
             } else {
                 data = [];
             }
         }
+        const scrollToBottom = () => {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 88) {
+                messagsEle.scrollTo(0, messagsEle.scrollHeight)
+            }
+        }
+        const scrollToBottomLoad = (ele) => {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 88) {
+                messagsEle.scrollTo(0, messagsEle.scrollHeight)
+            }
+        }
         const initSetting = () => {
-
-
-
             const systemEle = document.getElementById("systemInput");
             let localSystem = localStorage.getItem("system");
             if (localSystem) {
@@ -670,10 +692,8 @@
                     } else {
                         data.unshift({role: "system", content: systemRole});
                     }
-                } else {
-                    if (data[0] && data[0].role === "system") {
-                        data.splice(0, 1);
-                    }
+                } else if (data[0] && data[0].role === "system") {
+                    data.shift();
                 }
             }
             const preEle = document.getElementById("preSetSystem");
@@ -700,7 +720,6 @@
                 systemEle.dispatchEvent(new Event("change"));
                 systemEle.focus();
             }
-
             const keyEle = document.getElementById("keyInput");
             let localKey = localStorage.getItem("APIKey");
             if (localKey) {
@@ -712,7 +731,6 @@
                 localStorage.setItem("APIKey", customAPIKey);
             }
             keyEle.dispatchEvent(new Event("change"));
-
             const contEle = document.getElementById("enableCont");
             let localCont = localStorage.getItem("enableCont");
             if (localCont) {
@@ -727,7 +745,6 @@
                 }
             }
             contEle.dispatchEvent(new Event("change"));
-
             const longEle = document.getElementById("enableLongReply");
             let localLong = localStorage.getItem("enableLongReply");
             if (localLong) {
@@ -739,7 +756,6 @@
                 localStorage.setItem("enableLongReply", enableLongReply);
             }
             longEle.dispatchEvent(new Event("change"));
-
             const speedEle = document.getElementById("textSpeed");
             let localSpeed = localStorage.getItem("textSpeed");
             if (localSpeed) {
@@ -859,16 +875,14 @@
             const newResult = originResult.replace(LAST_TAG, `${tpls.join('')}${LAST_TAG}`);
             return newResult;
         };
-
         const codeBlockRender = md.renderer.rules.code_block;
         const fenceRender = md.renderer.rules.fence;
         md.renderer.rules.code_block = enhanceCode(codeBlockRender);
         md.renderer.rules.fence = enhanceCode(fenceRender);
-
         md.renderer.rules.image = function (tokens, idx, options, env, slf) {
             var token = tokens[idx];
             token.attrs[token.attrIndex("alt")][1] = slf.renderInlineAsText(token.children, options, env);
-            token.attrSet("onload", "messagsEle.scrollTo(0, messagsEle.scrollHeight);this.removeAttribute('onload')");
+            token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload')");
             return slf.renderToken(tokens, idx, options)
         }
         document.getElementById("clearConv").onclick = () => {
@@ -974,7 +988,7 @@
                                         }
                                         progressData += content;
                                         currentResEle.innerHTML = md.render(progressData);
-                                        messagsEle.scrollTo(0, messagsEle.scrollHeight);
+                                        scrollToBottom();
                                     }
                                 }
                             }
@@ -1012,7 +1026,7 @@
             request.className = "markdown-body";
             request.innerHTML = md.render(message);
             chatlog.appendChild(request);
-            messagsEle.scrollTo(0, messagsEle.scrollHeight);
+            scrollToBottom();
             await streamGen();
             if (!enableCont) {
                 clearData();
