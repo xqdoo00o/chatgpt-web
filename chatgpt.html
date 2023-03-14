@@ -628,11 +628,12 @@
         textarea.focus();
         let data = [];
         let loading = false;
-        let presetRoleData = Object.assign({
-            "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
-            "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'"
-        },window.$presetRoleData);
+        let presetRoleData = {
+                "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
+                "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'"
+            };
 
+        
         let systemRole; // 自定义系统角色
         let presetRole; // 预设的系统角色
         let customAPIKey; // 自定义apiKey
@@ -677,11 +678,13 @@
             }
             const preEle = document.getElementById("preSetSystem");
 
-            if($presetRoleData){
-                Object.keys($presetRoleData).map(key=>{
+            if(window.$presetRoles){
+                window.$presetRoles.forEach(obj=>{
+                    presetRoleData[obj.key] = obj.val;
+                    
                     let option = document.createElement("option");
-                    option.text = key;
-                    option.value = key;
+                    option.text = obj.label;
+                    option.value = obj.key;
                     preEle.options.add(option);
                 })
             }
