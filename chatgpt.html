@@ -76,7 +76,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            height: calc(100% - 152px);
+            height: calc(100% - 136px);
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -256,7 +256,7 @@
             position: relative;
             width: 100%;
             background-color: #fff;
-            padding: 20px 20px;
+            padding: 12px 12px;
             position: absolute;
             bottom: 0;
         }
@@ -264,7 +264,7 @@
         .bottom_wrapper .message_input_wrapper {
             display: flex;
             border: none;
-            width: calc(100% - 200px);
+            width: calc(100% - 148px);
             position: relative;
             text-align: left;
         }
@@ -290,7 +290,7 @@
         }
 
         .bottom_wrapper .send_message {
-            width: 140px;
+            width: 80px;
             height: 50px;
             font-size: 18px;
             font-weight: bold;
@@ -305,7 +305,7 @@
             float: right;
             position: absolute;
             right: 70px;
-            bottom: 20px;
+            bottom: 12px;
         }
 
         .bottom_wrapper .send_message:hover {
@@ -326,11 +326,10 @@
         #clearConv {
             position: absolute;
             right: 10px;
-            bottom: 20px;
+            bottom: 12px;
             width: 50px;
             height: 50px;
             font-size: 16px;
-            /* font-weight: bold; */
             display: inline-block;
             border-radius: 5px;
             background-color: #909090;
@@ -607,7 +606,7 @@
                 </div>
             </div>
             <ul class="messages">
-                <div style="text-align:left;">
+                <div>
                     <pre style="white-space:pre-wrap;word-wrap:break-word;margin-bottom:0;" id="chatlog"></pre>
                 </div>
             </ul>
@@ -618,7 +617,7 @@
                 </div>
                 <button class="send_message loaded" id="sendbutton">
                     <span>发送</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;height:50px;" viewBox="0 0 200 100"
+                    <svg xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;height:40px;" viewBox="0 0 200 100"
                         preserveAspectRatio="xMidYMid">
                         <g transform="translate(50 50)">
                             <circle cx="0" cy="0" r="15" fill="#e15b64">
@@ -995,7 +994,7 @@
                         let chunks = value.split(/\n{2}/g);
                         chunks = chunks.filter(item => {
                             return item.trim();
-                        })
+                        });
                         let lastData = chunks[chunks.length - 1];
                         if (lastData) {
                             lastStr = value.slice(value.lastIndexOf(lastData));
@@ -1073,10 +1072,10 @@
                 clearData();
             }
         };
-        textarea.onkeydown = (event) => {
-            if (event.keyCode === 13) {
-                if (!event.shiftKey) {
-                    event.preventDefault();
+        textarea.onkeydown = (e) => {
+            if (e.keyCode === 13) {
+                if (!e.shiftKey) {
+                    e.preventDefault();
                     genFunc();
                 }
             }
@@ -1101,26 +1100,24 @@
         sendBtnEle.onclick = genFunc;
     </script>
     <script defer>
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => {
-            controller.abort();
+        const downRoleController = new AbortController();
+        setTimeout(() => {
+            downRoleController.abort();
         }, 10000);
         const preEle = document.getElementById("preSetSystem");
-        fetch("//cdn.jsdelivr.net/gh//PlexPt/awesome-chatgpt-prompts-zh/prompts-zh.json", {
-            signal: controller.signal
-        })
-            .then(async (response) => {
-                let res = await response.json();
-                for (let i = 0; i < res.length; i++) {
-                    let key = "act" + i;
-                    presetRoleData[key] = res[i].prompt.trim();
-                    let optionEle = document.createElement("option");
-                    optionEle.text = res[i].act;
-                    optionEle.value = key;
-                    preEle.options.add(optionEle);
-                }
-            }).catch(e => {
-            })
+        fetch("https://cdn.jsdelivr.net/gh/PlexPt/awesome-chatgpt-prompts-zh/prompts-zh.json", {
+            signal: downRoleController.signal
+        }).then(async (response) => {
+            let res = await response.json();
+            for (let i = 0; i < res.length; i++) {
+                let key = "act" + i;
+                presetRoleData[key] = res[i].prompt.trim();
+                let optionEle = document.createElement("option");
+                optionEle.text = res[i].act;
+                optionEle.value = key;
+                preEle.options.add(optionEle);
+            }
+        }).catch(e => { })
     </script>
 </body>
 

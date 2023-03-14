@@ -23,7 +23,7 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 1. 可选API key，默认不设置，如需使用，建议Nginx一定要配置https，公网以http方式明文传输API key极易被中间人截获。
 
-2. 可选系统角色，默认不设置，可在设置里开启，有两个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
+2. 可选系统角色，默认不设置，可在设置里开启，有三个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
 
 3. 可选角色性格，默认灵活创新，对应接口文档的top_p参数。
 
@@ -70,7 +70,7 @@ location / {
 socat TCP4-LISTEN:8443,reuseaddr,fork PROXY:http代理地址:api.openai.com:443,proxyport=http代理端口
 ```
 
-1. 配合Caddy使用，可以自动生产HTTPS证书
+2. 配合Caddy使用，可以自动生产HTTPS证书
 ```
 yourdomain.example.com {
 	reverse_proxy /v1/* https://api.openai.com {
