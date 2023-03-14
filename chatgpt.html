@@ -500,6 +500,23 @@
             border: none;
             background: transparent;
         }
+
+        .presetSelect {
+            text-align: justify;
+            text-align-last: justify;
+        }
+
+        .presetSelect>div {
+            display: inline-block;
+        }
+
+        .presetSelect select {
+            text-align-last: left;
+            outline: none;
+            border-radius: 3px;
+            width: 100px;
+            border-color: rgba(0, 0, 0, .3);
+        }
     </style>
 </head>
 
@@ -523,13 +540,12 @@
                 </div>
                 <div id="setDialog" style="display: none;">
                     <div>
-                        <div style="text-align: justify;text-align-last: justify;">
-                            <div style="display: inline-block;">系统角色</div>
-                            <div style="display: inline-block;">
+                        <div class="presetSelect">
+                            <div>系统角色</div>
+                            <div>
                                 <label for="preSetSystem">预设角色</label>
-                                <select id="preSetSystem"
-                                    style="text-align-last: left;outline: none;border-radius: 3px;">
-                                    <option value="">--选择--</option>
+                                <select id="preSetSystem">
+                                    <option value="">默认</option>
                                     <option value="normal">助手</option>
                                     <option value="cat">猫娘</option>
                                 </select>
@@ -540,7 +556,7 @@
                     </div>
                     <div>
                         <div>自定义API key</div>
-                        <input class="inputTextClass" id="keyInput" />
+                        <input class="inputTextClass" type="password" id="keyInput" />
                     </div>
                     <div>
                         <span>打字机速度</span>
