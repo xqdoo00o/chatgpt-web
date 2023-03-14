@@ -10,6 +10,7 @@
     <style>
         * {
             box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
         }
 
         body {
@@ -18,9 +19,10 @@
 
         .chat_window {
             position: absolute;
-            width: calc(100% - 20px);
+            width: calc(100% - 10px);
             max-width: 1000px;
-            height: 800px;
+            height: calc(100% - 10px);
+            max-height: 888px;
             border-radius: 10px;
             background-color: #fff;
             left: 50%;
@@ -119,17 +121,6 @@
             float: left;
         }
 
-        .messages .message.left .text_wrapper {
-            background-color: #ffe6cb;
-            margin-left: 20px;
-        }
-
-        .messages .message.left .text_wrapper::after,
-        .messages .message.left .text_wrapper::before {
-            right: 100%;
-            border-right-color: #ffe6cb;
-        }
-
         .messages .message.left .text {
             color: #c48843;
         }
@@ -137,18 +128,6 @@
         .messages .message.right .avatar {
             background-color: #fdbf68;
             float: right;
-        }
-
-        .messages .message.right .text_wrapper {
-            background-color: #c7eafc;
-            margin-right: 20px;
-            float: right;
-        }
-
-        .messages .message.right .text_wrapper::after,
-        .messages .message.right .text_wrapper::before {
-            left: 100%;
-            border-left-color: #c7eafc;
         }
 
         .messages .message.right .text {
@@ -164,36 +143,6 @@
             height: 60px;
             border-radius: 50%;
             display: inline-block;
-        }
-
-        .messages .message .text_wrapper {
-            display: inline-block;
-            padding: 20px;
-            border-radius: 6px;
-            width: calc(100% - 85px);
-            min-width: 100px;
-            position: relative;
-        }
-
-        .messages .message .text_wrapper::after,
-        .messages .message .text_wrapper:before {
-            top: 18px;
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none;
-        }
-
-        .messages .message .text_wrapper::after {
-            border-width: 13px;
-            margin-top: 0px;
-        }
-
-        .messages .message .text_wrapper::before {
-            border-width: 15px;
-            margin-top: -2px;
         }
 
         .messages {
@@ -325,7 +274,6 @@
             border: 1px solid #d9d9e3;
             border-color: rgba(0, 0, 0, .1);
             box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
             outline: none;
             resize: none;
             box-sizing: border-box;
@@ -342,7 +290,6 @@
         }
 
         .bottom_wrapper .send_message {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
             width: 140px;
             height: 50px;
             font-size: 18px;
@@ -376,23 +323,10 @@
             display: none;
         }
 
-        #continueConv {
-            position: absolute;
-            right: 10px;
-            top: 22px;
-            color: gray;
-        }
-
-        #continueConv select {
-            outline: none;
-            border-color: gray;
-        }
-
         #clearConv {
             position: absolute;
             right: 10px;
             bottom: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
             width: 50px;
             height: 50px;
             font-size: 16px;
@@ -421,7 +355,7 @@
         }
 
         .loading {
-            background: #f7f7f8 !important;
+            background: #e7e7e8 !important;
         }
 
         .loading>span {
@@ -474,6 +408,98 @@
         .switch-slide input:checked+label:after {
             left: 21px;
         }
+
+        #setting {
+            position: absolute;
+            right: 15px;
+            top: 13px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        #setting:hover {
+            background: #e7e7e8;
+        }
+
+        .showSetting {
+            background: #b0b0b0 !important;
+        }
+
+        #setDialog {
+            color: #303030;
+            position: absolute;
+            z-index: 2;
+            background: white;
+            width: 320px;
+            right: 10px;
+            top: 55px;
+            user-select: none;
+            border-radius: 5px;
+            padding: 8px 12px 8px 12px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        #setDialog>div {
+            margin-bottom: 7px;
+        }
+
+        #setDialog input {
+            width: 100%;
+        }
+
+        #setDialog span {
+            display: inline-block;
+            width: 80px;
+            line-height: 16px;
+            vertical-align: middle;
+        }
+
+        .inputTextClass {
+            outline: none;
+            border-radius: 4px;
+            margin-top: 2px;
+            height: 32px;
+            font-size: 15px;
+            padding-left: 6px;
+            border: 1px solid #d9d9e3;
+            border-color: rgba(0, 0, 0, .1);
+            box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+        }
+
+        .areaTextClass {
+            width: 100%;
+            resize: none;
+            height: 64px;
+            padding: 6px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 8px;
+            background: #909090;
+            border-radius: 5px;
+            background-image: linear-gradient(#99c959, #99c959);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            background: #99c959;
+            cursor: ew-resize;
+            box-shadow: 0 0 2px 0 #555;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+        }
     </style>
 </head>
 
@@ -487,12 +513,53 @@
                     <div class="button maximize"></div>
                 </div>
                 <div class="title">ChatGPT</div>
-                <div id="continueConv">
-                    <span>连续对话</span>
-                    <label class="switch-slide">
-                        <input type="checkbox" id="isCont" checked hidden />
-                        <label for="isCont" class="switch-slide-label"></label>
-                    </label>
+                <div id="setting">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display: block;" width="30"
+                        height="30">
+                        <circle cx="50" cy="20" r="10" fill="#e15b64" />
+                        <circle cx="50" cy="50" r="10" fill="#f8b26a" />
+                        <circle cx="50" cy="80" r="10" fill="#99c959" />
+                    </svg>
+                </div>
+                <div id="setDialog" style="display: none;">
+                    <div>
+                        <div style="text-align: justify;text-align-last: justify;">
+                            <div style="display: inline-block;">系统角色</div>
+                            <div style="display: inline-block;">
+                                <label for="preSetSystem">预设角色</label>
+                                <select id="preSetSystem"
+                                    style="text-align-last: left;outline: none;border-radius: 3px;">
+                                    <option value="">--选择--</option>
+                                    <option value="normal">助手</option>
+                                    <option value="cat">猫娘</option>
+                                </select>
+                            </div>
+                        </div>
+                        <textarea class="inputTextClass areaTextClass" placeholder="你是一个乐于助人的助手，尽量简明扼要地回答"
+                            id="systemInput"></textarea>
+                    </div>
+                    <div>
+                        <div>自定义API key</div>
+                        <input class="inputTextClass" id="keyInput" />
+                    </div>
+                    <div>
+                        <span>打字机速度</span>
+                        <input type="range" id="textSpeed" name="textSpeed" min="10" max="100" value="88" step="1">
+                    </div>
+                    <div>
+                        <span>连续对话</span>
+                        <label class="switch-slide">
+                            <input type="checkbox" id="enableCont" checked hidden />
+                            <label for="enableCont" class="switch-slide-label"></label>
+                        </label>
+                    </div>
+                    <div>
+                        <span>长回复</span>
+                        <label class="switch-slide">
+                            <input type="checkbox" id="enableLongReply" hidden />
+                            <label for="enableLongReply" class="switch-slide-label"></label>
+                        </label>
+                    </div>
                 </div>
             </div>
             <ul class="messages">
@@ -553,21 +620,148 @@
         const API_URL = "/v1/chat/completions";
         const messagsEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
-        const contEle = document.getElementById("isCont");
         const sendBtnEle = document.getElementById("sendbutton");
         const textarea = document.getElementById("chatinput");
+        const settingEle = document.getElementById("setting");
+        const dialogEle = document.getElementById("setDialog");
         textarea.focus();
         let data = [];
         let loading = false;
-        let isCont = contEle.checked;
-        contEle.onchange = () => {
-            isCont = contEle.checked;
+        let presetRoleData = {
+            "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
+            "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'"
+        }
+        let systemRole; // 自定义系统角色
+        let presetRole; // 预设的系统角色
+        let customAPIKey; // 自定义apiKey
+        let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
+        let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
+        let longReplyFlag;
+        let textSpeed; // 打字机速度，越小越快
+        const clearData = () => {
+            if (systemRole) {
+                data.splice(1);
+            } else {
+                data = [];
+            }
+        }
+        const initSetting = () => {
+            const systemEle = document.getElementById("systemInput");
+            let localSystem = localStorage.getItem("system");
+            if (localSystem) {
+                systemRole = localSystem;
+                systemEle.value = localSystem;
+                data.unshift({role: "system", content: systemRole});
+            } else {
+                systemRole = systemEle.value;
+            }
+            systemEle.onchange = () => {
+                systemRole = systemEle.value;
+                localStorage.setItem("system", systemRole);
+                if (systemRole) {
+                    if (data[0] && data[0].role === "system") {
+                        data[0].content = systemRole;
+                    } else {
+                        data.unshift({role: "system", content: systemRole});
+                    }
+                } else {
+                    if (data[0] && data[0].role === "system") {
+                        data.splice(0, 1);
+                    }
+                }
+            }
+            const preEle = document.getElementById("preSetSystem");
+            preEle.onchange = () => {
+                let val = preEle.value;
+                if (val && presetRoleData[val]) {
+                    systemEle.value = presetRoleData[val];
+                } else {
+                    systemEle.value = "";
+                }
+                systemEle.dispatchEvent(new Event("change"));
+                systemEle.focus();
+            }
+
+            const keyEle = document.getElementById("keyInput");
+            let localKey = localStorage.getItem("APIKey");
+            if (localKey) {
+                customAPIKey = localKey;
+                keyEle.value = localKey;
+            }
+            keyEle.onchange = () => {
+                customAPIKey = keyEle.value;
+                localStorage.setItem("APIKey", customAPIKey);
+            }
+            keyEle.dispatchEvent(new Event("change"));
+
+            const contEle = document.getElementById("enableCont");
+            let localCont = localStorage.getItem("enableCont");
+            if (localCont) {
+                enableCont = localCont === "true";
+                contEle.checked = enableCont;
+            }
+            contEle.onchange = () => {
+                enableCont = contEle.checked;
+                localStorage.setItem("enableCont", enableCont);
+                if (!enableCont) {
+                    clearData();
+                }
+            }
+            contEle.dispatchEvent(new Event("change"));
+
+            const longEle = document.getElementById("enableLongReply");
+            let localLong = localStorage.getItem("enableLongReply");
+            if (localLong) {
+                enableLongReply = localLong === "true";
+                longEle.checked = enableLongReply;
+            }
+            longEle.onchange = () => {
+                enableLongReply = longEle.checked;
+                localStorage.setItem("enableLongReply", enableLongReply);
+            }
+            longEle.dispatchEvent(new Event("change"));
+
+            const speedEle = document.getElementById("textSpeed");
+            let localSpeed = localStorage.getItem("textSpeed");
+            if (localSpeed) {
+                textSpeed = +speedEle.min + (speedEle.max - localSpeed);
+                speedEle.value = localSpeed;
+            }
+            speedEle.oninput = () => {
+                speedEle.style.backgroundSize = (speedEle.value - speedEle.min) * 100 / (speedEle.max - speedEle.min) + "% 100%";
+                textSpeed = +speedEle.min + (speedEle.max - speedEle.value);
+                localStorage.setItem("textSpeed", speedEle.value);
+            }
+            speedEle.dispatchEvent(new Event("input"));
+        }
+        initSetting();
+        const closeEvent = (ev) => {
+            if (settingEle.contains(ev.target)) {
+                return;
+            }
+            if (!dialogEle.contains(ev.target)) {
+                dialogEle.style.display = "none";
+                document.removeEventListener("mousedown", closeEvent, true);
+                settingEle.classList.remove("showSetting");
+            }
+        }
+        settingEle.onmousedown = () => {
+            let stat = dialogEle.style.display;
+            dialogEle.style.display = stat === "block" ? "none" : "block";
+            if (dialogEle.style.display === "block") {
+                document.addEventListener("mousedown", closeEvent, true);
+                settingEle.classList.add("showSetting");
+            } else {
+                document.removeEventListener("mousedown", closeEvent, true);
+                settingEle.classList.remove("showSetting");
+            }
         }
         const md = markdownit({
+            linkify: true, // 识别链接
             highlight: function (str, lang) { // markdown高亮
                 try {
                     return hljs.highlightAuto(str).value;
-                } catch (__) { }
+                } catch (e) { }
 
                 return ""; // use external default escaping
             }
@@ -660,12 +854,12 @@
         }
         document.getElementById("clearConv").onclick = () => {
             if (!loading) {
-                data = [];
+                clearData();
                 chatlog.innerHTML = "";
             }
         }
         const delay = () => {
-            return new Promise((resolve) => setTimeout(resolve, 24)); //打字机时间间隔
+            return new Promise((resolve) => setTimeout(resolve, textSpeed)); //打字机时间间隔
         }
         const endAction = () => {
             loading = false;
@@ -677,17 +871,21 @@
         let progressData = "";
         let lastStr = "";
         const streamGen = async () => {
-            const controller = new AbortController()
+            const controller = new AbortController();
             const timeoutId = setTimeout(() => {
                 controller.abort();
                 alert("请求超时，请稍后重试！");
                 endAction();
-            }, 18000)
+            }, 18000);
+            let headers = {
+                "Content-Type": "application/json",
+            };
+            if (customAPIKey) {
+                headers["Authorization"] = "Bearer " + customAPIKey;
+            }
             const res = await fetch(API_URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers,
                 body: JSON.stringify({
                     messages: data,
                     model: "gpt-3.5-turbo",
@@ -697,7 +895,11 @@
             })
             clearTimeout(timeoutId);
             if (res.status !== 200) {
-                alert("触发API调用频率限制，请稍后重试！");
+                if (res.status === 401) {
+                    alert("API key错误或已失效，请打开设置输入正确的API key")
+                } else {
+                    alert("触发API调用频率限制，请稍后重试！");
+                }
                 endAction();
                 return;
             }
@@ -727,8 +929,20 @@
                         for (let i = 0; i < chunks.length - 1; i++) {
                             let chunk = chunks[i];
                             if (chunk) {
-                                let payload = JSON.parse(chunk.slice(6));
+                                let payload;
+                                try {
+                                    payload = JSON.parse(chunk.slice(6));
+                                } catch (e) {
+                                    break;
+                                }
                                 if (payload.choices[0].finish_reason) {
+                                    if (enableLongReply) {
+                                        if (payload.choices[0].finish_reason === "length") {
+                                            longReplyFlag = true;
+                                        } else {
+                                            longReplyFlag = false;
+                                        }
+                                    }
                                     break;
                                 } else {
                                     let content = payload.choices[0].delta.content;
@@ -748,11 +962,20 @@
                         }
                         return readChunk();
                     } else {
-                        if (isCont) {
+                        lastStr = "";
+                        if (longReplyFlag) {
+                            if (data[data.length - 1].role !== "assistant") {
+                                data.splice(systemRole ? 1 : 0, data.length - (systemRole ? 2 : 1));
+                                data.push({role: "assistant", content: progressData});
+                            } else {
+                                data[data.length - 1].content = progressData;
+                            }
+                            return streamGen();
+                        }
+                        if (enableCont) {
                             data.push({role: "assistant", content: progressData});
                         }
                         currentResEle = null;
-                        lastStr = "";
                         progressData = "";
                         endAction();
                     }
@@ -760,7 +983,7 @@
             };
             await readChunk();
         }
-        const generateText = (message) => {
+        const generateText = async (message) => {
             loading = true;
             sendBtnEle.disabled = true;
             sendBtnEle.classList.remove("loaded");
@@ -771,9 +994,9 @@
             request.innerHTML = md.render(message);
             chatlog.appendChild(request);
             messagsEle.scrollTo(0, messagsEle.scrollHeight);
-            streamGen();
-            if (!isCont) {
-                data = [];
+            await streamGen();
+            if (!enableCont) {
+                clearData();
             }
         };
         textarea.onkeydown = (event) => {
