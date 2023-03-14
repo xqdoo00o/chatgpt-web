@@ -15,6 +15,8 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 [markdown-it-texmath](https://github.com/goessner/markdown-it-texmath)
 
+[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)
+
 ![示例](https://github.com/xqdoo00o/chatgpt-web/blob/main/example.png)
 
 ## 可用配置

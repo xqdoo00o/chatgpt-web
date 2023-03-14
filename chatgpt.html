@@ -437,7 +437,7 @@
             user-select: none;
             border-radius: 5px;
             padding: 8px 12px 8px 12px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0px 10px rgba(0, 0, 0, 0.15);
         }
 
         #setDialog>div {
@@ -469,7 +469,7 @@
 
         .areaTextClass {
             width: 100%;
-            height: 64px;
+            height: 80px;
             display: block;
             resize: none;
             padding: 6px;
@@ -577,8 +577,16 @@
                         <span>回答质量</span>
                         <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
                         <div class="selectDef">
-                            <span>保守刻板</span>
+                            <span>重复刻板</span>
                             <span>胡言乱语</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span>打字机速度</span>
+                        <input type="range" id="textSpeed" min="10" max="100" value="88" step="1" />
+                        <div class="selectDef">
+                            <span>慢</span>
+                            <span>快</span>
                         </div>
                     </div>
                     <div>
@@ -594,14 +602,6 @@
                             <input type="checkbox" id="enableLongReply" hidden />
                             <label for="enableLongReply" class="switch-slide-label"></label>
                         </label>
-                    </div>
-                    <div>
-                        <span>打字机速度</span>
-                        <input type="range" id="textSpeed" min="10" max="100" value="88" step="1" />
-                        <div class="selectDef">
-                            <span>慢</span>
-                            <span>快</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1097,6 +1097,30 @@
             }
         }
         sendBtnEle.onclick = genFunc;
+    </script>
+    <script defer>
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => {
+                controller.abort();
+            }, 10000);
+            const preEle = document.getElementById("preSetSystem");
+            fetch("https://raw.githubusercontent.com/PlexPt/awesome-chatgpt-prompts-zh/main/prompts-zh.json", {
+                signal: controller.signal
+            })
+                .then(async (response) => {
+                    let res = await response.json();
+                    for (let i = 0; i < res.length; i++) {
+                        let key = "act" + i;
+                        presetRoleData[key] = res[i].prompt.trim();
+                        let optionEle = document.createElement("option");
+                        optionEle.text = res[i].act;
+                        optionEle.value = key;
+                        preEle.options.add(optionEle);
+                    }
+                })
+        } catch (e) {
+        }
     </script>
 </body>
 
