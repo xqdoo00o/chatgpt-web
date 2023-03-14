@@ -448,7 +448,7 @@
             width: 100%;
         }
 
-        #setDialog span {
+        #setDialog .inlineTitle {
             display: inline-block;
             width: 80px;
             line-height: 16px;
@@ -469,8 +469,9 @@
 
         .areaTextClass {
             width: 100%;
-            resize: none;
             height: 64px;
+            display: block;
+            resize: none;
             padding: 6px;
         }
 
@@ -517,6 +518,12 @@
             width: 100px;
             border-color: rgba(0, 0, 0, .3);
         }
+
+        .selectDef {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -540,6 +547,10 @@
                 </div>
                 <div id="setDialog" style="display:none;">
                     <div>
+                        <div>自定义API key</div>
+                        <input class="inputTextClass" type="password" id="keyInput" />
+                    </div>
+                    <div>
                         <div class="presetSelect">
                             <div>系统角色</div>
                             <div>
@@ -555,26 +566,42 @@
                             id="systemInput"></textarea>
                     </div>
                     <div>
-                        <div>自定义API key</div>
-                        <input class="inputTextClass" type="password" id="keyInput" />
+                        <span>角色性格</span>
+                        <input type="range" id="top_p" min="0" max="1" value="1" step="0.05" />
+                        <div class="selectDef">
+                            <span>准确严谨</span>
+                            <span>灵活创新</span>
+                        </div>
                     </div>
                     <div>
-                        <span>打字机速度</span>
-                        <input type="range" id="textSpeed" name="textSpeed" min="10" max="100" value="88" step="1">
+                        <span>回答质量</span>
+                        <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
+                        <div class="selectDef">
+                            <span>保守刻板</span>
+                            <span>胡言乱语</span>
+                        </div>
                     </div>
                     <div>
-                        <span>连续对话</span>
+                        <span class="inlineTitle">连续对话</span>
                         <label class="switch-slide">
                             <input type="checkbox" id="enableCont" checked hidden />
                             <label for="enableCont" class="switch-slide-label"></label>
                         </label>
                     </div>
                     <div>
-                        <span>长回复</span>
+                        <span class="inlineTitle">长回复</span>
                         <label class="switch-slide">
                             <input type="checkbox" id="enableLongReply" hidden />
                             <label for="enableLongReply" class="switch-slide-label"></label>
                         </label>
+                    </div>
+                    <div>
+                        <span>打字机速度</span>
+                        <input type="range" id="textSpeed" min="10" max="100" value="88" step="1" />
+                        <div class="selectDef">
+                            <span>慢</span>
+                            <span>快</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -648,6 +675,8 @@
             "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'"
         }
         let systemRole; // 自定义系统角色
+        let roleNature; // 角色性格
+        let roleTemp; // 回答质量
         let customAPIKey; // 自定义apiKey
         let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
         let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
@@ -704,6 +733,30 @@
                 systemEle.dispatchEvent(new Event("change"));
                 systemEle.focus();
             }
+            const topEle = document.getElementById("top_p");
+            let localTop = localStorage.getItem("top_p");
+            if (localTop) {
+                roleNature = +localTop;
+                topEle.value = localTop;
+            }
+            topEle.oninput = () => {
+                topEle.style.backgroundSize = (topEle.value - topEle.min) * 100 / (topEle.max - topEle.min) + "% 100%";
+                roleNature = +topEle.value;
+                localStorage.setItem("top_p", topEle.value);
+            }
+            topEle.dispatchEvent(new Event("input"));
+            const tempEle = document.getElementById("temp");
+            let localTemp = localStorage.getItem("temp");
+            if (localTemp) {
+                roleTemp = +localTemp;
+                tempEle.value = localTemp;
+            }
+            tempEle.oninput = () => {
+                tempEle.style.backgroundSize = (tempEle.value - tempEle.min) * 100 / (tempEle.max - tempEle.min) + "% 100%";
+                roleTemp = +tempEle.value;
+                localStorage.setItem("temp", tempEle.value);
+            }
+            tempEle.dispatchEvent(new Event("input"));
             const keyEle = document.getElementById("keyInput");
             let localKey = localStorage.getItem("APIKey");
             if (localKey) {
@@ -893,7 +946,7 @@
                 controller.abort();
                 alert("请求超时，请稍后重试！");
                 endAction();
-            }, 18000);
+            }, 20000);
             let headers = {
                 "Content-Type": "application/json",
             };
@@ -906,7 +959,9 @@
                 body: JSON.stringify({
                     messages: data,
                     model: "gpt-3.5-turbo",
-                    stream: true
+                    stream: true,
+                    temperature: roleTemp,
+                    top_p: roleNature
                 }),
                 signal: controller.signal
             })
