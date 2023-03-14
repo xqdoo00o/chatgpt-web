@@ -36,7 +36,7 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 7. 允许长回复，默认关闭，开启后可能导致api费用增加，并丢失部分上下文，对于一些要发送`继续`才完整的回复，不用发`继续`了。
 
 ## 使用方法
-需要配合nginx反代使用, 示例配置如下
+1. 需要配合nginx反代使用, 示例配置如下
 ```
 location ^~ /v1 {
     proxy_pass https://api.openai.com;
@@ -68,4 +68,21 @@ location / {
 ```
 ```
 socat TCP4-LISTEN:8443,reuseaddr,fork PROXY:http代理地址:api.openai.com:443,proxyport=http代理端口
+```
+
+1. 配合Caddy使用，可以自动生产HTTPS证书
+```
+yourdomain.example.com {
+	reverse_proxy /v1/* https://api.openai.com {
+		header_up Host api.openai.com
+		header_up Authorization "{http.request.header.Authorization}"
+		header_up Authorization "Bearer sk-your-token"
+	}
+
+	file_server / {
+		root /var/wwwroot/chatgpt-web
+		index chatgpt.html
+	}
+}
+
 ```
