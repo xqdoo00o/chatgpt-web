@@ -936,14 +936,13 @@
         }
         let currentResEle;
         let progressData = "";
-        let lastStr = "";
         const streamGen = async () => {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => {
                 controller.abort();
                 alert("请求超时，请稍后重试！");
                 endAction();
-            }, 20000);
+            }, 30000);
             let headers = {
                 "Content-Type": "application/json",
             };
@@ -977,11 +976,8 @@
             const reader = stream.getReader();
             const readChunk = async () => {
                 return reader.read().then(async ({value, done}) => {
+                    console.log(value);
                     if (!done) {
-                        if (lastStr) {
-                            value = lastStr + value;
-                            lastStr = "";
-                        }
                         if (!currentResEle) {
                             currentResEle = document.createElement("div");
                             currentResEle.className = "response markdown-body";
@@ -991,11 +987,7 @@
                         chunks = chunks.filter(item => {
                             return item.trim();
                         });
-                        let lastData = chunks[chunks.length - 1];
-                        if (lastData) {
-                            lastStr = value.slice(value.lastIndexOf(lastData));
-                        }
-                        for (let i = 0; i < chunks.length - 1; i++) {
+                        for (let i = 0; i < chunks.length; i++) {
                             let chunk = chunks[i];
                             if (chunk) {
                                 let payload;
@@ -1031,7 +1023,6 @@
                         }
                         return readChunk();
                     } else {
-                        lastStr = "";
                         if (longReplyFlag) {
                             if (data[data.length - 1].role !== "assistant") {
                                 data.splice(systemRole ? 1 : 0, data.length - (systemRole ? 2 : 1));
