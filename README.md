@@ -49,7 +49,7 @@ location ^~ /v1 {
     #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
-    #流式传输，不用buffer缓存，不关闭buffering会卡顿
+    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！
     proxy_buffering off;
 }
 location / {
@@ -64,8 +64,10 @@ location / {
 location ^~ /v1 {
     proxy_pass https://127.0.0.1:8443;
     proxy_set_header Host api.openai.com;
+    #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
+    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！
     proxy_buffering off;
 }
 location / {
