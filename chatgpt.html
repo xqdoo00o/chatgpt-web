@@ -976,7 +976,6 @@
             const reader = stream.getReader();
             const readChunk = async () => {
                 return reader.read().then(async ({value, done}) => {
-                    console.log(value);
                     if (!done) {
                         if (!currentResEle) {
                             currentResEle = document.createElement("div");
