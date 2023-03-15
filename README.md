@@ -38,12 +38,19 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 ## 使用方法
 1. 需要配合nginx反代使用, 示例配置如下
 ```
+#开启openai接口的gzip压缩，含有大量重复文本压缩率高，节省流量
+gzip  on;
+gzip_min_length 1k;
+gzip_types text/event-stream;
+
 location ^~ /v1 {
     proxy_pass https://api.openai.com;
     proxy_set_header Host api.openai.com;
     #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
+    #流式传输，不用buffer缓存，不关闭buffering会卡顿
+    proxy_buffering off;
 }
 location / {
     root /usr/share/nginx/html;
@@ -57,9 +64,9 @@ location / {
 location ^~ /v1 {
     proxy_pass https://127.0.0.1:8443;
     proxy_set_header Host api.openai.com;
-    #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
+    proxy_buffering off;
 }
 location / {
     root /usr/share/nginx/html;
