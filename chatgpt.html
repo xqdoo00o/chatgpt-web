@@ -5,7 +5,7 @@
 <meta name="description" content="使用ChatGPT接口，实现简单HTML网页版在线聊天" />
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>ChatGPT</title>
     <style>
         * {
@@ -73,9 +73,6 @@
 
         .messages {
             position: relative;
-            list-style: none;
-            padding: 0;
-            margin: 0;
             height: calc(100% - 136px);
             overflow-x: hidden;
             overflow-y: auto;
@@ -262,7 +259,6 @@
         }
 
         .bottom_wrapper .message_input_wrapper {
-            display: flex;
             border: none;
             width: calc(100% - 148px);
             position: relative;
@@ -271,22 +267,26 @@
 
         .bottom_wrapper .message_input_wrapper .message_input_text {
             border-radius: 6px;
-            border: 1px solid #d9d9e3;
-            border-color: rgba(0, 0, 0, .1);
-            box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
             outline: none;
             resize: none;
-            box-sizing: border-box;
             height: 50px;
             font-size: 16px;
-            overflow-y: hidden;
             max-height: 200px;
-            padding: 13px 0 16px 16px;
+            padding: 13px 0 14px 16px;
             width: 100%;
+            display: block;
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text::placeholder {
             color: gray;
+        }
+
+        .bottom_wrapper .message_input_wrapper .message_input_text::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         .bottom_wrapper .send_message {
@@ -317,10 +317,6 @@
             font-weight: 300;
             display: inline-block;
             line-height: 48px;
-        }
-
-        .message_template {
-            display: none;
         }
 
         #clearConv {
@@ -414,6 +410,8 @@
             top: 13px;
             cursor: pointer;
             padding: 5px;
+            border: none;
+            background-color: transparent;
             border-radius: 4px;
         }
 
@@ -433,6 +431,7 @@
             width: 320px;
             right: 10px;
             top: 55px;
+            -webkit-user-select: none;
             user-select: none;
             border-radius: 5px;
             padding: 8px 12px 8px 12px;
@@ -463,7 +462,7 @@
             padding-left: 6px;
             border: 1px solid #d9d9e3;
             border-color: rgba(0, 0, 0, .1);
-            box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
         }
 
         .areaTextClass {
@@ -537,18 +536,18 @@
                     <div class="button maximize"></div>
                 </div>
                 <div class="title">ChatGPT</div>
-                <div id="setting">
+                <button id="setting">
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:block;" width="30"
                         height="30">
                         <circle cx="50" cy="20" r="10" fill="#e15b64" />
                         <circle cx="50" cy="50" r="10" fill="#f8b26a" />
                         <circle cx="50" cy="80" r="10" fill="#99c959" />
                     </svg>
-                </div>
+                </button>
                 <div id="setDialog" style="display:none;">
                     <div>
                         <div>自定义API key</div>
-                        <input class="inputTextClass" type="password" id="keyInput" />
+                        <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput" />
                     </div>
                     <div>
                         <div class="presetSelect">
@@ -606,11 +605,11 @@
                     </div>
                 </div>
             </div>
-            <ul class="messages">
+            <div class="messages">
                 <div>
                     <pre style="white-space:pre-wrap;word-wrap:break-word;margin-bottom:0;" id="chatlog"></pre>
                 </div>
-            </ul>
+            </div>
             <div class="bottom_wrapper clearfix">
                 <div class="message_input_wrapper">
                     <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧"
@@ -1079,7 +1078,7 @@
         }
         textarea.oninput = (e) => {
             textarea.style.height = "50px";
-            textarea.style.height = e.target.scrollHeight + "px";
+            textarea.style.height = e.target.scrollHeight + 2 + "px";
         };
         const genFunc = function () {
             let message = textarea.value;
