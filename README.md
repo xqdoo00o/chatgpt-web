@@ -1,5 +1,7 @@
 # chatgpt-web
-Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
+Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
+
+纯JS实现的ChatGPT项目，基于nginx和OpenAI gpt-3.5-turbo API.
 
 参考项目: 
 
@@ -22,7 +24,7 @@ Pure javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 ## 使用方法
 1. 需要配合nginx反代使用, 示例配置如下
 ```
-#开启openai接口的gzip压缩，含有大量重复文本压缩率高，节省流量
+#开启openai接口的gzip压缩，大量重复文本的压缩率高，节省服务端流量
 gzip  on;
 gzip_min_length 1k;
 gzip_types text/event-stream;
@@ -33,7 +35,7 @@ location ^~ /v1 {
     #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
-    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！
+    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
     proxy_buffering off;
 }
 location / {
@@ -51,7 +53,7 @@ location ^~ /v1 {
     #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
     proxy_pass_header Authorization;
-    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！
+    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
     proxy_buffering off;
 }
 location / {
@@ -84,14 +86,14 @@ yourdomain.example.com {
 
 1. 可选API key，默认不设置，如需使用，建议Nginx一定要配置https，公网以http方式明文传输API key极易被中间人截获。
 
-2. 可选系统角色，默认不设置，可在设置里开启，有三个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
+2. 可选系统角色，默认不开启，有三个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
 
 3. 可选角色性格，默认灵活创新，对应接口文档的top_p参数。
 
 4. 可选回答质量，默认平衡，对应接口文档的temperature参数。
 
-5. 修改打字机速度，值越大速度越快。
+5. 修改打字机速度，默认较快，值越大速度越快。
 
-6. 允许连续对话，默认开启，对话中包含上下文信息。
+6. 允许连续对话，默认开启，对话中包含上下文信息，会导致api费用增加。
 
-7. 允许长回复，默认关闭，开启后可能导致api费用增加，并丢失部分上下文，对于一些要发送`继续`才完整的回复，不用发`继续`了。
+7. 允许长回复，默认关闭，开启后可能导致api费用增加，并丢失大部分上下文，对于一些要发送`继续`才完整的回复，不用发`继续`了。
