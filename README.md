@@ -4,25 +4,18 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 纯JS实现的ChatGPT项目，基于nginx和OpenAI gpt-3.5-turbo API.
 
 参考项目: 
-
-[markdown-it](https://github.com/markdown-it/markdown-it)
-
-[highlight.js](https://github.com/highlightjs/highlight.js)
-
-[github-markdown-css](https://github.com/sindresorhus/github-markdown-css)
-
-[chatgpt-html](https://github.com/slippersheepig/chatgpt-html)
-
-[markdown-it-copy](https://github.com/ReAlign/markdown-it-copy)
-
-[markdown-it-texmath](https://github.com/goessner/markdown-it-texmath)
-
+[markdown-it](https://github.com/markdown-it/markdown-it), 
+[highlight.js](https://github.com/highlightjs/highlight.js), 
+[github-markdown-css](https://github.com/sindresorhus/github-markdown-css), 
+[chatgpt-html](https://github.com/slippersheepig/chatgpt-html), 
+[markdown-it-copy](https://github.com/ReAlign/markdown-it-copy), 
+[markdown-it-texmath](https://github.com/goessner/markdown-it-texmath), 
 [awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)
 
 ![示例](https://github.com/xqdoo00o/chatgpt-web/blob/main/example.png)
 
 ## 使用方法
-1. 需要配合nginx反代使用, 示例配置如下
+1. 配合nginx反代使用, 示例配置如下
 ```
 #开启openai接口的gzip压缩，大量重复文本的压缩率高，节省服务端流量
 gzip  on;
@@ -43,7 +36,7 @@ location / {
     index chatgpt.html;
 }
 ```
-注意: 反代服务器需正常访问api.openai.com
+注意: 反代服务器需正常访问`api.openai.com`
 
 如果无法正常访问, 可配合socat反代和http代理使用, 示例配置如下
 ```
