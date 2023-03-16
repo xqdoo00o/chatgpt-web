@@ -147,10 +147,13 @@
             color: #343541;
         }
 
+        #chatlog {
+            word-wrap: break-word;
+            margin-top: 16px;
+        }
+
         #chatlog>div {
-            padding-top: 25px;
-            padding-left: 25px;
-            padding-right: 25px;
+            padding: 22px 25px;
         }
 
         #chatlog .response {
@@ -606,9 +609,7 @@
                 </div>
             </div>
             <div class="messages">
-                <div>
-                    <pre style="white-space:pre-wrap;word-wrap:break-word;margin-bottom:0;" id="chatlog"></pre>
-                </div>
+                <div id="chatlog"></div>
             </div>
             <div class="bottom_wrapper clearfix">
                 <div class="message_input_wrapper">
