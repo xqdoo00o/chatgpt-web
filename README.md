@@ -14,6 +14,10 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 ![示例](https://github.com/xqdoo00o/chatgpt-web/blob/main/example.png)
 
+## Demo
+
+[在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key）
+
 ## 使用方法
 1. 配合nginx反代使用, 示例配置如下
 ```
