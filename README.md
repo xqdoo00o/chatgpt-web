@@ -33,7 +33,7 @@ location ^~ /v1 {
 }
 location / {
     root /usr/share/nginx/html;
-    index chatgpt.html;
+    index index.html;
 }
 ```
 注意: 反代服务器需正常访问`api.openai.com`
@@ -51,7 +51,7 @@ location ^~ /v1 {
 }
 location / {
     root /usr/share/nginx/html;
-    index chatgpt.html;
+    index index.html;
 }
 ```
 ```
@@ -69,7 +69,7 @@ yourdomain.example.com {
 
 	file_server / {
 		root /var/wwwroot/chatgpt-web
-		index chatgpt.html
+		index index.html
 	}
 }
 
