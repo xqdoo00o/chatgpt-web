@@ -784,6 +784,7 @@
     <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
     <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
     <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
+    <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
     <script>
         const API_URL = "/v1/chat/completions";
         const messagsEle = document.getElementsByClassName("messages")[0];
@@ -1112,15 +1113,11 @@
                 try {
                     return hljs.highlightAuto(str).value;
                 } catch (e) { }
-
                 return ""; // use external default escaping
             }
         });
-        md.use(texmath, { // markdown katex公式
-            engine: katex,
-            delimiters: 'dollars',
-            katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}
-        });
+        md.use(texmath, {engine: katex, delimiters: 'dollars', katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}})
+            .use(markdownitLinkAttributes, {attrs: {target: "_blank", rel: "noopener"}});
         const x = {
             getCodeLang(str = '') {
                 const res = str.match(/ class="language-(.*?)"/);
