@@ -156,8 +156,17 @@
             padding: 22px 25px;
         }
 
+        #chatlog .request {
+            position: relative;
+        }
+
         #chatlog .response {
             background: #f7f7f8;
+            position: relative;
+        }
+
+        .response .markdown-body {
+            background: #f7f7f8 !important;
         }
 
         #chatlog .response>pre {
@@ -442,7 +451,7 @@
         }
 
         #setDialog>div {
-            margin-bottom: 7px;
+            margin-bottom: 4px;
         }
 
         #setDialog input {
@@ -451,9 +460,16 @@
 
         #setDialog .inlineTitle {
             display: inline-block;
-            width: 80px;
             line-height: 16px;
             vertical-align: middle;
+        }
+
+        #speechOption {
+            margin-top: 6px;
+        }
+
+        #speechOption>div {
+            margin-bottom: 4px;
         }
 
         .inputTextClass {
@@ -478,6 +494,8 @@
 
         input[type="range"] {
             -webkit-appearance: none;
+            display: block;
+            margin: 6px 0 3px 0;
             height: 8px;
             background: #909090;
             border-radius: 5px;
@@ -503,9 +521,9 @@
             background: transparent;
         }
 
-        .presetSelect {
-            text-align: justify;
-            text-align-last: justify;
+        .justSetLine {
+            display: flex;
+            justify-content: space-between;
         }
 
         .presetSelect>div {
@@ -513,7 +531,6 @@
         }
 
         .presetSelect select {
-            text-align-last: left;
             outline: none;
             border-radius: 3px;
             width: 100px;
@@ -523,8 +540,72 @@
         .selectDef {
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 13px;
             color: #707070;
+        }
+
+        #preSetSpeech {
+            width: 100%;
+            outline: none;
+            margin-top: 5px;
+            border-radius: 3px;
+            border-color: rgba(0, 0, 0, .3);
+        }
+
+        .mdOption {
+            position: absolute;
+            right: 5px;
+            bottom: 5px;
+            pointer-events: none;
+        }
+
+        .mdOption svg {
+            margin-top: 4px;
+            pointer-events: auto;
+            cursor: pointer;
+            display: block;
+            color: #dededf;
+        }
+
+        .mdOption svg:hover,
+        #pronMd:hover>svg {
+            color: #878788;
+        }
+
+        .mdOption svg * {
+            pointer-events: none;
+        }
+
+        #pronMd {
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .readyVoice svg:not(:first-child) {
+            display: none;
+        }
+
+        .pauseVoice svg:not(:nth-child(2)) {
+            display: none;
+        }
+
+        .resumeVoice svg:not(:nth-child(3)) {
+            display: none;
+        }
+
+        #voiceTypes>span {
+            border-radius: 3px;
+            margin-left: 4px;
+            cursor: pointer;
+            padding: 1px 5px;
+        }
+
+        #voiceTypes>span:hover {
+            background: #e7e7e7;
+        }
+
+        .selVoiceType {
+            background: #d0d0d0 !important;
         }
     </style>
 </head>
@@ -540,8 +621,8 @@
                 </div>
                 <div class="title">ChatGPT</div>
                 <button id="setting">
-                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:block;" width="30"
-                        height="30">
+                    <svg viewBox="0 0 100 100" style="display:block;" role="img" width="30" height="30">
+                        <title>设置</title>
                         <circle cx="50" cy="20" r="10" fill="#e15b64" />
                         <circle cx="50" cy="50" r="10" fill="#f8b26a" />
                         <circle cx="50" cy="80" r="10" fill="#99c959" />
@@ -553,7 +634,7 @@
                         <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput" />
                     </div>
                     <div>
-                        <div class="presetSelect">
+                        <div class="justSetLine presetSelect">
                             <div>系统角色</div>
                             <div>
                                 <label for="preSetSystem">预设角色</label>
@@ -592,19 +673,66 @@
                             <span>快</span>
                         </div>
                     </div>
-                    <div>
+                    <div class="justSetLine">
                         <span class="inlineTitle">连续对话</span>
                         <label class="switch-slide">
                             <input type="checkbox" id="enableCont" checked hidden />
                             <label for="enableCont" class="switch-slide-label"></label>
                         </label>
-                    </div>
-                    <div>
                         <span class="inlineTitle">长回复</span>
                         <label class="switch-slide">
                             <input type="checkbox" id="enableLongReply" hidden />
                             <label for="enableLongReply" class="switch-slide-label"></label>
                         </label>
+                    </div>
+                    <div id="speechOption" style="display: none;">
+                        <div>
+                            <div class="justSetLine">
+                                <div>选择语音</div>
+                                <div id="voiceTypes">
+                                    <span data-type="0">提问语音</span>
+                                    <span data-type="1" class="selVoiceType">回答语音</span>
+                                </div>
+                            </div>
+                            <select id="preSetSpeech">
+                            </select>
+                        </div>
+                        <div>
+                            <span>音量</span>
+                            <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>低</span>
+                                <span>高</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>语速</span>
+                            <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>慢</span>
+                                <span>快</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>音调</span>
+                            <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>平淡</span>
+                                <span>起伏</span>
+                            </div>
+                        </div>
+                        <div class="justSetLine">
+                            <span class="inlineTitle">连续朗读</span>
+                            <label class="switch-slide">
+                                <input type="checkbox" id="enableContVoice" checked hidden />
+                                <label for="enableContVoice" class="switch-slide-label"></label>
+                            </label>
+                            <span class="inlineTitle">自动朗读</span>
+                            <label class="switch-slide">
+                                <input type="checkbox" id="enableAutoVoice" hidden />
+                                <label for="enableAutoVoice" class="switch-slide-label"></label>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -618,8 +746,7 @@
                 </div>
                 <button class="send_message loaded" id="sendbutton">
                     <span>发送</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;height:40px;" viewBox="0 0 200 100"
-                        preserveAspectRatio="xMidYMid">
+                    <svg style="margin:0 auto;height:40px;" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid">
                         <g transform="translate(50 50)">
                             <circle cx="0" cy="0" r="15" fill="#e15b64">
                                 <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
@@ -643,8 +770,9 @@
                         </g>
                     </svg>
                 </button>
-                <button id="clearConv"><svg xmlns="http://www.w3.org/2000/svg" style="margin:0 auto;display:block"
-                        width="20px" height="20px" viewBox="0 0 24 24">
+                <button id="clearConv"><svg style="margin:0 auto;display:block" role="img" width="20px" height="20px"
+                        viewBox="0 0 24 24">
+                        <title>清空会话</title>
                         <path fill="currentColor"
                             d="M8 20v-5h2v5h9v-7H5v7h3zm-4-9h16V8h-6V4h-4v4H4v3zM3 21v-8H2V7a1 1 0 0 1 1-1h5V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h5a1 1 0 0 1 1 1v6h-1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z">
                         </path>
@@ -664,6 +792,7 @@
         const textarea = document.getElementById("chatinput");
         const settingEle = document.getElementById("setting");
         const dialogEle = document.getElementById("setDialog");
+        const speechOptionEle = document.getElementById("speechOption");
         textarea.focus();
         let data = [];
         let loading = false;
@@ -671,7 +800,7 @@
             "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
             "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
             "image": "我给你个指令，生成相应的图片，发送图片时候请用 markdown 语言生成，不要反斜线，不要代码框，请需要使用 unsplash API ，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
-        }
+        };
         let systemRole; // 自定义系统角色
         let roleNature; // 角色性格
         let roleTemp; // 回答质量
@@ -680,13 +809,14 @@
         let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
         let longReplyFlag;
         let textSpeed; // 打字机速度，越小越快
-        const clearData = () => {
-            if (systemRole) {
-                data.length = 1;
-            } else {
-                data = [];
-            }
-        }
+        let voiceType = 1; // 设置 0: 提问语音，1：回答语音
+        let voiceRole = []; // 语音
+        let voiceVolume = []; //音量
+        let voiceRate = []; // 语速
+        let voicePitch = []; // 音调
+        let voiceIns;
+        let enableContVoice; //连续朗读
+        let enableAutoVoice; //自动朗读
         const scrollToBottom = () => {
             if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 88) {
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
@@ -697,7 +827,19 @@
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
             }
         }
+        let speechSynthesis = window.speechSynthesis;
         const initSetting = () => {
+            const keyEle = document.getElementById("keyInput");
+            let localKey = localStorage.getItem("APIKey");
+            if (localKey) {
+                customAPIKey = localKey;
+                keyEle.value = localKey;
+            }
+            keyEle.onchange = () => {
+                customAPIKey = keyEle.value;
+                localStorage.setItem("APIKey", customAPIKey);
+            }
+            keyEle.dispatchEvent(new Event("change"));
             const systemEle = document.getElementById("systemInput");
             let localSystem = localStorage.getItem("system");
             if (localSystem) {
@@ -734,38 +876,39 @@
             const topEle = document.getElementById("top_p");
             let localTop = localStorage.getItem("top_p");
             if (localTop) {
-                roleNature = +localTop;
+                roleNature = parseFloat(localTop);
                 topEle.value = localTop;
             }
             topEle.oninput = () => {
                 topEle.style.backgroundSize = (topEle.value - topEle.min) * 100 / (topEle.max - topEle.min) + "% 100%";
-                roleNature = +topEle.value;
+                roleNature = parseFloat(topEle.value);
                 localStorage.setItem("top_p", topEle.value);
             }
             topEle.dispatchEvent(new Event("input"));
             const tempEle = document.getElementById("temp");
             let localTemp = localStorage.getItem("temp");
             if (localTemp) {
-                roleTemp = +localTemp;
+                roleTemp = parseFloat(localTemp);
                 tempEle.value = localTemp;
             }
             tempEle.oninput = () => {
                 tempEle.style.backgroundSize = (tempEle.value - tempEle.min) * 100 / (tempEle.max - tempEle.min) + "% 100%";
-                roleTemp = +tempEle.value;
+                roleTemp = parseFloat(tempEle.value);
                 localStorage.setItem("temp", tempEle.value);
             }
             tempEle.dispatchEvent(new Event("input"));
-            const keyEle = document.getElementById("keyInput");
-            let localKey = localStorage.getItem("APIKey");
-            if (localKey) {
-                customAPIKey = localKey;
-                keyEle.value = localKey;
+            const speedEle = document.getElementById("textSpeed");
+            let localSpeed = localStorage.getItem("textSpeed");
+            if (localSpeed) {
+                textSpeed = parseFloat(speedEle.min) + (speedEle.max - localSpeed);
+                speedEle.value = localSpeed;
             }
-            keyEle.onchange = () => {
-                customAPIKey = keyEle.value;
-                localStorage.setItem("APIKey", customAPIKey);
+            speedEle.oninput = () => {
+                speedEle.style.backgroundSize = (speedEle.value - speedEle.min) * 100 / (speedEle.max - speedEle.min) + "% 100%";
+                textSpeed = parseFloat(speedEle.min) + (speedEle.max - speedEle.value);
+                localStorage.setItem("textSpeed", speedEle.value);
             }
-            keyEle.dispatchEvent(new Event("change"));
+            speedEle.dispatchEvent(new Event("input"));
             const contEle = document.getElementById("enableCont");
             let localCont = localStorage.getItem("enableCont");
             if (localCont) {
@@ -775,9 +918,6 @@
             contEle.onchange = () => {
                 enableCont = contEle.checked;
                 localStorage.setItem("enableCont", enableCont);
-                if (!enableCont) {
-                    clearData();
-                }
             }
             contEle.dispatchEvent(new Event("change"));
             const longEle = document.getElementById("enableLongReply");
@@ -791,18 +931,158 @@
                 localStorage.setItem("enableLongReply", enableLongReply);
             }
             longEle.dispatchEvent(new Event("change"));
-            const speedEle = document.getElementById("textSpeed");
-            let localSpeed = localStorage.getItem("textSpeed");
-            if (localSpeed) {
-                textSpeed = +speedEle.min + (speedEle.max - localSpeed);
-                speedEle.value = localSpeed;
+            if (speechSynthesis) {
+                speechOptionEle.style.display = "block";
+                voiceIns = new SpeechSynthesisUtterance();
+                voiceIns.onend = () => {
+                }
+                voiceIns.onerror = () => {
+                }
+                let voices;
+                let voicesEle = document.getElementById("preSetSpeech");
+                speechSynthesis.onvoiceschanged = () => {
+                    voices = speechSynthesis.getVoices();
+                    voices = voices.filter(item => {
+                        // 支持中文和英文
+                        return item.lang.match(/^(zh-|en-)/)
+                    })
+                    voices.sort((a, b) => {
+                        if (a.lang.slice(0, 2) === b.lang.slice(0, 2)) {
+                            return 0;
+                        }
+                        return (a.lang < b.lang) ? 1 : -1; // 中文在前"z"
+                    });
+                    voices.map(item => {
+                        if (item.name.match(/^(Google |Microsoft )/)) {
+                            item.displayName = item.name.replace(/^.*? /, "");
+                        } else {
+                            item.displayName = item.name;
+                        }
+                    })
+                    voices.forEach((voice, i) => {
+                        var option = document.createElement('option');
+                        option.value = i;
+                        option.text = voice.displayName;
+                        voicesEle.options.add(option);
+                    });
+                    voicesEle.onchange = () => {
+                        voiceRole[voiceType] = voices[voicesEle.value];
+                        localStorage.setItem("voice" + voiceType, voiceRole[voiceType].name);
+                    }
+                    let localVoice = localStorage.getItem("voice0");
+                    if (localVoice) {
+                        let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                        voiceRole[0] = voices[localIndex];
+                    } else {
+                        voiceRole[0] = voices[0];
+                    }
+                    voiceChange();
+                };
+                const voiceChange = () => {
+                    let localVoice = localStorage.getItem("voice" + voiceType);
+                    if (localVoice) {
+                        let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                        voiceRole[voiceType] = voices[localIndex];
+                        voicesEle.value = localIndex;
+                    } else {
+                        voicesEle.dispatchEvent(new Event("change"));
+                    }
+                }
+                let volumeEle = document.getElementById("voiceVolume");
+                let localVolume = localStorage.getItem("voiceVolume0");
+                voiceVolume[0] = parseFloat(localVolume ? localVolume : volumeEle.value);
+                const voiceVolumeChange = () => {
+                    let localVolume = localStorage.getItem("voiceVolume" + voiceType);
+                    if (localVolume) {
+                        voiceVolume[voiceType] = parseFloat(localVolume);
+                        volumeEle.value = localVolume;
+                        volumeEle.style.backgroundSize = (volumeEle.value - volumeEle.min) * 100 / (volumeEle.max - volumeEle.min) + "% 100%";
+                    } else {
+                        volumeEle.dispatchEvent(new Event("input"));
+                    }
+                }
+                volumeEle.oninput = () => {
+                    volumeEle.style.backgroundSize = (volumeEle.value - volumeEle.min) * 100 / (volumeEle.max - volumeEle.min) + "% 100%";
+                    voiceVolume[voiceType] = parseFloat(volumeEle.value);
+                    localStorage.setItem("voiceVolume" + voiceType, volumeEle.value);
+                }
+                voiceVolumeChange();
+                let rateEle = document.getElementById("voiceRate");
+                let localRate = localStorage.getItem("voiceRate0");
+                voiceRate[0] = parseFloat(localRate ? localRate : rateEle.value);
+                const voiceRateChange = () => {
+                    let localRate = localStorage.getItem("voiceRate" + voiceType);
+                    if (localRate) {
+                        voiceRate[voiceType] = parseFloat(localRate);
+                        rateEle.value = localRate;
+                        rateEle.style.backgroundSize = (rateEle.value - rateEle.min) * 100 / (rateEle.max - rateEle.min) + "% 100%";
+                    } else {
+                        rateEle.dispatchEvent(new Event("input"));
+                    }
+                }
+                rateEle.oninput = () => {
+                    rateEle.style.backgroundSize = (rateEle.value - rateEle.min) * 100 / (rateEle.max - rateEle.min) + "% 100%";
+                    voiceRate[voiceType] = parseFloat(rateEle.value);
+                    localStorage.setItem("voiceRate" + voiceType, rateEle.value);
+                }
+                voiceRateChange();
+                let pitchEle = document.getElementById("voicePitch");
+                let localPitch = localStorage.getItem("voicePitch0");
+                voicePitch[0] = parseFloat(localPitch ? localPitch : pitchEle.value);
+                const voicePitchChange = () => {
+                    let localPitch = localStorage.getItem("voicePitch" + voiceType);
+                    if (localPitch) {
+                        voicePitch[voiceType] = parseFloat(localPitch);
+                        pitchEle.value = localPitch;
+                        pitchEle.style.backgroundSize = (pitchEle.value - pitchEle.min) * 100 / (pitchEle.max - pitchEle.min) + "% 100%";
+                    } else {
+                        pitchEle.dispatchEvent(new Event("input"));
+                    }
+                }
+                pitchEle.oninput = () => {
+                    pitchEle.style.backgroundSize = (pitchEle.value - pitchEle.min) * 100 / (pitchEle.max - pitchEle.min) + "% 100%";
+                    voicePitch[voiceType] = parseFloat(pitchEle.value);
+                    localStorage.setItem("voicePitch" + voiceType, pitchEle.value);
+                }
+                voicePitchChange();
+                document.getElementById("voiceTypes").onclick = (ev) => {
+                    let type = ev.target.dataset.type;
+                    if (type !== void 0) {
+                        type = parseInt(type);
+                        if (type != voiceType) {
+                            voiceType = type;
+                            ev.target.classList.add("selVoiceType");
+                            ev.target.parentElement.children[type ^ 1].classList.remove("selVoiceType");
+                            voiceChange();
+                            voiceVolumeChange();
+                            voiceRateChange();
+                            voicePitchChange();
+                        }
+                    };
+                };
+                const contVoiceEle = document.getElementById("enableContVoice");
+                let localCont = localStorage.getItem("enableContVoice");
+                if (localCont) {
+                    enableContVoice = localCont === "true";
+                    contVoiceEle.checked = enableContVoice;
+                }
+                contVoiceEle.onchange = () => {
+                    enableContVoice = contVoiceEle.checked;
+                    localStorage.setItem("enableContVoice", enableContVoice);
+                }
+                contVoiceEle.dispatchEvent(new Event("change"));
+                const autoVoiceEle = document.getElementById("enableAutoVoice");
+                let localAuto = localStorage.getItem("enableAutoVoice");
+                if (localAuto) {
+                    enableAutoVoice = localAuto === "true";
+                    autoVoiceEle.checked = enableAutoVoice;
+                }
+                autoVoiceEle.onchange = () => {
+                    enableAutoVoice = autoVoiceEle.checked;
+                    localStorage.setItem("enableAutoVoice", enableAutoVoice);
+                }
+                autoVoiceEle.dispatchEvent(new Event("change"));
             }
-            speedEle.oninput = () => {
-                speedEle.style.backgroundSize = (speedEle.value - speedEle.min) * 100 / (speedEle.max - speedEle.min) + "% 100%";
-                textSpeed = +speedEle.min + (speedEle.max - speedEle.value);
-                localStorage.setItem("textSpeed", speedEle.value);
-            }
-            speedEle.dispatchEvent(new Event("input"));
         }
         initSetting();
         const closeEvent = (ev) => {
@@ -883,6 +1163,15 @@
                 }, nDelay);
             }
         };
+        const copyClickMd = (idx) => {
+            const input = document.createElement('textarea');
+            input.value = data[idx].content;
+            document.body.appendChild(input);
+            input.select();
+            input.setSelectionRange(0, 9999);
+            document.execCommand('copy');
+            document.body.removeChild(input);
+        }
         const enhanceCode = (render, options = {}) => (...args) => {
             /* args = [tokens, idx, options, env, slf] */
             const {
@@ -922,7 +1211,12 @@
         }
         document.getElementById("clearConv").onclick = () => {
             if (!loading) {
-                clearData();
+                resetSpeakIcon();
+                if (systemRole) {
+                    data.length = 1;
+                } else {
+                    data = [];
+                }
                 chatlog.innerHTML = "";
             }
         }
@@ -937,7 +1231,106 @@
         }
         let currentResEle;
         let progressData = "";
-        const streamGen = async () => {
+        let currentVoiceIdx;
+        const speakEvent = (ins, force = true) => {
+            return new Promise((res, rej) => {
+                ins.onend = ins.onerror = () => {
+                    if (force) resetSpeakIcon();
+                    res();
+                }
+                speechSynthesis.speak(voiceIns);
+            })
+        };
+        const resetSpeakIcon = () => {
+            speechSynthesis.cancel();
+            if (currentVoiceIdx !== void 0) {
+                chatlog.children[systemRole ? currentVoiceIdx - 1 : currentVoiceIdx].children[1].lastChild.className = "readyVoice";
+                currentVoiceIdx = void 0;
+            }
+        }
+        const speechEvent = async (idx) => {
+            if (!data[idx]) {return;}
+            let type = data[idx].role === "user" ? 0 : 1;
+            voiceIns.text = data[idx].content;
+            voiceIns.volume = voiceVolume[type];
+            voiceIns.rate = voiceRate[type];
+            voiceIns.pitch = voicePitch[type];
+            voiceIns.voice = voiceRole[type];
+            resetSpeakIcon();
+            chatlog.children[systemRole ? idx - 1 : idx].children[1].lastChild.className = "pauseVoice";
+            currentVoiceIdx = idx;
+            await speakEvent(voiceIns);
+            if (enableContVoice && idx !== data.length - 1) {
+                return speechEvent(idx + 1);
+            }
+        };
+        const mdOptionEvent = (ev) => {
+            let id = ev.target.dataset.id;
+            if (id) {
+                let parent = ev.target.parentElement;
+                let idxEle = parent.parentElement;
+                let idx = Array.prototype.indexOf.call(chatlog.children, id === "voiceMd" ? idxEle.parentElement : idxEle);
+                if (id === "voiceMd") {
+                    let className = parent.className;
+                    if (className == "readyVoice") {
+                        if (chatlog.children[idx].dataset.loading !== "true") {
+                            idx = systemRole ? idx + 1 : idx;
+                            speechEvent(idx);
+                        }
+                    } else if (className == "pauseVoice") {
+                        speechSynthesis.pause();
+                        parent.className = "resumeVoice";
+                    } else {
+                        speechSynthesis.resume();
+                        parent.className = "pauseVoice";
+                    }
+                } else if (id === "refreshMd") {
+                    if (!loading && chatlog.children[idx].dataset.loading !== "true") {
+                        chatlog.children[idx].children[0].innerHTML = "<br />";
+                        chatlog.children[idx].dataset.loading = true;
+                        idx = systemRole ? idx + 1 : idx;
+                        streamGen(idx);
+                    }
+                } else if (id === "copyMd") {
+                    idx = systemRole ? idx + 1 : idx;
+                    copyClickMd(idx);
+                }
+            }
+        }
+        const autoSpeechEvent = (content, ele, force = false) => {
+            if (ele.children[1].lastChild.className === "readyVoice") {
+                ele.children[1].lastChild.className = "pauseVoice";
+            }
+            voiceIns = new SpeechSynthesisUtterance(content);
+            voiceIns.volume = voiceVolume[1];
+            voiceIns.rate = voiceRate[1];
+            voiceIns.pitch = voicePitch[1];
+            voiceIns.voice = voiceRole[1];
+            speakEvent(voiceIns, force);
+        }
+        const formatMdEle = (ele) => {
+            let realMd = document.createElement("div");
+            realMd.className = "markdown-body";
+            ele.appendChild(realMd);
+            let mdOption = document.createElement("div");
+            mdOption.className = "mdOption";
+            ele.appendChild(mdOption);
+            if (ele.className !== "request") {
+                mdOption.innerHTML = `<svg data-id="refreshMd" width="1em" height="1em" viewBox="0 0 24 24" role="img"><title>刷新</title><path fill="currentColor" d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z"></path></svg>`
+            }
+            mdOption.innerHTML += `<svg data-id="copyMd" width="16" height="16" viewBox="-2 -2 20 20" role="img"><title>复制</title><path fill="currentColor" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path><path fill="currentColor" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path></svg>`
+            if (speechSynthesis) {
+                mdOption.innerHTML += `<div id="pronMd" class="readyVoice">
+                <svg width="16" height="16" viewBox="0 0 24 24" data-id="voiceMd" role="img"><title>朗读</title><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path></svg>
+                <svg width="16" height="16" viewBox="0 0 16 16" data-id="voiceMd" role="img"><title>暂停</title><path stroke="currentColor" stroke-width="2" d="M5 2v12M11 2v12"></path></svg>
+                <svg width="16" height="16" viewBox="0 0 16 16" data-id="voiceMd" role="img"><title>继续</title><path fill="currentColor" d="M4 2L4 14L12 8Z"></path></svg>
+                </div>`
+            }
+            mdOption.onclick = mdOptionEvent;
+        }
+        let autoVoiceIdx = 0;
+        let autoVoiceDataIdx;
+        const streamGen = async (refreshIdx, long) => {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => {
                 controller.abort();
@@ -950,18 +1343,49 @@
             if (customAPIKey) {
                 headers["Authorization"] = "Bearer " + customAPIKey;
             }
+            if (refreshIdx) {
+                currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
+            } else if (!currentResEle) {
+                currentResEle = document.createElement("div");
+                currentResEle.className = "response";
+                chatlog.appendChild(currentResEle);
+                formatMdEle(currentResEle);
+                currentResEle.children[0].innerHTML = "<br />";
+                currentResEle.dataset.loading = true;
+            }
+            let idx = refreshIdx ? refreshIdx : data.length;
+            if (speechSynthesis && enableAutoVoice && !long) {
+                if (refreshIdx) {
+                    resetSpeakIcon();
+                    autoVoiceDataIdx = currentVoiceIdx = idx;
+                } else if (currentVoiceIdx !== data.length) {
+                    resetSpeakIcon();
+                    autoVoiceDataIdx = currentVoiceIdx = idx;
+                }
+            }
+            let dataSlice;
+            if (long) {
+                idx = refreshIdx ? refreshIdx : data.length - 1;
+                dataSlice = [data[idx - 1], data[idx]];
+                if (systemRole) {dataSlice.unshift(data[0]);}
+            } else if (enableCont) {
+                dataSlice = data.slice(0, idx);
+            } else {
+                dataSlice = [data[idx - 1]];
+                if (systemRole) {dataSlice.unshift(data[0]);}
+            }
             const res = await fetch(API_URL, {
                 method: "POST",
                 headers,
                 body: JSON.stringify({
-                    messages: data,
+                    messages: dataSlice,
                     model: "gpt-3.5-turbo",
                     stream: true,
                     temperature: roleTemp,
                     top_p: roleNature
                 }),
                 signal: controller.signal
-            })
+            });
             clearTimeout(timeoutId);
             if (res.status !== 200) {
                 if (res.status === 401) {
@@ -978,11 +1402,6 @@
             const readChunk = async () => {
                 return reader.read().then(async ({value, done}) => {
                     if (!done) {
-                        if (!currentResEle) {
-                            currentResEle = document.createElement("div");
-                            currentResEle.className = "response markdown-body";
-                            chatlog.appendChild(currentResEle);
-                        }
                         let chunks = value.split(/\n{2}/g);
                         chunks = chunks.filter(item => {
                             return item.trim();
@@ -997,12 +1416,10 @@
                                     break;
                                 }
                                 if (payload.choices[0].finish_reason) {
-                                    if (enableLongReply) {
-                                        if (payload.choices[0].finish_reason === "length") {
-                                            longReplyFlag = true;
-                                        } else {
-                                            longReplyFlag = false;
-                                        }
+                                    let longReplyFlag = enableLongReply && payload.choices[0].finish_reason === "length";
+                                    if (speechSynthesis && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                        let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
+                                        autoSpeechEvent(voiceText, currentResEle, stop);
                                     }
                                     break;
                                 } else {
@@ -1011,11 +1428,19 @@
                                         if (!progressData && !content.trim()) {
                                             continue;
                                         }
+                                        if (speechSynthesis && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                            let spliter = content.match(/\.|\?|!|。|？|！/);
+                                            if (spliter) {
+                                                let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
+                                                autoVoiceIdx += voiceText.length;
+                                                autoSpeechEvent(voiceText, currentResEle);
+                                            }
+                                        }
                                         if (progressData) {
                                             await delay();
                                         }
                                         progressData += content;
-                                        currentResEle.innerHTML = md.render(progressData);
+                                        currentResEle.children[0].innerHTML = md.render(progressData);
                                         scrollToBottom();
                                     }
                                 }
@@ -1023,18 +1448,23 @@
                         }
                         return readChunk();
                     } else {
-                        if (longReplyFlag) {
-                            if (data[data.length - 1].role !== "assistant") {
-                                data.splice(systemRole ? 1 : 0, data.length - (systemRole ? 2 : 1));
-                                data.push({role: "assistant", content: progressData});
-                            } else {
-                                data[data.length - 1].content = progressData;
+                        if (refreshIdx) {
+                            data[refreshIdx].content = progressData;
+                            if (longReplyFlag) {
+                                return streamGen(refreshIdx, true);
                             }
-                            return streamGen();
+                        } else {
+                            if (long) {
+                                data[data.length - 1].content = progressData;
+                            } else {
+                                data.push({role: "assistant", content: progressData});
+                            }
+                            if (longReplyFlag) {
+                                return streamGen(void 0, true);
+                            }
                         }
-                        if (enableCont) {
-                            data.push({role: "assistant", content: progressData});
-                        }
+                        autoVoiceIdx = 0;
+                        currentResEle.dataset.loading = false;
                         currentResEle = null;
                         progressData = "";
                         endAction();
@@ -1048,16 +1478,14 @@
             sendBtnEle.disabled = true;
             sendBtnEle.classList.remove("loaded");
             sendBtnEle.classList.add("loading");
-            data.push({role: "user", content: message.trim()});
             let request = document.createElement("div");
-            request.className = "markdown-body";
-            request.innerHTML = md.render(message);
+            request.className = "request";
             chatlog.appendChild(request);
+            formatMdEle(request);
+            request.children[0].innerHTML = md.render(message);
+            data.push({role: "user", content: message});
             scrollToBottom();
             await streamGen();
-            if (!enableCont) {
-                clearData();
-            }
         };
         textarea.onkeydown = (e) => {
             if (e.keyCode === 13) {
@@ -1072,7 +1500,7 @@
             textarea.style.height = e.target.scrollHeight + 2 + "px";
         };
         const genFunc = function () {
-            let message = textarea.value;
+            let message = textarea.value.trim();
             if (message.length < 1) {
                 return;
             } else {
