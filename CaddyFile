@@ -7,6 +7,6 @@ yourdomain.example.com {
 
 	file_server / {
 		root /var/wwwroot/chatgpt-web
-		index chatgpt.html
+		index index.html
 	}
 }
