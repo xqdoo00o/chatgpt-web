@@ -1071,7 +1071,7 @@
             speechSynthesis.onvoiceschanged = () => {
                 voices = speechSynthesis.getVoices();
                 if (voices.length) {
-                    initVoiceSetting(voices);
+                    initVoiceSetting();
                 } else {
                     existVoice = false;
                 }
