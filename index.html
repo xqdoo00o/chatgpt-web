@@ -266,7 +266,7 @@
         #stopChat {
             display: none;
             margin: 0 auto;
-            margin-top: 6px;
+            margin-top: 3px;
             width: 80px;
             height: 32px;
             text-align: center;
@@ -276,7 +276,7 @@
             cursor: pointer;
             border-radius: 3px;
             position: sticky;
-            bottom: 6px;
+            bottom: 2px;
             justify-content: center;
             align-items: center;
         }
@@ -625,6 +625,7 @@
             border-radius: 3px;
             padding: 2px 2px;
             z-index: 1;
+            color: #505050;
             box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
         }
 
@@ -950,12 +951,12 @@
         let enableContVoice; //连续朗读
         let enableAutoVoice; //自动朗读
         const scrollToBottom = () => {
-            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 88) {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
             }
         }
         const scrollToBottomLoad = (ele) => {
-            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 88) {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 128) {
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
             }
         }
@@ -1498,7 +1499,8 @@
             }, 30000);
             let headers = { "Content-Type": "application/json" };
             if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
-            if (refreshIdx) {
+            let isRefresh = refreshIdx !== void 0;
+            if (isRefresh) {
                 currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
             } else if (!currentResEle) {
                 currentResEle = document.createElement("div");
@@ -1509,9 +1511,9 @@
                 currentResEle.dataset.loading = true;
                 scrollToBottom();
             }
-            let idx = refreshIdx ? refreshIdx : data.length;
+            let idx = isRefresh ? refreshIdx : data.length;
             if (speechSynthesis && enableAutoVoice && !long) {
-                if (refreshIdx) {
+                if (isRefresh) {
                     endSpeak();
                     autoVoiceDataIdx = currentVoiceIdx = idx;
                 } else if (currentVoiceIdx !== data.length) {
@@ -1521,7 +1523,7 @@
             }
             let dataSlice;
             if (long) {
-                idx = refreshIdx ? refreshIdx : data.length - 1;
+                idx = isRefresh ? refreshIdx : data.length - 1;
                 dataSlice = [data[idx - 1], data[idx]];
                 if (systemRole) { dataSlice.unshift(data[0]); }
             } else if (enableCont) {
@@ -1599,14 +1601,16 @@
                                         if (progressData) await delay();
                                         progressData += content;
                                         currentResEle.children[0].innerHTML = md.render(progressData);
-                                        scrollToBottom();
+                                        if (!isRefresh) {
+                                            scrollToBottom();
+                                        }
                                     }
                                 }
                             }
                         }
                         return readChunk();
                     } else {
-                        if (refreshIdx) {
+                        if (isRefresh) {
                             data[refreshIdx].content = progressData;
                             if (longReplyFlag) return streamGen(true);
                         } else {
@@ -1632,7 +1636,7 @@
                 controller.abort();
                 if (controllerId) clearTimeout(controllerId);
                 if (delayId) clearTimeout(delayId);
-                if (refreshIdx) { data[refreshIdx].content = progressData }
+                if (refreshIdx !== void 0) { data[refreshIdx].content = progressData }
                 else if (data[data.length - 1].role === "assistant") { data[data.length - 1].content = progressData }
                 else { data.push({ role: "assistant", content: progressData }) }
                 if (speechSynthesis && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
