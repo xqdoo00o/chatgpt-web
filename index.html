@@ -960,7 +960,6 @@
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
             }
         }
-        let speechSynthesis = window.speechSynthesis;
         const initSetting = () => {
             const keyEle = document.getElementById("keyInput");
             let localKey = localStorage.getItem("APIKey");
@@ -1064,15 +1063,20 @@
                 localStorage.setItem("enableLongReply", enableLongReply);
             }
             longEle.dispatchEvent(new Event("change"));
-            if (speechSynthesis) {
-                speechSynthesis.onvoiceschanged = () => {
-                    voices = speechSynthesis.getVoices();
-                    if (voices.length) {
-                        initVoiceSetting(voices);
-                    }
-                };
-            }
         };
+        initSetting();
+        let speechSynthesis = window.speechSynthesis;
+        let existVoice = !!speechSynthesis;
+        if (speechSynthesis) {
+            speechSynthesis.onvoiceschanged = () => {
+                voices = speechSynthesis.getVoices();
+                if (voices.length) {
+                    initVoiceSetting(voices);
+                } else {
+                    existVoice = false;
+                }
+            };
+        }
         const initVoiceSetting = () => {
             speechOptionEle.style.display = "block";
             voiceIns = new SpeechSynthesisUtterance();
@@ -1217,7 +1221,6 @@
             }
             autoVoiceEle.dispatchEvent(new Event("change"));
         }
-        initSetting();
         const closeEvent = (ev) => {
             if (settingEle.contains(ev.target)) return;
             if (!dialogEle.contains(ev.target)) {
@@ -1475,7 +1478,7 @@
                 <svg width="16" height="16"><use xlink:href="#delIcon" /></svg>
                 <span>删除</span>
             </div></div></div>`;
-            if (speechSynthesis) {
+            if (existVoice) {
                 mdOption.innerHTML += `<div id="pronMd" class="readyVoice">
                 <svg width="16" height="16" data-id="voiceMd" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
                 <svg width="16" height="16" data-id="voiceMd" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
@@ -1512,7 +1515,7 @@
                 scrollToBottom();
             }
             let idx = isRefresh ? refreshIdx : data.length;
-            if (speechSynthesis && enableAutoVoice && !long) {
+            if (existVoice && enableAutoVoice && !long) {
                 if (isRefresh) {
                     endSpeak();
                     autoVoiceDataIdx = currentVoiceIdx = idx;
@@ -1581,7 +1584,7 @@
                                     let longReplyFlag = enableLongReply && lenStop;
                                     if (!enableLongReply && lenStop) { currentResEle.children[1].children[0].className = "halfRefReq" }
                                     else { currentResEle.children[1].children[0].className = "refreshReq" };
-                                    if (speechSynthesis && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                    if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                                         let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
                                         autoSpeechEvent(voiceText, currentResEle, false, stop);
                                     }
@@ -1590,7 +1593,7 @@
                                     let content = payload.choices[0].delta.content;
                                     if (content) {
                                         if (!progressData && !content.trim()) continue;
-                                        if (speechSynthesis && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                        if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                                             let spliter = content.match(/\.|\?|!|。|？|！/);
                                             if (spliter) {
                                                 let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
@@ -1639,7 +1642,7 @@
                 if (refreshIdx !== void 0) { data[refreshIdx].content = progressData }
                 else if (data[data.length - 1].role === "assistant") { data[data.length - 1].content = progressData }
                 else { data.push({ role: "assistant", content: progressData }) }
-                if (speechSynthesis && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                     let voiceText = progressData.slice(autoVoiceIdx);
                     autoSpeechEvent(voiceText, currentResEle, false, true);
                 }
