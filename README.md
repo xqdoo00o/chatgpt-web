@@ -23,7 +23,7 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 [在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key，可正常访问`api.openai.com`）
 
 ## 使用方法
-### **注意：反代服务器需正常访问`api.openai.com`**
+### **注意：反代服务器需要正常访问`api.openai.com`**
 1. 配合nginx反代使用, 示例配置如下
 ```
 #开启openai接口的gzip压缩，大量重复文本的压缩率高，节省服务端流量
