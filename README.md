@@ -3,6 +3,10 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 纯JS实现的ChatGPT项目，基于nginx和OpenAI gpt-3.5-turbo API.
 
+部署一个HTML文件，配合nginx反代即可使用。
+
+支持复制，刷新，朗读等功能，以及众多[自定义选项](#自定义选项)。
+
 参考项目: 
 [markdown-it](https://github.com/markdown-it/markdown-it), 
 [highlight.js](https://github.com/highlightjs/highlight.js), 
@@ -79,7 +83,7 @@ yourdomain.example.com {
 
 ```
 
-## 可用配置
+## 自定义选项
 
 1. 可选API key，默认不设置，如需使用，建议Nginx一定要配置https，公网以http方式明文传输API key极易被中间人截获。
 
