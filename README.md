@@ -16,7 +16,7 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 ## Demo
 
-[在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key）
+[在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key，可正常访问`api.openai.com`）
 
 ## 使用方法
 1. 配合nginx反代使用, 示例配置如下
@@ -95,7 +95,7 @@ yourdomain.example.com {
 
 7. 允许长回复，默认关闭，开启后可能导致api费用增加，并丢失大部分上下文，对于一些要发送`继续`才完整的回复，不用发`继续`了。
 
-8. 选择语音，使用Edge浏览器体验最佳，可分开设置提问语音和回答语音。
+8. 选择语音，默认Bing语音，不可用则使用本地语音，可分开设置提问语音和回答语音。
 
 9. 音量，默认最大。
 
