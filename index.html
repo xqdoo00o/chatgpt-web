@@ -921,7 +921,7 @@
     <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
     <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
     <script>
-        const API_URL = "/v1/chat/completions";
+        const API_URL = "v1/chat/completions";
         const messagsEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
         const stopEle = document.getElementById("stopChat");
@@ -1095,48 +1095,6 @@
                 })
             })
         };
-        loadVoice().catch(() => {loadLocalVoice();});
-        const loadLocalVoice = () => {
-            existVoice = !!(window.speechSynthesis && window.SpeechSynthesisUtterance) ? 1 : 0;
-            if (existVoice) {
-                let initedVoice = false;
-                const getLocalVoice = () => {
-                    let voices = speechSynthesis.getVoices();
-                    if (voices.length) {
-                        if (!initedVoice) {
-                            initedVoice = true;
-                            initVoiceSetting(voices);
-                        }
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                let syncExist = getLocalVoice();
-                if (!syncExist) {
-                    if ("onvoiceschanged" in speechSynthesis) {
-                        speechSynthesis.onvoiceschanged = () => {
-                            getLocalVoice();
-                        }
-                    } else if (speechSynthesis.addEventListener) {
-                        speechSynthesis.addEventListener("voiceschanged", () => {
-                            getLocalVoice();
-                        })
-                    }
-                    let timeout = 0;
-                    let timer = setInterval(() => {
-                        if (getLocalVoice() || timeout > 1000) {
-                            if (timeout > 1000) {
-                                existVoice = 0;
-                            }
-                            clearInterval(timer);
-                            timer = null;
-                        }
-                        timeout += 300;
-                    }, 300)
-                }
-            }
-        }
         const initVoiceSetting = (voices) => {
             speechOptionEle.style.display = "block";
             let isOnline = existVoice === 2;
@@ -1284,7 +1242,49 @@
                 localStorage.setItem("enableAutoVoice", enableAutoVoice);
             }
             autoVoiceEle.dispatchEvent(new Event("change"));
-        }
+        };
+        const loadLocalVoice = () => {
+            existVoice = !!(window.speechSynthesis && window.SpeechSynthesisUtterance) ? 1 : 0;
+            if (existVoice) {
+                let initedVoice = false;
+                const getLocalVoice = () => {
+                    let voices = speechSynthesis.getVoices();
+                    if (voices.length) {
+                        if (!initedVoice) {
+                            initedVoice = true;
+                            initVoiceSetting(voices);
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                let syncExist = getLocalVoice();
+                if (!syncExist) {
+                    if ("onvoiceschanged" in speechSynthesis) {
+                        speechSynthesis.onvoiceschanged = () => {
+                            getLocalVoice();
+                        }
+                    } else if (speechSynthesis.addEventListener) {
+                        speechSynthesis.addEventListener("voiceschanged", () => {
+                            getLocalVoice();
+                        })
+                    }
+                    let timeout = 0;
+                    let timer = setInterval(() => {
+                        if (getLocalVoice() || timeout > 1000) {
+                            if (timeout > 1000) {
+                                existVoice = 0;
+                            }
+                            clearInterval(timer);
+                            timer = null;
+                        }
+                        timeout += 300;
+                    }, 300)
+                }
+            }
+        };
+        loadVoice().catch(() => {loadLocalVoice()});
         const closeEvent = (ev) => {
             if (settingEle.contains(ev.target)) return;
             if (!dialogEle.contains(ev.target)) {

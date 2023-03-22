@@ -31,8 +31,10 @@ gzip  on;
 gzip_min_length 1k;
 gzip_types text/event-stream;
 
+#如需部署在网站子路径，如/chatgpt，配置如下
+#location ^~ /chatgpt/v1 {
 location ^~ /v1 {
-    proxy_pass https://api.openai.com;
+    proxy_pass https://api.openai.com/v1;
     proxy_set_header Host api.openai.com;
     #如需用户自定义API key，可注释掉下一行配置
     proxy_set_header  Authorization "Bearer 替换为API KEY";
@@ -40,28 +42,19 @@ location ^~ /v1 {
     #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
     proxy_buffering off;
 }
+#与上面反代接口的路径保持一致
+#location /chatgpt {
 location / {
-    root /usr/share/nginx/html;
+    alias /usr/share/nginx/html/;
     index index.html;
 }
 ```
 
-如果服务器无法正常访问`api.openai.com`, 可配合socat反代和http代理使用, 示例配置如下
+如果服务器无法正常访问`api.openai.com`, 可配合socat反代和http代理使用，proxy_pass配置改成
 ```
-location ^~ /v1 {
-    proxy_pass https://127.0.0.1:8443;
-    proxy_set_header Host api.openai.com;
-    #如需用户自定义API key，可注释掉下一行配置
-    proxy_set_header  Authorization "Bearer 替换为API KEY";
-    proxy_pass_header Authorization;
-    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
-    proxy_buffering off;
-}
-location / {
-    root /usr/share/nginx/html;
-    index index.html;
-}
+    proxy_pass https://127.0.0.1:8443/v1;
 ```
+并打开socat
 ```
 socat TCP4-LISTEN:8443,reuseaddr,fork PROXY:http代理地址:api.openai.com:443,proxyport=http代理端口
 ```
