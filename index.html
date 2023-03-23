@@ -1544,7 +1544,7 @@
                             let key = downQuene[uuid]["key"];
                             let name = downQuene[uuid]["name"];
                             voiceData[key] = blob;
-                            downBlob(blob, name.slice(0, 8) + ".mp3");
+                            downBlob(blob, name.slice(0, 16) + ".mp3");
                         }
                     }
                     downSocket.onerror = () => {
@@ -1568,7 +1568,7 @@
             let key = content + voice + volume + rate + pitch;
             let blob = voiceData[key];
             if (blob) {
-                downBlob(blob, content.slice(0, 8) + ".mp3");
+                downBlob(blob, content.slice(0, 16) + ".mp3");
             } else {
                 await initDownSocket();
                 let currDate = new Date().toString();
@@ -1637,15 +1637,6 @@
                                 }
                             }
                         };
-                    } else {
-                        await initSocket();
-                    }
-                    let currDate = new Date().toString();
-                    let lang = voiceRole[type].lang;
-                    voiceSocket.send(getWSAudio(currDate));
-                    voiceSocket.send(getWSText(currDate, uuidv4(), lang, voice, volume, rate, pitch, content));
-                    voiceSocket["pending"] = true;
-                    if (supportMSE) {
                         let bufArray = [];
                         voiceSocket.onmessage = (e) => {
                             if (e.data instanceof ArrayBuffer) {
@@ -1665,6 +1656,14 @@
                             }
                         }
                     } else {
+                        await initSocket();
+                    }
+                    let currDate = new Date().toString();
+                    let lang = voiceRole[type].lang;
+                    voiceSocket.send(getWSAudio(currDate));
+                    voiceSocket.send(getWSText(currDate, uuidv4(), lang, voice, volume, rate, pitch, content));
+                    voiceSocket["pending"] = true;
+                    if (!supportMSE) {
                         let blob = await NoMSEPending(key);
                         voiceIns.src = URL.createObjectURL(blob);
                     }
@@ -1725,11 +1724,7 @@
                 let bufArray = [];
                 autoVoiceSocket.onmessage = (e) => {
                     if (e.data instanceof ArrayBuffer) {
-                        if (supportMSE) {
-                            speechQuene.push(e.data.slice(130));
-                        } else {
-                            bufArray.push(e.data.slice(130));
-                        }
+                        (supportMSE ? speechQuene : bufArray).push(e.data.slice(130));
                     } else {
                         if (e.data.indexOf("Path:turn.end") !== -1) {
                             autoVoiceSocket["pending"] = false;
