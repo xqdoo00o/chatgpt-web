@@ -412,7 +412,7 @@
         }
 
         .switch-slide-label:after {
-            content: '';
+            content: "";
             display: block;
             width: 16px;
             height: 16px;
@@ -954,6 +954,7 @@
         let enableContVoice; //连续朗读
         let enableAutoVoice; //自动朗读
         let supportMSE = !!window.MediaSource; //是否支持MSE（除了ios应该都支持）
+        let voiceMIME = "audio/mpeg";
         const scrollToBottom = () => {
             if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
@@ -1119,7 +1120,7 @@
                 }
             });
             voices.forEach((voice, i) => {
-                var option = document.createElement('option');
+                var option = document.createElement("option");
                 option.value = i;
                 option.text = voice.displayName;
                 voicesEle.options.add(option);
@@ -1313,30 +1314,30 @@
                 return ""; // use external default escaping
             }
         });
-        md.use(texmath, {engine: katex, delimiters: 'dollars', katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}})
+        md.use(texmath, {engine: katex, delimiters: "dollars", katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}})
             .use(markdownitLinkAttributes, {attrs: {target: "_blank", rel: "noopener"}});
         const x = {
-            getCodeLang(str = '') {
+            getCodeLang(str = "") {
                 const res = str.match(/ class="language-(.*?)"/);
-                return (res && res[1]) || '';
+                return (res && res[1]) || "";
             },
-            getFragment(str = '') {
-                return str ? `<span class="u-mdic-copy-code_lang">${str}</span>` : '';
+            getFragment(str = "") {
+                return str ? `<span class="u-mdic-copy-code_lang">${str}</span>` : "";
             },
         };
-        const strEncode = (str = '') => {
-            if (!str || str.length === 0) return '';
+        const strEncode = (str = "") => {
+            if (!str || str.length === 0) return "";
             return str
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/'/g, '\'')
                 .replace(/"/g, '&quot;');
         };
-        const getCodeLangFragment = (oriStr = '') => {
+        const getCodeLangFragment = (oriStr = "") => {
             return x.getFragment(x.getCodeLang(oriStr));
         };
         const copyClickCode = (ele) => {
-            const input = document.createElement('textarea');
+            const input = document.createElement("textarea");
             input.value = ele.dataset.mdicContent;
             const nDom = ele.previousElementSibling;
             const nDelay = ele.dataset.mdicNotifyDelay;
@@ -1344,38 +1345,38 @@
             document.body.appendChild(input);
             input.select();
             input.setSelectionRange(0, 9999);
-            document.execCommand('copy');
+            document.execCommand("copy");
             document.body.removeChild(input);
-            if (nDom.style.display === 'none') {
-                nDom.style.display = 'block';
-                cDom && (cDom.style.display = 'none');
+            if (nDom.style.display === "none") {
+                nDom.style.display = "block";
+                cDom && (cDom.style.display = "none");
                 setTimeout(() => {
-                    nDom.style.display = 'none';
-                    cDom && (cDom.style.display = 'block');
+                    nDom.style.display = "none";
+                    cDom && (cDom.style.display = "block");
                 }, nDelay);
             }
         };
         const copyClickMd = (idx) => {
-            const input = document.createElement('textarea');
+            const input = document.createElement("textarea");
             input.value = data[idx].content;
             document.body.appendChild(input);
             input.select();
             input.setSelectionRange(0, 9999);
-            document.execCommand('copy');
+            document.execCommand("copy");
             document.body.removeChild(input);
         }
         const enhanceCode = (render, options = {}) => (...args) => {
             /* args = [tokens, idx, options, env, slf] */
             const {
-                btnText = '复制代码', // button text
-                successText = '复制成功', // copy-success text
+                btnText = "复制代码", // button text
+                successText = "复制成功", // copy-success text
                 successTextDelay = 2000, // successText show time [ms]
                 showCodeLanguage = true, // false | show code language
             } = options;
             const [tokens = {}, idx = 0] = args;
-            const cont = strEncode(tokens[idx].content || '');
+            const cont = strEncode(tokens[idx].content || "");
             const originResult = render.apply(this, args);
-            const langFrag = showCodeLanguage ? getCodeLangFragment(originResult) : '';
+            const langFrag = showCodeLanguage ? getCodeLangFragment(originResult) : "";
             const tpls = [
                 '<div class="m-mdic-copy-wrapper">',
                 `${langFrag}`,
@@ -1387,8 +1388,8 @@
                 `onclick="copyClickCode(this)">${btnText}</button>`,
                 '</div>',
             ];
-            const LAST_TAG = '</pre>';
-            const newResult = originResult.replace(LAST_TAG, `${tpls.join('')}${LAST_TAG}`);
+            const LAST_TAG = "</pre>";
+            const newResult = originResult.replace(LAST_TAG, `${tpls.join("")}${LAST_TAG}`);
             return newResult;
         };
         const codeBlockRender = md.renderer.rules.code_block;
@@ -1539,7 +1540,7 @@
                         } else if (e.data.indexOf("Path:turn.end") !== -1) {
                             let reqIdx = e.data.indexOf(":");
                             let uuid = e.data.slice(reqIdx + 1, reqIdx + 33);
-                            let blob = new Blob(downQuene[uuid]["blob"]);
+                            let blob = new Blob(downQuene[uuid]["blob"], {type: voiceMIME});
                             let key = downQuene[uuid]["key"];
                             let name = downQuene[uuid]["name"];
                             voiceData[key] = blob;
@@ -1590,7 +1591,7 @@
                         bufArray.push(e.data.slice(130));
                     } else if (e.data.indexOf("Path:turn.end") !== -1) {
                         voiceSocket["pending"] = false;
-                        voiceData[key] = new Blob(bufArray);
+                        voiceData[key] = new Blob(bufArray, {type: voiceMIME});
                         res(voiceData[key]);
                     }
                 }
@@ -1621,7 +1622,7 @@
                         voiceIns.src = URL.createObjectURL(mediaSource);
                         await initStreamVoice(mediaSource);
                         if (!sourceBuffer) {
-                            sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
+                            sourceBuffer = mediaSource.addSourceBuffer(voiceMIME);
                         }
                         sourceBuffer.onupdateend = function () {
                             speechPushing = false;
@@ -1652,7 +1653,7 @@
                                 speechQuene.push(buf);
                             } else if (e.data.indexOf("Path:turn.end") !== -1) {
                                 voiceSocket["pending"] = false;
-                                voiceData[key] = new Blob(bufArray);
+                                voiceData[key] = new Blob(bufArray, {type: voiceMIME});
                                 if (!speechQuene.length && !speechPushing) {
                                     mediaSource.endOfStream();
                                 } else {
@@ -1733,7 +1734,7 @@
                             autoVoiceSocket["pending"] = false;
                             autoOnlineVoiceFlag = false;
                             if (!supportMSE) {
-                                let blob = new Blob(bufArray);
+                                let blob = new Blob(bufArray, {type: voiceMIME});
                                 bufArray = [];
                                 if (blob.size) {
                                     let blobURL = URL.createObjectURL(blob);
@@ -1777,7 +1778,7 @@
                         autoMediaSource = new MediaSource();
                         autoMediaSource.onsourceopen = () => {
                             if (!sourceBuffer) {
-                                sourceBuffer = autoMediaSource.addSourceBuffer("audio/mpeg");
+                                sourceBuffer = autoMediaSource.addSourceBuffer(voiceMIME);
                                 sourceBuffer.onupdateend = () => {
                                     speechPushing = false;
                                     if (speechQuene.length) {
@@ -2020,12 +2021,12 @@
                 stopLoading();
                 return;
             }
-            const decoder = new TextDecoderStream();
-            const stream = res.body.pipeThrough(decoder);
-            const reader = stream.getReader();
+            const decoder = new TextDecoder();
+            const reader = res.body.getReader();
             const readChunk = async () => {
                 return reader.read().then(async ({value, done}) => {
                     if (!done) {
+                        value = decoder.decode(value);
                         let chunks = value.split(/\n{2}/g);
                         chunks = chunks.filter(item => {
                             return item.trim();
@@ -2102,7 +2103,7 @@
                 if (refreshIdx !== void 0) {data[refreshIdx].content = progressData}
                 else if (data[data.length - 1].role === "assistant") {data[data.length - 1].content = progressData}
                 else {data.push({role: "assistant", content: progressData})}
-                if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx && progressData.length) {
                     let voiceText = progressData.slice(autoVoiceIdx);
                     autoSpeechEvent(voiceText, currentResEle, false, true);
                 }
