@@ -587,12 +587,12 @@
         }
 
         .mdOption>div>svg {
-            color: #dededf;
+            color: #e3e3e3;
             display: block;
         }
 
         .mdOption svg:hover {
-            color: #878788;
+            color: #989898;
         }
 
         .mdOption svg * {
@@ -612,11 +612,10 @@
         }
 
         .moreOption>div {
-            padding: 0;
             position: absolute;
-            top: -40px;
-            left: -66px;
-            width: 66px;
+            top: -38px;
+            left: -64px;
+            width: 64px;
             display: none;
             opacity: 0;
             visibility: hidden;
@@ -624,11 +623,11 @@
             border-radius: 3px;
             padding: 2px 2px;
             z-index: 1;
-            color: #505050;
+            color: #606060;
             box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
         }
 
-        .moreOption:hover div {
+        .moreOption:hover>div {
             display: block;
             opacity: 1;
             visibility: visible;
@@ -640,14 +639,14 @@
 
         .optionItem {
             border-radius: 3px;
-            height: 28px;
+            height: 25px;
             display: flex !important;
             padding-left: 4px;
             align-items: center;
         }
 
         .optionItem>span {
-            margin-left: 6px;
+            margin-left: 5px;
             font-size: 14px;
         }
 
@@ -954,6 +953,7 @@
         let voiceIns; // Audio or SpeechSynthesisUtterance
         let enableContVoice; //连续朗读
         let enableAutoVoice; //自动朗读
+        let supportMSE = !!window.MediaSource; //是否支持MSE（除了ios应该都支持）
         const scrollToBottom = () => {
             if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
@@ -1435,7 +1435,6 @@
                     URL.revokeObjectURL(voiceIns.src);
                     voiceIns.removeAttribute("src");
                     voiceIns.onended = voiceIns.onerror = null;
-                    // voiceIns.load();
                 }
                 sourceBuffer = void 0;
                 speechPushing = false;
@@ -1449,6 +1448,7 @@
                 autoMediaSource = void 0;
                 voiceContentQuene = [];
                 voiceEndFlagQuene = [];
+                voiceBlobURLQuene = [];
                 autoOnlineVoiceFlag = false;
             } else {
                 speechSynthesis.cancel();
@@ -1582,6 +1582,20 @@
                 downQuene[uuid]["blob"] = [];
             }
         }
+        const NoMSEPending = (key) => {
+            return new Promise((res, rej) => {
+                let bufArray = [];
+                voiceSocket.onmessage = (e) => {
+                    if (e.data instanceof ArrayBuffer) {
+                        bufArray.push(e.data.slice(130));
+                    } else if (e.data.indexOf("Path:turn.end") !== -1) {
+                        voiceSocket["pending"] = false;
+                        voiceData[key] = new Blob(bufArray);
+                        res(voiceData[key]);
+                    }
+                }
+            })
+        }
         const speechEvent = async (idx) => {
             if (!data[idx]) return;
             let type = data[idx].role === "user" ? 0 : 1;
@@ -1602,46 +1616,55 @@
                 if (currData) {
                     voiceIns.src = URL.createObjectURL(currData);
                 } else {
-                    let mediaSource = new MediaSource;
-                    voiceIns.src = URL.createObjectURL(mediaSource);
-                    await initStreamVoice(mediaSource);
-                    if (!sourceBuffer) {
-                        sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
-                    }
-                    sourceBuffer.onupdateend = function () {
-                        speechPushing = false;
-                        if (speechQuene.length) {
-                            let buf = speechQuene.shift();
-                            if (buf["end"]) {
-                                mediaSource.endOfStream();
-                            } else {
-                                speechPushing = true;
-                                sourceBuffer.appendBuffer(buf);
-                            }
+                    if (supportMSE) {
+                        let mediaSource = new MediaSource;
+                        voiceIns.src = URL.createObjectURL(mediaSource);
+                        await initStreamVoice(mediaSource);
+                        if (!sourceBuffer) {
+                            sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
                         }
-                    };
+                        sourceBuffer.onupdateend = function () {
+                            speechPushing = false;
+                            if (speechQuene.length) {
+                                let buf = speechQuene.shift();
+                                if (buf["end"]) {
+                                    mediaSource.endOfStream();
+                                } else {
+                                    speechPushing = true;
+                                    sourceBuffer.appendBuffer(buf);
+                                }
+                            }
+                        };
+                    } else {
+                        await initSocket();
+                    }
                     let currDate = new Date().toString();
                     let lang = voiceRole[type].lang;
                     voiceSocket.send(getWSAudio(currDate));
                     voiceSocket.send(getWSText(currDate, uuidv4(), lang, voice, volume, rate, pitch, content));
                     voiceSocket["pending"] = true;
-                    let bufArray = [];
-                    voiceSocket.onmessage = (e) => {
-                        if (e.data instanceof ArrayBuffer) {
-                            let buf = e.data.slice(130);
-                            bufArray.push(buf);
-                            speechQuene.push(buf);
-                        } else if (e.data.indexOf("Path:turn.end") !== -1) {
-                            voiceSocket["pending"] = false;
-                            voiceData[key] = new Blob(bufArray);
-                            if (!speechQuene.length && !speechPushing) {
-                                mediaSource.endOfStream();
-                            } else {
-                                let buf = new ArrayBuffer();
-                                buf["end"] = true;
+                    if (supportMSE) {
+                        let bufArray = [];
+                        voiceSocket.onmessage = (e) => {
+                            if (e.data instanceof ArrayBuffer) {
+                                let buf = e.data.slice(130);
+                                bufArray.push(buf);
                                 speechQuene.push(buf);
+                            } else if (e.data.indexOf("Path:turn.end") !== -1) {
+                                voiceSocket["pending"] = false;
+                                voiceData[key] = new Blob(bufArray);
+                                if (!speechQuene.length && !speechPushing) {
+                                    mediaSource.endOfStream();
+                                } else {
+                                    let buf = new ArrayBuffer();
+                                    buf["end"] = true;
+                                    speechQuene.push(buf);
+                                }
                             }
                         }
+                    } else {
+                        let blob = await NoMSEPending(key);
+                        voiceIns.src = URL.createObjectURL(blob);
                     }
                 }
             } else {
@@ -1664,6 +1687,7 @@
         let autoMediaSource;
         let voiceContentQuene = [];
         let voiceEndFlagQuene = [];
+        let voiceBlobURLQuene = [];
         let autoOnlineVoiceFlag = false;
         const autoAddQuene = () => {
             if (voiceContentQuene.length) {
@@ -1682,20 +1706,48 @@
             if (existVoice === 2) {
                 voiceContentQuene.push(content);
                 voiceEndFlagQuene.push(end);
+                if (!voiceIns) {
+                    voiceIns = new Audio();
+                }
                 if (!autoVoiceSocket || autoVoiceSocket.readyState > 1) {
                     autoVoiceSocket = new WebSocket(edgeTTSURL);
                     autoVoiceSocket.binaryType = "arraybuffer";
                     autoVoiceSocket.onopen = () => {
                         autoAddQuene();
                     };
-                    autoVoiceSocket.onmessage = (e) => {
-                        if (e.data instanceof ArrayBuffer) {
+
+                    autoVoiceSocket.onerror = () => {
+                        autoOnlineVoiceFlag = false;
+                    };
+                };
+                let bufArray = [];
+                autoVoiceSocket.onmessage = (e) => {
+                    if (e.data instanceof ArrayBuffer) {
+                        if (supportMSE) {
                             speechQuene.push(e.data.slice(130));
                         } else {
-                            if (e.data.indexOf("Path:turn.end") !== -1) {
-                                autoVoiceSocket["pending"] = false;
-                                autoOnlineVoiceFlag = false;
-                                if (voiceEndFlagQuene.shift()) {
+                            bufArray.push(e.data.slice(130));
+                        }
+                    } else {
+                        if (e.data.indexOf("Path:turn.end") !== -1) {
+                            autoVoiceSocket["pending"] = false;
+                            autoOnlineVoiceFlag = false;
+                            if (!supportMSE) {
+                                let blob = new Blob(bufArray);
+                                bufArray = [];
+                                if (blob.size) {
+                                    let blobURL = URL.createObjectURL(blob);
+                                    if (!voiceIns.src) {
+                                        voiceIns.src = blobURL;
+                                        voiceIns.play();
+                                    } else {
+                                        voiceBlobURLQuene.push(blobURL);
+                                    }
+                                }
+                                autoAddQuene();
+                            }
+                            if (voiceEndFlagQuene.shift()) {
+                                if (supportMSE) {
                                     if (!speechQuene.length && !speechPushing) {
                                         autoMediaSource.endOfStream();
                                     } else {
@@ -1703,47 +1755,67 @@
                                         buf["end"] = true;
                                         speechQuene.push(buf);
                                     }
-                                };
-                                autoAddQuene();
-                            }
-                        }
-                    };
-                    autoVoiceSocket.onerror = () => {
-                        autoOnlineVoiceFlag = false;
-                    };
-                }
-                if (!autoMediaSource) {
-                    autoMediaSource = new MediaSource();
-                    autoMediaSource.onsourceopen = () => {
-                        if (!sourceBuffer) {
-                            sourceBuffer = autoMediaSource.addSourceBuffer("audio/mpeg");
-                            sourceBuffer.onupdateend = () => {
-                                speechPushing = false;
-                                if (speechQuene.length) {
-                                    let buf = speechQuene.shift();
-                                    if (buf["end"]) {
-                                        autoMediaSource.endOfStream();
+                                } else {
+                                    if (!voiceBlobURLQuene.length && !voiceIns.src) {
+                                        endSpeak();
                                     } else {
-                                        speechPushing = true;
-                                        sourceBuffer.appendBuffer(buf);
+                                        voiceBlobURLQuene.push("end");
                                     }
                                 }
                             };
+                            if (supportMSE) {
+                                autoAddQuene();
+                            }
                         }
                     }
-                }
+                };
                 if (!autoOnlineVoiceFlag && autoVoiceSocket.readyState) {
                     autoAddQuene();
                 }
-                if (!voiceIns) {
-                    voiceIns = new Audio();
-                }
-                if (!voiceIns.src) {
-                    voiceIns.src = URL.createObjectURL(autoMediaSource);
-                    voiceIns.play();
-                }
-                voiceIns.onended = voiceIns.onerror = () => {
-                    endSpeak();
+                if (supportMSE) {
+                    if (!autoMediaSource) {
+                        autoMediaSource = new MediaSource();
+                        autoMediaSource.onsourceopen = () => {
+                            if (!sourceBuffer) {
+                                sourceBuffer = autoMediaSource.addSourceBuffer("audio/mpeg");
+                                sourceBuffer.onupdateend = () => {
+                                    speechPushing = false;
+                                    if (speechQuene.length) {
+                                        let buf = speechQuene.shift();
+                                        if (buf["end"]) {
+                                            autoMediaSource.endOfStream();
+                                        } else {
+                                            speechPushing = true;
+                                            sourceBuffer.appendBuffer(buf);
+                                        }
+                                    }
+                                };
+                            }
+                        }
+                    }
+                    if (!voiceIns.src) {
+                        voiceIns.src = URL.createObjectURL(autoMediaSource);
+                        voiceIns.play();
+                        voiceIns.onended = voiceIns.onerror = () => {
+                            endSpeak();
+                        }
+                    }
+                } else {
+                    voiceIns.onended = voiceIns.onerror = () => {
+                        if (voiceBlobURLQuene.length) {
+                            let src = voiceBlobURLQuene.shift();
+                            if (src === "end") {
+                                endSpeak();
+                            } else {
+                                voiceIns.src = src;
+                                voiceIns.currentTime = 0;
+                                voiceIns.play();
+                            }
+                        } else {
+                            voiceIns.currentTime = 0;
+                            voiceIns.removeAttribute("src");
+                        }
+                    }
                 }
             } else {
                 voiceIns = new SpeechSynthesisUtterance(content);
