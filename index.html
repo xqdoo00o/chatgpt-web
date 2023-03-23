@@ -1617,8 +1617,9 @@
                 if (currData) {
                     voiceIns.src = URL.createObjectURL(currData);
                 } else {
+                    let mediaSource;
                     if (supportMSE) {
-                        let mediaSource = new MediaSource;
+                        mediaSource = new MediaSource;
                         voiceIns.src = URL.createObjectURL(mediaSource);
                         await initStreamVoice(mediaSource);
                         if (!sourceBuffer) {
