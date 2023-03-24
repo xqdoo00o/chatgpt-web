@@ -27,21 +27,22 @@
             background-color: #fff;
             left: 50%;
             top: 50%;
+            overflow: hidden;
             transform: translate(-50%, -50%);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
         }
 
         .top_menu {
-            background-color: #fff;
+            background-color: #f6f6f6;
             width: 100%;
-            padding: 20px 0 15px;
-            box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+            height: 50px;
+            padding: 12px 0;
         }
 
         .top_menu .buttons {
-            margin: 3px 0 0 20px;
+            margin: 5px 0 0 20px;
             position: absolute;
+            font-size: 0;
         }
 
         .top_menu .buttons .button {
@@ -69,11 +70,12 @@
             text-align: center;
             color: #909090;
             font-size: 20px;
+            line-height: 26px;
         }
 
         .messages {
             position: relative;
-            height: calc(100% - 136px);
+            height: calc(100% - 117px);
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -150,12 +152,11 @@
 
         #chatlog {
             word-wrap: break-word;
-            margin-top: 16px;
             text-align: start;
         }
 
         #chatlog>div {
-            padding: 22px 25px;
+            padding: 18px 25px;
         }
 
         #chatlog .request {
@@ -293,34 +294,36 @@
             position: relative;
             width: 100%;
             background-color: #fff;
-            padding: 12px 12px;
+            padding: 10px 10px;
             position: absolute;
             bottom: 0;
         }
 
         .bottom_wrapper .message_input_wrapper {
             border: none;
-            width: calc(100% - 148px);
+            width: calc(100% - 143px);
             position: relative;
             text-align: left;
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text {
-            border-radius: 6px;
-            border: 1px solid rgba(0, 0, 0, .1);
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+            border-radius: 4px;
+            border: none;
             outline: none;
             resize: none;
-            height: 50px;
+            background: #eff1f1;
+            color: #24292f;
+            height: 47px;
             font-size: 16px;
             max-height: 200px;
-            padding: 13px 0 14px 16px;
+            padding: 13px 0 13px 16px;
             width: 100%;
             display: block;
+            transition: background 0.3s;
         }
 
-        .bottom_wrapper .message_input_wrapper .message_input_text::placeholder {
-            color: gray;
+        .bottom_wrapper .message_input_wrapper .message_input_text:focus {
+            background: #e7e9eb;
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text::-webkit-scrollbar {
@@ -331,11 +334,11 @@
 
         #sendbutton {
             width: 80px;
-            height: 50px;
+            height: 47px;
             font-size: 18px;
             font-weight: bold;
-            border-radius: 5px;
-            background-color: #99c959;
+            border-radius: 3px;
+            background-color: #b8da8b;
             border: none;
             padding: 0;
             color: #fff;
@@ -344,23 +347,29 @@
             text-align: center;
             float: right;
             position: absolute;
-            right: 70px;
-            bottom: 12px;
+            right: 65px;
+            bottom: 10px;
+            cursor: not-allowed;
         }
 
-        #sendbutton:hover {
-            background-color: #90c050;
+        .activeSendBtn {
+            background-color: #99c959 !important;
+            cursor: pointer !important;
+        }
+
+        .activeSendBtn:hover {
+            background-color: #90c050 !important;
         }
 
         #clearConv {
             position: absolute;
             right: 10px;
-            bottom: 12px;
-            width: 50px;
-            height: 50px;
+            bottom: 10px;
+            width: 47px;
+            height: 47px;
             font-size: 16px;
             display: inline-block;
-            border-radius: 5px;
+            border-radius: 3px;
             background-color: #909090;
             border: 2px solid #909090;
             color: #fff;
@@ -440,7 +449,7 @@
         #setting {
             position: absolute;
             right: 15px;
-            top: 13px;
+            top: 5px;
             cursor: pointer;
             padding: 5px;
             border: none;
@@ -460,15 +469,14 @@
             color: #303030;
             position: absolute;
             z-index: 2;
-            background: white;
+            background: #f4f4f4;
             width: 320px;
-            right: 10px;
-            top: 55px;
+            right: 6px;
+            top: 46px;
             -webkit-user-select: none;
             user-select: none;
             border-radius: 5px;
             padding: 8px 12px 8px 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
         }
 
         #setDialog>div {
@@ -495,14 +503,13 @@
 
         .inputTextClass {
             outline: none;
-            border-radius: 4px;
+            border-radius: 2px;
             margin-top: 2px;
             height: 32px;
             font-size: 15px;
             padding-left: 6px;
-            border: 1px solid #d9d9e3;
-            border-color: rgba(0, 0, 0, .1);
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
+            background: white;
+            border: none;
         }
 
         .areaTextClass {
@@ -576,7 +583,7 @@
         .mdOption {
             position: absolute;
             right: 5px;
-            bottom: 5px;
+            bottom: 0px;
             pointer-events: none;
         }
 
@@ -611,43 +618,60 @@
             position: relative;
         }
 
-        .moreOption>div {
+        .optionItems {
             position: absolute;
-            top: -38px;
-            left: -64px;
-            width: 64px;
-            display: none;
-            opacity: 0;
+            top: -8px;
+            display: flex;
+            justify-content: space-between;
             visibility: hidden;
-            background: white;
-            border-radius: 3px;
-            padding: 2px 2px;
             z-index: 1;
-            color: #606060;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 0px;
-        }
-
-        .moreOption:hover>div {
-            display: block;
-            opacity: 1;
-            visibility: visible;
+            color: #808080;
         }
 
         .moreOptionHidden>div {
             display: none !important;
         }
 
-        .optionItem {
-            border-radius: 3px;
-            height: 25px;
-            display: flex !important;
-            padding-left: 4px;
-            align-items: center;
+        .optionItems:hover {
+            visibility: visible;
         }
 
-        .optionItem>span {
-            margin-left: 5px;
-            font-size: 14px;
+        .optionItems:hover .optionItem {
+            transform: scale(1);
+            visibility: visible;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(3) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 50ms;
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(2) {
+            visibility: visible;
+            transition-delay: 80ms;
+            transform: scale(1);
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(1) {
+            visibility: visible;
+            transition-delay: 110ms;
+            transform: scale(1);
+            transition-duration: 60ms;
+        }
+
+        .optionItem {
+            border-radius: 3px;
+            height: 30px;
+            width: 30px;
+            background-color: #f7f7f8;
+            visibility: hidden;
+            transform: scale(0);
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
         }
 
         .optionItem * {
@@ -655,7 +679,7 @@
         }
 
         .optionItem:hover {
-            background: #f0f0f0;
+            background: #e0e0e0;
         }
 
         .readyVoice svg:not(:first-child) {
@@ -914,13 +938,7 @@
             </svg>
         </div>
     </div>
-    <script src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
-    <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
-    <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
-    <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
     <script>
-        const API_URL = "v1/chat/completions";
         const messagsEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
         const stopEle = document.getElementById("stopChat");
@@ -930,6 +948,23 @@
         const dialogEle = document.getElementById("setDialog");
         const speechOptionEle = document.getElementById("speechOption");
         textarea.focus();
+        textarea.oninput = (e) => {
+            if (textarea.value.trim().length) {
+                sendBtnEle.classList.add("activeSendBtn");
+            } else {
+                sendBtnEle.classList.remove("activeSendBtn");
+            }
+            textarea.style.height = "47px";
+            textarea.style.height = textarea.scrollHeight + "px";
+        };
+    </script>
+    <script src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
+    <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
+    <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
+    <script>
+        const API_URL = "v1/chat/completions";
         let data = [];
         let loading = false;
         let presetRoleData = {
@@ -1907,7 +1942,7 @@
             }
         }
         const moreOption = (ele) => {
-            ele.classList.remove("moreOptionHidden")
+            ele.classList.remove("moreOptionHidden");
         }
         const formatMdEle = (ele) => {
             let realMd = document.createElement("div");
@@ -1922,19 +1957,17 @@
                     <svg data-id="refreshMd" width="16" height="16" role="img"><title>继续</title><use xlink:href="#halfRefIcon" /></svg>
                 </div>`
             }
+            let optionWidth = existVoice === 2 ? "96px" : "63px";
             mdOption.innerHTML += `<div class="moreOption" onmouseenter="moreOption(this)">
-            <svg width="16" height="16" role="img"><title>选项</title><use xlink:href="#optionIcon" /></svg>
-            <div><div data-id="delMd" class="optionItem">
-                <svg width="16" height="16"><use xlink:href="#delIcon" /></svg>
-                <span>删除</span>
+            <svg class="optionTrigger" width="16" height="16" role="img"><title>选项</title><use xlink:href="#optionIcon" /></svg>
+            <div class="optionItems" style="width:${optionWidth};left:-${optionWidth}">` + (existVoice === 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
+                <svg width="20" height="20"><use xlink:href="#downAudioIcon" /></svg>
+            </div>` : "") + `<div data-id="delMd" class="optionItem" title="删除">
+                <svg width="20" height="20"><use xlink:href="#delIcon" /></svg>
             </div>
-            <div data-id="copyMd" class="optionItem">
-                <svg width="16" height="16"><use xlink:href="#copyIcon" /></svg>
-                <span>复制</span>
-            </div>` + (existVoice === 2 ? `<div data-id="downAudio" class="optionItem">
-                <svg width="16" height="16"><use xlink:href="#downAudioIcon" /></svg>
-                <span>语音</span>
-            </div></div></div>` : "</div></div>");
+            <div data-id="copyMd" class="optionItem" title="复制">
+                <svg width="20" height="20"><use xlink:href="#copyIcon" /></svg>
+            </div></div></div>`;
             if (existVoice) {
                 mdOption.innerHTML += `<div id="pronMd" class="readyVoice">
                 <svg width="16" height="16" data-id="voiceMd" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
@@ -2129,20 +2162,16 @@
                     genFunc();
                 }
             }
-        }
-        textarea.oninput = (e) => {
-            textarea.style.height = "50px";
-            textarea.style.height = e.target.scrollHeight + 2 + "px";
         };
         const genFunc = function () {
             let message = textarea.value.trim();
             if (message.length !== 0) {
                 if (loading === true) return;
                 textarea.value = "";
-                textarea.style.height = "50px";
+                textarea.style.height = "47px";
                 generateText(message);
             }
-        }
+        };
         sendBtnEle.onclick = genFunc;
         stopEle.onclick = stopLoading;
         document.getElementById("clearConv").onclick = () => {
