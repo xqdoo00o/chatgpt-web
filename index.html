@@ -1839,7 +1839,7 @@
             if (systemRole ? data.length - 1 : data.length) {
                 let firstIdx = systemRole ? 1 : 0;
                 for (let i = firstIdx; i < data.length; i++) {
-                    createConvEle(data[i].role === "user" ? "request" : "response").children[0].innerHTML = md.render(data[i].content);
+                    createConvEle(data[i].role === "user" ? "request" : "response").children[0].innerHTML = md.render(data[i].content) || "<br />";
                 }
             }
             localStorage.setItem("activeChatIdx", activeChatIdx);
