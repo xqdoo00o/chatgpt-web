@@ -15,13 +15,16 @@
 
         body {
             background-color: #edeff2;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
         }
 
         .chat_window {
             position: absolute;
-            width: calc(100% - 6px);
+            width: 100%;
             max-width: 1100px;
-            height: calc(100% - 6px);
+            height: 100%;
             max-height: 888px;
             border-radius: 8px;
             background-color: #fff;
@@ -39,31 +42,42 @@
             padding: 12px 0;
         }
 
-        .top_menu .buttons {
-            margin: 5px 0 0 20px;
+        .top_menu .toggler {
             position: absolute;
-            font-size: 0;
+            left: 15px;
+            top: 5px;
+            width: 40px;
+            height: 40px;
+            padding: 5px 7px;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
-        .top_menu .buttons .button {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 10px;
-            position: relative;
+        .top_menu .toggler:hover {
+            background: #e7e7e8;
         }
 
-        .top_menu .buttons .button.close {
-            background-color: #e15b64;
+        .top_menu .toggler .button {
+            width: 26px;
+            height: 4px;
+            border-radius: 4px;
+            position: absolute;
+            pointer-events: none;
         }
 
-        .top_menu .buttons .button.minimize {
+        .top_menu .toggler .button.close {
+            top: 8px;
+            background-color: #99c959;
+        }
+
+        .top_menu .toggler .button.minimize {
+            top: 18px;
             background-color: #f8b26a;
         }
 
-        .top_menu .buttons .button.maximize {
-            background-color: #99c959;
+        .top_menu .toggler .button.maximize {
+            top: 28px;
+            background-color: #e15b64;
         }
 
         .top_menu .title {
@@ -80,30 +94,44 @@
             overflow-y: auto;
         }
 
-        .messages::-webkit-scrollbar {
+        .messages::-webkit-scrollbar,
+        #chatlog .markdown-body>pre::-webkit-scrollbar,
+        #setDialog::-webkit-scrollbar,
+        #chatList::-webkit-scrollbar {
             width: 10px;
             height: 10px;
         }
 
-        .messages::-webkit-scrollbar-track {
+        .messages::-webkit-scrollbar-track,
+        #chatlog .response>pre::-webkit-scrollbar-track,
+        #setDialog::-webkit-scrollbar-track,
+        #chatList::-webkit-scrollbar-track {
             background-clip: padding-box;
             background: transparent;
-            border: solid transparent;
-            border-width: 1px;
+            border: none;
         }
 
-        .messages::-webkit-scrollbar-corner {
+        .messages::-webkit-scrollbar-corner,
+        #chatlog .response>pre::-webkit-scrollbar-corner,
+        #setDialog::-webkit-scrollbar-corner,
+        #chatList::-webkit-scrollbar-corner {
             background-color: transparent;
         }
 
-        .messages::-webkit-scrollbar-thumb {
+        .messages::-webkit-scrollbar-thumb,
+        #chatlog .response>pre::-webkit-scrollbar-thumb,
+        #setDialog::-webkit-scrollbar-thumb,
+        #chatList::-webkit-scrollbar-thumb {
             background-color: rgba(0, 0, 0, 0.1);
             background-clip: padding-box;
             border: solid transparent;
             border-radius: 10px;
         }
 
-        .messages::-webkit-scrollbar-thumb:hover {
+        .messages::-webkit-scrollbar-thumb:hover,
+        #chatlog .response>pre::-webkit-scrollbar-thumb:hover,
+        #setDialog::-webkit-scrollbar-thumb:hover,
+        #chatList::-webkit-scrollbar-thumb:hover {
             background-color: rgba(0, 0, 0, 0.4);
         }
 
@@ -177,33 +205,6 @@
             padding: 10px;
             position: relative;
             background: rgba(180, 180, 180, 0.1);
-        }
-
-        #chatlog .markdown-body>pre::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        #chatlog .response>pre::-webkit-scrollbar-track {
-            background-clip: padding-box;
-            background: transparent;
-            border: solid transparent;
-            border-width: 1px;
-        }
-
-        #chatlog .response>pre::-webkit-scrollbar-corner {
-            background-color: transparent;
-        }
-
-        #chatlog .response>pre::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.1);
-            background-clip: padding-box;
-            border: solid transparent;
-            border-radius: 10px;
-        }
-
-        #chatlog .response>pre::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(0, 0, 0, 0.4);
         }
 
         .m-mdic-copy-wrapper {
@@ -311,7 +312,7 @@
             border: none;
             outline: none;
             resize: none;
-            background: #eff1f1;
+            background: #f6f6f6;
             color: #24292f;
             height: 47px;
             font-size: 16px;
@@ -323,7 +324,7 @@
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text:focus {
-            background: #e7e9eb;
+            background: #f0f0f0;
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text::-webkit-scrollbar {
@@ -469,14 +470,17 @@
             color: #303030;
             position: absolute;
             z-index: 2;
-            background: #f4f4f4;
+            background: #f8f8f8;
             width: 320px;
             right: 6px;
             top: 46px;
+            overflow-y: auto;
+            max-height: calc(100vh - 55px);
             -webkit-user-select: none;
             user-select: none;
             border-radius: 5px;
             padding: 8px 12px 8px 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
         }
 
         #setDialog>div {
@@ -708,237 +712,547 @@
         .selVoiceType {
             background: #d0d0d0 !important;
         }
+
+        .overlay {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: rgba(0, 0, 0, .3);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 200ms ease-in;
+        }
+
+        .nav {
+            width: 250px;
+            height: 100%;
+            background-color: #fafafa;
+            left: -250px;
+            top: 0;
+            position: fixed;
+            transition: left 100ms ease-in-out;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #newChat {
+            text-align: center;
+            width: 100%;
+            height: 50px;
+            color: #404040;
+            margin: 10px 0 10px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #newChat:hover {
+            background: #f0f0f0 !important;
+        }
+
+        #newChat>svg {
+            margin-left: 17px;
+            margin-right: 14px;
+        }
+
+        #newChat>span {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .divider {
+            width: 100%;
+            border-top: 1px solid #e0e0e0;
+            margin: 8px 0;
+        }
+
+        .navFooter {
+            padding-bottom: 8px;
+        }
+
+        .navFunc {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .navFunc>div,
+        .navFunc>label {
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            text-align: center;
+            padding: 5px;
+            width: 70px;
+            color: #404040;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navFunc>div>svg,
+        .navFunc>label>svg {
+            color: #666;
+        }
+
+        .navFunc>div:hover,
+        .navFunc>label:hover {
+            background: #e0e0e0;
+        }
+
+        .links {
+            text-align: center;
+        }
+
+        .links a {
+            color: #404040;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            color: black !important;
+        }
+
+        .links a:visited {
+            color: #404040;
+        }
+
+        #chatList {
+            width: 100%;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chatLi {
+            cursor: pointer;
+            width: 100%;
+            height: 50px;
+            color: #909090;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .chatLi * {
+            pointer-events: none;
+        }
+
+        .chatLi>svg {
+            margin-left: 18px;
+            color: #505050;
+        }
+
+        .chatLi svg {
+            pointer-events: auto;
+        }
+
+        .chatLi svg * {
+            pointer-events: none;
+        }
+
+        .chatLi .chatName {
+            position: absolute;
+            left: 55px;
+            color: #404040;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 125px;
+            line-height: 20px;
+            height: 20px;
+        }
+
+        .chatLi .chatOption {
+            visibility: hidden;
+            display: flex;
+            color: #666;
+            margin-right: 8px;
+        }
+
+        .chatLi:hover {
+            background: #f0f0f0;
+        }
+
+        .activeChatLi {
+            background: #e0e0e0 !important;
+        }
+
+        .activeChatLi .chatOption {
+            visibility: visible !important;
+        }
+
+        .activeChatLi #activeChatEdit {
+            position: absolute;
+            left: 52px;
+            font-size: 16px;
+            border-radius: 2px;
+            background: #f0f0f0;
+            outline: none;
+            border: none;
+            pointer-events: auto;
+            height: 24px;
+            line-height: 24px;
+            width: 160px;
+            padding: 1px 3px;
+            z-index: 1;
+        }
+
+        .show-nav .nav {
+            left: 0;
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 10px -5px, rgba(0, 0, 0, 0.14) 0px 16px 24px 2px, rgba(0, 0, 0, 0.12) 0px 6px 30px 5px;
+        }
+
+        .show-nav .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #loadMask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background-color: #edeff2;
+        }
+
+        #loadMask>div {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        #loadMask svg {
+            width: 160px;
+            height: 80px;
+        }
+
+        #loadMask>div>div {
+            font-size: 40px;
+            color: #909090;
+        }
     </style>
 </head>
 
 <body>
-    <div>
-        <div class="chat_window">
-            <div class="top_menu">
-                <div class="buttons">
-                    <div class="button close"></div>
-                    <div class="button minimize"></div>
-                    <div class="button maximize"></div>
-                </div>
-                <div class="title">ChatGPT</div>
-                <button id="setting">
-                    <svg viewBox="0 0 100 100" style="display:block;" role="img" width="30" height="30">
-                        <title>设置</title>
-                        <circle cx="50" cy="20" r="10" fill="#e15b64" />
-                        <circle cx="50" cy="50" r="10" fill="#f8b26a" />
-                        <circle cx="50" cy="80" r="10" fill="#99c959" />
-                    </svg>
-                </button>
-                <div id="setDialog" style="display:none;">
-                    <div>
-                        <div>自定义API key</div>
-                        <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
-                            style="-webkit-text-security: disc;" />
+    <div style="display: none">
+        <svg>
+            <symbol viewBox="0 0 24 24" id="optionIcon">
+                <path fill="currentColor"
+                    d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="refreshIcon">
+                <path fill="currentColor"
+                    d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="halfRefIcon">
+                <path fill="currentColor"
+                    d="M 4.009 12.163 C 4.012 12.206 2.02 12.329 2 12.098 C 2 6.575 6.477 2 12 2 C 17.523 2 22 6.477 22 12 C 22 14.136 21.33 16.116 20.19 17.74 L 17 12 L 20 12 C 19.999 5.842 13.333 1.993 7.999 5.073 C 3.211 8.343 4.374 12.389 4.009 12.163 Z" />
+            </symbol>
+            <symbol viewBox="-2 -2 20 20" id="copyIcon">
+                <path fill="currentColor"
+                    d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z">
+                </path>
+                <path fill="currentColor"
+                    d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="delIcon">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 7v0a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v0M9 7h6M9 7H6m9 0h3m2 0h-2M4 7h2m0 0v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="readyVoiceIcon">
+                <path fill="currentColor"
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 16 16" id="pauseVoiceIcon">
+                <path stroke="currentColor" stroke-width="2" d="M5 2v12M11 2v12"></path>
+            </symbol>
+            <symbol viewBox="0 0 16 16" id="resumeVoiceIcon">
+                <path fill="currentColor" d="M4 2L4 14L12 8Z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="stopResIcon">
+                <path fill="currentColor"
+                    d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10zm0-2a8 8 0 1 0 0-16a8 8 0 0 0 0 16zM9 9h6v6H9V9z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 128 128" id="downAudioIcon">
+                <path
+                    d="M 64.662 1.549 C 56.549 4.524, 46.998 14.179, 45.523 20.895 C 45.041 23.089, 44.073 23.833, 40.433 24.807 C 34.752 26.326, 27.956 32.929, 25.527 39.289 C 24.273 42.574, 23.884 45.715, 24.196 50.034 C 24.620 55.897, 24.528 56.193, 21.836 57.585 C 17.142 60.012, 16 63.617, 16 76 C 16 88.463, 17.137 91.985, 21.967 94.483 C 28.244 97.729, 36.120 95.350, 38.579 89.466 C 39.387 87.532, 40 82.764, 40 78.415 C 40 70.971, 40.060 70.783, 42.250 71.370 C 43.487 71.701, 48.888 71.979, 54.250 71.986 L 64 72 64 76 L 64 80 57.122 80 C 49.420 80, 48.614 80.543, 47.547 86.453 C 46.552 91.964, 43.550 97.473, 40.273 99.803 C 33 104.974, 23.120 105.042, 16.118 99.971 C 11.407 96.558, 9.048 92.484, 8.145 86.205 C 6.963 77.979, 0.794 77.729, 0.191 85.883 C -0.196 91.111, 3.323 99.170, 8.062 103.908 C 11.290 107.136, 20.073 111.969, 22.750 111.990 C 23.540 111.996, 24 113.472, 24 116 C 24 119.740, 23.813 120, 21.122 120 C 17.674 120, 15.727 122.044, 16.173 125.195 C 16.492 127.441, 16.781 127.500, 27.391 127.500 C 36.676 127.500, 38.445 127.242, 39.386 125.750 C 40.993 123.203, 38.986 120.568, 35.149 120.187 C 32.206 119.894, 32 119.617, 32 115.956 C 32 112.509, 32.330 111.959, 34.750 111.377 C 42.181 109.591, 52.157 101.208, 53.575 95.559 C 53.928 94.152, 54.514 93, 54.878 93 C 55.242 93, 59.797 97.275, 65 102.500 C 70.762 108.286, 75.256 112, 76.495 112 C 77.769 112, 83.287 107.231, 91.264 99.236 C 101.113 89.366, 104 85.876, 104 83.843 C 104 80.580, 102.553 80, 94.418 80 L 88 80 88 76.105 L 88 72.211 99.750 71.815 C 113.117 71.364, 117.595 69.741, 122.762 63.473 C 128.159 56.925, 129.673 45.269, 126.134 37.500 C 123.787 32.346, 117.218 26.445, 112.132 24.921 C 108.617 23.868, 107.767 22.968, 105.028 17.405 C 99.364 5.901, 89.280 -0.062, 75.712 0.070 C 71.746 0.109, 66.773 0.774, 64.662 1.549 M 67.885 9.380 C 60.093 12.164, 55.057 17.704, 52.527 26.276 C 51.174 30.856, 50.220 31.617, 44.729 32.496 C 37.017 33.729, 30.917 42.446, 32.374 50.154 C 34.239 60.026, 40.582 63.944, 54.750 63.978 L 64 64 64 57.122 C 64 52.457, 64.449 49.872, 65.396 49.086 C 66.310 48.328, 70.370 48.027, 77.146 48.214 L 87.500 48.500 87.794 56.359 L 88.088 64.218 98.989 63.845 C 108.043 63.535, 110.356 63.125, 112.634 61.424 C 119.736 56.122, 121.911 47.667, 118.097 40.190 C 115.870 35.824, 110.154 32.014, 105.790 31.985 C 102.250 31.961, 101.126 30.787, 99.532 25.443 C 95.580 12.197, 80.880 4.736, 67.885 9.380 M 72 70.800 C 72 80.978, 71.625 85.975, 70.800 86.800 C 70.140 87.460, 67.781 88, 65.559 88 L 61.517 88 68.759 95.241 L 76 102.483 83.241 95.241 L 90.483 88 86.441 88 C 84.219 88, 81.860 87.460, 81.200 86.800 C 80.375 85.975, 80 80.978, 80 70.800 L 80 56 76 56 L 72 56 72 70.800 M 25.200 65.200 C 23.566 66.834, 23.566 85.166, 25.200 86.800 C 27.002 88.602, 29.798 88.246, 30.965 86.066 C 31.534 85.002, 32 80.472, 32 76 C 32 71.528, 31.534 66.998, 30.965 65.934 C 29.798 63.754, 27.002 63.398, 25.200 65.200"
+                    stroke="none" fill="currentColor" fill-rule="evenodd" />
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="chatIcon">
+                <path fill="currentColor"
+                    d="m18 21l-1.4-1.4l1.575-1.6H14v-2h4.175L16.6 14.4L18 13l4 4l-4 4ZM3 21V6q0-.825.588-1.413T5 4h12q.825 0 1.413.588T19 6v5.075q-.25-.05-.5-.063T18 11q-.25 0-.5.013t-.5.062V6H5v10h7.075q-.05.25-.063.5T12 17q0 .25.013.5t.062.5H6l-3 3Zm4-11h8V8H7v2Zm0 4h5v-2H7v2Zm-2 2V6v10Z" />
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="chatEditIcon">
+                <path fill="currentColor"
+                    d="M5 19h1.4l8.625-8.625l-1.4-1.4L5 17.6V19ZM19.3 8.925l-4.25-4.2l1.4-1.4q.575-.575 1.413-.575t1.412.575l1.4 1.4q.575.575.6 1.388t-.55 1.387L19.3 8.925ZM17.85 10.4L7.25 21H3v-4.25l10.6-10.6l4.25 4.25Zm-3.525-.725l-.7-.7l1.4 1.4l-.7-.7Z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="deleteIcon">
+                <path fill="currentColor"
+                    d="M8 20v-5h2v5h9v-7H5v7h3zm-4-9h16V8h-6V4h-4v4H4v3zM3 21v-8H2V7a1 1 0 0 1 1-1h5V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h5a1 1 0 0 1 1 1v6h-1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="addIcon" stroke="currentColor" fill="none" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </symbol>
+            <symbol viewBox="0 0 200 100" preserveAspectRatio="xMidYMid" id="loadingIcon">
+                <g transform="translate(50 50)">
+                    <circle cx="0" cy="0" r="15" fill="#e15b64">
+                        <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
+                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
+                            dur="1s" repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+                <g transform="translate(100 50)">
+                    <circle cx="0" cy="0" r="15" fill="#f8b26a">
+                        <animateTransform attributeName="transform" type="scale" begin="-0.16666666666666666s"
+                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
+                            dur="1s" repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+                <g transform="translate(150 50)">
+                    <circle cx="0" cy="0" r="15" fill="#99c959">
+                        <animateTransform attributeName="transform" type="scale" begin="0s" calcMode="spline"
+                            keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s"
+                            repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="exportIcon">
+                <path fill="currentColor"
+                    d="M4 19h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7zM14 9h5l-7 7l-7-7h5V3h4v6z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="importIcon">
+                <path fill="currentColor"
+                    d="M4 19h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7zM14 9v6h-4V9H5l7-7l7 7h-5z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="clearAllIcon">
+                <path fill="currentColor"
+                    d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10zm0-2a8 8 0 1 0 0-16a8 8 0 0 0 0 16zm0-9.414l2.828-2.829l1.415 1.415L13.414 12l2.829 2.828l-1.415 1.415L12 13.414l-2.828 2.829l-1.415-1.415L10.586 12L7.757 9.172l1.415-1.415L12 10.586z">
+                </path>
+            </symbol>
+        </svg>
+    </div>
+    <div id="loadMask">
+        <div>
+            <div>ChatGPT</div>
+            <svg>
+                <use xlink:href="#loadingIcon" />
+            </svg>
+        </div>
+    </div>
+    <div class="chat_window">
+        <div class="overlay"></div>
+        <nav class="nav">
+            <div id="newChat">
+                <svg width="24" height="24">
+                    <use xlink:href="#addIcon" />
+                </svg>
+                <span>新建会话</span>
+            </div>
+            <div id="chatList"></div>
+            <div class="navFooter">
+                <div class="navFunc">
+                    <div id="exportChat">
+                        <svg width="24" height="24">
+                            <use xlink:href="#exportIcon" />
+                        </svg>
+                        <span>导出</span>
                     </div>
+                    <label id="importChat" for="importChatInput">
+                        <svg width="24" height="24">
+                            <use xlink:href="#importIcon" />
+                        </svg>
+                        <span>导入</span>
+                    </label>
+                    <input type="file" style="display: none;" id="importChatInput" accept="application/json" />
+                    <div id="clearChat">
+                        <svg width="24" height="24">
+                            <use xlink:href="#clearAllIcon" />
+                        </svg>
+                        <span>清空</span>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="links">
+                    <a href="https://github.com/xqdoo00o/chatgpt-web" target="_blank"
+                        rel="noopener noreferrer">Github</a>
+                </div>
+            </div>
+        </nav>
+        <div class="top_menu">
+            <div class="toggler">
+                <div class="button close"></div>
+                <div class="button minimize"></div>
+                <div class="button maximize"></div>
+            </div>
+            <div class="title">ChatGPT</div>
+            <button id="setting">
+                <svg viewBox="0 0 100 100" style="display:block;" role="img" width="30" height="30">
+                    <title>设置</title>
+                    <circle cx="50" cy="20" r="10" fill="#e15b64" />
+                    <circle cx="50" cy="50" r="10" fill="#f8b26a" />
+                    <circle cx="50" cy="80" r="10" fill="#99c959" />
+                </svg>
+            </button>
+            <div id="setDialog" style="display:none;">
+                <div>
+                    <div>自定义API key</div>
+                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
+                        style="-webkit-text-security: disc;" />
+                </div>
+                <div>
+                    <div class="justSetLine presetSelect">
+                        <div>系统角色</div>
+                        <div>
+                            <label for="preSetSystem">预设角色</label>
+                            <select id="preSetSystem">
+                                <option value="">默认</option>
+                                <option value="normal">助手</option>
+                                <option value="cat">猫娘</option>
+                                <option value="image">有图</option>
+                            </select>
+                        </div>
+                    </div>
+                    <textarea class="inputTextClass areaTextClass" placeholder="你是一个乐于助人的助手，尽量简明扼要地回答"
+                        id="systemInput"></textarea>
+                </div>
+                <div>
+                    <span>角色性格</span>
+                    <input type="range" id="top_p" min="0" max="1" value="1" step="0.05" />
+                    <div class="selectDef">
+                        <span>准确严谨</span>
+                        <span>灵活创新</span>
+                    </div>
+                </div>
+                <div>
+                    <span>回答质量</span>
+                    <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
+                    <div class="selectDef">
+                        <span>重复刻板</span>
+                        <span>胡言乱语</span>
+                    </div>
+                </div>
+                <div>
+                    <span>打字机速度</span>
+                    <input type="range" id="textSpeed" min="0" max="100" value="88" step="1" />
+                    <div class="selectDef">
+                        <span>慢</span>
+                        <span>快</span>
+                    </div>
+                </div>
+                <div class="justSetLine">
+                    <span class="inlineTitle">连续对话</span>
+                    <label class="switch-slide">
+                        <input type="checkbox" id="enableCont" checked hidden />
+                        <label for="enableCont" class="switch-slide-label"></label>
+                    </label>
+                    <span class="inlineTitle">长回复</span>
+                    <label class="switch-slide">
+                        <input type="checkbox" id="enableLongReply" hidden />
+                        <label for="enableLongReply" class="switch-slide-label"></label>
+                    </label>
+                </div>
+                <div id="speechOption" style="display: none;">
                     <div>
-                        <div class="justSetLine presetSelect">
-                            <div>系统角色</div>
-                            <div>
-                                <label for="preSetSystem">预设角色</label>
-                                <select id="preSetSystem">
-                                    <option value="">默认</option>
-                                    <option value="normal">助手</option>
-                                    <option value="cat">猫娘</option>
-                                    <option value="image">有图</option>
-                                </select>
+                        <div class="justSetLine">
+                            <div>选择语音</div>
+                            <div id="voiceTypes">
+                                <span data-type="0">提问语音</span>
+                                <span data-type="1" class="selVoiceType">回答语音</span>
                             </div>
                         </div>
-                        <textarea class="inputTextClass areaTextClass" placeholder="你是一个乐于助人的助手，尽量简明扼要地回答"
-                            id="systemInput"></textarea>
+                        <select id="preSetSpeech">
+                        </select>
                     </div>
                     <div>
-                        <span>角色性格</span>
-                        <input type="range" id="top_p" min="0" max="1" value="1" step="0.05" />
+                        <span>音量</span>
+                        <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
                         <div class="selectDef">
-                            <span>准确严谨</span>
-                            <span>灵活创新</span>
+                            <span>低</span>
+                            <span>高</span>
                         </div>
                     </div>
                     <div>
-                        <span>回答质量</span>
-                        <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
-                        <div class="selectDef">
-                            <span>重复刻板</span>
-                            <span>胡言乱语</span>
-                        </div>
-                    </div>
-                    <div>
-                        <span>打字机速度</span>
-                        <input type="range" id="textSpeed" min="0" max="100" value="88" step="1" />
+                        <span>语速</span>
+                        <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
                         <div class="selectDef">
                             <span>慢</span>
                             <span>快</span>
                         </div>
                     </div>
+                    <div>
+                        <span>音调</span>
+                        <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
+                        <div class="selectDef">
+                            <span>平淡</span>
+                            <span>起伏</span>
+                        </div>
+                    </div>
                     <div class="justSetLine">
-                        <span class="inlineTitle">连续对话</span>
+                        <span class="inlineTitle">连续朗读</span>
                         <label class="switch-slide">
-                            <input type="checkbox" id="enableCont" checked hidden />
-                            <label for="enableCont" class="switch-slide-label"></label>
+                            <input type="checkbox" id="enableContVoice" checked hidden />
+                            <label for="enableContVoice" class="switch-slide-label"></label>
                         </label>
-                        <span class="inlineTitle">长回复</span>
+                        <span class="inlineTitle">自动朗读</span>
                         <label class="switch-slide">
-                            <input type="checkbox" id="enableLongReply" hidden />
-                            <label for="enableLongReply" class="switch-slide-label"></label>
+                            <input type="checkbox" id="enableAutoVoice" hidden />
+                            <label for="enableAutoVoice" class="switch-slide-label"></label>
                         </label>
                     </div>
-                    <div id="speechOption" style="display: none;">
-                        <div>
-                            <div class="justSetLine">
-                                <div>选择语音</div>
-                                <div id="voiceTypes">
-                                    <span data-type="0">提问语音</span>
-                                    <span data-type="1" class="selVoiceType">回答语音</span>
-                                </div>
-                            </div>
-                            <select id="preSetSpeech">
-                            </select>
-                        </div>
-                        <div>
-                            <span>音量</span>
-                            <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
-                            <div class="selectDef">
-                                <span>低</span>
-                                <span>高</span>
-                            </div>
-                        </div>
-                        <div>
-                            <span>语速</span>
-                            <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
-                            <div class="selectDef">
-                                <span>慢</span>
-                                <span>快</span>
-                            </div>
-                        </div>
-                        <div>
-                            <span>音调</span>
-                            <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
-                            <div class="selectDef">
-                                <span>平淡</span>
-                                <span>起伏</span>
-                            </div>
-                        </div>
-                        <div class="justSetLine">
-                            <span class="inlineTitle">连续朗读</span>
-                            <label class="switch-slide">
-                                <input type="checkbox" id="enableContVoice" checked hidden />
-                                <label for="enableContVoice" class="switch-slide-label"></label>
-                            </label>
-                            <span class="inlineTitle">自动朗读</span>
-                            <label class="switch-slide">
-                                <input type="checkbox" id="enableAutoVoice" hidden />
-                                <label for="enableAutoVoice" class="switch-slide-label"></label>
-                            </label>
-                        </div>
-                    </div>
                 </div>
-            </div>
-            <div class="messages">
-                <div id="chatlog"></div>
-                <div id="stopChat"><svg width="24" height="24">
-                        <use xlink:href="#stopResIcon" />
-                    </svg>停止</div>
-            </div>
-            <div class="bottom_wrapper clearfix">
-                <div class="message_input_wrapper">
-                    <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧"
-                        id="chatinput"></textarea>
-                </div>
-                <button class="loaded" id="sendbutton">
-                    <span>发送</span>
-                    <svg style="margin:0 auto;height:40px;" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid">
-                        <g transform="translate(50 50)">
-                            <circle cx="0" cy="0" r="15" fill="#e15b64">
-                                <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
-                                    calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0"
-                                    keyTimes="0;0.5;1" dur="1s" repeatCount="indefinite"></animateTransform>
-                            </circle>
-                        </g>
-                        <g transform="translate(100 50)">
-                            <circle cx="0" cy="0" r="15" fill="#f8b26a">
-                                <animateTransform attributeName="transform" type="scale" begin="-0.16666666666666666s"
-                                    calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0"
-                                    keyTimes="0;0.5;1" dur="1s" repeatCount="indefinite"></animateTransform>
-                            </circle>
-                        </g>
-                        <g transform="translate(150 50)">
-                            <circle cx="0" cy="0" r="15" fill="#99c959">
-                                <animateTransform attributeName="transform" type="scale" begin="0s" calcMode="spline"
-                                    keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s"
-                                    repeatCount="indefinite"></animateTransform>
-                            </circle>
-                        </g>
-                    </svg>
-                </button>
-                <button id="clearConv"><svg style="margin:0 auto;display:block" role="img" width="20px" height="20px"
-                        viewBox="0 0 24 24">
-                        <title>清空会话</title>
-                        <path fill="currentColor"
-                            d="M8 20v-5h2v5h9v-7H5v7h3zm-4-9h16V8h-6V4h-4v4H4v3zM3 21v-8H2V7a1 1 0 0 1 1-1h5V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h5a1 1 0 0 1 1 1v6h-1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z">
-                        </path>
-                    </svg></button>
             </div>
         </div>
-        <div style="display: none">
-            <svg>
-                <symbol viewBox="0 0 24 24" id="optionIcon">
-                    <path fill="currentColor"
-                        d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2z">
-                    </path>
-                </symbol>
-                <symbol viewBox="0 0 24 24" id="refreshIcon">
-                    <path fill="currentColor"
-                        d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z">
-                    </path>
-                </symbol>
-                <symbol viewBox="0 0 24 24" id="halfRefIcon">
-                    <path fill="currentColor"
-                        d="M 4.009 12.163 C 4.012 12.206 2.02 12.329 2 12.098 C 2 6.575 6.477 2 12 2 C 17.523 2 22 6.477 22 12 C 22 14.136 21.33 16.116 20.19 17.74 L 17 12 L 20 12 C 19.999 5.842 13.333 1.993 7.999 5.073 C 3.211 8.343 4.374 12.389 4.009 12.163 Z" />
-                </symbol>
-                <symbol viewBox="-2 -2 20 20" id="copyIcon">
-                    <path fill="currentColor"
-                        d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z">
-                    </path>
-                    <path fill="currentColor"
-                        d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z">
-                    </path>
-                </symbol>
-                <symbol viewBox="0 0 24 24" id="delIcon">
-                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 7v0a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v0M9 7h6M9 7H6m9 0h3m2 0h-2M4 7h2m0 0v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7">
-                    </path>
-                </symbol>
-                <symbol viewBox="0 0 24 24" id="readyVoiceIcon">
-                    <path fill="currentColor"
-                        d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z">
-                    </path>
-                </symbol>
-                <symbol viewBox="0 0 16 16" id="pauseVoiceIcon">
-                    <path stroke="currentColor" stroke-width="2" d="M5 2v12M11 2v12"></path>
-                </symbol>
-                <symbol viewBox="0 0 16 16" id="resumeVoiceIcon">
-                    <path fill="currentColor" d="M4 2L4 14L12 8Z"></path>
-                </symbol>
-                <symbol viewBox="0 0 24 24" id="stopResIcon">
-                    <path fill="currentColor"
-                        d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10zm0-2a8 8 0 1 0 0-16a8 8 0 0 0 0 16zM9 9h6v6H9V9z">
-                    </path>
-                </symbol>
-                <symbol viewBox="0 0 128 128" id="downAudioIcon">
-                    <path
-                        d="M 64.662 1.549 C 56.549 4.524, 46.998 14.179, 45.523 20.895 C 45.041 23.089, 44.073 23.833, 40.433 24.807 C 34.752 26.326, 27.956 32.929, 25.527 39.289 C 24.273 42.574, 23.884 45.715, 24.196 50.034 C 24.620 55.897, 24.528 56.193, 21.836 57.585 C 17.142 60.012, 16 63.617, 16 76 C 16 88.463, 17.137 91.985, 21.967 94.483 C 28.244 97.729, 36.120 95.350, 38.579 89.466 C 39.387 87.532, 40 82.764, 40 78.415 C 40 70.971, 40.060 70.783, 42.250 71.370 C 43.487 71.701, 48.888 71.979, 54.250 71.986 L 64 72 64 76 L 64 80 57.122 80 C 49.420 80, 48.614 80.543, 47.547 86.453 C 46.552 91.964, 43.550 97.473, 40.273 99.803 C 33 104.974, 23.120 105.042, 16.118 99.971 C 11.407 96.558, 9.048 92.484, 8.145 86.205 C 6.963 77.979, 0.794 77.729, 0.191 85.883 C -0.196 91.111, 3.323 99.170, 8.062 103.908 C 11.290 107.136, 20.073 111.969, 22.750 111.990 C 23.540 111.996, 24 113.472, 24 116 C 24 119.740, 23.813 120, 21.122 120 C 17.674 120, 15.727 122.044, 16.173 125.195 C 16.492 127.441, 16.781 127.500, 27.391 127.500 C 36.676 127.500, 38.445 127.242, 39.386 125.750 C 40.993 123.203, 38.986 120.568, 35.149 120.187 C 32.206 119.894, 32 119.617, 32 115.956 C 32 112.509, 32.330 111.959, 34.750 111.377 C 42.181 109.591, 52.157 101.208, 53.575 95.559 C 53.928 94.152, 54.514 93, 54.878 93 C 55.242 93, 59.797 97.275, 65 102.500 C 70.762 108.286, 75.256 112, 76.495 112 C 77.769 112, 83.287 107.231, 91.264 99.236 C 101.113 89.366, 104 85.876, 104 83.843 C 104 80.580, 102.553 80, 94.418 80 L 88 80 88 76.105 L 88 72.211 99.750 71.815 C 113.117 71.364, 117.595 69.741, 122.762 63.473 C 128.159 56.925, 129.673 45.269, 126.134 37.500 C 123.787 32.346, 117.218 26.445, 112.132 24.921 C 108.617 23.868, 107.767 22.968, 105.028 17.405 C 99.364 5.901, 89.280 -0.062, 75.712 0.070 C 71.746 0.109, 66.773 0.774, 64.662 1.549 M 67.885 9.380 C 60.093 12.164, 55.057 17.704, 52.527 26.276 C 51.174 30.856, 50.220 31.617, 44.729 32.496 C 37.017 33.729, 30.917 42.446, 32.374 50.154 C 34.239 60.026, 40.582 63.944, 54.750 63.978 L 64 64 64 57.122 C 64 52.457, 64.449 49.872, 65.396 49.086 C 66.310 48.328, 70.370 48.027, 77.146 48.214 L 87.500 48.500 87.794 56.359 L 88.088 64.218 98.989 63.845 C 108.043 63.535, 110.356 63.125, 112.634 61.424 C 119.736 56.122, 121.911 47.667, 118.097 40.190 C 115.870 35.824, 110.154 32.014, 105.790 31.985 C 102.250 31.961, 101.126 30.787, 99.532 25.443 C 95.580 12.197, 80.880 4.736, 67.885 9.380 M 72 70.800 C 72 80.978, 71.625 85.975, 70.800 86.800 C 70.140 87.460, 67.781 88, 65.559 88 L 61.517 88 68.759 95.241 L 76 102.483 83.241 95.241 L 90.483 88 86.441 88 C 84.219 88, 81.860 87.460, 81.200 86.800 C 80.375 85.975, 80 80.978, 80 70.800 L 80 56 76 56 L 72 56 72 70.800 M 25.200 65.200 C 23.566 66.834, 23.566 85.166, 25.200 86.800 C 27.002 88.602, 29.798 88.246, 30.965 86.066 C 31.534 85.002, 32 80.472, 32 76 C 32 71.528, 31.534 66.998, 30.965 65.934 C 29.798 63.754, 27.002 63.398, 25.200 65.200"
-                        stroke="none" fill="currentColor" fill-rule="evenodd" />
-                </symbol>
-            </svg>
+        <div class="messages">
+            <div id="chatlog"></div>
+            <div id="stopChat"><svg width="24" height="24">
+                    <use xlink:href="#stopResIcon" />
+                </svg>停止</div>
+        </div>
+        <div class="bottom_wrapper clearfix">
+            <div class="message_input_wrapper">
+                <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧" id="chatinput"></textarea>
+            </div>
+            <button class="loaded" id="sendbutton">
+                <span>发送</span>
+                <svg style="margin:0 auto;height:40px;width:100%;">
+                    <use xlink:href="#loadingIcon" />
+                </svg>
+            </button>
+            <button id="clearConv"><svg style="margin:0 auto;display:block" role="img" width="20px" height="20px">
+                    <title>清空会话</title>
+                    <use xlink:href="#deleteIcon" />
+                </svg></button>
         </div>
     </div>
     <script>
+        window.addEventListener("click", event => {
+            if (event.target.className === "toggler") {
+                document.body.classList.toggle("show-nav");
+            } else if (event.target.className === "overlay") {
+                document.body.classList.remove("show-nav");
+            } else if (event.target === document.body) {
+                document.body.classList.remove("show-nav");
+            }
+        });
         const messagsEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
         const stopEle = document.getElementById("stopChat");
@@ -946,7 +1260,18 @@
         const textarea = document.getElementById("chatinput");
         const settingEle = document.getElementById("setting");
         const dialogEle = document.getElementById("setDialog");
+        const systemEle = document.getElementById("systemInput");
         const speechOptionEle = document.getElementById("speechOption");
+        const newChatEle = document.getElementById("newChat");
+        const chatListEle = document.getElementById("chatList");
+        let voiceType = 1; // 设置 0: 提问语音，1：回答语音
+        let voiceRole = []; // 语音
+        let voiceVolume = []; //音量
+        let voiceRate = []; // 语速
+        let voicePitch = []; // 音调
+        let enableContVoice; //连续朗读
+        let enableAutoVoice; //自动朗读
+        let existVoice = 2; // 2:使用edge在线语音, 1:使用本地语音, 0:不支持语音
         textarea.focus();
         textarea.oninput = (e) => {
             if (textarea.value.trim().length) {
@@ -957,164 +1282,8 @@
             textarea.style.height = "47px";
             textarea.style.height = textarea.scrollHeight + "px";
         };
-    </script>
-    <script src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
-    <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
-    <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
-    <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
-    <script>
-        const API_URL = "v1/chat/completions";
-        let data = [];
-        let loading = false;
-        let presetRoleData = {
-            "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
-            "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
-            "image": "我给你个指令，生成相应的图片，发送图片时候请用 markdown 语言生成，不要反斜线，不要代码框，请需要使用 unsplash API ，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
-        };
-        let systemRole; // 自定义系统角色
-        let roleNature; // 角色性格
-        let roleTemp; // 回答质量
-        let customAPIKey; // 自定义apiKey
-        let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
-        let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
-        let longReplyFlag;
-        let textSpeed; // 打字机速度，越小越快
-        let voiceType = 1; // 设置 0: 提问语音，1：回答语音
-        let voiceRole = []; // 语音
-        let voiceVolume = []; //音量
-        let voiceRate = []; // 语速
-        let voicePitch = []; // 音调
-        let voiceIns; // Audio or SpeechSynthesisUtterance
-        let enableContVoice; //连续朗读
-        let enableAutoVoice; //自动朗读
-        let supportMSE = !!window.MediaSource; //是否支持MSE（除了ios应该都支持）
-        let voiceMIME = "audio/mpeg";
-        const scrollToBottom = () => {
-            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
-                messagsEle.scrollTo(0, messagsEle.scrollHeight)
-            }
-        }
-        const scrollToBottomLoad = (ele) => {
-            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 128) {
-                messagsEle.scrollTo(0, messagsEle.scrollHeight)
-            }
-        }
-        const initSetting = () => {
-            const keyEle = document.getElementById("keyInput");
-            let localKey = localStorage.getItem("APIKey");
-            if (localKey) {
-                customAPIKey = localKey;
-                keyEle.value = localKey;
-            }
-            keyEle.onchange = () => {
-                customAPIKey = keyEle.value;
-                localStorage.setItem("APIKey", customAPIKey);
-            }
-            keyEle.dispatchEvent(new Event("change"));
-            const systemEle = document.getElementById("systemInput");
-            let localSystem = localStorage.getItem("system");
-            if (localSystem) {
-                systemRole = localSystem;
-                systemEle.value = localSystem;
-                data.unshift({role: "system", content: systemRole});
-            } else {
-                systemRole = systemEle.value;
-            }
-            systemEle.onchange = () => {
-                systemRole = systemEle.value;
-                localStorage.setItem("system", systemRole);
-                if (systemRole) {
-                    if (data[0] && data[0].role === "system") {
-                        data[0].content = systemRole;
-                    } else {
-                        data.unshift({role: "system", content: systemRole});
-                    }
-                } else if (data[0] && data[0].role === "system") {
-                    data.shift();
-                }
-            }
-            const preEle = document.getElementById("preSetSystem");
-            preEle.onchange = () => {
-                let val = preEle.value;
-                if (val && presetRoleData[val]) {
-                    systemEle.value = presetRoleData[val];
-                } else {
-                    systemEle.value = "";
-                }
-                systemEle.dispatchEvent(new Event("change"));
-                systemEle.focus();
-            }
-            const topEle = document.getElementById("top_p");
-            let localTop = localStorage.getItem("top_p");
-            if (localTop) {
-                roleNature = parseFloat(localTop);
-                topEle.value = localTop;
-            }
-            topEle.oninput = () => {
-                topEle.style.backgroundSize = (topEle.value - topEle.min) * 100 / (topEle.max - topEle.min) + "% 100%";
-                roleNature = parseFloat(topEle.value);
-                localStorage.setItem("top_p", topEle.value);
-            }
-            topEle.dispatchEvent(new Event("input"));
-            const tempEle = document.getElementById("temp");
-            let localTemp = localStorage.getItem("temp");
-            if (localTemp) {
-                roleTemp = parseFloat(localTemp);
-                tempEle.value = localTemp;
-            }
-            tempEle.oninput = () => {
-                tempEle.style.backgroundSize = (tempEle.value - tempEle.min) * 100 / (tempEle.max - tempEle.min) + "% 100%";
-                roleTemp = parseFloat(tempEle.value);
-                localStorage.setItem("temp", tempEle.value);
-            }
-            tempEle.dispatchEvent(new Event("input"));
-            const speedEle = document.getElementById("textSpeed");
-            let localSpeed = localStorage.getItem("textSpeed");
-            if (localSpeed) {
-                textSpeed = parseFloat(speedEle.min) + (speedEle.max - localSpeed);
-                speedEle.value = localSpeed;
-            }
-            speedEle.oninput = () => {
-                speedEle.style.backgroundSize = (speedEle.value - speedEle.min) * 100 / (speedEle.max - speedEle.min) + "% 100%";
-                textSpeed = parseFloat(speedEle.min) + (speedEle.max - speedEle.value);
-                localStorage.setItem("textSpeed", speedEle.value);
-            }
-            speedEle.dispatchEvent(new Event("input"));
-            const contEle = document.getElementById("enableCont");
-            let localCont = localStorage.getItem("enableCont");
-            if (localCont) {
-                enableCont = localCont === "true";
-                contEle.checked = enableCont;
-            }
-            contEle.onchange = () => {
-                enableCont = contEle.checked;
-                localStorage.setItem("enableCont", enableCont);
-            }
-            contEle.dispatchEvent(new Event("change"));
-            const longEle = document.getElementById("enableLongReply");
-            let localLong = localStorage.getItem("enableLongReply");
-            if (localLong) {
-                enableLongReply = localLong === "true";
-                longEle.checked = enableLongReply;
-            }
-            longEle.onchange = () => {
-                enableLongReply = longEle.checked;
-                localStorage.setItem("enableLongReply", enableLongReply);
-            }
-            longEle.dispatchEvent(new Event("change"));
-        };
-        initSetting();
-        let existVoice; // 2:使用edge在线语音, 1:使用本地语音, 0:不支持语音
         const loadVoice = () => {
             return new Promise((res, rej) => {
-                // let localOnlineVoice = localStorage.getItem("onlineVoices");
-                // if (localOnlineVoice) {
-                //     let json = JSON.parse(localOnlineVoice);
-                //     existVoice = 2;
-                //     initVoiceSetting(json);
-                //     return res();
-                // }
                 let timeOut = new AbortController();
                 setTimeout(() => {
                     rej();
@@ -1122,7 +1291,6 @@
                 fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", {signal: timeOut.signal}).then(response => {
                     response.json().then(json => {
                         existVoice = 2;
-                        // localStorage.setItem("onlineVoices", JSON.stringify(json));
                         initVoiceSetting(json);
                         res();
                     });
@@ -1130,6 +1298,47 @@
                     rej();
                 })
             })
+        };
+        const loadLocalVoice = () => {
+            existVoice = !!(window.speechSynthesis && window.SpeechSynthesisUtterance) ? 1 : 0;
+            if (existVoice) {
+                let initedVoice = false;
+                const getLocalVoice = () => {
+                    let voices = speechSynthesis.getVoices();
+                    if (voices.length) {
+                        if (!initedVoice) {
+                            initedVoice = true;
+                            initVoiceSetting(voices);
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                let syncExist = getLocalVoice();
+                if (!syncExist) {
+                    if ("onvoiceschanged" in speechSynthesis) {
+                        speechSynthesis.onvoiceschanged = () => {
+                            getLocalVoice();
+                        }
+                    } else if (speechSynthesis.addEventListener) {
+                        speechSynthesis.addEventListener("voiceschanged", () => {
+                            getLocalVoice();
+                        })
+                    }
+                    let timeout = 0;
+                    let timer = setInterval(() => {
+                        if (getLocalVoice() || timeout > 1000) {
+                            if (timeout > 1000) {
+                                existVoice = 0;
+                            }
+                            clearInterval(timer);
+                            timer = null;
+                        }
+                        timeout += 300;
+                    }, 300)
+                }
+            }
         };
         const initVoiceSetting = (voices) => {
             speechOptionEle.style.display = "block";
@@ -1279,65 +1488,40 @@
             }
             autoVoiceEle.dispatchEvent(new Event("change"));
         };
-        const loadLocalVoice = () => {
-            existVoice = !!(window.speechSynthesis && window.SpeechSynthesisUtterance) ? 1 : 0;
-            if (existVoice) {
-                let initedVoice = false;
-                const getLocalVoice = () => {
-                    let voices = speechSynthesis.getVoices();
-                    if (voices.length) {
-                        if (!initedVoice) {
-                            initedVoice = true;
-                            initVoiceSetting(voices);
-                        }
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                let syncExist = getLocalVoice();
-                if (!syncExist) {
-                    if ("onvoiceschanged" in speechSynthesis) {
-                        speechSynthesis.onvoiceschanged = () => {
-                            getLocalVoice();
-                        }
-                    } else if (speechSynthesis.addEventListener) {
-                        speechSynthesis.addEventListener("voiceschanged", () => {
-                            getLocalVoice();
-                        })
-                    }
-                    let timeout = 0;
-                    let timer = setInterval(() => {
-                        if (getLocalVoice() || timeout > 1000) {
-                            if (timeout > 1000) {
-                                existVoice = 0;
-                            }
-                            clearInterval(timer);
-                            timer = null;
-                        }
-                        timeout += 300;
-                    }, 300)
-                }
-            }
-        };
         loadVoice().catch(() => {loadLocalVoice()});
-        const closeEvent = (ev) => {
-            if (settingEle.contains(ev.target)) return;
-            if (!dialogEle.contains(ev.target)) {
-                dialogEle.style.display = "none";
-                document.removeEventListener("mousedown", closeEvent, true);
-                settingEle.classList.remove("showSetting");
+    </script>
+    <script src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
+    <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
+    <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
+    <script>
+        const API_URL = "v1/chat/completions";
+        let loading = false;
+        let presetRoleData = {
+            "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
+            "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
+            "image": "我给你个指令，生成相应的图片，发送图片时候请用 markdown 语言生成，不要反斜线，不要代码框，请需要使用 unsplash API ，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
+        };
+        let systemRole; // 自定义系统角色
+        let roleNature; // 角色性格
+        let roleTemp; // 回答质量
+        let customAPIKey; // 自定义apiKey
+        let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
+        let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
+        let longReplyFlag;
+        let textSpeed; // 打字机速度，越小越快
+        let voiceIns; // Audio or SpeechSynthesisUtterance
+        let supportMSE = !!window.MediaSource; //是否支持MSE（除了ios应该都支持）
+        let voiceMIME = "audio/mpeg";
+        const scrollToBottom = () => {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
+                messagsEle.scrollTo(0, messagsEle.scrollHeight)
             }
         }
-        settingEle.onmousedown = () => {
-            let stat = dialogEle.style.display;
-            dialogEle.style.display = stat === "block" ? "none" : "block";
-            if (dialogEle.style.display === "block") {
-                document.addEventListener("mousedown", closeEvent, true);
-                settingEle.classList.add("showSetting");
-            } else {
-                document.removeEventListener("mousedown", closeEvent, true);
-                settingEle.classList.remove("showSetting");
+        const scrollToBottomLoad = (ele) => {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 128) {
+                messagsEle.scrollTo(0, messagsEle.scrollHeight)
             }
         }
         const md = markdownit({
@@ -1436,6 +1620,438 @@
             token.attrs[token.attrIndex("alt")][1] = slf.renderInlineAsText(token.children, options, env);
             token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload')");
             return slf.renderToken(tokens, idx, options)
+        }
+        const mdOptionEvent = function (ev) {
+            let id = ev.target.dataset.id;
+            if (id) {
+                let parent = ev.target.parentElement;
+                let idxEle = parent.parentElement;
+                let idx = Array.prototype.indexOf.call(chatlog.children, this.parentElement);
+                if (id === "voiceMd") {
+                    let className = parent.className;
+                    if (className == "readyVoice") {
+                        if (chatlog.children[idx].dataset.loading !== "true") {
+                            idx = systemRole ? idx + 1 : idx;
+                            speechEvent(idx);
+                        }
+                    } else if (className == "pauseVoice") {
+                        if (existVoice == 2) {
+                            if (voiceIns) voiceIns.pause();
+                        } else {
+                            speechSynthesis.pause();
+                        }
+                        parent.className = "resumeVoice";
+                    } else {
+                        if (existVoice == 2) {
+                            if (voiceIns) voiceIns.play();
+                        } else {
+                            speechSynthesis.resume();
+                        }
+                        parent.className = "pauseVoice";
+                    }
+                } else if (id === "refreshMd") {
+                    if (!loading && chatlog.children[idx].dataset.loading !== "true") {
+                        let className = parent.className;
+                        if (className == "refreshReq") {
+                            chatlog.children[idx].children[0].innerHTML = "<br />";
+                            chatlog.children[idx].dataset.loading = true;
+                            idx = systemRole ? idx + 1 : idx;
+                            data[idx].content = "";
+                            if (idx === currentVoiceIdx) {endSpeak()};
+                            loadAction(true);
+                            refreshIdx = idx;
+                            streamGen();
+                        } else {
+                            chatlog.children[idx].dataset.loading = true;
+                            idx = systemRole ? idx + 1 : idx;
+                            progressData = data[idx].content;
+                            loadAction(true);
+                            refreshIdx = idx;
+                            streamGen(true);
+                        }
+                    }
+                } else if (id === "copyMd") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    copyClickMd(idx);
+                } else if (id === "delMd") {
+                    idxEle.classList.add("moreOptionHidden");
+                    if (!loading) {
+                        if (confirmAction("是否删除此消息?")) {
+                            if (currentVoiceIdx) {
+                                if (currentVoiceIdx === idx) {endSpeak()}
+                                else if (currentVoiceIdx > idx) {currentVoiceIdx -= 1}
+                            }
+                            chatlog.removeChild(chatlog.children[idx]);
+                            idx = systemRole ? idx + 1 : idx;
+                            data.splice(idx, 1);
+                            updateChats();
+                        }
+                    }
+                } else if (id === "downAudio") {
+                    idxEle.classList.add("moreOptionHidden");
+                    if (chatlog.children[idx].dataset.loading !== "true") {
+                        idx = systemRole ? idx + 1 : idx;
+                        downloadAudio(idx);
+                    }
+                }
+            }
+        }
+        const moreOption = (ele) => {
+            ele.classList.remove("moreOptionHidden");
+        }
+        const formatMdEle = (ele) => {
+            let realMd = document.createElement("div");
+            realMd.className = "markdown-body";
+            ele.appendChild(realMd);
+            let mdOption = document.createElement("div");
+            mdOption.className = "mdOption";
+            ele.appendChild(mdOption);
+            if (ele.className !== "request") {
+                mdOption.innerHTML = `<div class="refreshReq">
+                    <svg data-id="refreshMd" width="16" height="16" role="img"><title>刷新</title><use xlink:href="#refreshIcon" /></svg>
+                    <svg data-id="refreshMd" width="16" height="16" role="img"><title>继续</title><use xlink:href="#halfRefIcon" /></svg>
+                </div>`
+            }
+            let optionWidth = existVoice === 2 ? "96px" : "63px";
+            mdOption.innerHTML += `<div class="moreOption" onmouseenter="moreOption(this)">
+            <svg class="optionTrigger" width="16" height="16" role="img"><title>选项</title><use xlink:href="#optionIcon" /></svg>
+            <div class="optionItems" style="width:${optionWidth};left:-${optionWidth}">` + (existVoice === 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
+                <svg width="20" height="20"><use xlink:href="#downAudioIcon" /></svg>
+            </div>` : "") + `<div data-id="delMd" class="optionItem" title="删除">
+                <svg width="20" height="20"><use xlink:href="#delIcon" /></svg>
+            </div>
+            <div data-id="copyMd" class="optionItem" title="复制">
+                <svg width="20" height="20"><use xlink:href="#copyIcon" /></svg>
+            </div></div></div>`;
+            if (existVoice) {
+                mdOption.innerHTML += `<div id="pronMd" class="readyVoice">
+                <svg width="16" height="16" data-id="voiceMd" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
+                <svg width="16" height="16" data-id="voiceMd" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
+                <svg width="16" height="16" data-id="voiceMd" role="img"><title>继续</title><use xlink:href="#resumeVoiceIcon" /></svg>
+                </div>`
+            }
+            mdOption.onclick = mdOptionEvent;
+        }
+        let chatsData = [];
+        let activeChatIdx = 0;
+        let data;
+        const chatEleAdd = (idx) => {
+            let chat = chatsData[idx];
+            let chatEle = document.createElement("div");
+            chatEle.className = "chatLi";
+            chatEle.innerHTML = `<svg width="24" height="24"><use xlink:href="#chatIcon" /></svg>
+                <div class="chatName">${chat.name}</div>
+                <div class="chatOption"><svg data-type="chatEdit" style="margin-right:4px" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
+                <svg data-type="chatDel" width="24" height="24" role="img"><title>删除</title><use xlink:href="#delIcon" /></svg></div>`
+            chatListEle.appendChild(chatEle);
+            chatEle.onclick = chatEleEvent;
+            return chatEle;
+        };
+        const addNewChat = () => {
+            let chat = {name: "新的会话", data: []};
+            chatsData.push(chat);
+            updateChats();
+        };
+        const delChat = (idx) => {
+            if (confirmAction("是否删除会话?")) {
+                endAll();
+                if (idx === activeChatIdx) {
+                    if (idx - 1 >= 0) {
+                        activeChatIdx = idx - 1;
+                    } else if (idx === chatsData.length - 1) {
+                        activeChatIdx = chatsData.length - 2;
+                    }
+                }
+                chatsData.splice(idx, 1);
+                chatListEle.children[idx].remove();
+                if (activeChatIdx === -1) {
+                    addNewChat();
+                    activeChatIdx = 0;
+                    chatEleAdd(activeChatIdx);
+                }
+                updateChats();
+                activeChat();
+            }
+        };
+        const endEditEvent = (ev) => {
+            let activeEle = document.getElementById("activeChatEdit")
+            if (!activeEle.contains(ev.target)) {
+                let ele = chatListEle.children[activeChatIdx];
+                chatsData[activeChatIdx].name = activeEle.value;
+                ele.children[1].textContent = activeEle.value;
+                ele.lastElementChild.remove();
+                updateChats();
+                document.body.removeEventListener("mousedown", endEditEvent, true);
+            }
+        };
+        const toEditChatName = (idx) => {
+            let inputEle = document.createElement("input");
+            inputEle.id = "activeChatEdit";
+            inputEle.value = chatsData[idx].name;
+            chatListEle.children[idx].appendChild(inputEle);
+            inputEle.focus();
+            document.body.addEventListener("mousedown", endEditEvent, true);
+        };
+        const chatEleEvent = function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            let idx = Array.prototype.indexOf.call(chatListEle.children, this);
+            if (ev.target.className === "chatLi") {
+                if (activeChatIdx !== idx) {
+                    endAll();
+                    activeChatIdx = idx;
+                    activeChat();
+                }
+                document.body.classList.remove("show-nav");
+            } else if (ev.target.dataset.type === "chatEdit") {
+                toEditChatName(idx);
+            } else if (ev.target.dataset.type === "chatDel") {
+                delChat(idx);
+            }
+        };
+        const updateChats = () => {
+            localStorage.setItem("chats", JSON.stringify(chatsData));
+        };
+        const createConvEle = (className) => {
+            let div = document.createElement("div");
+            div.className = className;
+            chatlog.appendChild(div);
+            formatMdEle(div);
+            return div;
+        }
+        const activeChat = () => {
+            data = chatsData[activeChatIdx]["data"];
+            Array.from(document.getElementsByClassName("activeChatLi")).forEach(item => {
+                item.classList.remove("activeChatLi");
+            });
+            chatListEle.children[activeChatIdx].classList.add("activeChatLi");
+            if (data[0] && data[0].role === "system") {
+                systemRole = data[0].content;
+                systemEle.value = systemRole;
+                localStorage.setItem("system", systemRole);
+            } else {
+                systemRole = "";
+                systemEle.value = "";
+                localStorage.setItem("system", systemRole);
+            }
+            chatlog.innerHTML = "";
+            if (systemRole ? data.length - 1 : data.length) {
+                let firstIdx = systemRole ? 1 : 0;
+                for (let i = firstIdx; i < data.length; i++) {
+                    createConvEle(data[i].role === "user" ? "request" : "response").children[0].innerHTML = md.render(data[i].content);
+                }
+            }
+            localStorage.setItem("activeChatIdx", activeChatIdx);
+        };
+        newChatEle.onclick = () => {
+            endAll();
+            addNewChat();
+            activeChatIdx = chatsData.length - 1;
+            chatEleAdd(activeChatIdx);
+            activeChat();
+        };
+        const initChats = () => {
+            let localChats = localStorage.getItem("chats");
+            let localChatIdx = localStorage.getItem("activeChatIdx")
+            activeChatIdx = (localChatIdx && parseInt(localChatIdx)) || 0;
+            if (localChats) {
+                chatsData = JSON.parse(localChats);
+                for (let i = 0; i < chatsData.length; i++) {
+                    chatEleAdd(i);
+                }
+            } else {
+                addNewChat();
+                chatEleAdd(activeChatIdx);
+            }
+        };
+        initChats();
+        activeChat();
+        document.getElementById("exportChat").onclick = () => {
+            if (loading) {
+                stopLoading();
+            }
+            let blob = new Blob([JSON.stringify(chatsData, null, 2)], {type: "application/json"});
+            let date = new Date();
+            let fileName = "chats-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
+            downBlob(blob, fileName);
+        };
+        const blobToText = (blob) => {
+            return new Promise((res, rej) => {
+                let reader = new FileReader();
+                reader.readAsText(blob);
+                reader.onload = () => {
+                    res(reader.result);
+                }
+                reader.onerror = (error) => {
+                    rej(error);
+                }
+            })
+        };
+        document.getElementById("importChatInput").onchange = function () {
+            let file = this.files[0];
+            blobToText(file).then(text => {
+                try {
+                    let json = JSON.parse(text);
+                    let checked = json.every(item => {
+                        return item.name !== void 0 && item.data !== void 0;
+                    });
+                    if (checked) {
+                        while (json.length) {
+                            chatsData.push(json.shift());
+                            chatEleAdd(chatsData.length - 1);
+                        }
+                        updateChats();
+                    } else {
+                        throw new Error("格式检查不通过")
+                    }
+                } catch (e) {
+                    alert("导入失败，请检查文件是否正确！")
+                }
+                this.value = "";
+            })
+        };
+        document.getElementById("clearChat").onclick = () => {
+            if (confirmAction("是否清空所有会话?")) {
+                chatsData.length = 0;
+                chatListEle.innerHTML = "";
+                endAll();
+                addNewChat();
+                activeChatIdx = 0;
+                chatEleAdd(activeChatIdx);
+                updateChats();
+                activeChat();
+            }
+        };
+        const endAll = () => {
+            endSpeak();
+            if (loading) stopLoading();
+        };
+        const initSetting = () => {
+            const keyEle = document.getElementById("keyInput");
+            let localKey = localStorage.getItem("APIKey");
+            if (localKey) {
+                customAPIKey = localKey;
+                keyEle.value = localKey;
+            }
+            keyEle.onchange = () => {
+                customAPIKey = keyEle.value;
+                localStorage.setItem("APIKey", customAPIKey);
+            }
+            keyEle.dispatchEvent(new Event("change"));
+            if (systemRole === void 0) {
+                let localSystem = localStorage.getItem("system");
+                if (localSystem) {
+                    systemRole = localSystem;
+                    systemEle.value = localSystem;
+                    data.unshift({role: "system", content: systemRole});
+                } else {
+                    systemRole = systemEle.value;
+                }
+            }
+            systemEle.onchange = () => {
+                systemRole = systemEle.value;
+                localStorage.setItem("system", systemRole);
+                if (systemRole) {
+                    if (data[0] && data[0].role === "system") {
+                        data[0].content = systemRole;
+                    } else {
+                        data.unshift({role: "system", content: systemRole});
+                    }
+                } else if (data[0] && data[0].role === "system") {
+                    data.shift();
+                }
+            }
+            const preEle = document.getElementById("preSetSystem");
+            preEle.onchange = () => {
+                let val = preEle.value;
+                if (val && presetRoleData[val]) {
+                    systemEle.value = presetRoleData[val];
+                } else {
+                    systemEle.value = "";
+                }
+                systemEle.dispatchEvent(new Event("change"));
+                systemEle.focus();
+            }
+            const topEle = document.getElementById("top_p");
+            let localTop = localStorage.getItem("top_p");
+            if (localTop) {
+                roleNature = parseFloat(localTop);
+                topEle.value = localTop;
+            }
+            topEle.oninput = () => {
+                topEle.style.backgroundSize = (topEle.value - topEle.min) * 100 / (topEle.max - topEle.min) + "% 100%";
+                roleNature = parseFloat(topEle.value);
+                localStorage.setItem("top_p", topEle.value);
+            }
+            topEle.dispatchEvent(new Event("input"));
+            const tempEle = document.getElementById("temp");
+            let localTemp = localStorage.getItem("temp");
+            if (localTemp) {
+                roleTemp = parseFloat(localTemp);
+                tempEle.value = localTemp;
+            }
+            tempEle.oninput = () => {
+                tempEle.style.backgroundSize = (tempEle.value - tempEle.min) * 100 / (tempEle.max - tempEle.min) + "% 100%";
+                roleTemp = parseFloat(tempEle.value);
+                localStorage.setItem("temp", tempEle.value);
+            }
+            tempEle.dispatchEvent(new Event("input"));
+            const speedEle = document.getElementById("textSpeed");
+            let localSpeed = localStorage.getItem("textSpeed");
+            if (localSpeed) {
+                textSpeed = parseFloat(speedEle.min) + (speedEle.max - localSpeed);
+                speedEle.value = localSpeed;
+            }
+            speedEle.oninput = () => {
+                speedEle.style.backgroundSize = (speedEle.value - speedEle.min) * 100 / (speedEle.max - speedEle.min) + "% 100%";
+                textSpeed = parseFloat(speedEle.min) + (speedEle.max - speedEle.value);
+                localStorage.setItem("textSpeed", speedEle.value);
+            }
+            speedEle.dispatchEvent(new Event("input"));
+            const contEle = document.getElementById("enableCont");
+            let localCont = localStorage.getItem("enableCont");
+            if (localCont) {
+                enableCont = localCont === "true";
+                contEle.checked = enableCont;
+            }
+            contEle.onchange = () => {
+                enableCont = contEle.checked;
+                localStorage.setItem("enableCont", enableCont);
+            }
+            contEle.dispatchEvent(new Event("change"));
+            const longEle = document.getElementById("enableLongReply");
+            let localLong = localStorage.getItem("enableLongReply");
+            if (localLong) {
+                enableLongReply = localLong === "true";
+                longEle.checked = enableLongReply;
+            }
+            longEle.onchange = () => {
+                enableLongReply = longEle.checked;
+                localStorage.setItem("enableLongReply", enableLongReply);
+            }
+            longEle.dispatchEvent(new Event("change"));
+        };
+        initSetting();
+        document.getElementById("loadMask").style.display = "none";
+        const closeEvent = (ev) => {
+            if (settingEle.contains(ev.target)) return;
+            if (!dialogEle.contains(ev.target)) {
+                dialogEle.style.display = "none";
+                document.removeEventListener("mousedown", closeEvent, true);
+                settingEle.classList.remove("showSetting");
+            }
+        }
+        settingEle.onmousedown = () => {
+            let stat = dialogEle.style.display;
+            dialogEle.style.display = stat === "block" ? "none" : "block";
+            if (dialogEle.style.display === "block") {
+                document.addEventListener("mousedown", closeEvent, true);
+                settingEle.classList.add("showSetting");
+            } else {
+                document.removeEventListener("mousedown", closeEvent, true);
+                settingEle.classList.remove("showSetting");
+            }
         }
         let delayId;
         const delay = () => {
@@ -1634,10 +2250,14 @@
         }
         const speechEvent = async (idx) => {
             if (!data[idx]) return;
-            let type = data[idx].role === "user" ? 0 : 1;
             endSpeak();
-            chatlog.children[systemRole ? idx - 1 : idx].children[1].lastChild.className = "pauseVoice";
             currentVoiceIdx = idx;
+            if (!data[idx].content && enableContVoice) {
+                if (currentVoiceIdx !== data.length - 1) {return speechEvent(currentVoiceIdx + 1)}
+                else {return endSpeak()}
+            };
+            let type = data[idx].role === "user" ? 0 : 1;
+            chatlog.children[systemRole ? idx - 1 : idx].children[1].lastChild.className = "pauseVoice";
             let content = data[idx].content;
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
@@ -1857,7 +2477,7 @@
                 voiceIns.voice = voiceRole[1];
                 speakEvent(voiceIns, force, end);
             }
-        }
+        };
         const confirmAction = (prompt) => {
             if (window.confirm(prompt)) {
                 return true;
@@ -1865,118 +2485,7 @@
             else {
                 return false;
             }
-        }
-        const mdOptionEvent = (ev) => {
-            let id = ev.target.dataset.id;
-            if (id) {
-                let parent = ev.target.parentElement;
-                let idxEle = parent.parentElement;
-                let idx = Array.prototype.indexOf.call(chatlog.children, (id === "voiceMd" || id === "refreshMd") ? idxEle.parentElement : idxEle.parentElement.parentElement);
-                if (id === "voiceMd") {
-                    let className = parent.className;
-                    if (className == "readyVoice") {
-                        if (chatlog.children[idx].dataset.loading !== "true") {
-                            idx = systemRole ? idx + 1 : idx;
-                            speechEvent(idx);
-                        }
-                    } else if (className == "pauseVoice") {
-                        if (existVoice == 2) {
-                            if (voiceIns) voiceIns.pause();
-                        } else {
-                            speechSynthesis.pause();
-                        }
-                        parent.className = "resumeVoice";
-                    } else {
-                        if (existVoice == 2) {
-                            if (voiceIns) voiceIns.play();
-                        } else {
-                            speechSynthesis.resume();
-                        }
-                        parent.className = "pauseVoice";
-                    }
-                } else if (id === "refreshMd") {
-                    if (!loading && chatlog.children[idx].dataset.loading !== "true") {
-                        let className = parent.className;
-                        if (className == "refreshReq") {
-                            chatlog.children[idx].children[0].innerHTML = "<br />";
-                            chatlog.children[idx].dataset.loading = true;
-                            idx = systemRole ? idx + 1 : idx;
-                            data[idx].content = "";
-                            if (idx === currentVoiceIdx) {endSpeak()};
-                            loadAction(true);
-                            refreshIdx = idx;
-                            streamGen();
-                        } else {
-                            chatlog.children[idx].dataset.loading = true;
-                            idx = systemRole ? idx + 1 : idx;
-                            progressData = data[idx].content;
-                            loadAction(true);
-                            refreshIdx = idx;
-                            streamGen(true);
-                        }
-                    }
-                } else if (id === "copyMd") {
-                    idxEle.classList.add("moreOptionHidden");
-                    idx = systemRole ? idx + 1 : idx;
-                    copyClickMd(idx);
-                } else if (id === "delMd") {
-                    idxEle.classList.add("moreOptionHidden");
-                    if (!loading) {
-                        if (confirmAction("是否删除此消息?")) {
-                            if (currentVoiceIdx) {
-                                if (currentVoiceIdx === idx) {endSpeak()}
-                                else if (currentVoiceIdx > idx) {currentVoiceIdx -= 1}
-                            }
-                            chatlog.removeChild(chatlog.children[idx]);
-                            idx = systemRole ? idx + 1 : idx;
-                            data.splice(idx, 1);
-                        }
-                    }
-                } else if (id === "downAudio") {
-                    idxEle.classList.add("moreOptionHidden");
-                    if (chatlog.children[idx].dataset.loading !== "true") {
-                        idx = systemRole ? idx + 1 : idx;
-                        downloadAudio(idx);
-                    }
-                }
-            }
-        }
-        const moreOption = (ele) => {
-            ele.classList.remove("moreOptionHidden");
-        }
-        const formatMdEle = (ele) => {
-            let realMd = document.createElement("div");
-            realMd.className = "markdown-body";
-            ele.appendChild(realMd);
-            let mdOption = document.createElement("div");
-            mdOption.className = "mdOption";
-            ele.appendChild(mdOption);
-            if (ele.className !== "request") {
-                mdOption.innerHTML = `<div class="refreshReq">
-                    <svg data-id="refreshMd" width="16" height="16" role="img"><title>刷新</title><use xlink:href="#refreshIcon" /></svg>
-                    <svg data-id="refreshMd" width="16" height="16" role="img"><title>继续</title><use xlink:href="#halfRefIcon" /></svg>
-                </div>`
-            }
-            let optionWidth = existVoice === 2 ? "96px" : "63px";
-            mdOption.innerHTML += `<div class="moreOption" onmouseenter="moreOption(this)">
-            <svg class="optionTrigger" width="16" height="16" role="img"><title>选项</title><use xlink:href="#optionIcon" /></svg>
-            <div class="optionItems" style="width:${optionWidth};left:-${optionWidth}">` + (existVoice === 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
-                <svg width="20" height="20"><use xlink:href="#downAudioIcon" /></svg>
-            </div>` : "") + `<div data-id="delMd" class="optionItem" title="删除">
-                <svg width="20" height="20"><use xlink:href="#delIcon" /></svg>
-            </div>
-            <div data-id="copyMd" class="optionItem" title="复制">
-                <svg width="20" height="20"><use xlink:href="#copyIcon" /></svg>
-            </div></div></div>`;
-            if (existVoice) {
-                mdOption.innerHTML += `<div id="pronMd" class="readyVoice">
-                <svg width="16" height="16" data-id="voiceMd" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
-                <svg width="16" height="16" data-id="voiceMd" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
-                <svg width="16" height="16" data-id="voiceMd" role="img"><title>继续</title><use xlink:href="#resumeVoiceIcon" /></svg>
-                </div>`
-            }
-            mdOption.onclick = mdOptionEvent;
-        }
+        };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
         let controller;
@@ -1996,10 +2505,7 @@
             if (isRefresh) {
                 currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
             } else if (!currentResEle) {
-                currentResEle = document.createElement("div");
-                currentResEle.className = "response";
-                chatlog.appendChild(currentResEle);
-                formatMdEle(currentResEle);
+                currentResEle = createConvEle("response");
                 currentResEle.children[0].innerHTML = "<br />";
                 currentResEle.dataset.loading = true;
                 scrollToBottom();
@@ -2137,6 +2643,7 @@
                     autoSpeechEvent(voiceText, currentResEle, false, true);
                 }
             }
+            updateChats();
             controllerId = delayId = refreshIdx = void 0;
             autoVoiceIdx = 0;
             currentResEle.dataset.loading = false;
@@ -2146,12 +2653,14 @@
         }
         const generateText = async (message) => {
             loadAction(true);
-            let request = document.createElement("div");
-            request.className = "request";
-            chatlog.appendChild(request);
-            formatMdEle(request);
-            request.children[0].innerHTML = md.render(message);
+            let requestEle = createConvEle("request");
+            requestEle.children[0].innerHTML = md.render(message);
             data.push({role: "user", content: message});
+            if (chatsData[activeChatIdx].name === "新的会话") {
+                chatsData[activeChatIdx].name = message;
+                chatListEle.children[activeChatIdx].children[1].textContent = message;
+            }
+            updateChats();
             scrollToBottom();
             await streamGen();
         };
@@ -2179,8 +2688,9 @@
                 if (confirmAction("是否清空会话?")) {
                     endSpeak();
                     if (systemRole) {data.length = 1}
-                    else {data = []}
+                    else {data.length = 0}
                     chatlog.innerHTML = "";
+                    updateChats();
                 }
             }
         }
