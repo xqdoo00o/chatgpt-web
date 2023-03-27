@@ -1945,6 +1945,7 @@
                     systemRole = localSystem;
                     systemEle.value = localSystem;
                     data.unshift({role: "system", content: systemRole});
+                    updateChats();
                 } else {
                     systemRole = systemEle.value;
                 }
@@ -1961,6 +1962,7 @@
                 } else if (data[0] && data[0].role === "system") {
                     data.shift();
                 }
+                updateChats();
             }
             const preEle = document.getElementById("preSetSystem");
             preEle.onchange = () => {
