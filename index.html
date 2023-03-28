@@ -985,9 +985,9 @@
         .voiceRecing .animVoice {
             display: inline !important;
             transform-origin: 0 64%;
-            animation-duration: 1.2s;
+            animation-duration: 1.5s;
             animation-name: scaleVoice;
-            animation-timing-function: ease-in-out;
+            animation-timing-function: ease;
             animation-iteration-count: infinite;
         }
 
@@ -1012,15 +1012,43 @@
 
         @keyframes scaleVoice {
             0% {
-                transform: scaleY(0);
+                transform: scaleY(0.28);
             }
 
-            50% {
-                transform: scaleY(1);
+            20% {
+                transform: scaleY(0.60);
+            }
+
+            28% {
+                transform: scaleY(0.28);
+            }
+
+            36% {
+                transform: scaleY(0.45);
+            }
+
+            44% {
+                transform: scaleY(0.28);
+            }
+
+            52% {
+                transform: scaleY(0.45);
+            }
+
+            62% {
+                transform: scaleY(0.80);
+            }
+
+            72% {
+                transform: scaleY(0.80);
+            }
+
+            90% {
+                transform: scaleY(0.28);
             }
 
             100% {
-                transform: scaleY(0);
+                transform: scaleY(0.28);
             }
         }
 
@@ -1366,7 +1394,7 @@
         </div>
     </div>
     <script>
-        window.addEventListener("click", event => {
+        window.addEventListener("mousedown", event => {
             if (event.target.className === "toggler") {
                 document.body.classList.toggle("show-nav");
             } else if (event.target.className === "overlay") {
@@ -1414,12 +1442,14 @@
         if (supportRec) {
             document.getElementById("voiceRec").style.display = "block";
             textarea.classList.add("message_if_voice")
-            let langs =
-                [['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
+            let langs = [
+                ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
                     ['cmn-Hans-HK', '普通话 (香港)'],
                     ['cmn-Hant-TW', '中文 (台灣)'],
                     ['yue-Hant-HK', '粵語 (香港)']],
-                ['English', ['en-AU', 'Australia'],
+                ['English', ['en-US', 'United States'],
+                    ['en-GB', 'United Kingdom'],
+                    ['en-AU', 'Australia'],
                     ['en-CA', 'Canada'],
                     ['en-IN', 'India'],
                     ['en-KE', 'Kenya'],
@@ -1428,9 +1458,8 @@
                     ['en-NZ', 'New Zealand'],
                     ['en-NG', 'Nigeria'],
                     ['en-ZA', 'South Africa'],
-                    ['en-PH', 'Philippines'],
-                    ['en-GB', 'United Kingdom'],
-                    ['en-US', 'United States']]];
+                    ['en-PH', 'Philippines']]
+            ];
             langs.forEach((lang, i) => {
                 let option = document.createElement("option");
                 option.value = i;
@@ -2326,8 +2355,7 @@
             }
         }
         settingEle.onmousedown = () => {
-            let stat = dialogEle.style.display;
-            dialogEle.style.display = stat === "block" ? "none" : "block";
+            dialogEle.style.display = dialogEle.style.display === "block" ? "none" : "block";
             if (dialogEle.style.display === "block") {
                 document.addEventListener("mousedown", closeEvent, true);
                 settingEle.classList.add("showSetting");
