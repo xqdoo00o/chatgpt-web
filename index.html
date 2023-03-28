@@ -1446,9 +1446,9 @@
                 select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
                 localStorage.setItem("voiceRecLang", select_dialect.value);
             };
+            let localLangIdx = 0;
+            let localDiaIdx = 0;
             let localRecLang = localStorage.getItem("voiceRecLang");
-            let localLangIdx;
-            let localDiaIdx;
             if (localRecLang) {
                 let localIndex = langs.findIndex(item => {
                     let diaIdx = item.findIndex(lang => {
@@ -1463,10 +1463,6 @@
                 if (localIndex !== -1) {
                     localLangIdx = localIndex;
                 }
-            }
-            if (localLangIdx === void 0) {
-                localLangIdx = 1;
-                localDiaIdx = 0;
             }
             select_language.onchange = updateCountry;
             select_dialect.onchange = () => {

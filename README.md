@@ -5,7 +5,7 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 
 部署一个HTML文件，配合nginx反代即可使用。
 
-支持复制，刷新，朗读等功能，以及众多[自定义选项](#自定义选项)。
+支持复制，刷新，语音输入，朗读等功能，以及众多[自定义选项](#自定义选项)。
 
 参考项目: 
 [markdown-it](https://github.com/markdown-it/markdown-it), 
@@ -103,3 +103,5 @@ yourdomain.example.com {
 12. 允许连续朗读，默认开启，连续郎读到所有对话结束。
 
 13. 允许自动朗读，默认关闭，自动朗读新的回答。
+
+14. 支持语音输入，默认识别为普通话，可长按修改语音识别选项。如浏览器不支持语音输入，则不显示语音按钮（HTTPS+Edge浏览器体验最佳）。如点击语音按钮没反应，则未允许麦克风权限，或者没安装麦克风设备。
