@@ -470,7 +470,7 @@
             color: #303030;
             position: absolute;
             z-index: 2;
-            background: #f8f8f8;
+            background: #f6f6f6;
             width: 320px;
             right: 6px;
             top: 46px;
@@ -480,7 +480,7 @@
             user-select: none;
             border-radius: 5px;
             padding: 8px 12px 8px 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
         }
 
         #setDialog>div {
@@ -939,6 +939,111 @@
             font-size: 40px;
             color: #909090;
         }
+
+        #voiceRec {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 47px;
+            height: 100%;
+        }
+
+        .message_if_voice {
+            padding-right: 47px !important;
+        }
+
+        #voiceRecIcon {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #voiceRecIcon:hover>svg {
+            color: #808080;
+        }
+
+        #voiceRecIcon>svg {
+            width: 28px;
+            height: 28px;
+            color: #b0b0b0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #voiceRecIcon>svg .animVoice {
+            display: none;
+        }
+
+        .voiceRecing>svg {
+            color: #99c959 !important;
+        }
+
+        .voiceRecing .animVoice {
+            display: inline !important;
+            transform-origin: 0 64%;
+            animation-duration: 1.2s;
+            animation-name: scaleVoice;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+
+        .voiceLong .animVoice {
+            display: inline !important;
+            transform-origin: 0 64%;
+            animation-duration: 0.3s;
+            animation-name: longVoice;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes longVoice {
+            0% {
+                transform: scaleY(0);
+            }
+
+            100% {
+                transform: scaleY(1);
+            }
+        }
+
+        @keyframes scaleVoice {
+            0% {
+                transform: scaleY(0);
+            }
+
+            50% {
+                transform: scaleY(1);
+            }
+
+            100% {
+                transform: scaleY(0);
+            }
+        }
+
+        #voiceRecSetting {
+            display: none;
+            position: absolute;
+            top: -70px;
+            left: -26px;
+            z-index: 1;
+            padding: 4px 4px;
+            user-select: none;
+            border-radius: 3px;
+            background-color: #f6f6f6;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+        }
+
+        #voiceRecSetting select {
+            width: 102px;
+            outline: none;
+            height: 28px;
+            border-radius: 3px;
+            border-color: rgba(0, 0, 0, .3);
+        }
     </style>
 </head>
 
@@ -1230,6 +1335,23 @@
         <div class="bottom_wrapper clearfix">
             <div class="message_input_wrapper">
                 <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧" id="chatinput"></textarea>
+                <div id="voiceRec" style="display:none;">
+                    <div id="voiceRecIcon">
+                        <svg viewBox="0 0 48 48" id="voiceInputIcon">
+                            <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="4">
+                                <rect fill="none" width="14" height="27" x="17" y="4" rx="7" />
+                                <rect class="animVoice" x="18" y="4" width="12" height="27" stroke="none"
+                                    fill="currentColor"></rect>
+                                <path stroke-linecap="round"
+                                    d="M9 23c0 8.284 6.716 15 15 15c8.284 0 15-6.716 15-15M24 38v6" />
+                            </g>
+                        </svg>
+                    </div>
+                    <div id="voiceRecSetting">
+                        <select id="select_language" style="margin-bottom: 4px;"></select>
+                        <select id="select_dialect"></select>
+                    </div>
+                </div>
             </div>
             <button class="loaded" id="sendbutton">
                 <span>发送</span>
@@ -1264,6 +1386,8 @@
         const speechOptionEle = document.getElementById("speechOption");
         const newChatEle = document.getElementById("newChat");
         const chatListEle = document.getElementById("chatList");
+        const voiceRecEle = document.getElementById("voiceRecIcon");
+        const voiceRecSetEle = document.getElementById("voiceRecSetting");
         let voiceType = 1; // 设置 0: 提问语音，1：回答语音
         let voiceRole = []; // 语音
         let voiceVolume = []; //音量
@@ -1272,8 +1396,12 @@
         let enableContVoice; //连续朗读
         let enableAutoVoice; //自动朗读
         let existVoice = 2; // 2:使用edge在线语音, 1:使用本地语音, 0:不支持语音
+        let isSafeEnv = location.hostname.match(/127.|localhost/) || location.protocol.match(/https:|file:/); // https或本地安全环境
+        let supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
+        let recing = false;
+        let toggleRecEv;
         textarea.focus();
-        textarea.oninput = (e) => {
+        const textInputEvent = (e) => {
             if (textarea.value.trim().length) {
                 sendBtnEle.classList.add("activeSendBtn");
             } else {
@@ -1282,6 +1410,163 @@
             textarea.style.height = "47px";
             textarea.style.height = textarea.scrollHeight + "px";
         };
+        textarea.oninput = textInputEvent;
+        if (supportRec) {
+            document.getElementById("voiceRec").style.display = "block";
+            textarea.classList.add("message_if_voice")
+            let langs =
+                [['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
+                    ['cmn-Hans-HK', '普通话 (香港)'],
+                    ['cmn-Hant-TW', '中文 (台灣)'],
+                    ['yue-Hant-HK', '粵語 (香港)']],
+                ['English', ['en-AU', 'Australia'],
+                    ['en-CA', 'Canada'],
+                    ['en-IN', 'India'],
+                    ['en-KE', 'Kenya'],
+                    ['en-TZ', 'Tanzania'],
+                    ['en-GH', 'Ghana'],
+                    ['en-NZ', 'New Zealand'],
+                    ['en-NG', 'Nigeria'],
+                    ['en-ZA', 'South Africa'],
+                    ['en-PH', 'Philippines'],
+                    ['en-GB', 'United Kingdom'],
+                    ['en-US', 'United States']]];
+            langs.forEach((lang, i) => {
+                let option = document.createElement("option");
+                option.value = i;
+                option.text = lang[0];
+                select_language.options.add(option);
+            });
+            const updateCountry = () => {
+                select_dialect.innerHTML = "";
+                let list = langs[select_language.selectedIndex];
+                for (let i = 1; i < list.length; i++) {
+                    select_dialect.options.add(new Option(list[i][1], list[i][0]));
+                }
+                select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+                localStorage.setItem("voiceRecLang", select_dialect.value);
+            };
+            let localRecLang = localStorage.getItem("voiceRecLang");
+            let localLangIdx;
+            let localDiaIdx;
+            if (localRecLang) {
+                let localIndex = langs.findIndex(item => {
+                    let diaIdx = item.findIndex(lang => {
+                        return lang instanceof Array && lang[0] === localRecLang
+                    });
+                    if (diaIdx !== -1) {
+                        localDiaIdx = diaIdx - 1;
+                        return true;
+                    }
+                    return false;
+                });
+                if (localIndex !== -1) {
+                    localLangIdx = localIndex;
+                }
+            }
+            if (localLangIdx === void 0) {
+                localLangIdx = 1;
+                localDiaIdx = 0;
+            }
+            select_language.onchange = updateCountry;
+            select_dialect.onchange = () => {
+                localStorage.setItem("voiceRecLang", select_dialect.value);
+            }
+            select_language.selectedIndex = localLangIdx;
+            updateCountry();
+            select_dialect.selectedIndex = localDiaIdx;
+            select_dialect.dispatchEvent(new Event("change"));
+            let recIns = new webkitSpeechRecognition();
+            recIns.continuous = true;
+            recIns.interimResults = true;
+            let recRes = tempRes = "";
+            let oriRes;
+            const resEvent = (event) => {
+                if (typeof (event.results) === 'undefined') {
+                    toggleRecEvent();
+                    return;
+                }
+                let isFinal;
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    isFinal = event.results[i].isFinal;
+                    if (isFinal) {
+                        recRes += event.results[i][0].transcript;
+                    } else {
+                        tempRes = recRes + event.results[i][0].transcript;
+                    }
+                }
+                textarea.value = oriRes + (isFinal ? recRes : tempRes);
+                textInputEvent();
+                textarea.focus();
+            };
+            const endEvent = (event) => {
+                recIns.stop();
+                recIns.onresult = null;
+                recIns.onerror = null;
+                recIns.onend = null;
+                recRes = tempRes = "";
+                voiceRecEle.classList.remove("voiceRecing");
+                recing = false;
+            };
+            const closeEvent = (ev) => {
+                if (voiceRecSetEle.contains(ev.target)) return;
+                if (!voiceRecSetEle.contains(ev.target)) {
+                    voiceRecSetEle.style.display = "none";
+                    document.removeEventListener("mousedown", closeEvent, true);
+                    voiceRecEle.classList.remove("voiceLong");
+                }
+            }
+            const longEvent = () => {
+                voiceRecSetEle.style.display = "block";
+                document.addEventListener("mousedown", closeEvent, true);
+            }
+            const toggleRecEvent = () => {
+                voiceRecEle.classList.toggle("voiceRecing");
+                if (voiceRecEle.classList.contains("voiceRecing")) {
+                    try {
+                        oriRes = textarea.value;
+                        recIns.lang = select_dialect.value;
+                        recIns.start();
+                        recIns.onresult = resEvent;
+                        recIns.onerror = endEvent;
+                        recIns.onend = endEvent;
+                        recing = true;
+                    } catch (e) {
+                        endEvent();
+                    }
+                } else {
+                    endEvent();
+                }
+            };
+            toggleRecEv = toggleRecEvent;
+            let timer;
+            const voiceDownEvent = (ev) => {
+                ev.preventDefault();
+                let i = 0;
+                voiceRecEle.classList.add("voiceLong");
+                timer = setInterval(() => {
+                    i += 1;
+                    if (i >= 3) {
+                        clearInterval(timer);
+                        timer = void 0;
+                        longEvent();
+                    }
+                }, 100)
+            };
+            const voiceUpEvent = (ev) => {
+                ev.preventDefault();
+                if (timer !== void 0) {
+                    toggleRecEvent();
+                    clearInterval(timer);
+                    timer = void 0;
+                    voiceRecEle.classList.remove("voiceLong");
+                }
+            }
+            voiceRecEle.addEventListener("mousedown", voiceDownEvent);
+            voiceRecEle.addEventListener("touchstart", voiceDownEvent);
+            voiceRecEle.addEventListener("mouseup", voiceUpEvent);
+            voiceRecEle.addEventListener("touchend", voiceUpEvent);
+        }
         const loadVoice = () => {
             return new Promise((res, rej) => {
                 let timeOut = new AbortController();
@@ -1364,7 +1649,7 @@
                 }
             });
             voices.forEach((voice, i) => {
-                var option = document.createElement("option");
+                let option = document.createElement("option");
                 option.value = i;
                 option.text = voice.displayName;
                 voicesEle.options.add(option);
@@ -1512,7 +1797,7 @@
         let longReplyFlag;
         let textSpeed; // 打字机速度，越小越快
         let voiceIns; // Audio or SpeechSynthesisUtterance
-        let supportMSE = !!window.MediaSource; //是否支持MSE（除了ios应该都支持）
+        let supportMSE = !!window.MediaSource; // 是否支持MSE（除了ios应该都支持）
         let voiceMIME = "audio/mpeg";
         const scrollToBottom = () => {
             if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
@@ -1616,7 +1901,7 @@
         md.renderer.rules.code_block = enhanceCode(codeBlockRender);
         md.renderer.rules.fence = enhanceCode(fenceRender);
         md.renderer.rules.image = function (tokens, idx, options, env, slf) {
-            var token = tokens[idx];
+            let token = tokens[idx];
             token.attrs[token.attrIndex("alt")][1] = slf.renderInlineAsText(token.children, options, env);
             token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload')");
             return slf.renderToken(tokens, idx, options)
@@ -2675,6 +2960,9 @@
             }
         };
         const genFunc = function () {
+            if (recing) {
+                toggleRecEv();
+            }
             let message = textarea.value.trim();
             if (message.length !== 0) {
                 if (loading === true) return;
