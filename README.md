@@ -26,27 +26,31 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 ### **注意：反代服务器需要正常访问`api.openai.com`**
 1. 配合nginx使用, 示例配置如下
 ```
-#开启openai接口的gzip压缩，大量重复文本的压缩率高，节省服务端流量
-gzip  on;
-gzip_min_length 1k;
-gzip_types text/event-stream;
+server {
+    listen       80;
+    server_name  example.com;
+    #开启openai接口的gzip压缩，大量重复文本的压缩率高，节省服务端流量
+    gzip  on;
+    gzip_min_length 1k;
+    gzip_types text/event-stream;
 
-#如需部署在网站子路径，如/chatgpt，配置如下
-#location ^~ /chatgpt/v1 {
-location ^~ /v1 {
-    proxy_pass https://api.openai.com/v1;
-    proxy_set_header Host api.openai.com;
-    #注意Bearer 后改为正确的token。如需用户自定义API key，可注释掉下一行
-    proxy_set_header  Authorization "Bearer sk-your-token";
-    proxy_pass_header Authorization;
-    #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
-    proxy_buffering off;
-}
-#与上面反代接口的路径保持一致
-#location /chatgpt {
-location / {
-    alias /usr/share/nginx/html/;
-    index index.html;
+    #如需部署在网站子路径，如"example.com/chatgpt"，配置如下
+    #location ^~ /chatgpt/v1 {
+    location ^~ /v1 {
+        proxy_pass https://api.openai.com/v1;
+        proxy_set_header Host api.openai.com;
+        #注意Bearer 后改为正确的token。如需用户自定义API key，可注释掉下一行
+        proxy_set_header  Authorization "Bearer sk-your-token";
+        proxy_pass_header Authorization;
+        #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
+        proxy_buffering off;
+    }
+    #与上面反代接口的路径保持一致
+    #location /chatgpt {
+    location / {
+        alias /usr/share/nginx/html/;
+        index index.html;
+    }
 }
 ```
 
