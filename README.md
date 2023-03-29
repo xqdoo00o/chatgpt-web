@@ -23,7 +23,7 @@ Pure Javascript ChatGPT demo based on nginx with OpenAI API (gpt-3.5-turbo)
 [在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key，可正常访问`api.openai.com`）
 
 ## 使用方法
-### **注意：反代服务器需要正常访问`api.openai.com`**
+### **注意：服务器需要正常访问`api.openai.com`**
 1. 配合nginx使用, 示例配置如下
 ```
 server {
@@ -54,7 +54,7 @@ server {
 }
 ```
 
-如果服务器无法正常访问`api.openai.com`, 可配合socat反代和http代理使用，proxy_pass配置改成
+如服务器无法正常访问`api.openai.com`, 可配合socat反代和http代理使用，proxy_pass配置改成
 ```
     proxy_pass https://127.0.0.1:8443/v1;
 ```
@@ -82,7 +82,7 @@ yourdomain.example.com {
 
 ## 自定义选项
 
-1. 可选API key，默认不设置，如需使用，建议Nginx一定要配置https，公网以http方式明文传输API key极易被中间人截获。
+1. 可选API key，默认不设置，如需用户自定义API key使用，建议Nginx一定要配置https，公网以http方式明文传输API key极易被中间人截获。
 
 2. 可选系统角色，默认不开启，有三个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
 
@@ -109,3 +109,5 @@ yourdomain.example.com {
 13. 允许自动朗读，默认关闭，自动朗读新的回答。
 
 14. 支持语音输入，默认识别为普通话，可长按修改语音识别选项。如浏览器不支持语音输入，则不显示语音按钮（HTTPS+Edge浏览器体验最佳）。如点击语音按钮没反应，则未允许麦克风权限，或者没安装麦克风设备。
+
+15. 左边栏支持功能，新建会话，重命名，删除会话。导出所有会话，导入会话文件，清空所有会话。
