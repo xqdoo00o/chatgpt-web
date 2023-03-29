@@ -1077,6 +1077,16 @@
             border-radius: 3px;
             border-color: rgba(0, 0, 0, .3);
         }
+
+        .presetModelCls {
+            width: 100px;
+        }
+
+        .presetModelCls select {
+            height: 32px;
+            margin-top: 2px;
+            font-size: 15px;
+        }
     </style>
 </head>
 
@@ -1251,10 +1261,20 @@
                 </svg>
             </button>
             <div id="setDialog" style="display:none;">
-                <div>
-                    <div>自定义API key</div>
-                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
-                        style="-webkit-text-security: disc;" />
+                <div class="justSetLine presetSelect">
+                    <div class="presetModelCls">
+                        <label for="preSetModel">GPT模型</label>
+                        <select id="preSetModel">
+                            <option value="gpt-3.5-turbo">gpt-3.5</option>
+                            <option value="gpt-4">gpt-4</option>
+                            <option value="gpt-4-32k">gpt-4-32k</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div>自定义API key</div>
+                        <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
+                            style="-webkit-text-security: disc;" />
+                    </div>
                 </div>
                 <div>
                     <div class="justSetLine presetSelect">
@@ -1446,7 +1466,7 @@
         textarea.oninput = textInputEvent;
         if (supportRec) {
             document.getElementById("voiceRec").style.display = "block";
-            textarea.classList.add("message_if_voice")
+            textarea.classList.add("message_if_voice");
             let langs = [
                 ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
                     ['cmn-Hans-HK', '普通话 (香港)'],
@@ -1485,9 +1505,7 @@
             let localRecLang = localStorage.getItem("voiceRecLang");
             if (localRecLang) {
                 let localIndex = langs.findIndex(item => {
-                    let diaIdx = item.findIndex(lang => {
-                        return lang instanceof Array && lang[0] === localRecLang
-                    });
+                    let diaIdx = item.findIndex(lang => {return lang instanceof Array && lang[0] === localRecLang});
                     if (diaIdx !== -1) {
                         localDiaIdx = diaIdx - 1;
                         return true;
@@ -1507,8 +1525,9 @@
             select_dialect.selectedIndex = localDiaIdx;
             select_dialect.dispatchEvent(new Event("change"));
             let recIns = new webkitSpeechRecognition();
-            recIns.continuous = true;
+            recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
             recIns.interimResults = true;
+            recIns.maxAlternatives = 1;
             let recRes = tempRes = "";
             let oriRes;
             const resEvent = (event) => {
@@ -1530,7 +1549,9 @@
                 textarea.focus();
             };
             const endEvent = (event) => {
-                recIns.stop();
+                if (!(event && event.type === "end")) {
+                    recIns.stop();
+                }
                 recIns.onresult = null;
                 recIns.onerror = null;
                 recIns.onend = null;
@@ -1818,6 +1839,7 @@
             "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
             "image": "我给你个指令，生成相应的图片，发送图片时候请用 markdown 语言生成，不要反斜线，不要代码框，请需要使用 unsplash API ，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
         };
+        let modelVersion; // 模型版本
         let systemRole; // 自定义系统角色
         let roleNature; // 角色性格
         let roleTemp; // 回答质量
@@ -2243,6 +2265,17 @@
             if (loading) stopLoading();
         };
         const initSetting = () => {
+            const modelEle = document.getElementById("preSetModel");
+            let localModel = localStorage.getItem("modelVersion");
+            if (localModel) {
+                modelVersion = localModel;
+                modelEle.value = localModel;
+            }
+            modelEle.onchange = () => {
+                modelVersion = modelEle.value;
+                localStorage.setItem("modelVersion", modelVersion);
+            }
+            modelEle.dispatchEvent(new Event("change"));
             const keyEle = document.getElementById("keyInput");
             let localKey = localStorage.getItem("APIKey");
             if (localKey) {
@@ -2852,7 +2885,7 @@
                 headers,
                 body: JSON.stringify({
                     messages: dataSlice,
-                    model: "gpt-3.5-turbo",
+                    model: modelVersion,
                     stream: true,
                     temperature: roleTemp,
                     top_p: roleNature
@@ -2866,6 +2899,8 @@
                     alert("API key错误或已失效，请打开设置输入正确的API key！")
                 } else if (res.status === 400) {
                     alert("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
+                } else if (res.status === 404) {
+                    alert("无权使用此模型，请打开设置选择其他GPT模型！");
                 } else {
                     alert("触发API调用频率限制，请稍后重试！");
                 }
@@ -2981,11 +3016,9 @@
             await streamGen();
         };
         textarea.onkeydown = (e) => {
-            if (e.keyCode === 13) {
-                if (!e.shiftKey) {
-                    e.preventDefault();
-                    genFunc();
-                }
+            if (e.keyCode === 13 && !e.shiftKey) {
+                e.preventDefault();
+                genFunc();
             }
         };
         const genFunc = function () {
@@ -3003,14 +3036,12 @@
         sendBtnEle.onclick = genFunc;
         stopEle.onclick = stopLoading;
         document.getElementById("clearConv").onclick = () => {
-            if (!loading) {
-                if (confirmAction("是否清空会话?")) {
-                    endSpeak();
-                    if (systemRole) {data.length = 1}
-                    else {data.length = 0}
-                    chatlog.innerHTML = "";
-                    updateChats();
-                }
+            if (!loading && confirmAction("是否清空会话?")) {
+                endSpeak();
+                if (systemRole) {data.length = 1}
+                else {data.length = 0}
+                chatlog.innerHTML = "";
+                updateChats();
             }
         }
     </script>
