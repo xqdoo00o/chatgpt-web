@@ -3471,6 +3471,7 @@
                 if (e.message.indexOf("aborted") === -1) {
                     notyf.error("访问接口失败，请检查接口！")
                 }
+                stopLoading();
             }
         };
         const loadAction = (bool) => {
