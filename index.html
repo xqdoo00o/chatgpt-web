@@ -3170,10 +3170,10 @@
                 let content = voiceContentQuene.shift();
                 let currDate = getTime();
                 let uuid = uuidv4();
-                let voice = voiceRole[type].Name;
+                let voice = voiceRole[1].Name;
                 if (existVoice === 3) {
                     autoVoiceSocket.send(getWSPre(currDate, uuid));
-                    voice = voiceRole[type].ShortName;
+                    voice = voiceRole[1].ShortName;
                 }
                 autoVoiceSocket.send(getWSAudio(currDate, uuid));
                 autoVoiceSocket.send(getWSText(currDate, uuid, voiceRole[1].lang, voice, voiceVolume[1], voiceRate[1], voicePitch[1], azureStyle[1], azureRole[1], content));
