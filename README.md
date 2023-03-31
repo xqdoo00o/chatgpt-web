@@ -45,6 +45,8 @@ server {
     location ^~ /v1 {
         proxy_pass https://api.openai.com/v1;
         proxy_set_header Host api.openai.com;
+        proxy_ssl_name api.openai.com;
+        proxy_ssl_server_name on;
         #注意Bearer 后改为正确的token。如需用户自定义API key，可注释掉下一行
         proxy_set_header  Authorization "Bearer sk-your-token";
         proxy_pass_header Authorization;
