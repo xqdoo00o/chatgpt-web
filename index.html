@@ -488,26 +488,29 @@
             box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
         }
 
-        #setDialog>div {
-            margin-bottom: 4px;
-        }
-
         #setDialog input {
             width: 100%;
         }
 
         #setDialog .inlineTitle {
             display: inline-block;
+            width: 80px;
             line-height: 16px;
             vertical-align: middle;
         }
 
-        #speechOption {
-            margin-top: 6px;
+        #convOption,
+        #speechOption,
+        #speechDetail,
+        #recOption {
+            margin-bottom: 6px;
         }
 
-        #speechOption>div {
-            margin-bottom: 4px;
+        #convOption>div,
+        #speechOption>div,
+        #speechDetail>div,
+        #recOption div {
+            margin-top: 10px;
         }
 
         .inputTextClass {
@@ -570,7 +573,7 @@
         .presetSelect select {
             outline: none;
             border-radius: 3px;
-            width: 100px;
+            width: 120px;
             border-color: rgba(0, 0, 0, .3);
         }
 
@@ -584,6 +587,7 @@
         #preSetSpeech {
             width: 100%;
             outline: none;
+            height: 30px;
             margin-top: 5px;
             border-radius: 3px;
             border-color: rgba(0, 0, 0, .3);
@@ -1078,14 +1082,66 @@
             border-color: rgba(0, 0, 0, .3);
         }
 
-        .presetModelCls {
-            width: 100px;
+        .presetModelCls label {
+            margin-right: 8px;
         }
 
         .presetModelCls select {
-            height: 32px;
+            height: 30px;
             margin-top: 2px;
             font-size: 15px;
+        }
+
+        .setSwitch {
+            display: flex;
+
+        }
+
+        .setSwitch>div {
+            border-radius: 3px;
+            width: calc(100% / 3);
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .setSwitch>div:hover {
+            background-color: #e0e0e0;
+        }
+
+        .activeSwitch {
+            background-color: #d0d0d0 !important;
+        }
+
+        #checkVoiceLoad {
+            height: 32px;
+            border-radius: 3px;
+            line-height: 32px;
+            background: #d0d0d0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        #checkVoiceLoad:hover {
+            background: #c0c0c0;
+        }
+
+        .voiceChecking {
+            background-color: #c0c0c0 !important;
+        }
+
+        .voiceChecking>svg {
+            display: inline !important;
+        }
+
+        #checkVoiceLoad>svg {
+            display: none;
+            margin-right: 8px;
+            height: 32px;
+            width: 64px;
         }
     </style>
 </head>
@@ -1261,8 +1317,13 @@
                 </svg>
             </button>
             <div id="setDialog" style="display:none;">
-                <div class="justSetLine presetSelect">
-                    <div class="presetModelCls">
+                <div class="setSwitch">
+                    <div data-id="convOption" class="activeSwitch">对话</div>
+                    <div data-id="speechOption">语音合成</div>
+                    <div data-id="recOption">语音识别</div>
+                </div>
+                <div id="convOption">
+                    <div class="presetSelect presetModelCls">
                         <label for="preSetModel">GPT模型</label>
                         <select id="preSetModel">
                             <option value="gpt-3.5-turbo">gpt-3.5</option>
@@ -1275,106 +1336,164 @@
                         <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
                             style="-webkit-text-security: disc;" />
                     </div>
-                </div>
-                <div>
-                    <div class="justSetLine presetSelect">
-                        <div>系统角色</div>
-                        <div>
-                            <label for="preSetSystem">预设角色</label>
-                            <select id="preSetSystem">
-                                <option value="">默认</option>
-                                <option value="normal">助手</option>
-                                <option value="cat">猫娘</option>
-                                <option value="image">有图</option>
-                            </select>
-                        </div>
-                    </div>
-                    <textarea class="inputTextClass areaTextClass" placeholder="你是一个乐于助人的助手，尽量简明扼要地回答"
-                        id="systemInput"></textarea>
-                </div>
-                <div>
-                    <span>角色性格</span>
-                    <input type="range" id="top_p" min="0" max="1" value="1" step="0.05" />
-                    <div class="selectDef">
-                        <span>准确严谨</span>
-                        <span>灵活创新</span>
-                    </div>
-                </div>
-                <div>
-                    <span>回答质量</span>
-                    <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
-                    <div class="selectDef">
-                        <span>重复刻板</span>
-                        <span>胡言乱语</span>
-                    </div>
-                </div>
-                <div>
-                    <span>打字机速度</span>
-                    <input type="range" id="textSpeed" min="0" max="100" value="88" step="1" />
-                    <div class="selectDef">
-                        <span>慢</span>
-                        <span>快</span>
-                    </div>
-                </div>
-                <div class="justSetLine">
-                    <span class="inlineTitle">连续对话</span>
-                    <label class="switch-slide">
-                        <input type="checkbox" id="enableCont" checked hidden />
-                        <label for="enableCont" class="switch-slide-label"></label>
-                    </label>
-                    <span class="inlineTitle">长回复</span>
-                    <label class="switch-slide">
-                        <input type="checkbox" id="enableLongReply" hidden />
-                        <label for="enableLongReply" class="switch-slide-label"></label>
-                    </label>
-                </div>
-                <div id="speechOption" style="display: none;">
                     <div>
-                        <div class="justSetLine">
-                            <div>选择语音</div>
-                            <div id="voiceTypes">
-                                <span data-type="0">提问语音</span>
-                                <span data-type="1" class="selVoiceType">回答语音</span>
+                        <div class="justSetLine presetSelect">
+                            <div>系统角色</div>
+                            <div>
+                                <label for="preSetSystem">预设角色</label>
+                                <select id="preSetSystem">
+                                    <option value="">默认</option>
+                                    <option value="normal">助手</option>
+                                    <option value="cat">猫娘</option>
+                                    <option value="emoji">表情</option>
+                                    <option value="image">有图</option>
+                                </select>
                             </div>
                         </div>
-                        <select id="preSetSpeech">
-                        </select>
+                        <textarea class="inputTextClass areaTextClass" placeholder="你是一个乐于助人的助手，尽量简明扼要地回答"
+                            id="systemInput"></textarea>
                     </div>
                     <div>
-                        <span>音量</span>
-                        <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
+                        <span>角色性格</span>
+                        <input type="range" id="top_p" min="0" max="1" value="1" step="0.05" />
                         <div class="selectDef">
-                            <span>低</span>
-                            <span>高</span>
+                            <span>准确严谨</span>
+                            <span>灵活创新</span>
                         </div>
                     </div>
                     <div>
-                        <span>语速</span>
-                        <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
+                        <span>回答质量</span>
+                        <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
+                        <div class="selectDef">
+                            <span>重复刻板</span>
+                            <span>胡言乱语</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span>打字机速度</span>
+                        <input type="range" id="textSpeed" min="0" max="100" value="88" step="1" />
                         <div class="selectDef">
                             <span>慢</span>
                             <span>快</span>
                         </div>
                     </div>
                     <div>
-                        <span>音调</span>
-                        <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
-                        <div class="selectDef">
-                            <span>平淡</span>
-                            <span>起伏</span>
+                        <span class="inlineTitle">连续对话</span>
+                        <label class="switch-slide">
+                            <input type="checkbox" id="enableCont" checked hidden />
+                            <label for="enableCont" class="switch-slide-label"></label>
+                        </label>
+                    </div>
+                    <div>
+                        <span class="inlineTitle">长回复</span>
+                        <label class="switch-slide">
+                            <input type="checkbox" id="enableLongReply" hidden />
+                            <label for="enableLongReply" class="switch-slide-label"></label>
+                        </label>
+                    </div>
+                </div>
+                <div id="speechOption" style="display: none;">
+                    <div class="presetSelect presetModelCls">
+                        <label for="preSetService">语音合成服务</label>
+                        <select id="preSetService">
+                            <option value="3">Azure语音</option>
+                            <option selected value="2">Edge语音</option>
+                            <option value="1">系统语音</option>
+                        </select>
+                    </div>
+                    <div class="presetSelect presetModelCls">
+                        <label for="preSetAzureRegion">Azure 区域</label>
+                        <select id="preSetAzureRegion">
+                        </select>
+                    </div>
+                    <div>
+                        <div>Azure Access Key</div>
+                        <input class="inputTextClass" type="password" placeholder="Azure Key" id="azureKeyInput"
+                            style="-webkit-text-security: disc;" />
+                    </div>
+                    <div id="checkVoiceLoad" style="display: none;">
+                        <svg>
+                            <use xlink:href="#loadingIcon" />
+                        </svg>
+                        <span>加载语音</span>
+                    </div>
+                    <div id="speechDetail">
+                        <div>
+                            <div class="justSetLine">
+                                <div>语音类型</div>
+                                <div id="voiceTypes">
+                                    <span data-type="0">提问语音</span>
+                                    <span data-type="1" class="selVoiceType">回答语音</span>
+                                </div>
+                            </div>
+                            <select id="preSetSpeech">
+                            </select>
+                        </div>
+                        <div class="justSetLine presetSelect" id="azureExtra" style="display:none;">
+                            <div class="presetModelCls">
+                                <label for="preSetVoiceStyle">风格</label>
+                                <select id="preSetVoiceStyle">
+                                </select>
+                            </div>
+                            <div class="presetModelCls">
+                                <label for="preSetVoiceRole">角色</label>
+                                <select id="preSetVoiceRole">
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <span>音量</span>
+                            <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>低</span>
+                                <span>高</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>语速</span>
+                            <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>慢</span>
+                                <span>快</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>音调</span>
+                            <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>平淡</span>
+                                <span>起伏</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="inlineTitle">连续朗读</span>
+                            <label class="switch-slide">
+                                <input type="checkbox" id="enableContVoice" checked hidden />
+                                <label for="enableContVoice" class="switch-slide-label"></label>
+                            </label>
+                        </div>
+                        <div>
+                            <span class="inlineTitle">自动朗读</span>
+                            <label class="switch-slide">
+                                <input type="checkbox" id="enableAutoVoice" hidden />
+                                <label for="enableAutoVoice" class="switch-slide-label"></label>
+                            </label>
                         </div>
                     </div>
-                    <div class="justSetLine">
-                        <span class="inlineTitle">连续朗读</span>
-                        <label class="switch-slide">
-                            <input type="checkbox" id="enableContVoice" checked hidden />
-                            <label for="enableContVoice" class="switch-slide-label"></label>
-                        </label>
-                        <span class="inlineTitle">自动朗读</span>
-                        <label class="switch-slide">
-                            <input type="checkbox" id="enableAutoVoice" hidden />
-                            <label for="enableAutoVoice" class="switch-slide-label"></label>
-                        </label>
+                </div>
+                <div id="recOption" style="display: none;">
+                    <div id="noRecTip" style="display: block;">当前浏览器不支持语言识别，请尝试更换浏览器或重新部署页面。</div>
+                    <div id="yesRec" style="display: none;">
+                        <div class="presetSelect presetModelCls">
+                            <label for="selectLangOption">语言</label>
+                            <select id="selectLangOption">
+                            </select>
+                        </div>
+                        <div class="presetSelect presetModelCls">
+                            <label for="selectDiaOption">方言</label>
+                            <select id="selectDiaOption">
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1418,7 +1537,24 @@
                 </svg></button>
         </div>
     </div>
+    <link rel="stylesheet" href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css">
+    <script src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
     <script>
+        const notyf = new Notyf({
+            position: {x: 'center', y: 'top'},
+            types: [
+                {
+                    type: 'success',
+                    background: '#99c959',
+                    duration: 2000,
+                },
+                {
+                    type: 'error',
+                    background: '#e15b64',
+                    duration: 2000,
+                }
+            ]
+        });
         window.addEventListener("mousedown", event => {
             if (event.target.className === "toggler") {
                 document.body.classList.toggle("show-nav");
@@ -1436,7 +1572,7 @@
         const settingEle = document.getElementById("setting");
         const dialogEle = document.getElementById("setDialog");
         const systemEle = document.getElementById("systemInput");
-        const speechOptionEle = document.getElementById("speechOption");
+        const speechServiceEle = document.getElementById("preSetService");
         const newChatEle = document.getElementById("newChat");
         const chatListEle = document.getElementById("chatList");
         const voiceRecEle = document.getElementById("voiceRecIcon");
@@ -1446,9 +1582,15 @@
         let voiceVolume = []; //音量
         let voiceRate = []; // 语速
         let voicePitch = []; // 音调
-        let enableContVoice; //连续朗读
-        let enableAutoVoice; //自动朗读
-        let existVoice = 2; // 2:使用edge在线语音, 1:使用本地语音, 0:不支持语音
+        let enableContVoice; // 连续朗读
+        let enableAutoVoice; // 自动朗读
+        let existVoice = 2; // 3:Azure语音 2:使用edge在线语音, 1:使用本地语音, 0:不支持语音
+        let azureToken;
+        let azureTokenTimer;
+        let azureRegion;
+        let azureKey;
+        let azureRole = [];
+        let azureStyle = [];
         let isSafeEnv = location.hostname.match(/127.|localhost/) || location.protocol.match(/https:|file:/); // https或本地安全环境
         let supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
         let recing = false;
@@ -1465,9 +1607,11 @@
         };
         textarea.oninput = textInputEvent;
         if (supportRec) {
+            noRecTip.style.display = "none";
+            yesRec.style.display = "block";
             document.getElementById("voiceRec").style.display = "block";
             textarea.classList.add("message_if_voice");
-            let langs = [
+            let langs = [ // from https://www.google.com/intl/en/chrome/demos/speech.html
                 ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
                     ['cmn-Hans-HK', '普通话 (香港)'],
                     ['cmn-Hant-TW', '中文 (台灣)'],
@@ -1486,18 +1630,20 @@
                     ['en-PH', 'Philippines']]
             ];
             langs.forEach((lang, i) => {
-                let option = document.createElement("option");
-                option.value = i;
-                option.text = lang[0];
-                select_language.options.add(option);
+                select_language.options.add(new Option(lang[0], i));
+                selectLangOption.options.add(new Option(lang[0], i))
             });
-            const updateCountry = () => {
+            const updateCountry = function () {
+                selectLangOption.selectedIndex = select_language.selectedIndex = this.selectedIndex;
                 select_dialect.innerHTML = "";
+                selectDiaOption.innerHTML = "";
                 let list = langs[select_language.selectedIndex];
                 for (let i = 1; i < list.length; i++) {
                     select_dialect.options.add(new Option(list[i][1], list[i][0]));
+                    selectDiaOption.options.add(new Option(list[i][1], list[i][0]));
                 }
                 select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+                selectDiaOption.parentElement.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
                 localStorage.setItem("voiceRecLang", select_dialect.value);
             };
             let localLangIdx = 0;
@@ -1516,15 +1662,18 @@
                     localLangIdx = localIndex;
                 }
             }
+            selectLangOption.onchange = updateCountry;
             select_language.onchange = updateCountry;
-            select_dialect.onchange = () => {
+            selectDiaOption.onchange = select_dialect.onchange = function () {
+                selectDiaOption.selectedIndex = select_dialect.selectedIndex = this.selectedIndex;
                 localStorage.setItem("voiceRecLang", select_dialect.value);
             }
-            select_language.selectedIndex = localLangIdx;
-            updateCountry();
-            select_dialect.selectedIndex = localDiaIdx;
+            selectLangOption.selectedIndex = select_language.selectedIndex = localLangIdx;
+            select_language.dispatchEvent(new Event("change"));
+            selectDiaOption.selectedIndex = select_dialect.selectedIndex = localDiaIdx;
             select_dialect.dispatchEvent(new Event("change"));
             let recIns = new webkitSpeechRecognition();
+            // prevent some Android bug
             recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
             recIns.interimResults = true;
             recIns.maxAlternatives = 1;
@@ -1559,6 +1708,18 @@
                 voiceRecEle.classList.remove("voiceRecing");
                 recing = false;
             };
+            const errorEvent = (ev) => {
+                if (event.error === 'no-speech') {
+                    notyf.error("未识别到语音，请调整设备后重试！")
+                }
+                if (event.error === 'audio-capture') {
+                    notyf.error("未找到麦克风，请确保已安装麦克风！")
+                }
+                if (event.error === 'not-allowed') {
+                    notyf.error("未允许使用麦克风的权限！")
+                }
+                endEvent();
+            }
             const closeEvent = (ev) => {
                 if (voiceRecSetEle.contains(ev.target)) return;
                 if (!voiceRecSetEle.contains(ev.target)) {
@@ -1579,7 +1740,7 @@
                         recIns.lang = select_dialect.value;
                         recIns.start();
                         recIns.onresult = resEvent;
-                        recIns.onerror = endEvent;
+                        recIns.onerror = errorEvent;
                         recIns.onend = endEvent;
                         recing = true;
                     } catch (e) {
@@ -1618,32 +1779,232 @@
             voiceRecEle.addEventListener("mouseup", voiceUpEvent);
             voiceRecEle.addEventListener("touchend", voiceUpEvent);
         }
-        const loadVoice = () => {
-            return new Promise((res, rej) => {
-                let timeOut = new AbortController();
-                setTimeout(() => {
-                    rej();
-                }, 3000);
-                fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", {signal: timeOut.signal}).then(response => {
-                    response.json().then(json => {
-                        existVoice = 2;
-                        initVoiceSetting(json);
-                        res();
-                    });
-                }).catch(err => {
-                    rej();
+        document.getElementsByClassName("setSwitch")[0].onclick = function (ev) {
+            let activeEle = this.getElementsByClassName("activeSwitch")[0];
+            if (ev.target !== activeEle) {
+                activeEle.classList.remove("activeSwitch");
+                ev.target.classList.add("activeSwitch");
+                document.getElementById(ev.target.dataset.id).style.display = "block";
+                document.getElementById(activeEle.dataset.id).style.display = "none";
+            }
+        }
+        let localVoiceType = localStorage.getItem("existVoice");
+        if (localVoiceType) {
+            existVoice = parseInt(localVoiceType);
+            speechServiceEle.value = existVoice;
+        }
+        if (!(window.speechSynthesis && window.SpeechSynthesisUtterance)) {
+            speechServiceEle.remove(2);
+        }
+        const clearAzureVoice = () => {
+            azureKey = void 0;
+            azureRegion = void 0;
+            document.getElementById("azureExtra").style.display = "none";
+            azureKeyInput.parentElement.style.display = "none";
+            preSetAzureRegion.parentElement.style.display = "none";
+            if (azureTokenTimer) {
+                clearInterval(azureTokenTimer);
+                azureTokenTimer = void 0;
+            }
+        }
+        speechServiceEle.onchange = () => {
+            existVoice = parseInt(speechServiceEle.value);
+            localStorage.setItem("existVoice", existVoice);
+            toggleVoiceCheck(true);
+            if (checkAzureAbort && !checkAzureAbort.signal.aborted) {
+                checkAzureAbort.abort();
+                checkAzureAbort = void 0;
+            }
+            if (checkEdgeAbort && !checkEdgeAbort.signal.aborted) {
+                checkEdgeAbort.abort();
+                checkEdgeAbort = void 0;
+            }
+            if (existVoice === 3) {
+                azureKeyInput.parentElement.style.display = "block";
+                preSetAzureRegion.parentElement.style.display = "block";
+                loadAzureVoice();
+            } else if (existVoice === 2) {
+                clearAzureVoice();
+                loadEdgeVoice();
+            } else if (existVoice === 1) {
+                toggleVoiceCheck(false);
+                clearAzureVoice();
+                loadLocalVoice();
+            }
+        }
+        let azureVoiceData, edgeVoiceData, systemVoiceData, checkAzureAbort, checkEdgeAbort;
+        const toggleVoiceCheck = (bool) => {
+            checkVoiceLoad.style.display = bool ? "flex" : "none";
+            speechDetail.style.display = bool ? "none" : "block";
+        }
+        const loadAzureVoice = () => {
+            let checking = false;
+            checkVoiceLoad.onclick = () => {
+                if (checking) return;
+                if (azureKey) {
+                    checking = true;
+                    checkVoiceLoad.classList.add("voiceChecking");
+                    if (azureTokenTimer) {
+                        clearInterval(azureTokenTimer);
+                    }
+                    checkAzureAbort = new AbortController();
+                    setTimeout(() => {
+                        if (checkAzureAbort && !checkAzureAbort.signal.aborted) {
+                            checkAzureAbort.abort();
+                            checkAzureAbort = void 0;
+                        }
+                    }, 15000);
+                    Promise.all([getAzureToken(checkAzureAbort.signal), getVoiceList(checkAzureAbort.signal)]).then(() => {
+                        azureTokenTimer = setInterval(() => {
+                            getAzureToken();
+                        }, 540000);
+                        toggleVoiceCheck(false);
+                    }).catch(e => {
+                    }).finally(() => {
+                        checkVoiceLoad.classList.remove("voiceChecking");
+                        checking = false;
+                    })
+                }
+            }
+            const getAzureToken = (signal) => {
+                return new Promise((res, rej) => {
+                    fetch("https://" + azureRegion + ".api.cognitive.microsoft.com/sts/v1.0/issueToken", {
+                        signal,
+                        method: "POST",
+                        headers: {
+                            'Ocp-Apim-Subscription-Key': azureKey
+                        }
+                    }).then(response => {
+                        response.text().then(text => {
+                            try {
+                                let json = JSON.parse(text);
+                                notyf.error("由于订阅密钥无效或 API 端点错误，访问被拒绝！");
+                                rej();
+                            } catch (e) {
+                                azureToken = text;
+                                res();
+                            }
+                        });
+                    }).catch(e => {
+                        rej();
+                    })
                 })
-            })
+            };
+            const getVoiceList = (signal) => {
+                return new Promise((res, rej) => {
+                    if (azureVoiceData) {
+                        initVoiceSetting(azureVoiceData);
+                        res();
+                    } else {
+                        let localAzureVoiceData = localStorage.getItem(azureRegion + "voiceData");
+                        if (localAzureVoiceData) {
+                            azureVoiceData = JSON.parse(localAzureVoiceData);
+                            initVoiceSetting(azureVoiceData);
+                            res();
+                        } else {
+                            fetch("https://" + azureRegion + ".tts.speech.microsoft.com/cognitiveservices/voices/list", {
+                                signal,
+                                headers: {
+                                    'Ocp-Apim-Subscription-Key': azureKey
+                                }
+                            }).then(response => {
+                                response.json().then(json => {
+                                    azureVoiceData = json;
+                                    localStorage.setItem(azureRegion + "voiceData", JSON.stringify(json));
+                                    initVoiceSetting(json);
+                                    res();
+                                }).catch(e => {
+                                    notyf.error("由于订阅密钥无效或 API 端点错误，访问被拒绝！");
+                                    rej();
+                                })
+                            }).catch(e => {
+                                rej();
+                            })
+                        }
+                    }
+                })
+            };
+            let azureRegionEle = document.getElementById("preSetAzureRegion");
+            if (!azureRegionEle.options.length) {
+                const azureRegions = ['southafricanorth', 'eastasia', 'southeastasia', 'australiaeast', 'centralindia', 'japaneast', 'japanwest', 'koreacentral', 'canadacentral', 'northeurope', 'westeurope', 'francecentral', 'germanywestcentral', 'norwayeast', 'switzerlandnorth', 'switzerlandwest', 'uksouth', 'uaenorth', 'brazilsouth', 'centralus', 'eastus', 'eastus2', 'northcentralus', 'southcentralus', 'westcentralus', 'westus', 'westus2', 'westus3'];
+                azureRegions.forEach((region, i) => {
+                    let option = document.createElement("option");
+                    option.value = region;
+                    option.text = region;
+                    azureRegionEle.options.add(option);
+                });
+            }
+            let localAzureRegion = localStorage.getItem("azureRegion");
+            if (localAzureRegion) {
+                azureRegion = localAzureRegion;
+                azureRegionEle.value = localAzureRegion;
+            }
+            azureRegionEle.onchange = () => {
+                azureRegion = azureRegionEle.value;
+                localStorage.setItem("azureRegion", azureRegion);
+                toggleVoiceCheck(true);
+            }
+            azureRegionEle.dispatchEvent(new Event("change"));
+            let azureKeyEle = document.getElementById("azureKeyInput");
+            let localAzureKey = localStorage.getItem("azureKey");
+            if (localAzureKey) {
+                azureKey = localAzureKey;
+                azureKeyEle.value = localAzureKey;
+            }
+            azureKeyEle.onchange = () => {
+                azureKey = azureKeyEle.value;
+                localStorage.setItem("azureKey", azureKey);
+                toggleVoiceCheck(true);
+            }
+            azureKeyEle.dispatchEvent(new Event("change"));
+            if (azureKey) {
+                checkVoiceLoad.dispatchEvent(new Event("click"))
+            }
+        }
+        const loadEdgeVoice = () => {
+            let checking = false;
+            checkVoiceLoad.onclick = () => {
+                if (checking) return;
+                checking = true;
+                checkVoiceLoad.classList.add("voiceChecking");
+                if (edgeVoiceData) {
+                    initVoiceSetting(edgeVoiceData);
+                    toggleVoiceCheck(false);
+                    checkVoiceLoad.classList.remove("voiceChecking");
+                } else {
+                    checkEdgeAbort = new AbortController();
+                    setTimeout(() => {
+                        if (checkEdgeAbort && !checkEdgeAbort.signal.aborted) {
+                            checkEdgeAbort.abort();
+                            checkEdgeAbort = void 0;
+                        }
+                    }, 10000);
+                    fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", {signal: checkEdgeAbort.signal}).then(response => {
+                        response.json().then(json => {
+                            edgeVoiceData = json;
+                            toggleVoiceCheck(false);
+                            initVoiceSetting(json);
+                        });
+                    }).catch(err => {
+                    }).finally(() => {
+                        checkVoiceLoad.classList.remove("voiceChecking");
+                        checking = false;
+                    })
+                }
+            };
+            checkVoiceLoad.dispatchEvent(new Event("click"));
         };
         const loadLocalVoice = () => {
-            existVoice = !!(window.speechSynthesis && window.SpeechSynthesisUtterance) ? 1 : 0;
-            if (existVoice) {
+            if (systemVoiceData) {
+                initVoiceSetting(systemVoiceData);
+            } else {
                 let initedVoice = false;
                 const getLocalVoice = () => {
                     let voices = speechSynthesis.getVoices();
                     if (voices.length) {
                         if (!initedVoice) {
                             initedVoice = true;
+                            systemVoiceData = voices;
                             initVoiceSetting(voices);
                         }
                         return true;
@@ -1677,14 +2038,13 @@
             }
         };
         const initVoiceSetting = (voices) => {
-            speechOptionEle.style.display = "block";
-            let isOnline = existVoice === 2;
+            let isOnline = existVoice >= 2;
             let voicesEle = document.getElementById("preSetSpeech");
             // 支持中文和英文
             voices = isOnline ? voices.filter(item => item.Locale.match(/^(zh-|en-)/)) : voices.filter(item => item.lang.match(/^(zh-|en-)/));
             if (isOnline) {
                 voices.map(item => {
-                    item.name = item.FriendlyName;
+                    item.name = item.FriendlyName || (`${item.DisplayName} Online (${item.VoiceType}) - ${item.LocaleName}`);
                     item.lang = item.Locale;
                 })
             }
@@ -1699,6 +2059,7 @@
                     item.displayName = item.name;
                 }
             });
+            voicesEle.innerHTML = "";
             voices.forEach((voice, i) => {
                 let option = document.createElement("option");
                 option.value = i;
@@ -1708,14 +2069,88 @@
             voicesEle.onchange = () => {
                 voiceRole[voiceType] = voices[voicesEle.value];
                 localStorage.setItem("voice" + voiceType, voiceRole[voiceType].name);
-            }
-            let localVoice = localStorage.getItem("voice0");
-            if (localVoice) {
-                let localIndex = voices.findIndex(item => {return item.name === localVoice});
-                if (localIndex === -1) localIndex = 0;
-                voiceRole[0] = voices[localIndex];
-            } else {
-                voiceRole[0] = voices[0];
+                if (voiceRole[voiceType].StyleList || voiceRole[voiceType].RolePlayList) {
+                    document.getElementById("azureExtra").style.display = "block";
+                    let voiceStyles = voiceRole[voiceType].StyleList;
+                    let voiceRoles = voiceRole[voiceType].RolePlayList;
+                    if (voiceRoles) {
+                        preSetVoiceRole.innerHTML = "";
+                        voiceRoles.forEach((role, i) => {
+                            let option = document.createElement("option");
+                            option.value = role;
+                            option.text = role;
+                            preSetVoiceRole.options.add(option);
+                        });
+                        let localRole = localStorage.getItem("azureRole" + voiceType);
+                        if (localRole && voiceRoles.indexOf(localRole) !== -1) {
+                            preSetVoiceRole.value = localRole;
+                            azureRole[voiceType] = localRole;
+                        } else {
+                            preSetVoiceRole.selectedIndex = 0;
+                            azureRole[voiceType] = voiceRole[0];
+                        }
+                        preSetVoiceRole.onchange = () => {
+                            azureRole[voiceType] = preSetVoiceRole.value;
+                            localStorage.setItem("azureRole" + voiceType, preSetVoiceRole.value);
+                        }
+                        preSetVoiceRole.dispatchEvent(new Event("change"));
+                    } else {
+                        azureRole[voiceType] = void 0;
+                        localStorage.removeItem("azureRole" + voiceType);
+                    }
+                    preSetVoiceRole.style.display = voiceRoles ? "block" : "none";
+                    preSetVoiceRole.previousElementSibling.style.display = voiceRoles ? "block" : "none";
+                    if (voiceStyles) {
+                        preSetVoiceStyle.innerHTML = "";
+                        voiceStyles.forEach((style, i) => {
+                            let option = document.createElement("option");
+                            option.value = style;
+                            option.text = style;
+                            preSetVoiceStyle.options.add(option);
+                        });
+                        let localStyle = localStorage.getItem("azureStyle" + voiceType);
+                        if (localStyle && voiceStyles.indexOf(localStyle) !== -1) {
+                            preSetVoiceStyle.value = localStyle;
+                            azureStyle[voiceType] = localStyle;
+                        } else {
+                            preSetVoiceStyle.selectedIndex = 0;
+                            azureStyle[voiceType] = voiceStyles[0];
+                        }
+                        preSetVoiceStyle.onchange = () => {
+                            azureStyle[voiceType] = preSetVoiceStyle.value;
+                            localStorage.setItem("azureStyle" + voiceType, preSetVoiceStyle.value)
+                        }
+                        preSetVoiceStyle.dispatchEvent(new Event("change"));
+                    } else {
+                        azureStyle[voiceType] = void 0;
+                        localStorage.removeItem("azureStyle" + voiceType);
+                    }
+                    preSetVoiceStyle.style.display = voiceStyles ? "block" : "none";
+                    preSetVoiceStyle.previousElementSibling.style.display = voiceStyles ? "block" : "none";
+                } else {
+                    document.getElementById("azureExtra").style.display = "none";
+                    azureRole[voiceType] = void 0;
+                    localStorage.removeItem("azureRole" + voiceType);
+                    azureStyle[voiceType] = void 0;
+                    localStorage.removeItem("azureStyle" + voiceType);
+                }
+            };
+            const loadAnother = (type) => {
+                type = type ^ 1;
+                let localVoice = localStorage.getItem("voice" + type);
+                if (localVoice) {
+                    let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                    if (localIndex === -1) localIndex = 0;
+                    voiceRole[type] = voices[localIndex];
+                } else {
+                    voiceRole[type] = voices[0];
+                }
+                if (existVoice === 3) {
+                    let localStyle = localStorage.getItem("azureStyle" + type);
+                    azureStyle[type] = localStyle ? localStyle : void 0;
+                    let localRole = localStorage.getItem("azureRole" + type);
+                    azureRole[type] = localRole ? localRole : void 0;
+                }
             }
             const voiceChange = () => {
                 let localVoice = localStorage.getItem("voice" + voiceType);
@@ -1724,11 +2159,11 @@
                     if (localIndex === -1) localIndex = 0;
                     voiceRole[voiceType] = voices[localIndex];
                     voicesEle.value = localIndex;
-                } else {
-                    voicesEle.dispatchEvent(new Event("change"));
                 }
+                voicesEle.dispatchEvent(new Event("change"));
             }
             voiceChange();
+            loadAnother(voiceType);
             let volumeEle = document.getElementById("voiceVolume");
             let localVolume = localStorage.getItem("voiceVolume0");
             voiceVolume[0] = parseFloat(localVolume ? localVolume : volumeEle.value);
@@ -1824,7 +2259,7 @@
             }
             autoVoiceEle.dispatchEvent(new Event("change"));
         };
-        loadVoice().catch(() => {loadLocalVoice()});
+        speechServiceEle.dispatchEvent(new Event("change"));
     </script>
     <script src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
     <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
@@ -1837,7 +2272,8 @@
         let presetRoleData = {
             "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
             "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
-            "image": "我给你个指令，生成相应的图片，发送图片时候请用 markdown 语言生成，不要反斜线，不要代码框，请需要使用 unsplash API ，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
+            "emoji": "你的性格很活泼，每句话中都要有至少一个emoji图标",
+            "image": "当你需要发送图片的时候，请用 markdown 语言生成，不要反斜线，不要代码框，需要使用 unsplash API时，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
         };
         let modelVersion; // 模型版本
         let systemRole; // 自定义系统角色
@@ -1955,7 +2391,8 @@
         md.renderer.rules.image = function (tokens, idx, options, env, slf) {
             let token = tokens[idx];
             token.attrs[token.attrIndex("alt")][1] = slf.renderInlineAsText(token.children, options, env);
-            token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload')");
+            token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
+            token.attrSet("onerror", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
             return slf.renderToken(tokens, idx, options)
         }
         const mdOptionEvent = function (ev) {
@@ -1972,14 +2409,14 @@
                             speechEvent(idx);
                         }
                     } else if (className == "pauseVoice") {
-                        if (existVoice == 2) {
+                        if (existVoice >= 2) {
                             if (voiceIns) voiceIns.pause();
                         } else {
                             speechSynthesis.pause();
                         }
                         parent.className = "resumeVoice";
                     } else {
-                        if (existVoice == 2) {
+                        if (existVoice >= 2) {
                             if (voiceIns) voiceIns.play();
                         } else {
                             speechSynthesis.resume();
@@ -2011,6 +2448,7 @@
                     idxEle.classList.add("moreOptionHidden");
                     idx = systemRole ? idx + 1 : idx;
                     copyClickMd(idx);
+                    notyf.success("复制成功");
                 } else if (id === "delMd") {
                     idxEle.classList.add("moreOptionHidden");
                     if (!loading) {
@@ -2050,10 +2488,10 @@
                     <svg data-id="refreshMd" width="16" height="16" role="img"><title>继续</title><use xlink:href="#halfRefIcon" /></svg>
                 </div>`
             }
-            let optionWidth = existVoice === 2 ? "96px" : "63px";
+            let optionWidth = existVoice >= 2 ? "96px" : "63px";
             mdOption.innerHTML += `<div class="moreOption" onmouseenter="moreOption(this)">
             <svg class="optionTrigger" width="16" height="16" role="img"><title>选项</title><use xlink:href="#optionIcon" /></svg>
-            <div class="optionItems" style="width:${optionWidth};left:-${optionWidth}">` + (existVoice === 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
+            <div class="optionItems" style="width:${optionWidth};left:-${optionWidth}">` + (existVoice >= 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
                 <svg width="20" height="20"><use xlink:href="#downAudioIcon" /></svg>
             </div>` : "") + `<div data-id="delMd" class="optionItem" title="删除">
                 <svg width="20" height="20"><use xlink:href="#delIcon" /></svg>
@@ -2243,7 +2681,7 @@
                         throw new Error("格式检查不通过")
                     }
                 } catch (e) {
-                    alert("导入失败，请检查文件是否正确！")
+                    notyf.error("导入失败，请检查文件是否正确！")
                 }
                 this.value = "";
             })
@@ -2407,18 +2845,40 @@
             return new Promise((resolve) => delayId = setTimeout(resolve, textSpeed)); //打字机时间间隔
         }
         const uuidv4 = () => {
-            return ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, c =>
+            let uuid = ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, c =>
                 (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
             );
+            return existVoice === 3 ? uuid.toUpperCase() : uuid;
         }
-        const getWSAudio = (date) => {
-            return `X-Timestamp:${date}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"true"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`
+        const getTime = () => {
+            return existVoice === 3 ? new Date().toISOString() : new Date().toString();
         }
-        const getWSText = (date, requestId, lang, voice, volume, rate, pitch, msg) => {
+        const getWSPre = (date, requestId) => {
+            let osPlatform = (typeof window !== "undefined") ? "Browser" : "Node";
+            osPlatform += "/" + navigator.platform;
+            let osName = navigator.userAgent;
+            let osVersion = navigator.appVersion;
+            return `Path: speech.config\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/json\r\n\r\n{"context":{"system":{"name":"SpeechSDK","version":"1.26.0","build":"JavaScript","lang":"JavaScript","os":{"platform":"${osPlatform}","name":"${osName}","version":"${osVersion}"}}}}`
+        }
+        const getWSAudio = (date, requestId) => {
+            return existVoice === 3 ? `Path: synthesis.context\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/json\r\n\r\n{"synthesis":{"audio":{"metadataOptions":{"sentenceBoundaryEnabled":false,"wordBoundaryEnabled":false},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}`
+                : `X-Timestamp:${date}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"true"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`
+        }
+        const getWSText = (date, requestId, lang, voice, volume, rate, pitch, style, role, msg) => {
             let fmtVolume = volume === 1 ? "+0%" : volume * 100 - 100 + "%";
             let fmtRate = (rate >= 1 ? "+" : "") + (rate * 100 - 100) + "%";
             let fmtPitch = (pitch >= 1 ? "+" : "") + (pitch - 1) + "Hz";
-            return `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nX-Timestamp:${date}Z\r\nPath:ssml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='${lang}'><voice name='${voice}'><prosody pitch='${fmtPitch}' rate='${fmtRate}' volume='${fmtVolume}'>${msg}</prosody></voice></speak>`;
+            if (existVoice === 3) {
+                let fmtStyle = style ? ` style="${style}"` : "";
+                let fmtRole = role ? ` role="${role}"` : "";
+                let fmtExpress = fmtStyle + fmtRole;
+                return `Path: ssml\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/ssml+xml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='${lang}'><voice name='${voice}'><mstts:express-as${fmtExpress}><prosody pitch='${fmtPitch}' rate='${fmtRate}' volume='${fmtVolume}'>${msg}</prosody></mstts:express-as></voice></speak>`;
+            } else {
+                return `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nX-Timestamp:${date}Z\r\nPath:ssml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='${lang}'><voice name='${voice}'><prosody pitch='${fmtPitch}' rate='${fmtRate}' volume='${fmtVolume}'>${msg}</prosody></voice></speak>`;
+            }
+        }
+        const getAzureWSURL = () => {
+            return `wss://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/websocket/v1?Authorization=bearer%20${azureToken}`
         }
         const edgeTTSURL = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4";
         let currentVoiceIdx;
@@ -2429,7 +2889,7 @@
         }
         const endSpeak = () => {
             resetSpeakIcon();
-            if (existVoice === 2) {
+            if (existVoice >= 2) {
                 if (voiceIns) {
                     voiceIns.pause();
                     voiceIns.currentTime = 0;
@@ -2466,7 +2926,7 @@
                     }
                     res();
                 }
-                if (existVoice === 2) {
+                if (existVoice >= 2) {
                     ins.onended = ins.onerror;
                     ins.play();
                 } else {
@@ -2491,7 +2951,7 @@
         const initSocket = () => {
             return new Promise((res, rej) => {
                 if (!voiceSocket || voiceSocket.readyState > 1) {
-                    voiceSocket = new WebSocket(edgeTTSURL);
+                    voiceSocket = new WebSocket(existVoice === 3 ? getAzureWSURL() : edgeTTSURL);
                     voiceSocket.binaryType = "arraybuffer";
                     voiceSocket.onopen = () => {
                         res();
@@ -2526,7 +2986,7 @@
         const initDownSocket = () => {
             return new Promise((res, rej) => {
                 if (!downSocket || downSocket.readyState > 1) {
-                    downSocket = new WebSocket(edgeTTSURL);
+                    downSocket = new WebSocket(existVoice === 3 ? getAzureWSURL() : edgeTTSURL);
                     downSocket.binaryType = "arraybuffer";
                     downSocket.onopen = () => {
                         res();
@@ -2556,26 +3016,31 @@
             })
         }
         const downloadAudio = async (idx) => {
-            if (existVoice !== 2) {
+            if (existVoice < 2) {
                 return;
             }
             let type = data[idx].role === "user" ? 0 : 1;
-            let voice = voiceRole[type].Name;
+            let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
             let pitch = voicePitch[type];
+            let style = azureStyle[type];
+            let role = azureRole[type];
             let content = data[idx].content;
-            let key = content + voice + volume + rate + pitch;
+            let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
             let blob = voiceData[key];
             if (blob) {
                 downBlob(blob, content.slice(0, 16) + ".mp3");
             } else {
                 await initDownSocket();
-                let currDate = new Date().toString();
+                let currDate = getTime();
                 let lang = voiceRole[type].lang;
                 let uuid = uuidv4();
-                downSocket.send(getWSAudio(currDate));
-                downSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, content));
+                if (existVoice === 3) {
+                    downSocket.send(getWSPre(currDate, uuid));
+                }
+                downSocket.send(getWSAudio(currDate, uuid));
+                downSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
                 downSocket["pending"] = true;
                 downQuene[uuid] = {};
                 downQuene[uuid]["name"] = content;
@@ -2611,13 +3076,15 @@
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
             let pitch = voicePitch[type];
-            if (existVoice === 2) {
+            let style = azureStyle[type];
+            let role = azureRole[type];
+            if (existVoice >= 2) {
                 if (!voiceIns) {
                     voiceIns = new Audio();
                 }
-                let voice = voiceRole[type].Name;
-                let key = content + voice + volume + rate + pitch;
-                let currData = voiceData[content + voice + volume + rate + pitch];
+                let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
+                let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
+                let currData = voiceData[key];
                 if (currData) {
                     voiceIns.src = URL.createObjectURL(currData);
                 } else {
@@ -2662,10 +3129,14 @@
                     } else {
                         await initSocket();
                     }
-                    let currDate = new Date().toString();
+                    let currDate = getTime();
                     let lang = voiceRole[type].lang;
-                    voiceSocket.send(getWSAudio(currDate));
-                    voiceSocket.send(getWSText(currDate, uuidv4(), lang, voice, volume, rate, pitch, content));
+                    let uuid = uuidv4();
+                    if (existVoice === 3) {
+                        voiceSocket.send(getWSPre(currDate, uuid));
+                    }
+                    voiceSocket.send(getWSAudio(currDate, uuid));
+                    voiceSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
                     voiceSocket["pending"] = true;
                     if (!supportMSE) {
                         let blob = await NoMSEPending(key);
@@ -2697,9 +3168,15 @@
         const autoAddQuene = () => {
             if (voiceContentQuene.length) {
                 let content = voiceContentQuene.shift();
-                let currDate = new Date().toString();
-                autoVoiceSocket.send(getWSAudio(currDate));
-                autoVoiceSocket.send(getWSText(currDate, uuidv4(), voiceRole[1].lang, voiceRole[1].Name, voiceVolume[1], voiceRate[1], voicePitch[1], content));
+                let currDate = getTime();
+                let uuid = uuidv4();
+                let voice = voiceRole[type].Name;
+                if (existVoice === 3) {
+                    autoVoiceSocket.send(getWSPre(currDate, uuid));
+                    voice = voiceRole[type].ShortName;
+                }
+                autoVoiceSocket.send(getWSAudio(currDate, uuid));
+                autoVoiceSocket.send(getWSText(currDate, uuid, voiceRole[1].lang, voice, voiceVolume[1], voiceRate[1], voicePitch[1], azureStyle[1], azureRole[1], content));
                 autoVoiceSocket["pending"] = true;
                 autoOnlineVoiceFlag = true;
             }
@@ -2708,14 +3185,14 @@
             if (ele.children[1].lastChild.className === "readyVoice") {
                 ele.children[1].lastChild.className = "pauseVoice";
             }
-            if (existVoice === 2) {
+            if (existVoice >= 2) {
                 voiceContentQuene.push(content);
                 voiceEndFlagQuene.push(end);
                 if (!voiceIns) {
                     voiceIns = new Audio();
                 }
                 if (!autoVoiceSocket || autoVoiceSocket.readyState > 1) {
-                    autoVoiceSocket = new WebSocket(edgeTTSURL);
+                    autoVoiceSocket = new WebSocket(existVoice === 3 ? getAzureWSURL() : edgeTTSURL);
                     autoVoiceSocket.binaryType = "arraybuffer";
                     autoVoiceSocket.onopen = () => {
                         autoAddQuene();
@@ -2845,7 +3322,7 @@
         const streamGen = async (long) => {
             controller = new AbortController();
             controllerId = setTimeout(() => {
-                alert("请求超时，请稍后重试！");
+                notyf.error("请求超时，请稍后重试！");
                 stopLoading();
             }, 30000);
             let headers = {"Content-Type": "application/json"};
@@ -2896,13 +3373,13 @@
             controllerId = void 0;
             if (res.status !== 200) {
                 if (res.status === 401) {
-                    alert("API key错误或已失效，请打开设置输入正确的API key！")
+                    notyf.error("API key错误或已失效，请打开设置输入正确的API key！")
                 } else if (res.status === 400) {
-                    alert("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
+                    notyf.error("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
                 } else if (res.status === 404) {
-                    alert("无权使用此模型，请打开设置选择其他GPT模型！");
+                    notyf.error("无权使用此模型，请打开设置选择其他GPT模型！");
                 } else {
-                    alert("触发API调用频率限制，请稍后重试！");
+                    notyf.error("触发API调用频率限制，请稍后重试！");
                 }
                 stopLoading();
                 return;
