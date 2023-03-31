@@ -23,7 +23,7 @@ Pure Javascript ChatGPT demo based on OpenAI API (gpt-3.5-turbo)
 [在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key和自定义接口）
 
 ## 使用方法
-1. 任意HTTP Server部署index.html。打开设置，选择自定义接口
+1. 任意HTTP Server部署index.html。打开设置，填写自定义API Key。选择自定义接口
 
     (1). 可正常访问`api.openai.com`，填写`https://api.openai.com/`
 
