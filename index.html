@@ -1143,6 +1143,12 @@
             height: 32px;
             width: 64px;
         }
+
+        #preSetSystem {
+            height: 20px;
+            line-height: 20px;
+            vertical-align: top;
+        }
     </style>
 </head>
 
@@ -3513,6 +3519,9 @@
             requestEle.children[0].innerHTML = md.render(message);
             data.push({role: "user", content: message});
             if (chatsData[activeChatIdx].name === "新的会话") {
+                if (message.length > 50) {
+                    message = message.slice(0, 47) + "...";
+                }
                 chatsData[activeChatIdx].name = message;
                 chatListEle.children[activeChatIdx].children[1].textContent = message;
             }

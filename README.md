@@ -28,7 +28,7 @@ Pure Javascript ChatGPT demo based on OpenAI API (gpt-3.5-turbo)
     (1). 可正常访问`api.openai.com`，填写`https://api.openai.com/`
 
     (2). 不可正常访问`api.openai.com`，填写其反代地址（可使用cloudflare worker等反代），注意：反代地址以 `/` 结尾，需添加跨域Header `Access-Control-Allow-Origin`
-2. 配合nginx反代使用, 示例配置如下。
+2. 配合nginx反代使用，示例配置如下，不需要填写自定义接口地址
 
     **注意：服务器需正常访问`api.openai.com`**
 ```
@@ -47,7 +47,7 @@ server {
         proxy_set_header Host api.openai.com;
         proxy_ssl_name api.openai.com;
         proxy_ssl_server_name on;
-        #注意Bearer 后改为正确的token。如需用户自定义API key，可注释掉下一行
+        #注意Bearer 后改为正确的token。如需网页填写自定义API key，可注释掉下一行
         proxy_set_header  Authorization "Bearer sk-your-token";
         proxy_pass_header Authorization;
         #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
@@ -69,7 +69,7 @@ proxy_pass https://127.0.0.1:8443/v1;
 ```
 socat TCP4-LISTEN:8443,reuseaddr,fork PROXY:http代理地址:api.openai.com:443,proxyport=http代理端口
 ```
-2. 配合Caddy反代使用，可以自动生产HTTPS证书。
+2. 配合Caddy反代使用，可以自动生产HTTPS证书，不需要填写自定义接口地址
 
    **注意：服务器需正常访问`api.openai.com`**
 
