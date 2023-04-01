@@ -1486,7 +1486,7 @@
                     </div>
                 </div>
                 <div id="recOption" style="display: none;">
-                    <div id="noRecTip" style="display: block;">当前浏览器不支持语言识别，请尝试更换浏览器或重新部署页面。</div>
+                    <div id="noRecTip" style="display: block;">当前环境不支持语音识别，请尝试使用chrome内核浏览器或重新部署https页面。</div>
                     <div id="yesRec" style="display: none;">
                         <div class="presetSelect presetModelCls">
                             <label for="selectLangOption">语言</label>
@@ -1600,11 +1600,13 @@
         let recing = false;
         let toggleRecEv;
         textarea.focus();
-        const textInputEvent = (e) => {
-            if (textarea.value.trim().length) {
-                sendBtnEle.classList.add("activeSendBtn");
-            } else {
-                sendBtnEle.classList.remove("activeSendBtn");
+        const textInputEvent = () => {
+            if (!loading) {
+                if (textarea.value.trim().length) {
+                    sendBtnEle.classList.add("activeSendBtn");
+                } else {
+                    sendBtnEle.classList.remove("activeSendBtn");
+                }
             }
             textarea.style.height = "47px";
             textarea.style.height = textarea.scrollHeight + "px";
@@ -3390,11 +3392,13 @@
                 controllerId = void 0;
                 if (res.status !== 200) {
                     if (res.status === 401) {
-                        notyf.error("API key错误或已失效，请打开设置输入正确的API key！")
+                        notyf.error("API key错误，请打开设置输入正确的API key！")
                     } else if (res.status === 400) {
                         notyf.error("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
                     } else if (res.status === 404) {
                         notyf.error("无权使用此模型，请打开设置选择其他GPT模型！");
+                    } else if (res.status === 429 && !res.statusText) {
+                        notyf.error("API使用超出限额，请检查您的账单！");
                     } else {
                         notyf.error("触发API调用频率限制，请稍后重试！");
                     }
@@ -3479,6 +3483,7 @@
             sendBtnEle.disabled = bool;
             sendBtnEle.className = bool ? " loading" : "loaded";
             stopEle.style.display = bool ? "flex" : "none";
+            textInputEvent();
         }
         const stopLoading = (abort = true) => {
             stopEle.style.display = "none";

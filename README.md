@@ -28,7 +28,7 @@ Pure Javascript ChatGPT demo based on OpenAI API (gpt-3.5-turbo)
     (1). 可正常访问`api.openai.com`，填写`https://api.openai.com/`
 
     (2). 不可正常访问`api.openai.com`，填写其反代地址（可使用cloudflare worker等反代），注意：反代地址以 `/` 结尾，需添加跨域Header `Access-Control-Allow-Origin`
-2. 配合nginx使用, 示例配置如下。
+2. 配合nginx反代使用, 示例配置如下。
 
     **注意：服务器需正常访问`api.openai.com`**
 ```
@@ -69,11 +69,11 @@ proxy_pass https://127.0.0.1:8443/v1;
 ```
 socat TCP4-LISTEN:8443,reuseaddr,fork PROXY:http代理地址:api.openai.com:443,proxyport=http代理端口
 ```
-2. 配合Caddy使用，可以自动生产HTTPS证书。
+2. 配合Caddy反代使用，可以自动生产HTTPS证书。
 
    **注意：服务器需正常访问`api.openai.com`**
 
-   **Caddy 2.6.5及之后版本支持https_proxy和http_proxy环境变量**
+   **Caddy 2.6.5及之后版本支持https_proxy和http_proxy环境变量，如服务器无法正常访问`api.openai.com`，可先设置代理环境变量**
 ```
 yourdomain.example.com {
 	reverse_proxy /v1/* https://api.openai.com {
@@ -87,14 +87,13 @@ yourdomain.example.com {
 		index index.html
 	}
 }
-
 ```
 
 ## 自定义选项
 
 1. 可选GPT模型，默认gpt-3.5，当前使用gpt-4模型需通过openai的表单申请。
 
-2. 可选自定义接口地址，配合nginx和caddy可不配置。
+2. 可选自定义接口地址，配合nginx和caddy反代可以不配置。
 
 3. 可选API key，默认不设置，如需用户自定义API key使用，建议Nginx一定要配置https，公网以http方式明文传输API key极易被中间人截获。
 
@@ -120,8 +119,8 @@ yourdomain.example.com {
 
 14. 允许连续朗读，默认开启，连续郎读到所有对话结束。
 
-15. 允许自动朗读，默认关闭，自动朗读新的回答。
+15. 允许自动朗读，默认关闭，自动朗读新的回答。（iOS需打开设置-自动播放视频预览，Mac上Safari需打开此网站的设置-允许全部自动播放）
 
-16. 支持语音输入，默认识别为普通话，可长按语音按钮修改识别选项。如浏览器不支持语音输入，则不显示语音按钮（HTTPS+Edge浏览器体验最佳）。如点击语音按钮没反应，则未允许麦克风权限，或者没安装麦克风设备。
+16. 支持语音输入，默认识别为普通话，可长按语音按钮修改识别选项。如浏览器不支持语音输入，则不显示语音按钮（chrome内核浏览器+https网页体验最佳）。如点击语音按钮没反应，则未允许麦克风权限，或者没安装麦克风设备。
 
 17. 左边栏支持功能，新建会话，重命名，删除会话。导出所有会话，导入会话文件，清空所有会话。
