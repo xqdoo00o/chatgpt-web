@@ -29,13 +29,13 @@ Pure Javascript ChatGPT demo based on OpenAI API
 
     使用任意http server部署index.html。打开网页设置，填写自定义API Key，自定义接口，当本地
 
-    1. 可正常访问`api.openai.com`，填写`https://api.openai.com/`
+    - 可正常访问`api.openai.com`，填写`https://api.openai.com/`
 
-    2. 不可正常访问`api.openai.com`，填写其反代地址（可使用[Cloudflare Worker](https://github.com/xqdoo00o/openai-proxy)等反代），注意：反代地址以 `/` 结尾，需添加跨域Header `Access-Control-Allow-Origin`
+    - 不可正常访问`api.openai.com`，填写其反代地址（可使用[Cloudflare Worker](https://github.com/xqdoo00o/openai-proxy)等反代），注意：反代地址以 `/` 结尾，需添加跨域Header `Access-Control-Allow-Origin`
 - **同时部署HTML和OpenAI反代接口**
 
     **注意：服务器需正常访问`api.openai.com`，网页不用设置即可使用**
-    1. 使用nginx，示例配置如下
+    - 使用nginx，示例配置如下
 
         ```
         server {
@@ -75,7 +75,7 @@ Pure Javascript ChatGPT demo based on OpenAI API
         ```
         socat TCP4-LISTEN:8443,reuseaddr,fork PROXY:http代理地址:api.openai.com:443,proxyport=http代理端口
         ```
-    2. 使用Caddy，可以自动生产HTTPS证书，示例配置如下
+    - 使用Caddy，可以自动生产HTTPS证书，示例配置如下
 
         ```
         yourdomain.example.com {
