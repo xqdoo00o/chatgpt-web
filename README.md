@@ -23,6 +23,8 @@ Pure Javascript ChatGPT demo based on OpenAI API
 [在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key和自定义接口）
 
 ## 使用方法
+### **注意：部署的反代接口请注意OpenAI的使用地区限制，部署在被限制地区的服务器可能导致封号！**
+___
 - **仅部署HTML**
 
     **注意：建议配置https，公网以http方式明文传输API key非常不安全**
@@ -31,7 +33,7 @@ Pure Javascript ChatGPT demo based on OpenAI API
 
     - 可正常访问`api.openai.com`，填写`https://api.openai.com/`
 
-    - 不可正常访问`api.openai.com`，填写其反代地址（可使用[Cloudflare Worker](https://github.com/xqdoo00o/openai-proxy)等反代），注意：反代地址以 `/` 结尾，需添加跨域Header `Access-Control-Allow-Origin`
+    - 不可正常访问`api.openai.com`，填写其反代地址（可使用[Cloudflare Worker](https://github.com/xqdoo00o/openai-proxy)等反代），注意：反代接口响应需添加跨域Header `Access-Control-Allow-Origin`
 - **同时部署HTML和OpenAI反代接口**
 
     **注意：服务器需正常访问`api.openai.com`，网页不用设置即可使用**
@@ -97,7 +99,7 @@ Pure Javascript ChatGPT demo based on OpenAI API
 
 - 可选GPT模型，默认gpt-3.5，当前使用gpt-4模型需通过openai的表单申请。
 
-- 可选自定义接口地址，使用nginx或caddy则可以不设置地址。
+- 可选自定义接口地址，使用nginx或caddy部署反代后可以不设置。
 
 - 可选API key，默认不设置，**如需网页设置自定义API key使用，建议配置https，公网以http方式明文传输API key极易被中间人截获。**
 
