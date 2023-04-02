@@ -1977,6 +1977,10 @@
         }
         const loadEdgeVoice = () => {
             let checking = false;
+            const endCheck = () => {
+                checkVoiceLoad.classList.remove("voiceChecking");
+                checking = false;
+            };
             checkVoiceLoad.onclick = () => {
                 if (checking) return;
                 checking = true;
@@ -1984,7 +1988,7 @@
                 if (edgeVoiceData) {
                     initVoiceSetting(edgeVoiceData);
                     toggleVoiceCheck(false);
-                    checkVoiceLoad.classList.remove("voiceChecking");
+                    endCheck();
                 } else {
                     checkEdgeAbort = new AbortController();
                     setTimeout(() => {
@@ -1998,11 +2002,10 @@
                             edgeVoiceData = json;
                             toggleVoiceCheck(false);
                             initVoiceSetting(json);
+                            endCheck();
                         });
                     }).catch(err => {
-                    }).finally(() => {
-                        checkVoiceLoad.classList.remove("voiceChecking");
-                        checking = false;
+                        endCheck();
                     })
                 }
             };
