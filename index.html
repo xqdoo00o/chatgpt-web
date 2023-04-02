@@ -1811,6 +1811,8 @@
         const clearAzureVoice = () => {
             azureKey = void 0;
             azureRegion = void 0;
+            azureRole = [];
+            azureStyle = [];
             document.getElementById("azureExtra").style.display = "none";
             azureKeyInput.parentElement.style.display = "none";
             preSetAzureRegion.parentElement.style.display = "none";
@@ -2735,6 +2737,10 @@
             }
             apiHostEle.onchange = () => {
                 apiHost = apiHostEle.value;
+                if (apiHost.length && !apiHost.endsWith("/")) {
+                    apiHost += "/";
+                    apiHostEle.value = apiHost;
+                }
                 localStorage.setItem("APIHost", apiHost);
             }
             apiHostEle.dispatchEvent(new Event("change"));
@@ -3398,15 +3404,15 @@
                 controllerId = void 0;
                 if (res.status !== 200) {
                     if (res.status === 401) {
-                        notyf.error("API key错误，请打开设置输入正确的API key！")
+                        notyf.error("API key错误或失效，请检查API key！")
                     } else if (res.status === 400) {
                         notyf.error("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
                     } else if (res.status === 404) {
                         notyf.error("无权使用此模型，请打开设置选择其他GPT模型！");
-                    } else if (res.status === 429 && !res.statusText) {
-                        notyf.error("API使用超出限额，请检查您的账单！");
+                    } else if (res.status === 429) {
+                        notyf.error(res.statusText ? "触发API调用频率限制，请稍后重试！" : "API使用超出限额，请检查您的账单！");
                     } else {
-                        notyf.error("触发API调用频率限制，请稍后重试！");
+                        notyf.error("网关错误或超时，请稍后重试！");
                     }
                     stopLoading();
                     return;
@@ -3480,8 +3486,8 @@
             } catch (e) {
                 if (e.message.indexOf("aborted") === -1) {
                     notyf.error("访问接口失败，请检查接口！")
+                    stopLoading();
                 }
-                stopLoading();
             }
         };
         const loadAction = (bool) => {
