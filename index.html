@@ -3451,7 +3451,7 @@
                                         if (content) {
                                             if (!progressData && !content.trim()) continue;
                                             if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
-                                                let spliter = content.match(/\.|\?|!|。|？|！/);
+                                                let spliter = content.match(/\.|\?|!|。|？|！|\n/);
                                                 if (spliter) {
                                                     let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
                                                     autoVoiceIdx += voiceText.length;
