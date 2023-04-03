@@ -196,6 +196,10 @@
             position: relative;
         }
 
+        .requestBody {
+            white-space: pre;
+        }
+
         #chatlog .response {
             background: #f7f7f8;
             position: relative;
@@ -381,7 +385,14 @@
             color: #fff;
             cursor: pointer;
             transition: all 0.2s linear;
-            text-align: center;
+        }
+
+        #clearConv>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         #clearConv:hover {
@@ -588,6 +599,7 @@
             width: 100%;
             outline: none;
             height: 30px;
+            font-size: 14px;
             margin-top: 5px;
             border-radius: 3px;
             border-color: rgba(0, 0, 0, .3);
@@ -1541,7 +1553,7 @@
                     <use xlink:href="#loadingIcon" />
                 </svg>
             </button>
-            <button id="clearConv"><svg style="margin:0 auto;display:block" role="img" width="20px" height="20px">
+            <button id="clearConv"><svg role="img" width="20px" height="20px">
                     <title>清空会话</title>
                     <use xlink:href="#deleteIcon" />
                 </svg></button>
@@ -1565,7 +1577,7 @@
                 }
             ]
         });
-        window.addEventListener("mousedown", event => {
+        document.body.addEventListener("click", event => {
             if (event.target.className === "toggler") {
                 document.body.classList.toggle("show-nav");
             } else if (event.target.className === "overlay") {
@@ -2495,7 +2507,7 @@
         }
         const formatMdEle = (ele) => {
             let realMd = document.createElement("div");
-            realMd.className = "markdown-body";
+            realMd.className = ele.className === "request" ? "requestBody" : "markdown-body";
             ele.appendChild(realMd);
             let mdOption = document.createElement("div");
             mdOption.className = "mdOption";
@@ -2504,7 +2516,7 @@
                 mdOption.innerHTML = `<div class="refreshReq">
                     <svg data-id="refreshMd" width="16" height="16" role="img"><title>刷新</title><use xlink:href="#refreshIcon" /></svg>
                     <svg data-id="refreshMd" width="16" height="16" role="img"><title>继续</title><use xlink:href="#halfRefIcon" /></svg>
-                </div>`
+                    </div>`
             }
             let optionWidth = existVoice >= 2 ? "96px" : "63px";
             mdOption.innerHTML += `<div class="moreOption" onmouseenter="moreOption(this)">
@@ -2632,7 +2644,7 @@
             if (systemRole ? data.length - 1 : data.length) {
                 let firstIdx = systemRole ? 1 : 0;
                 for (let i = firstIdx; i < data.length; i++) {
-                    createConvEle(data[i].role === "user" ? "request" : "response").children[0].innerHTML = md.render(data[i].content) || "<br />";
+                    createConvEle(data[i].role === "user" ? "request" : "response").children[0].innerHTML = data[i].role === "user" ? data[i].content : (md.render(data[i].content) || "<br />");
                 }
             }
             localStorage.setItem("activeChatIdx", activeChatIdx);
@@ -3525,7 +3537,7 @@
         const generateText = async (message) => {
             loadAction(true);
             let requestEle = createConvEle("request");
-            requestEle.children[0].innerHTML = md.render(message);
+            requestEle.children[0].innerHTML = message;
             data.push({role: "user", content: message});
             if (chatsData[activeChatIdx].name === "新的会话") {
                 if (message.length > 50) {
