@@ -2644,7 +2644,11 @@
             if (systemRole ? data.length - 1 : data.length) {
                 let firstIdx = systemRole ? 1 : 0;
                 for (let i = firstIdx; i < data.length; i++) {
-                    createConvEle(data[i].role === "user" ? "request" : "response").children[0].innerHTML = data[i].role === "user" ? data[i].content : (md.render(data[i].content) || "<br />");
+                    if (data[i].role === "user") {
+                        createConvEle("request").children[0].textContent = data[i].content;
+                    } else {
+                        createConvEle("response").children[0].innerHTML = md.render(data[i].content) || "<br />";
+                    }
                 }
             }
             localStorage.setItem("activeChatIdx", activeChatIdx);
@@ -3537,7 +3541,7 @@
         const generateText = async (message) => {
             loadAction(true);
             let requestEle = createConvEle("request");
-            requestEle.children[0].innerHTML = message;
+            requestEle.children[0].textContent = message;
             data.push({role: "user", content: message});
             if (chatsData[activeChatIdx].name === "新的会话") {
                 if (message.length > 50) {
