@@ -23,11 +23,9 @@ Pure Javascript ChatGPT demo based on OpenAI API
 [在线预览](https://xqdoo00o.github.io/chatgpt-web/) （使用需配置自定义API key和自定义接口）
 
 ## 使用方法
-### **注意：部署的反代接口请注意OpenAI的使用地区限制，部署在被限制地区的服务器可能导致封号！**
+### **注意：部署反代接口请注意OpenAI的[支持地区](https://platform.openai.com/docs/supported-countries)，部署在不支持地区的服务器可能导致封号！最好配置https，公网以http方式明文传输API key非常不安全！**
 ___
 - **仅部署HTML**
-
-    **注意：建议配置https，公网以http方式明文传输API key非常不安全**
 
     使用任意http server部署index.html。打开网页设置，填写自定义API Key，自定义接口，当本地
 
@@ -36,7 +34,7 @@ ___
     - 不可正常访问`api.openai.com`，填写其反代地址（可使用[Cloudflare Worker](https://github.com/xqdoo00o/openai-proxy)等反代），注意：反代接口响应需添加跨域Header `Access-Control-Allow-Origin`
 - **同时部署HTML和OpenAI反代接口**
 
-    **注意：服务器需正常访问`api.openai.com`，网页不用设置即可使用**
+    **注意：服务器需正常访问`api.openai.com`，网页不用设置自定义接口了**
     - 使用nginx，示例配置如下
 
         ```
@@ -101,7 +99,7 @@ ___
 
 - 可选自定义接口地址，使用nginx或caddy部署反代后可以不设置。
 
-- 可选API key，默认不设置，**如需网页设置自定义API key使用，建议配置https，公网以http方式明文传输API key极易被中间人截获。**
+- 可选API key，默认不设置，**如需网页设置自定义API key使用，反代接口最好配置https，公网以http方式明文传输API key极易被中间人截获。**
 
 - 可选系统角色，默认不开启，有四个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
 - 可选角色性格，默认灵活创新，对应接口文档的top_p参数。
