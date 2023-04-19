@@ -28,11 +28,11 @@ Added some useful features based on chatgpt-web
 
 ### 界面截图
 #### 日间样式
-![daymode](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/img/daymode.png)
+![daymode](https://raw.githubusercontent.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/main/img/daymode.png)
 #### 夜间样式
-![nightmode](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/img/nightmode.png)
+![nightmode](https://raw.githubusercontent.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/main/img/nightmode.png)
 #### 弹出框
-![popupbox](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/img/popupbox.png)
+![popupbox](https://raw.githubusercontent.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/main/img/popupbox.png)
 
 
 
