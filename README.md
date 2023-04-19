@@ -27,10 +27,12 @@ Added some useful features based on chatgpt-web
   且桌面及移动端设备自带的输入法已经具备了语音转文字功能，故做了隐藏，但代码做了保留。
 
 ### 界面截图
-
-[chatgpt-web-darkmode-and-other-upgrade](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/img.png)
-
-
+#### 日间样式
+[daymode](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/daymode.png)
+#### 夜间样式
+[nightmode](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/nightmode.png)
+#### 弹出框
+[popupbox](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/popupbox.png)
 
 
 
