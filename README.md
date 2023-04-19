@@ -11,7 +11,7 @@ Added some useful features based on chatgpt-web
 
 - 3.基于html2canvas.js，增加了导出当前窗口截图，以及全部对话截图的功能。
 
-- 4.导出功能增强：新增markdown格式以及TXT格式导出对话内容。
+- 4.导出功能增强：新增markdown格式以及TXT格式导出内容。
 
 - 5.增加了滚动到顶部及底部的功能。
 
