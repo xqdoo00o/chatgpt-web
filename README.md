@@ -32,7 +32,15 @@ Added some useful features based on chatgpt-web
 [chatgpt-web-darkmode-and-other-upgrade](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/img.png)
 
 
+
+
+
+
+
+
+
 #以下为原作者的readme。
+
 
 ``````
 
