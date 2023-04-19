@@ -1,5 +1,32 @@
-# chatgpt-web
-Pure Javascript ChatGPT demo based on OpenAI API 
+# chatgpt-web-darkmode-and-other-upgrade
+Added some useful features based on chatgpt-web
+
+## 增加的功能
+1.基于darkmode.js,增加了日夜模式的切换功能。
+2.基于sweetalert2.js，增加了美观的弹出确认窗口。
+3.基于html2canvas.js，增加了导出当前窗口截图，以及全部对话截图的功能。
+4.导出功能增强：新增markdown格式以及TXT格式导出对话内容。
+5.增加了滚动到顶部及底部的功能。
+
+## 优化的功能
+1.为了适配日夜模式，对整体样式做了适配，以更好的在日间和夜间良好的显示。
+ 1.1.取消不必要的色彩，整体以黑白灰为基础进行全面的修改。
+ 1.2.为了更鲜明的突出问答，用户的问题以黑底白字显示，文字处于中央；
+     chatgpt的回答以白底黑字为主体，代码块增加边框以便区分。
+ 1.3.增加用户问题输入框边框以更好在黑夜模式下显示。
+2.在chatgpt开始输出内容的时候，将画面滚动到最底部，以便实时观看内容。
+  （解决在页面内容过多时，当重新进入页面时视窗会处于最顶端，输入问题后查看回答还需往下拉）
+3.隐藏了语音输入功能，由于此功能存在使用限制（不挂VPN无法使用），
+  且自带的输入法功能已经很强，故做了隐藏，但代码做了保留。
+
+### 界面截图
+
+[chatgpt-web-darkmode-and-other-upgrade](https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade/edit/main/img.png)
+
+
+#以下为原作者的readme。
+
+``````
 
 纯JS实现的ChatGPT项目，基于OpenAI API
 
@@ -127,3 +154,4 @@ ___
 - 支持语音输入，默认识别为普通话，可长按语音按钮修改识别选项。**语音识别必需条件：使用chrome内核系浏览器 + https网页或本地网页。** 如点击语音按钮没反应，可能是未授予麦克风权限或者没安装麦克风设备。
 
 - 左边栏支持功能，新建会话，重命名，删除会话。导出所有会话，导入会话文件，清空所有会话。
+``````
