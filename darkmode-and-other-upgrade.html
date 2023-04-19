@@ -1,0 +1,4209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="description" content="chatgpt" />
+<meta name="keywords" content="chatgpt" />
+<meta name="renderer" content="webkit" />
+<meta name="format-detection" content="email=no" />
+<meta name="format-detection" content="telephone=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+<link rel="shortcut icon" href="https://chat.japanese.language-study.asia/favicon.ico" />
+<title>chatgpt</title>
+
+<head>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background-color: #edeff2;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .chat_window {
+            position: absolute;
+            width: 100%;
+            max-width: 888px;
+            height: 100%;
+            border-radius: 8px;
+            background-color: #fff;
+            left: 50%;
+            top: 50%;
+            overflow: hidden;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .top_menu {
+            background-color: #f6f6f6;
+            width: 100%;
+            height: 50px;
+            padding: 12px 0;
+        }
+
+        .top_menu .toggler {
+            position: absolute;
+            left: 15px;
+            top: 5px;
+            width: 40px;
+            height: 40px;
+            padding: 5px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .top_menu .toggler:hover {
+            background: #e7e7e8;
+        }
+
+        .top_menu .toggler .button {
+            width: 26px;
+            height: 4px;
+            border-radius: 4px;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .top_menu .toggler .button.close {
+            top: 8px;
+            background-color: #909090;
+        }
+
+        .top_menu .toggler .button.minimize {
+            top: 18px;
+            background-color: #909090;
+        }
+
+        .top_menu .toggler .button.maximize {
+            top: 28px;
+            background-color: #909090;
+        }
+
+        .top_menu .title {
+            text-align: center;
+            color: #000;
+            font-size: 20px;
+            line-height: 26px;
+        }
+
+        .messages {
+            position: relative;
+            height: calc(100% - 117px);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .messages::-webkit-scrollbar,
+        #chatlog .markdown-body>pre::-webkit-scrollbar,
+        #setDialog::-webkit-scrollbar,
+        #chatList::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .messages::-webkit-scrollbar-track,
+        #chatlog .response>pre::-webkit-scrollbar-track,
+        #setDialog::-webkit-scrollbar-track,
+        #chatList::-webkit-scrollbar-track {
+            background-clip: padding-box;
+            background: transparent;
+            border: none;
+        }
+
+        .messages::-webkit-scrollbar-corner,
+        #chatlog .response>pre::-webkit-scrollbar-corner,
+        #setDialog::-webkit-scrollbar-corner,
+        #chatList::-webkit-scrollbar-corner {
+            background-color: transparent;
+        }
+
+        .messages::-webkit-scrollbar-thumb,
+        #chatlog .response>pre::-webkit-scrollbar-thumb,
+        #setDialog::-webkit-scrollbar-thumb,
+        #chatList::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            background-clip: padding-box;
+            border: solid transparent;
+            border-radius: 10px;
+        }
+
+        .messages::-webkit-scrollbar-thumb:hover,
+        #chatlog .response>pre::-webkit-scrollbar-thumb:hover,
+        #setDialog::-webkit-scrollbar-thumb:hover,
+        #chatList::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .messages .message {
+            clear: both;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: all 0.5s linear;
+            opacity: 0;
+        }
+
+        .messages .message.left .avatar {
+            background-color: #f5886e;
+            float: left;
+        }
+
+        .messages .message.left .text {
+            color: #c48843;
+        }
+
+        .messages .message.right .avatar {
+            background-color: #fdbf68;
+            float: right;
+        }
+
+        .messages .message.right .text {
+            color: #45829b;
+        }
+
+        .messages .message.appeared {
+            opacity: 1;
+        }
+
+        .messages .message .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .messages {
+            font-size: 16px;
+            color: #343541;
+            text-align: center;
+        }
+
+        #chatlog {
+            word-wrap: break-word;
+            text-align: start;
+            background: #fff;
+        }
+
+        #chatlog>div {
+            padding: 18px 25px;
+        }
+
+        #chatlog .request {
+            position: relative;
+            background-color: rgba(71,71,71,1);
+            color: #fff;
+            text-align: center;
+        }
+
+        .requestBody {
+            white-space: pre-wrap;
+        }
+
+        #chatlog .response {
+            background: #fff;
+            position: relative;
+        }
+
+        .response .markdown-body {
+            background: #fff !important;
+        }
+
+        .response .markdown-body p{
+            padding-bottom: 1px;
+            border-bottom: 1px solid rgba(180,180,180,0.75);
+        }
+
+        #chatlog .markdown-body>pre {
+            overflow-x: auto;
+            padding: 10px;
+            position: relative;
+            background: rgba(180, 180, 180, 0.1);
+            border: 1px solid #989898;
+        }
+
+        .m-mdic-copy-wrapper {
+            position: absolute;
+            top: 5px;
+            right: 16px;
+        }
+
+        .m-mdic-copy-wrapper span.u-mdic-copy-code_lang {
+            position: absolute;
+            top: 3px;
+            right: calc(100% + 4px);
+            font-family: system-ui;
+            font-size: 12px;
+            line-height: 18px;
+            color: rgba(51,51,51,1);
+            opacity: 0.75;
+        }
+
+        .m-mdic-copy-wrapper div.u-mdic-copy-notify {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 3px 6px;
+            border: 0;
+            border-radius: 3px;
+            background: none;
+            font-family: system-ui;
+            font-size: 12px;
+            line-height: 18px;
+            color: rgba(51,51,51,1);
+            outline: none;
+            opacity: 1;
+            right: 100%;
+            padding-right: 4px;
+            transform: scale(1);
+        }
+
+        .m-mdic-copy-wrapper button.u-mdic-copy-btn {
+            position: relative;
+            top: 0;
+            right: 0;
+            padding: 3px 6px;
+            border: 0;
+            border-radius: 3px;
+            background: none;
+            font-family: system-ui;
+            font-size: 12px;
+            line-height: 18px;
+            color: rgba(91,91,91,1);
+            opacity: 1;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .m-mdic-copy-wrapper button.u-mdic-copy-btn:hover {
+            color: rgba(51,51,51,1);
+        }
+
+        #stopChat {
+            display: none;
+            margin: 0 auto;
+            margin-top: 3px;
+            width: 32px;
+            height: 32px;
+            text-align: center;
+            line-height: 32px;
+            color: white;
+            background: red;
+            cursor: pointer;
+            border-radius: 50%;
+            position: sticky;
+            bottom: 2px;
+            justify-content: center;
+            align-items: center;
+            opacity: 0.75;
+        }
+
+        #stopChat>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #stopChat:hover {
+            opacity: 1;
+        }
+
+        .bottom_wrapper {
+            position: relative;
+            width: 100%;
+            background: #f6f6f6;
+            padding: 10px 10px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .bottom_wrapper .message_input_wrapper {
+            border: none;
+            width: calc(100% - 123px);
+            position: relative;
+            text-align: left;
+        }
+
+        .bottom_wrapper .message_input_wrapper .message_input_text {
+            border-radius: 4px;
+            border: 1px solid #989898;
+            outline: none;
+            resize: none;
+            color: #24292f;
+            height: 47px;
+            font-size: 16px;
+            max-height: 200px;
+            padding: 13px 0 13px 16px;
+            width: 100%;
+            display: block;
+            transition: background 0.3s;
+            background: #f6f6f6;
+        }
+
+        .bottom_wrapper .message_input_wrapper .message_input_text:focus {
+            border: 1px solid #909090;
+            background: #fff;
+        }
+
+        .bottom_wrapper .message_input_wrapper .message_input_text::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        #sendbutton {
+            width: 60px;
+            height: 47px;
+            font-size: 18px;
+            font-weight: normal;
+            border-radius: 3px;
+            background-color: #909090;
+            border: none;
+            padding: 0;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            text-align: center;
+            float: right;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            cursor: not-allowed;
+        }
+
+        .activeSendBtn {
+            background-color: #99c959 !important;
+            cursor: pointer !important;
+        }
+
+        .activeSendBtn:hover {
+            background-color: #90c050 !important;
+        }
+
+        #clearConv {
+            position: absolute;
+            right: 78px;
+            bottom: 10px;
+            width: 47px;
+            height: 47px;
+            font-size: 16px;
+            display: inline-block;
+            border-radius: 3px;
+            background-color: #909090;
+            border: 2px solid #909090;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+        }
+
+        #clearConv>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #clearConv:hover {
+            background-color: gray;
+            border: 2px solid gray;
+        }
+
+        .loaded>span {
+            display: inline-block;
+        }
+
+        .loaded>svg {
+            display: none;
+        }
+
+        .loading {
+            background: #e7e7e8 !important;
+        }
+
+        .loading>span {
+            display: none;
+        }
+
+        .loading>svg {
+            display: block;
+        }
+
+        .switch-slide {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .switch-slide-label {
+            display: block;
+            width: 38px;
+            height: 18px;
+            background: #909090;
+            border-radius: 30px;
+            cursor: pointer;
+            position: relative;
+            -webkit-transition: 0.3s ease;
+            transition: 0.3s ease;
+        }
+
+        .switch-slide-label:after {
+            content: "";
+            display: block;
+            width: 16px;
+            height: 16px;
+            border-radius: 100%;
+            background: #fff;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-transition: 0.3s ease;
+            transition: 0.3s ease;
+        }
+
+        .switch-slide input:checked+label {
+            background: #99c959;
+            transition: 0.3s ease;
+        }
+
+        .switch-slide input:checked+label:after {
+            left: 21px;
+        }
+
+        #setting {
+            position: absolute;
+            right: 15px;
+            top: 5px;
+            cursor: pointer;
+            padding: 5px;
+            border: none;
+            background-color: transparent;
+            border-radius: 4px;
+        }
+
+        #setting:hover {
+            background: #e7e7e8;
+        }
+
+        .showSetting {
+            background: #b0b0b0 !important;
+        }
+
+        #setDialog {
+            color: #303030;
+            position: absolute;
+            z-index: 2;
+            background: #f6f6f6;
+            width: 320px;
+            right: 6px;
+            top: 46px;
+            overflow-y: auto;
+            max-height: calc(100% - 55px);
+            -webkit-user-select: none;
+            user-select: none;
+            border-radius: 5px;
+            padding: 8px 12px 8px 12px;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+        }
+
+        #setDialog input {
+            width: 100%;
+        }
+
+        #setDialog .inlineTitle {
+            display: inline-block;
+            width: 80px;
+            line-height: 16px;
+            vertical-align: middle;
+        }
+
+        #convOption,
+        #speechOption,
+        #speechDetail,
+        #recOption {
+            margin-bottom: 6px;
+        }
+
+        #convOption>div,
+        #speechOption>div,
+        #speechDetail>div,
+        #recOption div {
+            margin-top: 10px;
+        }
+
+        .inputTextClass {
+            outline: none;
+            border-radius: 2px;
+            margin-top: 2px;
+            height: 32px;
+            font-size: 15px;
+            padding-left: 6px;
+            background: white;
+            border: none;
+        }
+
+        .areaTextClass {
+            width: 100%;
+            height: 80px;
+            display: block;
+            resize: none;
+            padding: 6px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            display: block;
+            margin: 6px 0 3px 0;
+            height: 8px;
+            background: #909090;
+            border-radius: 5px;
+            background-image: linear-gradient(#99c959, #99c959);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            background: #99c959;
+            cursor: ew-resize;
+            box-shadow: 0 0 2px 0 #555;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            box-shadow: none;
+            border: none;
+            background: transparent;
+        }
+
+        .justSetLine {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .presetSelect>div {
+            display: inline-block;
+        }
+
+        .presetSelect select {
+            outline: none;
+            border-radius: 3px;
+            width: 120px;
+            border-color: rgba(0, 0, 0, .3);
+        }
+
+        .selectDef {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #707070;
+        }
+
+        #preSetSpeech {
+            width: 100%;
+            outline: none;
+            height: 30px;
+            font-size: 14px;
+            margin-top: 5px;
+            border-radius: 3px;
+            border-color: rgba(0, 0, 0, .3);
+        }
+
+        .mdOption {
+            position: absolute;
+            right: 5px;
+            bottom: 0px;
+            pointer-events: none;
+        }
+
+        .mdOption>div {
+            margin-top: 4px;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .mdOption>div>svg {
+            color: #989898;
+            display: block;
+            opacity: 0.85;
+        }
+
+        .mdOption svg:hover {
+            opacity: 1;
+        }
+
+        .mdOption svg * {
+            pointer-events: none;
+        }
+
+        .refreshReq svg:not(:first-child) {
+            display: none;
+        }
+
+        .halfRefReq svg:not(:nth-child(2)) {
+            display: none;
+        }
+
+        .moreOption {
+            position: relative;
+        }
+
+        .optionItems {
+            position: absolute;
+            top: -8px;
+            display: flex;
+            justify-content: space-between;
+            visibility: hidden;
+            z-index: 1;
+            color: #808080;
+        }
+
+        .moreOptionHidden>div {
+            display: none !important;
+        }
+
+        .optionItems:hover {
+            visibility: visible;
+        }
+
+        .optionItems:hover .optionItem {
+            transform: scale(1);
+            visibility: visible;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(6) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 0ms;
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(5) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 10ms;
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(4) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 30ms;
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(3) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 50ms;
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(2) {
+            visibility: visible;
+            transition-delay: 80ms;
+            transform: scale(1);
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(1) {
+            visibility: visible;
+            transition-delay: 110ms;
+            transform: scale(1);
+            transition-duration: 60ms;
+        }
+
+        .optionItem {
+            height: 30px;
+            width: 30px;
+            background-color: #f7f7f8;
+            visibility: hidden;
+            transform: scale(0);
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            border-radius: 3px;
+        }
+
+        .optionItem * {
+            pointer-events: none;
+        }
+
+        .optionItem:hover {
+            background: #e0e0e0;
+        }
+
+        .readyVoice svg:not(:first-child) {
+            display: none;
+        }
+
+        .pauseVoice svg:not(:nth-child(2)) {
+            display: none;
+        }
+
+        .resumeVoice svg:not(:nth-child(3)) {
+            display: none;
+        }
+
+        #voiceTypes>span {
+            border-radius: 3px;
+            margin-left: 4px;
+            cursor: pointer;
+            padding: 1px 5px;
+        }
+
+        #voiceTypes>span:hover {
+            background: #e7e7e7;
+        }
+
+        .selVoiceType {
+            background: #d0d0d0 !important;
+        }
+
+        .overlay {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 200ms ease-in;
+        }
+
+        .nav {
+            width: 250px;
+            height: 100%;
+            background-color: #fafafa;
+            left: -250px;
+            top: 0;
+            position: fixed;
+            transition: left 100ms ease-in-out;
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #newChat {
+            text-align: center;
+            width: 100%;
+            height: 50px;
+            color: #404040;
+            margin: 10px 0 10px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #newChat:hover {
+            background: #f0f0f0 !important;
+        }
+
+        #newChat>svg {
+            margin-left: 17px;
+            margin-right: 14px;
+        }
+
+        #newChat>span {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .divider {
+            width: 100%;
+            border-top: 1px solid #e0e0e0;
+            margin: 8px 0;
+        }
+
+        .navFooter {
+            padding-bottom: 8px;
+        }
+
+        .navFunc {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .navFunc>div,
+        .navFunc>label {
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            text-align: center;
+            padding: 5px;
+            width: 70px;
+            color: #404040;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navFunc>div>svg,
+        .navFunc>label>svg {
+            color: #666;
+        }
+
+        .navFunc>div:hover,
+        .navFunc>label:hover {
+            background: #e0e0e0;
+        }
+
+        .links {
+            text-align: center;
+        }
+
+        .links a {
+            color: #404040;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            color: black !important;
+        }
+
+        .links a:visited {
+            color: #404040;
+        }
+
+        #chatList {
+            width: 100%;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chatLi {
+            cursor: pointer;
+            width: 100%;
+            height: 50px;
+            color: #909090;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .chatLi * {
+            pointer-events: none;
+        }
+
+        .chatLi>svg {
+            margin-left: 18px;
+            color: #505050;
+        }
+
+        .chatLi svg {
+            pointer-events: auto;
+        }
+
+        .chatLi svg * {
+            pointer-events: none;
+        }
+
+        .chatLi .chatName {
+            position: absolute;
+            left: 55px;
+            color: #404040;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 125px;
+            line-height: 20px;
+            height: 20px;
+        }
+
+        .chatLi .chatOption {
+            visibility: hidden;
+            display: flex;
+            color: #666;
+            margin-right: 8px;
+        }
+
+        .chatLi:hover {
+            background: #f0f0f0;
+        }
+
+        .activeChatLi {
+            background: #e0e0e0 !important;
+        }
+
+        .activeChatLi .chatOption {
+            visibility: visible !important;
+        }
+
+        .activeChatLi #activeChatEdit {
+            position: absolute;
+            left: 52px;
+            font-size: 16px;
+            border-radius: 2px;
+            background: #f0f0f0;
+            outline: none;
+            border: none;
+            pointer-events: auto;
+            height: 24px;
+            line-height: 24px;
+            width: 160px;
+            padding: 1px 3px;
+            z-index: 1;
+        }
+
+        .show-nav .nav {
+            left: 0;
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 5px -2.5px, rgba(0, 0, 0, 0.14) 0px 8px 12px 1px, rgba(0, 0, 0, 0.12) 0px 3px 15px 2.5px;
+        }
+
+        .show-nav .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #loadMask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background-color: #edeff2;
+        }
+
+        #loadMask>div {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        #loadMask svg {
+            width: 160px;
+            height: 80px;
+        }
+
+        #loadMask>div>div {
+            font-size: 40px;
+            color: #909090;
+        }
+
+        #voiceRec {
+            position: absolute;
+            right: 47px;
+            top: 0;
+            width: 47px;
+            height: 100%;
+            display: none !important;
+        }
+
+        #pngDownLoad {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            width: 47px;
+            height: 100%;
+        }
+
+        #pngDownLoadIcon {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s;
+        }
+
+        #pngDownLoadIcon:hover>svg {
+            color: #808080;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        #pngDownLoadIcon>svg {
+            width: 28px;
+            height: 28px;
+            color: #808080;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #pngDownLoadIcon>svg .animVoice {
+            display: none;
+        }
+
+        .message_if_voice {
+            padding-right: 47px !important;
+        }
+
+        #voiceRecIcon {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        #voiceRecIcon:hover>svg {
+            color: #808080;
+        }
+
+        #voiceRecIcon>svg {
+            width: 28px;
+            height: 28px;
+            color: #b0b0b0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #voiceRecIcon>svg .animVoice {
+            display: none;
+        }
+
+        .voiceRecing>svg {
+            color: #99c959 !important;
+        }
+
+        .voiceRecing .animVoice {
+            display: inline !important;
+            transform-origin: 0 64%;
+            animation-duration: 1.5s;
+            animation-name: scaleVoice;
+            animation-timing-function: ease;
+            animation-iteration-count: infinite;
+        }
+
+        .voiceLong .animVoice {
+            display: inline !important;
+            transform-origin: 0 64%;
+            animation-duration: 0.3s;
+            animation-name: longVoice;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes longVoice {
+            0% {
+                transform: scaleY(0);
+            }
+
+            100% {
+                transform: scaleY(1);
+            }
+        }
+
+        @keyframes scaleVoice {
+            0% {
+                transform: scaleY(0.28);
+            }
+
+            20% {
+                transform: scaleY(0.60);
+            }
+
+            28% {
+                transform: scaleY(0.28);
+            }
+
+            36% {
+                transform: scaleY(0.45);
+            }
+
+            44% {
+                transform: scaleY(0.28);
+            }
+
+            52% {
+                transform: scaleY(0.45);
+            }
+
+            62% {
+                transform: scaleY(0.80);
+            }
+
+            72% {
+                transform: scaleY(0.80);
+            }
+
+            90% {
+                transform: scaleY(0.28);
+            }
+
+            100% {
+                transform: scaleY(0.28);
+            }
+        }
+
+        #voiceRecSetting {
+            display: none;
+            position: absolute;
+            top: -70px;
+            left: -26px;
+            z-index: 1;
+            padding: 4px 4px;
+            user-select: none;
+            border-radius: 3px;
+            background-color: #f6f6f6;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+        }
+
+        #voiceRecSetting select {
+            width: 102px;
+            outline: none;
+            height: 28px;
+            border-radius: 3px;
+            border-color: rgba(0, 0, 0, .3);
+        }
+
+        .presetModelCls label {
+            margin-right: 8px;
+        }
+
+        .presetModelCls select {
+            height: 30px;
+            margin-top: 2px;
+            font-size: 15px;
+        }
+
+        .setSwitch {
+            display: flex;
+
+        }
+
+        .setSwitch>div {
+            border-radius: 3px;
+            width: calc(100% / 3);
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .setSwitch>div:hover {
+            background-color: #e0e0e0;
+        }
+
+        .activeSwitch {
+            background-color: #d0d0d0 !important;
+        }
+
+        #checkVoiceLoad {
+            height: 32px;
+            border-radius: 3px;
+            line-height: 32px;
+            background: #d0d0d0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        #checkVoiceLoad:hover {
+            background: #c0c0c0;
+        }
+
+        .voiceChecking {
+            background-color: #c0c0c0 !important;
+        }
+
+        .voiceChecking>svg {
+            display: inline !important;
+        }
+
+        #checkVoiceLoad>svg {
+            display: none;
+            margin-right: 8px;
+            height: 32px;
+            width: 64px;
+        }
+
+        #preSetSystem {
+            height: 20px;
+            line-height: 20px;
+            vertical-align: top;
+        }
+
+        #scrollTopBtn {
+            position: fixed;
+            right: 10px;
+            bottom: calc(50% + 24px);
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            display: inline-block;
+            border-radius: 3px 3px 0 0;
+            background-color: #989898;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            z-index: 9999;
+            opacity: 0.75;
+        }
+
+        #scrollTopBtn>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #scrollTopBtn:hover {
+            background-color: #909090;
+            opacity: 1;
+        }
+
+        #scrollBottomBtn {
+            position: fixed;
+            right: 10px;
+            bottom: calc(50% - 24px);
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            display: inline-block;
+            border-radius: 0 0 3px 3px;
+            background-color: #989898;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            z-index: 9999;
+            opacity: 0.75;
+        }
+
+        #scrollBottomBtn>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #scrollBottomBtn:hover {
+            background-color: #909090;
+            opacity: 1;
+        }
+
+        #darkModeBtn {
+            position: fixed;
+            right: 10px;
+            bottom: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            display: inline-block;
+            border-radius: 0 ;
+            background-color: #989898;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            z-index: 9999;
+            opacity: 0.75;
+        }
+
+        #darkModeBtn>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: scale(0);
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 0.85s, opacity 0.85s, -webkit-transform 0.85s
+        }
+
+        #darkModeBtn>svg.active {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%)  scale(0.85);
+            opacity: 1;
+            transition: transform 0.85s, opacity 0.85s, -webkit-transform 0.85s
+        }
+
+        #darkModeBtn:hover {
+            background-color: #909090;
+            opacity: 1;
+        }
+
+        .swal2-backdrop-show{
+            background: rgba(72,72,72,0.1)!important;
+        }
+        
+        .swal2-backdrop-hide{
+            background: rgba(72,72,72,0.1)!important;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: none">
+        <svg>
+            <symbol viewBox="0 0 24 24" id="optionIcon">
+                <path fill="currentColor"
+                    d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="refreshIcon">
+                <path fill="currentColor"
+                    d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="halfRefIcon">
+                <path fill="currentColor"
+                    d="M 4.009 12.163 C 4.012 12.206 2.02 12.329 2 12.098 C 2 6.575 6.477 2 12 2 C 17.523 2 22 6.477 22 12 C 22 14.136 21.33 16.116 20.19 17.74 L 17 12 L 20 12 C 19.999 5.842 13.333 1.993 7.999 5.073 C 3.211 8.343 4.374 12.389 4.009 12.163 Z" />
+            </symbol>
+            <symbol viewBox="-2 -2 20 20" id="copyIcon">
+                <path fill="currentColor"
+                    d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z">
+                </path>
+                <path fill="currentColor"
+                    d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z">
+                </path>
+            </symbol>
+            <symbol width="20" height="20" viewBox="-1 -1 25 25" id="mdoutputIcon" style="fill: currentColor;transform: ;msFilter:;">
+                <path d="M20.553 18.15H3.447a1.443 1.443 0 0 1-1.442-1.441V7.291c0-.795.647-1.441 1.442-1.441h17.105c.795 0 1.442.646 1.442 1.441v9.418a1.441 1.441 0 0 1-1.441 1.441zM6.811 15.268V11.52l1.922 2.402 1.922-2.402v3.748h1.922V8.732h-1.922l-1.922 2.403-1.922-2.403H4.889v6.535h1.922zM19.688 12h-1.922V8.732h-1.923V12h-1.922l2.884 3.364L19.688 12z"></path>
+            </symbol>
+            <symbol width="20" height="20" viewBox="-1 -1 25 25" id="savepngIcon" style="fill: currentColor;transform: ;msFilter:;">
+                <path d="M7.782 14.576c-.186 0-.312.018-.377.036v1.193c.077.018.174.023.306.023.485 0 .785-.246.785-.659 0-.371-.258-.593-.714-.593z"></path>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9.03 16.105c-.313.293-.774.426-1.313.426-.12 0-.229-.007-.312-.019v1.445h-.906V13.97a7.504 7.504 0 0 1 1.235-.083c.563 0 .966.107 1.235.323.258.204.432.54.432.936s-.131.731-.371.959zm4.302 1.853h-.96l-.863-1.56c-.24-.432-.504-.953-.701-1.427l-.019.006c.024.534.036 1.104.036 1.763v1.218h-.84v-4.042h1.067l.84 1.481c.24.426.479.93.659 1.385h.019a14.746 14.746 0 0 1-.078-1.685v-1.182h.84v4.043zm4.169-.186a4.512 4.512 0 0 1-1.349.228c-.737 0-1.271-.186-1.644-.546-.371-.348-.575-.875-.569-1.469.006-1.344.983-2.111 2.309-2.111.521 0 .924.103 1.121.198l-.191.731c-.222-.096-.498-.174-.941-.174-.762 0-1.338.432-1.338 1.308 0 .833.522 1.325 1.271 1.325.21 0 .378-.024.45-.061v-.846h-.624v-.713h1.505v2.13zM14 9h-1V4l5 5h-4z"></path>
+            </symbol>
+            <symbol width="20" height="20" viewBox="-1 -1 25 25" id="savetxtIcon" style="fill: currentColor;transform: ;msFilter:;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9.998 14.768H8.895v3.274h-.917v-3.274H6.893V14h3.105v.768zm2.725 3.274-.365-.731c-.15-.282-.246-.492-.359-.726h-.013c-.083.233-.185.443-.312.726l-.335.731h-1.045l1.171-2.045L10.336 14h1.05l.354.738c.121.245.21.443.306.671h.013c.096-.258.174-.438.276-.671l.341-.738h1.043l-1.139 1.973 1.198 2.069h-1.055zm4.384-3.274h-1.104v3.274h-.917v-3.274h-1.085V14h3.105v.768zM14 9h-1V4l5 5h-4z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="delIcon">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 7v0a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v0M9 7h6M9 7H6m9 0h3m2 0h-2M4 7h2m0 0v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="readyVoiceIcon">
+                <path fill="currentColor"
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 16 16" id="pauseVoiceIcon">
+                <path stroke="currentColor" stroke-width="2" d="M5 2v12M11 2v12"></path>
+            </symbol>
+            <symbol viewBox="0 0 16 16" id="resumeVoiceIcon">
+                <path fill="currentColor" d="M4 2L4 14L12 8Z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="stopResIcon">
+                <path fill="currentColor"
+                    d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10zm0-2a8 8 0 1 0 0-16a8 8 0 0 0 0 16zM9 9h6v6H9V9z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 128 128" id="downAudioIcon">
+                <path
+                    d="M 64.662 1.549 C 56.549 4.524, 46.998 14.179, 45.523 20.895 C 45.041 23.089, 44.073 23.833, 40.433 24.807 C 34.752 26.326, 27.956 32.929, 25.527 39.289 C 24.273 42.574, 23.884 45.715, 24.196 50.034 C 24.620 55.897, 24.528 56.193, 21.836 57.585 C 17.142 60.012, 16 63.617, 16 76 C 16 88.463, 17.137 91.985, 21.967 94.483 C 28.244 97.729, 36.120 95.350, 38.579 89.466 C 39.387 87.532, 40 82.764, 40 78.415 C 40 70.971, 40.060 70.783, 42.250 71.370 C 43.487 71.701, 48.888 71.979, 54.250 71.986 L 64 72 64 76 L 64 80 57.122 80 C 49.420 80, 48.614 80.543, 47.547 86.453 C 46.552 91.964, 43.550 97.473, 40.273 99.803 C 33 104.974, 23.120 105.042, 16.118 99.971 C 11.407 96.558, 9.048 92.484, 8.145 86.205 C 6.963 77.979, 0.794 77.729, 0.191 85.883 C -0.196 91.111, 3.323 99.170, 8.062 103.908 C 11.290 107.136, 20.073 111.969, 22.750 111.990 C 23.540 111.996, 24 113.472, 24 116 C 24 119.740, 23.813 120, 21.122 120 C 17.674 120, 15.727 122.044, 16.173 125.195 C 16.492 127.441, 16.781 127.500, 27.391 127.500 C 36.676 127.500, 38.445 127.242, 39.386 125.750 C 40.993 123.203, 38.986 120.568, 35.149 120.187 C 32.206 119.894, 32 119.617, 32 115.956 C 32 112.509, 32.330 111.959, 34.750 111.377 C 42.181 109.591, 52.157 101.208, 53.575 95.559 C 53.928 94.152, 54.514 93, 54.878 93 C 55.242 93, 59.797 97.275, 65 102.500 C 70.762 108.286, 75.256 112, 76.495 112 C 77.769 112, 83.287 107.231, 91.264 99.236 C 101.113 89.366, 104 85.876, 104 83.843 C 104 80.580, 102.553 80, 94.418 80 L 88 80 88 76.105 L 88 72.211 99.750 71.815 C 113.117 71.364, 117.595 69.741, 122.762 63.473 C 128.159 56.925, 129.673 45.269, 126.134 37.500 C 123.787 32.346, 117.218 26.445, 112.132 24.921 C 108.617 23.868, 107.767 22.968, 105.028 17.405 C 99.364 5.901, 89.280 -0.062, 75.712 0.070 C 71.746 0.109, 66.773 0.774, 64.662 1.549 M 67.885 9.380 C 60.093 12.164, 55.057 17.704, 52.527 26.276 C 51.174 30.856, 50.220 31.617, 44.729 32.496 C 37.017 33.729, 30.917 42.446, 32.374 50.154 C 34.239 60.026, 40.582 63.944, 54.750 63.978 L 64 64 64 57.122 C 64 52.457, 64.449 49.872, 65.396 49.086 C 66.310 48.328, 70.370 48.027, 77.146 48.214 L 87.500 48.500 87.794 56.359 L 88.088 64.218 98.989 63.845 C 108.043 63.535, 110.356 63.125, 112.634 61.424 C 119.736 56.122, 121.911 47.667, 118.097 40.190 C 115.870 35.824, 110.154 32.014, 105.790 31.985 C 102.250 31.961, 101.126 30.787, 99.532 25.443 C 95.580 12.197, 80.880 4.736, 67.885 9.380 M 72 70.800 C 72 80.978, 71.625 85.975, 70.800 86.800 C 70.140 87.460, 67.781 88, 65.559 88 L 61.517 88 68.759 95.241 L 76 102.483 83.241 95.241 L 90.483 88 86.441 88 C 84.219 88, 81.860 87.460, 81.200 86.800 C 80.375 85.975, 80 80.978, 80 70.800 L 80 56 76 56 L 72 56 72 70.800 M 25.200 65.200 C 23.566 66.834, 23.566 85.166, 25.200 86.800 C 27.002 88.602, 29.798 88.246, 30.965 86.066 C 31.534 85.002, 32 80.472, 32 76 C 32 71.528, 31.534 66.998, 30.965 65.934 C 29.798 63.754, 27.002 63.398, 25.200 65.200"
+                    stroke="none" fill="currentColor" fill-rule="evenodd" />
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="chatIcon">
+                <path fill="currentColor"
+                    d="m18 21l-1.4-1.4l1.575-1.6H14v-2h4.175L16.6 14.4L18 13l4 4l-4 4ZM3 21V6q0-.825.588-1.413T5 4h12q.825 0 1.413.588T19 6v5.075q-.25-.05-.5-.063T18 11q-.25 0-.5.013t-.5.062V6H5v10h7.075q-.05.25-.063.5T12 17q0 .25.013.5t.062.5H6l-3 3Zm4-11h8V8H7v2Zm0 4h5v-2H7v2Zm-2 2V6v10Z" />
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="chatEditIcon">
+                <path fill="currentColor"
+                    d="M5 19h1.4l8.625-8.625l-1.4-1.4L5 17.6V19ZM19.3 8.925l-4.25-4.2l1.4-1.4q.575-.575 1.413-.575t1.412.575l1.4 1.4q.575.575.6 1.388t-.55 1.387L19.3 8.925ZM17.85 10.4L7.25 21H3v-4.25l10.6-10.6l4.25 4.25Zm-3.525-.725l-.7-.7l1.4 1.4l-.7-.7Z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="deleteIcon">
+                <path fill="currentColor"
+                    d="M8 20v-5h2v5h9v-7H5v7h3zm-4-9h16V8h-6V4h-4v4H4v3zM3 21v-8H2V7a1 1 0 0 1 1-1h5V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h5a1 1 0 0 1 1 1v6h-1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="scrollTopIcon">
+                <path d="M6 4h12v2H6zm.707 11.707L11 11.414V20h2v-8.586l4.293 4.293 1.414-1.414L12 7.586l-6.707 6.707z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="scrollBottomIcon">
+                <path d="M6 18h12v2H6zm5-14v8.586L6.707 8.293 5.293 9.707 12 16.414l6.707-6.707-1.414-1.414L13 12.586V4z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="nightModeIcon">
+                <path d="M20.742 13.045a8.088 8.088 0 0 1-2.077.271c-2.135 0-4.14-.83-5.646-2.336a8.025 8.025 0 0 1-2.064-7.723A1 1 0 0 0 9.73 2.034a10.014 10.014 0 0 0-4.489 2.582c-3.898 3.898-3.898 10.243 0 14.143a9.937 9.937 0 0 0 7.072 2.93 9.93 9.93 0 0 0 7.07-2.929 10.007 10.007 0 0 0 2.583-4.491 1.001 1.001 0 0 0-1.224-1.224zm-2.772 4.301a7.947 7.947 0 0 1-5.656 2.343 7.953 7.953 0 0 1-5.658-2.344c-3.118-3.119-3.118-8.195 0-11.314a7.923 7.923 0 0 1 2.06-1.483 10.027 10.027 0 0 0 2.89 7.848 9.972 9.972 0 0 0 7.848 2.891 8.036 8.036 0 0 1-1.484 2.059z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="dayModeIcon">
+                <path d="M6.993 12c0 2.761 2.246 5.007 5.007 5.007s5.007-2.246 5.007-5.007S14.761 6.993 12 6.993 6.993 9.239 6.993 12zM12 8.993c1.658 0 3.007 1.349 3.007 3.007S13.658 15.007 12 15.007 8.993 13.658 8.993 12 10.342 8.993 12 8.993zM10.998 19h2v3h-2zm0-17h2v3h-2zm-9 9h3v2h-3zm17 0h3v2h-3zM4.219 18.363l2.12-2.122 1.415 1.414-2.12 2.122zM16.24 6.344l2.122-2.122 1.414 1.414-2.122 2.122zM6.342 7.759 4.22 5.637l1.415-1.414 2.12 2.122zm13.434 10.605-1.414 1.414-2.122-2.122 1.414-1.414z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="addIcon" stroke="currentColor" fill="none" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </symbol>
+            <symbol viewBox="0 0 200 100" preserveAspectRatio="xMidYMid" id="loadingIcon">
+                <g transform="translate(50 50)">
+                    <circle cx="0" cy="0" r="15" fill="#e15b64">
+                        <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
+                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
+                            dur="1s" repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+                <g transform="translate(100 50)">
+                    <circle cx="0" cy="0" r="15" fill="#f8b26a">
+                        <animateTransform attributeName="transform" type="scale" begin="-0.16666666666666666s"
+                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
+                            dur="1s" repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+                <g transform="translate(150 50)">
+                    <circle cx="0" cy="0" r="15" fill="#99c959">
+                        <animateTransform attributeName="transform" type="scale" begin="0s" calcMode="spline"
+                            keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s"
+                            repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="exportIcon">
+                <path fill="currentColor"
+                    d="M4 19h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7zM14 9h5l-7 7l-7-7h5V3h4v6z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="importIcon">
+                <path fill="currentColor"
+                    d="M4 19h16v-7h2v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8h2v7zM14 9v6h-4V9H5l7-7l7 7h-5z"></path>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="clearAllIcon">
+                <path fill="currentColor"
+                    d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10zm0-2a8 8 0 1 0 0-16a8 8 0 0 0 0 16zm0-9.414l2.828-2.829l1.415 1.415L13.414 12l2.829 2.828l-1.415 1.415L12 13.414l-2.828 2.829l-1.415-1.415L10.586 12L7.757 9.172l1.415-1.415L12 10.586z">
+                </path>
+            </symbol>
+        </svg>
+    </div>
+    <div id="loadMask">
+        <div>
+            <div>chatgpt</div>
+            <svg style="display:none;">
+                <use xlink:href="#loadingIcon" />
+            </svg>
+        </div>
+    </div>
+    <div class="chat_window">
+        <div class="overlay"></div>
+        <nav class="nav">
+            <div id="newChat">
+                <svg width="24" height="24">
+                    <use xlink:href="#addIcon" />
+                </svg>
+                <span>新建会话</span>
+            </div>
+            <div id="chatList"></div>
+            <div class="navFooter">
+                <div class="navFunc">
+                    <div id="exportChat">
+                        <svg width="24" height="24">
+                            <use xlink:href="#exportIcon" />
+                        </svg>
+                        <span>导出</span>
+                    </div>
+                    <label id="importChat" for="importChatInput">
+                        <svg width="24" height="24">
+                            <use xlink:href="#importIcon" />
+                        </svg>
+                        <span>导入</span>
+                    </label>
+                    <input type="file" style="display: none;" id="importChatInput" accept="application/json" />
+                    <div id="clearChat">
+                        <svg width="24" height="24">
+                            <use xlink:href="#clearAllIcon" />
+                        </svg>
+                        <span>清空</span>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="links">
+                    <a href="https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade" target="_blank"
+                        rel="noopener noreferrer nofollow">Github</a>
+                </div>
+            </div>
+        </nav>
+        <div class="top_menu">
+            <div class="toggler">
+                <div class="button close"></div>
+                <div class="button minimize"></div>
+                <div class="button maximize"></div>
+            </div>
+            <div class="title">chatgpt</div>
+            <button id="setting">
+                <svg viewBox="0 0 100 100" style="display:block;" role="img" width="30" height="30">
+                    <title>设置</title>
+                    <circle cx="50" cy="20" r="10" fill="#909090" />
+                    <circle cx="50" cy="50" r="10" fill="#909090" />
+                    <circle cx="50" cy="80" r="10" fill="#909090" />
+                </svg>
+            </button>
+            <div id="setDialog" style="display:none;">
+                <div class="setSwitch">
+                    <div data-id="convOption" class="activeSwitch">对话</div>
+                    <div data-id="speechOption">语音合成</div>
+                    <div data-id="recOption">语音识别</div>
+                </div>
+                <div id="convOption">
+                    <div class="presetSelect presetModelCls">
+                        <label for="preSetModel">GPT模型</label>
+                        <select id="preSetModel">
+                            <option value="gpt-3.5-turbo">gpt-3.5</option>
+                            <option value="gpt-4">gpt-4</option>
+                            <option value="gpt-4-32k">gpt-4-32k</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div >自定义接口</div>
+                        <input class="inputTextClass" placeholder="https://example.com/" id="apiHostInput" />
+                    </div>
+                    <div>
+                        <div>自定义API key</div>
+                        <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
+                            style="-webkit-text-security: disc;" />
+                    </div>
+                    <div>
+                        <div class="justSetLine presetSelect">
+                            <div>系统角色</div>
+                            <div>
+                                <label for="preSetSystem">预设角色</label>
+                                <select id="preSetSystem">
+                                    <option value="">默认</option>
+                                    <option value="normal">助手</option>
+                                    <option value="cat">猫娘</option>
+                                    <option value="emoji">表情</option>
+                                    <option value="image">有图</option>
+                                </select>
+                            </div>
+                        </div>
+                        <textarea class="inputTextClass areaTextClass" placeholder="你是一个乐于助人的助手，尽量简明扼要地回答"
+                            id="systemInput"></textarea>
+                    </div>
+                    <div>
+                        <span>角色性格</span>
+                        <input type="range" id="top_p" min="0" max="1" value="1" step="0.05" />
+                        <div class="selectDef">
+                            <span>准确严谨</span>
+                            <span>灵活创新</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span>回答质量</span>
+                        <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
+                        <div class="selectDef">
+                            <span>重复刻板</span>
+                            <span>胡言乱语</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span>打字机速度</span>
+                        <input type="range" id="textSpeed" min="0" max="100" value="88" step="1" />
+                        <div class="selectDef">
+                            <span>慢</span>
+                            <span>快</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="inlineTitle">连续对话</span>
+                        <label class="switch-slide">
+                            <input type="checkbox" id="enableCont" checked hidden />
+                            <label for="enableCont" class="switch-slide-label"></label>
+                        </label>
+                    </div>
+                    <div>
+                        <span class="inlineTitle">长回复</span>
+                        <label class="switch-slide">
+                            <input type="checkbox" id="enableLongReply" hidden />
+                            <label for="enableLongReply" class="switch-slide-label"></label>
+                        </label>
+                    </div>
+                </div>
+                <div id="speechOption" style="display: none;">
+                    <div class="presetSelect presetModelCls">
+                        <label for="preSetService">语音合成服务</label>
+                        <select id="preSetService">
+                            <option value="3">Azure语音</option>
+                            <option selected value="2">Edge语音</option>
+                            <option value="1">系统语音</option>
+                        </select>
+                    </div>
+                    <div class="presetSelect presetModelCls">
+                        <label for="preSetAzureRegion">Azure 区域</label>
+                        <select id="preSetAzureRegion">
+                        </select>
+                    </div>
+                    <div>
+                        <div>Azure Access Key</div>
+                        <input class="inputTextClass" type="password" placeholder="Azure Key" id="azureKeyInput"
+                            style="-webkit-text-security: disc;" />
+                    </div>
+                    <div id="checkVoiceLoad" style="display: none;">
+                        <svg>
+                            <use xlink:href="#loadingIcon" />
+                        </svg>
+                        <span>加载语音</span>
+                    </div>
+                    <div id="speechDetail">
+                        <div>
+                            <div class="justSetLine">
+                                <div>语音类型</div>
+                                <div id="voiceTypes">
+                                    <span data-type="0">提问语音</span>
+                                    <span data-type="1" class="selVoiceType">回答语音</span>
+                                </div>
+                            </div>
+                            <select id="preSetSpeech">
+                            </select>
+                        </div>
+                        <div class="justSetLine presetSelect" id="azureExtra" style="display:none;">
+                            <div class="presetModelCls">
+                                <label for="preSetVoiceStyle">风格</label>
+                                <select id="preSetVoiceStyle">
+                                </select>
+                            </div>
+                            <div class="presetModelCls">
+                                <label for="preSetVoiceRole">角色</label>
+                                <select id="preSetVoiceRole">
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <span>音量</span>
+                            <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>低</span>
+                                <span>高</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>语速</span>
+                            <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>慢</span>
+                                <span>快</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>音调</span>
+                            <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
+                            <div class="selectDef">
+                                <span>平淡</span>
+                                <span>起伏</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="inlineTitle">连续朗读</span>
+                            <label class="switch-slide">
+                                <input type="checkbox" id="enableContVoice" checked hidden />
+                                <label for="enableContVoice" class="switch-slide-label"></label>
+                            </label>
+                        </div>
+                        <div>
+                            <span class="inlineTitle">自动朗读</span>
+                            <label class="switch-slide">
+                                <input type="checkbox" id="enableAutoVoice" hidden />
+                                <label for="enableAutoVoice" class="switch-slide-label"></label>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div id="recOption" style="display: none;">
+                    <div id="noRecTip" style="display: block;text-align:center;">当前环境暂不支持语音识别。</div>
+                    <div id="yesRec" style="display: none;text-align:center;">
+                        当前环境暂不支持语音识别。
+                        <div style="display: none;" class="presetSelect presetModelCls">
+                            <label for="selectLangOption">语言</label>
+                            <select id="selectLangOption">
+                            </select>
+                        </div>
+                        <div style="display: none;" class="presetSelect presetModelCls">
+                            <label for="selectDiaOption">方言</label>
+                            <select id="selectDiaOption">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="messages">
+            
+    <div id="scrollTopBtn" onclick="document.querySelector('.messages').scrollTo({top:0,behavior:'smooth'})">
+        <svg role="img" width="20px" height="20px">
+            <title>滑至顶端</title>
+                <use xlink:href="#scrollTopIcon" />
+        </svg>
+    </div>
+    <div id="darkModeBtn" onclick="DarkmodeSwitch();">
+        <svg id="icon-1" role="img" width="20px" height="20px">
+            <title>切至日间模式</title>
+                <use xlink:href="#dayModeIcon"/>
+        </svg>
+        <svg id="icon-2" role="img" width="20px" height="20px">
+            <title>切至夜间模式</title>
+                <use xlink:href="#nightModeIcon"/>
+        </svg>
+    </div>
+    <div id="scrollBottomBtn" onclick="document.querySelector('.messages').scrollTo({top:9999,behavior:'smooth'})">
+        <svg role="img" width="20px" height="20px">
+            <title>滑至底部</title>
+                <use xlink:href="#scrollBottomIcon"/>
+        </svg>
+    </div>
+    
+            <div id="chatlog"></div>
+            <div id="stopChat">
+                <svg width="24" height="24">
+                    <use xlink:href="#stopResIcon" />
+                </svg></div>
+        </div>
+        <div class="bottom_wrapper clearfix">
+            <div class="message_input_wrapper">
+                <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧~" id="chatinput"></textarea>
+                <div id="voiceRec" style="display:none;">
+                    <div id="voiceRecIcon">
+                        <svg viewBox="0 0 48 48" id="voiceInputIcon">
+                            <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="4">
+                                <rect fill="none" width="14" height="27" x="17" y="4" rx="7" />
+                                <rect class="animVoice" x="18" y="4" width="12" height="27" stroke="none"
+                                    fill="currentColor"></rect>
+                                <path stroke-linecap="round"
+                                    d="M9 23c0 8.284 6.716 15 15 15c8.284 0 15-6.716 15-15M24 38v6" />
+                            </g>
+                        </svg>
+                    </div>
+                    <div id="voiceRecSetting">
+                        <select id="select_language" style="margin-bottom: 4px;"></select>
+                        <select id="select_dialect"></select>
+                    </div>
+                </div>
+                <div title="保存全部截图" onclick="saveClickALLPNG();" id="pngDownLoad">
+                    <div id="pngDownLoadIcon">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="pngDownLoadIcon"><path d="M19 3H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM5 19V5h14l.002 14H5z"></path><path d="m10 14-1-1-3 4h12l-5-7z"></path></svg>
+                    </div>
+                </div>
+            </div>
+            <button id="clearConv"><svg role="img" width="20px" height="20px">
+                    <title>清空会话</title>
+                    <use xlink:href="#deleteIcon" />
+                </svg></button>
+            <button class="loaded" id="sendbutton">
+                <span>发送</span>
+                <svg style="margin:0 auto;height:40px;width:100%;">
+                    <use xlink:href="#loadingIcon" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <link rel="stylesheet" href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css">
+    <script src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
+    <script>
+        const notyf = new Notyf({
+            position: {x: 'center', y: 'top'},
+            types: [
+                {
+                    type: 'success',
+                    background: '#99c959',
+                    duration: 2000,
+                },
+                {
+                    type: 'error',
+                    background: '#e15b64',
+                    duration: 3000,
+                }
+            ]
+        });
+        document.body.addEventListener("click", event => {
+            if (event.target.className === "toggler") {
+                document.body.classList.toggle("show-nav");
+            } else if (event.target.className === "overlay") {
+                document.body.classList.remove("show-nav");
+            } else if (event.target === document.body) {
+                document.body.classList.remove("show-nav");
+            }
+        });
+        const messagsEle = document.getElementsByClassName("messages")[0];
+        const chatlog = document.getElementById("chatlog");
+        const stopEle = document.getElementById("stopChat");
+        const sendBtnEle = document.getElementById("sendbutton");
+        const textarea = document.getElementById("chatinput");
+        const settingEle = document.getElementById("setting");
+        const dialogEle = document.getElementById("setDialog");
+        const systemEle = document.getElementById("systemInput");
+        const speechServiceEle = document.getElementById("preSetService");
+        const newChatEle = document.getElementById("newChat");
+        const chatListEle = document.getElementById("chatList");
+        const voiceRecEle = document.getElementById("voiceRecIcon");
+        const voiceRecSetEle = document.getElementById("voiceRecSetting");
+        let voiceType = 1; // 设置 0: 提问语音，1：回答语音
+        let voiceRole = []; // 语音
+        let voiceVolume = []; //音量
+        let voiceRate = []; // 语速
+        let voicePitch = []; // 音调
+        let enableContVoice; // 连续朗读
+        let enableAutoVoice; // 自动朗读
+        let existVoice = 2; // 3:Azure语音 2:使用edge在线语音, 1:使用本地语音, 0:不支持语音
+        let azureToken;
+        let azureTokenTimer;
+        let azureRegion;
+        let azureKey;
+        let azureRole = [];
+        let azureStyle = [];
+        let isSafeEnv = location.hostname.match(/127.|localhost/) || location.protocol.match(/https:|file:/); // https或本地安全环境
+        let supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
+        let recing = false;
+        let toggleRecEv;
+        textarea.focus();
+        const textInputEvent = () => {
+            if (!loading) {
+                if (textarea.value.trim().length) {
+                    sendBtnEle.classList.add("activeSendBtn");
+                } else {
+                    sendBtnEle.classList.remove("activeSendBtn");
+                }
+            }
+            textarea.style.height = "47px";
+            textarea.style.height = textarea.scrollHeight + "px";
+        };
+        textarea.oninput = textInputEvent;
+        if (supportRec) {
+            noRecTip.style.display = "none";
+            yesRec.style.display = "block";
+            document.getElementById("voiceRec").style.display = "block";
+            textarea.classList.add("message_if_voice");
+            // from https://www.google.com/intl/en/chrome/demos/speech.html
+            let langs = [ 
+                    ['中文',            ['cmn-Hans-CN', '普通话 (中国大陆)'],
+                                        ['cmn-Hans-HK', '普通话 (香港)'],
+                                        ['cmn-Hant-TW', '中文 (台灣)'],
+                                        ['yue-Hant-HK', '粵語 (香港)']],
+                    ['日本語',           ['ja-JP']],
+                                        ['한국어',            ['ko-KR']],
+                    ['English',         ['en-AU', 'Australia'],
+                                        ['en-CA', 'Canada'],
+                                        ['en-IN', 'India'],
+                                        ['en-KE', 'Kenya'],
+                                        ['en-TZ', 'Tanzania'],
+                                        ['en-GH', 'Ghana'],
+                                        ['en-NZ', 'New Zealand'],
+                                        ['en-NG', 'Nigeria'],
+                                        ['en-ZA', 'South Africa'],
+                                        ['en-PH', 'Philippines'],
+                                        ['en-GB', 'United Kingdom'],
+                                        ['en-US', 'United States']],
+                    ['Afrikaans',       ['af-ZA']],
+                    ['አማርኛ',           ['am-ET']],
+                    ['Azərbaycanca',    ['az-AZ']],
+                    ['বাংলা',            ['bn-BD', 'বাংলাদেশ'],
+                                        ['bn-IN', 'ভারত']],
+                    ['Bahasa Indonesia',['id-ID']],
+                    ['Bahasa Melayu',   ['ms-MY']],
+                    ['Català',          ['ca-ES']],
+                    ['Čeština',         ['cs-CZ']],
+                    ['Dansk',           ['da-DK']],
+                    ['Deutsch',         ['de-DE']],
+                    ['Español',         ['es-AR', 'Argentina'],
+                                        ['es-BO', 'Bolivia'],
+                                        ['es-CL', 'Chile'],
+                                        ['es-CO', 'Colombia'],
+                                        ['es-CR', 'Costa Rica'],
+                                        ['es-EC', 'Ecuador'],
+                                        ['es-SV', 'El Salvador'],
+                                        ['es-ES', 'España'],
+                                        ['es-US', 'Estados Unidos'],
+                                        ['es-GT', 'Guatemala'],
+                                        ['es-HN', 'Honduras'],
+                                        ['es-MX', 'México'],
+                                        ['es-NI', 'Nicaragua'],
+                                        ['es-PA', 'Panamá'],
+                                        ['es-PY', 'Paraguay'],
+                                        ['es-PE', 'Perú'],
+                                        ['es-PR', 'Puerto Rico'],
+                                        ['es-DO', 'República Dominicana'],
+                                        ['es-UY', 'Uruguay'],
+                                        ['es-VE', 'Venezuela']],
+                    ['Euskara',         ['eu-ES']],
+                    ['Filipino',        ['fil-PH']],
+                    ['Français',        ['fr-FR']],
+                    ['Basa Jawa',       ['jv-ID']],
+                    ['Galego',          ['gl-ES']],
+                    ['ગુજરાતી',           ['gu-IN']],
+                    ['Hrvatski',        ['hr-HR']],
+                    ['IsiZulu',         ['zu-ZA']],
+                    ['Íslenska',        ['is-IS']],
+                    ['Italiano',        ['it-IT', 'Italia'],
+                                        ['it-CH', 'Svizzera']],
+                    ['ಕನ್ನಡ',             ['kn-IN']],
+                    ['ភាសាខ្មែរ',          ['km-KH']],
+                    ['Latviešu',        ['lv-LV']],
+                    ['Lietuvių',        ['lt-LT']],
+                    ['മലയാളം',          ['ml-IN']],
+                                       ['मराठी',             ['mr-IN']],
+                    ['Magyar',          ['hu-HU']],
+                    ['ລາວ',              ['lo-LA']],
+                    ['Nederlands',      ['nl-NL']],
+                    ['नेपाली भाषा',        ['ne-NP']],
+                    ['Norsk bokmål',    ['nb-NO']],
+                    ['Polski',          ['pl-PL']],
+                    ['Português',       ['pt-BR', 'Brasil'],
+                                        ['pt-PT', 'Portugal']],
+                    ['Română',          ['ro-RO']],
+                    ['සිංහල',          ['si-LK']],
+                    ['Slovenščina',     ['sl-SI']],
+                    ['Basa Sunda',      ['su-ID']],
+                    ['Slovenčina',      ['sk-SK']],
+                    ['Suomi',           ['fi-FI']],
+                    ['Svenska',         ['sv-SE']],
+                    ['Kiswahili',       ['sw-TZ', 'Tanzania'],
+                                        ['sw-KE', 'Kenya']],
+                    ['ქართული',       ['ka-GE']],
+                    ['Հայերեն',          ['hy-AM']],
+                    ['தமிழ்',            ['ta-IN', 'இந்தியா'],
+                                        ['ta-SG', 'சிங்கப்பூர்'],
+                                        ['ta-LK', 'இலங்கை'],
+                                        ['ta-MY', 'மலேசியா']],
+                    ['తెలుగు',           ['te-IN']],
+                    ['Tiếng Việt',      ['vi-VN']],
+                    ['Türkçe',          ['tr-TR']],
+                    ['اُردُو',            ['ur-PK', 'پاکستان'],
+                                        ['ur-IN', 'بھارت']],
+                    ['Ελληνικά',         ['el-GR']],
+                    ['български',         ['bg-BG']],
+                    ['Pусский',          ['ru-RU']],
+                    ['Српски',           ['sr-RS']],
+                    ['Українська',        ['uk-UA']],
+                    ['हिन्दी',             ['hi-IN']],
+                    ['ภาษาไทย',         ['th-TH']]
+            ];
+            langs.forEach((lang, i) => {
+                select_language.options.add(new Option(lang[0], i));
+                selectLangOption.options.add(new Option(lang[0], i))
+            });
+            const updateCountry = function () {
+                selectLangOption.selectedIndex = select_language.selectedIndex = this.selectedIndex;
+                select_dialect.innerHTML = "";
+                selectDiaOption.innerHTML = "";
+                let list = langs[select_language.selectedIndex];
+                for (let i = 1; i < list.length; i++) {
+                    select_dialect.options.add(new Option(list[i][1], list[i][0]));
+                    selectDiaOption.options.add(new Option(list[i][1], list[i][0]));
+                }
+                select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+                selectDiaOption.parentElement.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+                localStorage.setItem("voiceRecLang", select_dialect.value);
+            };
+            let localLangIdx = 0;
+            let localDiaIdx = 0;
+            let localRecLang = localStorage.getItem("voiceRecLang");
+            if (localRecLang) {
+                let localIndex = langs.findIndex(item => {
+                    let diaIdx = item.findIndex(lang => {return lang instanceof Array && lang[0] === localRecLang});
+                    if (diaIdx !== -1) {
+                        localDiaIdx = diaIdx - 1;
+                        return true;
+                    }
+                    return false;
+                });
+                if (localIndex !== -1) {
+                    localLangIdx = localIndex;
+                }
+            }
+            selectLangOption.onchange = updateCountry;
+            select_language.onchange = updateCountry;
+            selectDiaOption.onchange = select_dialect.onchange = function () {
+                selectDiaOption.selectedIndex = select_dialect.selectedIndex = this.selectedIndex;
+                localStorage.setItem("voiceRecLang", select_dialect.value);
+            }
+            selectLangOption.selectedIndex = select_language.selectedIndex = localLangIdx;
+            select_language.dispatchEvent(new Event("change"));
+            selectDiaOption.selectedIndex = select_dialect.selectedIndex = localDiaIdx;
+            select_dialect.dispatchEvent(new Event("change"));
+            let recIns = new webkitSpeechRecognition();
+            // prevent some Android bug
+            recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
+            recIns.interimResults = true;
+            recIns.maxAlternatives = 1;
+            let recRes = tempRes = "";
+            let oriRes;
+            const resEvent = (event) => {
+                if (typeof (event.results) === 'undefined') {
+                    toggleRecEvent();
+                    return;
+                }
+                let isFinal;
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    isFinal = event.results[i].isFinal;
+                    if (isFinal) {
+                        recRes += event.results[i][0].transcript;
+                    } else {
+                        tempRes = recRes + event.results[i][0].transcript;
+                    }
+                }
+                textarea.value = oriRes + (isFinal ? recRes : tempRes);
+                textInputEvent();
+                textarea.focus();
+            };
+            const endEvent = (event) => {
+                if (!(event && event.type === "end")) {
+                    recIns.stop();
+                }
+                recIns.onresult = null;
+                recIns.onerror = null;
+                recIns.onend = null;
+                recRes = tempRes = "";
+                voiceRecEle.classList.remove("voiceRecing");
+                recing = false;
+            };
+            const errorEvent = (ev) => {
+                if (event.error === 'no-speech') {
+                    notyf.error("未识别到语音，请调整设备后重试！")
+                }
+                if (event.error === 'audio-capture') {
+                    notyf.error("未找到麦克风，请确保已安装麦克风！")
+                }
+                if (event.error === 'not-allowed') {
+                    notyf.error("未允许使用麦克风的权限！")
+                }
+                endEvent();
+            }
+            const closeEvent = (ev) => {
+                if (voiceRecSetEle.contains(ev.target)) return;
+                if (!voiceRecSetEle.contains(ev.target)) {
+                    voiceRecSetEle.style.display = "none";
+                    document.removeEventListener("mousedown", closeEvent, true);
+                    voiceRecEle.classList.remove("voiceLong");
+                }
+            }
+            const longEvent = () => {
+                voiceRecSetEle.style.display = "block";
+                document.addEventListener("mousedown", closeEvent, true);
+            }
+            const toggleRecEvent = () => {
+                voiceRecEle.classList.toggle("voiceRecing");
+                if (voiceRecEle.classList.contains("voiceRecing")) {
+                    try {
+                        oriRes = textarea.value;
+                        recIns.lang = select_dialect.value;
+                        recIns.start();
+                        recIns.onresult = resEvent;
+                        recIns.onerror = errorEvent;
+                        recIns.onend = endEvent;
+                        recing = true;
+                    } catch (e) {
+                        endEvent();
+                    }
+                } else {
+                    endEvent();
+                }
+            };
+            toggleRecEv = toggleRecEvent;
+            let timer;
+            const voiceDownEvent = (ev) => {
+                ev.preventDefault();
+                let i = 0;
+                voiceRecEle.classList.add("voiceLong");
+                timer = setInterval(() => {
+                    i += 1;
+                    if (i >= 3) {
+                        clearInterval(timer);
+                        timer = void 0;
+                        longEvent();
+                    }
+                }, 100)
+            };
+            const voiceUpEvent = (ev) => {
+                ev.preventDefault();
+                if (timer !== void 0) {
+                    toggleRecEvent();
+                    clearInterval(timer);
+                    timer = void 0;
+                    voiceRecEle.classList.remove("voiceLong");
+                }
+            }
+            voiceRecEle.addEventListener("mousedown", voiceDownEvent);
+            voiceRecEle.addEventListener("touchstart", voiceDownEvent);
+            voiceRecEle.addEventListener("mouseup", voiceUpEvent);
+            voiceRecEle.addEventListener("touchend", voiceUpEvent);
+        }
+        document.getElementsByClassName("setSwitch")[0].onclick = function (ev) {
+            let activeEle = this.getElementsByClassName("activeSwitch")[0];
+            if (ev.target !== activeEle) {
+                activeEle.classList.remove("activeSwitch");
+                ev.target.classList.add("activeSwitch");
+                document.getElementById(ev.target.dataset.id).style.display = "block";
+                document.getElementById(activeEle.dataset.id).style.display = "none";
+            }
+        }
+        let localVoiceType = localStorage.getItem("existVoice");
+        if (localVoiceType) {
+            existVoice = parseInt(localVoiceType);
+            speechServiceEle.value = existVoice;
+        }
+        if (!(window.speechSynthesis && window.SpeechSynthesisUtterance)) {
+            speechServiceEle.remove(2);
+        }
+        const clearAzureVoice = () => {
+            azureKey = void 0;
+            azureRegion = void 0;
+            azureRole = [];
+            azureStyle = [];
+            document.getElementById("azureExtra").style.display = "none";
+            azureKeyInput.parentElement.style.display = "none";
+            preSetAzureRegion.parentElement.style.display = "none";
+            if (azureTokenTimer) {
+                clearInterval(azureTokenTimer);
+                azureTokenTimer = void 0;
+            }
+        }
+        speechServiceEle.onchange = () => {
+            existVoice = parseInt(speechServiceEle.value);
+            localStorage.setItem("existVoice", existVoice);
+            toggleVoiceCheck(true);
+            if (checkAzureAbort && !checkAzureAbort.signal.aborted) {
+                checkAzureAbort.abort();
+                checkAzureAbort = void 0;
+            }
+            if (checkEdgeAbort && !checkEdgeAbort.signal.aborted) {
+                checkEdgeAbort.abort();
+                checkEdgeAbort = void 0;
+            }
+            if (existVoice === 3) {
+                azureKeyInput.parentElement.style.display = "block";
+                preSetAzureRegion.parentElement.style.display = "block";
+                loadAzureVoice();
+            } else if (existVoice === 2) {
+                clearAzureVoice();
+                loadEdgeVoice();
+            } else if (existVoice === 1) {
+                toggleVoiceCheck(false);
+                clearAzureVoice();
+                loadLocalVoice();
+            }
+        }
+        let azureVoiceData, edgeVoiceData, systemVoiceData, checkAzureAbort, checkEdgeAbort;
+        const toggleVoiceCheck = (bool) => {
+            checkVoiceLoad.style.display = bool ? "flex" : "none";
+            speechDetail.style.display = bool ? "none" : "block";
+        }
+        const loadAzureVoice = () => {
+            let checking = false;
+            checkVoiceLoad.onclick = () => {
+                if (checking) return;
+                if (azureKey) {
+                    checking = true;
+                    checkVoiceLoad.classList.add("voiceChecking");
+                    if (azureTokenTimer) {
+                        clearInterval(azureTokenTimer);
+                    }
+                    checkAzureAbort = new AbortController();
+                    setTimeout(() => {
+                        if (checkAzureAbort && !checkAzureAbort.signal.aborted) {
+                            checkAzureAbort.abort();
+                            checkAzureAbort = void 0;
+                        }
+                    }, 15000);
+                    Promise.all([getAzureToken(checkAzureAbort.signal), getVoiceList(checkAzureAbort.signal)]).then(() => {
+                        azureTokenTimer = setInterval(() => {
+                            getAzureToken();
+                        }, 540000);
+                        toggleVoiceCheck(false);
+                    }).catch(e => {
+                    }).finally(() => {
+                        checkVoiceLoad.classList.remove("voiceChecking");
+                        checking = false;
+                    })
+                }
+            }
+            const getAzureToken = (signal) => {
+                return new Promise((res, rej) => {
+                    fetch("https://" + azureRegion + ".api.cognitive.microsoft.com/sts/v1.0/issueToken", {
+                        signal,
+                        method: "POST",
+                        headers: {
+                            'Ocp-Apim-Subscription-Key': azureKey
+                        }
+                    }).then(response => {
+                        response.text().then(text => {
+                            try {
+                                let json = JSON.parse(text);
+                                notyf.error("由于订阅密钥无效或 API 端点错误，访问被拒绝！");
+                                rej();
+                            } catch (e) {
+                                azureToken = text;
+                                res();
+                            }
+                        });
+                    }).catch(e => {
+                        rej();
+                    })
+                })
+            };
+            const getVoiceList = (signal) => {
+                return new Promise((res, rej) => {
+                    if (azureVoiceData) {
+                        initVoiceSetting(azureVoiceData);
+                        res();
+                    } else {
+                        let localAzureVoiceData = localStorage.getItem(azureRegion + "voiceData");
+                        if (localAzureVoiceData) {
+                            azureVoiceData = JSON.parse(localAzureVoiceData);
+                            initVoiceSetting(azureVoiceData);
+                            res();
+                        } else {
+                            fetch("https://" + azureRegion + ".tts.speech.microsoft.com/cognitiveservices/voices/list", {
+                                signal,
+                                headers: {
+                                    'Ocp-Apim-Subscription-Key': azureKey
+                                }
+                            }).then(response => {
+                                response.json().then(json => {
+                                    azureVoiceData = json;
+                                    localStorage.setItem(azureRegion + "voiceData", JSON.stringify(json));
+                                    initVoiceSetting(json);
+                                    res();
+                                }).catch(e => {
+                                    notyf.error("由于订阅密钥无效或 API 端点错误，访问被拒绝！");
+                                    rej();
+                                })
+                            }).catch(e => {
+                                rej();
+                            })
+                        }
+                    }
+                })
+            };
+            let azureRegionEle = document.getElementById("preSetAzureRegion");
+            if (!azureRegionEle.options.length) {
+                const azureRegions = ['southafricanorth', 'eastasia', 'southeastasia', 'australiaeast', 'centralindia', 'japaneast', 'japanwest', 'koreacentral', 'canadacentral', 'northeurope', 'westeurope', 'francecentral', 'germanywestcentral', 'norwayeast', 'switzerlandnorth', 'switzerlandwest', 'uksouth', 'uaenorth', 'brazilsouth', 'centralus', 'eastus', 'eastus2', 'northcentralus', 'southcentralus', 'westcentralus', 'westus', 'westus2', 'westus3'];
+                azureRegions.forEach((region, i) => {
+                    let option = document.createElement("option");
+                    option.value = region;
+                    option.text = region;
+                    azureRegionEle.options.add(option);
+                });
+            }
+            let localAzureRegion = localStorage.getItem("azureRegion");
+            if (localAzureRegion) {
+                azureRegion = localAzureRegion;
+                azureRegionEle.value = localAzureRegion;
+            }
+            azureRegionEle.onchange = () => {
+                azureRegion = azureRegionEle.value;
+                localStorage.setItem("azureRegion", azureRegion);
+                toggleVoiceCheck(true);
+            }
+            azureRegionEle.dispatchEvent(new Event("change"));
+            let azureKeyEle = document.getElementById("azureKeyInput");
+            let localAzureKey = localStorage.getItem("azureKey");
+            if (localAzureKey) {
+                azureKey = localAzureKey;
+                azureKeyEle.value = localAzureKey;
+            }
+            azureKeyEle.onchange = () => {
+                azureKey = azureKeyEle.value;
+                localStorage.setItem("azureKey", azureKey);
+                toggleVoiceCheck(true);
+            }
+            azureKeyEle.dispatchEvent(new Event("change"));
+            if (azureKey) {
+                checkVoiceLoad.dispatchEvent(new Event("click"))
+            }
+        }
+        const loadEdgeVoice = () => {
+            let checking = false;
+            const endCheck = () => {
+                checkVoiceLoad.classList.remove("voiceChecking");
+                checking = false;
+            };
+            checkVoiceLoad.onclick = () => {
+                if (checking) return;
+                checking = true;
+                checkVoiceLoad.classList.add("voiceChecking");
+                if (edgeVoiceData) {
+                    initVoiceSetting(edgeVoiceData);
+                    toggleVoiceCheck(false);
+                    endCheck();
+                } else {
+                    checkEdgeAbort = new AbortController();
+                    setTimeout(() => {
+                        if (checkEdgeAbort && !checkEdgeAbort.signal.aborted) {
+                            checkEdgeAbort.abort();
+                            checkEdgeAbort = void 0;
+                        }
+                    }, 10000);
+                    fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", {signal: checkEdgeAbort.signal}).then(response => {
+                        response.json().then(json => {
+                            edgeVoiceData = json;
+                            toggleVoiceCheck(false);
+                            initVoiceSetting(json);
+                            endCheck();
+                        });
+                    }).catch(err => {
+                        endCheck();
+                    })
+                }
+            };
+            checkVoiceLoad.dispatchEvent(new Event("click"));
+        };
+        const loadLocalVoice = () => {
+            if (systemVoiceData) {
+                initVoiceSetting(systemVoiceData);
+            } else {
+                let initedVoice = false;
+                const getLocalVoice = () => {
+                    let voices = speechSynthesis.getVoices();
+                    if (voices.length) {
+                        if (!initedVoice) {
+                            initedVoice = true;
+                            systemVoiceData = voices;
+                            initVoiceSetting(voices);
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                let syncExist = getLocalVoice();
+                if (!syncExist) {
+                    if ("onvoiceschanged" in speechSynthesis) {
+                        speechSynthesis.onvoiceschanged = () => {
+                            getLocalVoice();
+                        }
+                    } else if (speechSynthesis.addEventListener) {
+                        speechSynthesis.addEventListener("voiceschanged", () => {
+                            getLocalVoice();
+                        })
+                    }
+                    let timeout = 0;
+                    let timer = setInterval(() => {
+                        if (getLocalVoice() || timeout > 1000) {
+                            if (timeout > 1000) {
+                                existVoice = 0;
+                            }
+                            clearInterval(timer);
+                            timer = null;
+                        }
+                        timeout += 300;
+                    }, 300)
+                }
+            }
+        };
+        const initVoiceSetting = (voices) => {
+            let isOnline = existVoice >= 2;
+            let voicesEle = document.getElementById("preSetSpeech");
+            // 支持中文、英文和日文
+            voices = isOnline ? voices.filter(item => item.Locale.match(/^(ja-|zh-)/)) : voices.filter(item => item.lang.match(/^(ja-|zh-)/));
+            if (isOnline) {
+                voices.map(item => {
+                    item.name = item.FriendlyName || (`${item.DisplayName} Online (${item.VoiceType}) - ${item.LocaleName}`);
+                    item.lang = item.Locale;
+                })
+            }
+            voices.sort((a, b) => {
+                if (a.lang.slice(0, 3) === b.lang.slice(0, 3)) return 0;
+                return (a.lang < b.lang) ? -1 : 1; // 中文在前"z"
+            });
+            voices.map(item => {
+                if (item.name.match(/^(Google |Microsoft )/)) {
+                    item.displayName = item.name.replace(/^.*? /, "");
+                } else {
+                    item.displayName = item.name;
+                }
+            });
+            voicesEle.innerHTML = "";
+            voices.forEach((voice, i) => {
+                let option = document.createElement("option");
+                option.value = i;
+                option.text = voice.displayName;
+                voicesEle.options.add(option);
+            });
+            voicesEle.onchange = () => {
+                voiceRole[voiceType] = voices[voicesEle.value];
+                localStorage.setItem("voice" + voiceType, voiceRole[voiceType].name);
+                if (voiceRole[voiceType].StyleList || voiceRole[voiceType].RolePlayList) {
+                    document.getElementById("azureExtra").style.display = "block";
+                    let voiceStyles = voiceRole[voiceType].StyleList;
+                    let voiceRoles = voiceRole[voiceType].RolePlayList;
+                    if (voiceRoles) {
+                        preSetVoiceRole.innerHTML = "";
+                        voiceRoles.forEach((role, i) => {
+                            let option = document.createElement("option");
+                            option.value = role;
+                            option.text = role;
+                            preSetVoiceRole.options.add(option);
+                        });
+                        let localRole = localStorage.getItem("azureRole" + voiceType);
+                        if (localRole && voiceRoles.indexOf(localRole) !== -1) {
+                            preSetVoiceRole.value = localRole;
+                            azureRole[voiceType] = localRole;
+                        } else {
+                            preSetVoiceRole.selectedIndex = 0;
+                            azureRole[voiceType] = voiceRole[0];
+                        }
+                        preSetVoiceRole.onchange = () => {
+                            azureRole[voiceType] = preSetVoiceRole.value;
+                            localStorage.setItem("azureRole" + voiceType, preSetVoiceRole.value);
+                        }
+                        preSetVoiceRole.dispatchEvent(new Event("change"));
+                    } else {
+                        azureRole[voiceType] = void 0;
+                        localStorage.removeItem("azureRole" + voiceType);
+                    }
+                    preSetVoiceRole.style.display = voiceRoles ? "block" : "none";
+                    preSetVoiceRole.previousElementSibling.style.display = voiceRoles ? "block" : "none";
+                    if (voiceStyles) {
+                        preSetVoiceStyle.innerHTML = "";
+                        voiceStyles.forEach((style, i) => {
+                            let option = document.createElement("option");
+                            option.value = style;
+                            option.text = style;
+                            preSetVoiceStyle.options.add(option);
+                        });
+                        let localStyle = localStorage.getItem("azureStyle" + voiceType);
+                        if (localStyle && voiceStyles.indexOf(localStyle) !== -1) {
+                            preSetVoiceStyle.value = localStyle;
+                            azureStyle[voiceType] = localStyle;
+                        } else {
+                            preSetVoiceStyle.selectedIndex = 0;
+                            azureStyle[voiceType] = voiceStyles[0];
+                        }
+                        preSetVoiceStyle.onchange = () => {
+                            azureStyle[voiceType] = preSetVoiceStyle.value;
+                            localStorage.setItem("azureStyle" + voiceType, preSetVoiceStyle.value)
+                        }
+                        preSetVoiceStyle.dispatchEvent(new Event("change"));
+                    } else {
+                        azureStyle[voiceType] = void 0;
+                        localStorage.removeItem("azureStyle" + voiceType);
+                    }
+                    preSetVoiceStyle.style.display = voiceStyles ? "block" : "none";
+                    preSetVoiceStyle.previousElementSibling.style.display = voiceStyles ? "block" : "none";
+                } else {
+                    document.getElementById("azureExtra").style.display = "none";
+                    azureRole[voiceType] = void 0;
+                    localStorage.removeItem("azureRole" + voiceType);
+                    azureStyle[voiceType] = void 0;
+                    localStorage.removeItem("azureStyle" + voiceType);
+                }
+            };
+            const loadAnother = (type) => {
+                type = type ^ 1;
+                let localVoice = localStorage.getItem("voice" + type);
+                if (localVoice) {
+                    let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                    if (localIndex === -1) localIndex = 0;
+                    voiceRole[type] = voices[localIndex];
+                } else {
+                    voiceRole[type] = voices[0];
+                }
+                if (existVoice === 3) {
+                    let localStyle = localStorage.getItem("azureStyle" + type);
+                    azureStyle[type] = localStyle ? localStyle : void 0;
+                    let localRole = localStorage.getItem("azureRole" + type);
+                    azureRole[type] = localRole ? localRole : void 0;
+                }
+            }
+            const voiceChange = () => {
+                let localVoice = localStorage.getItem("voice" + voiceType);
+                if (localVoice) {
+                    let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                    if (localIndex === -1) localIndex = 0;
+                    voiceRole[voiceType] = voices[localIndex];
+                    voicesEle.value = localIndex;
+                }
+                voicesEle.dispatchEvent(new Event("change"));
+            }
+            voiceChange();
+            loadAnother(voiceType);
+            let volumeEle = document.getElementById("voiceVolume");
+            let localVolume = localStorage.getItem("voiceVolume0");
+            voiceVolume[0] = parseFloat(localVolume ? localVolume : volumeEle.value);
+            const voiceVolumeChange = () => {
+                let localVolume = localStorage.getItem("voiceVolume" + voiceType);
+                if (localVolume) {
+                    voiceVolume[voiceType] = parseFloat(localVolume);
+                    volumeEle.value = localVolume;
+                    volumeEle.style.backgroundSize = (volumeEle.value - volumeEle.min) * 100 / (volumeEle.max - volumeEle.min) + "% 100%";
+                } else {
+                    volumeEle.dispatchEvent(new Event("input"));
+                }
+            }
+            volumeEle.oninput = () => {
+                volumeEle.style.backgroundSize = (volumeEle.value - volumeEle.min) * 100 / (volumeEle.max - volumeEle.min) + "% 100%";
+                voiceVolume[voiceType] = parseFloat(volumeEle.value);
+                localStorage.setItem("voiceVolume" + voiceType, volumeEle.value);
+            }
+            voiceVolumeChange();
+            let rateEle = document.getElementById("voiceRate");
+            let localRate = localStorage.getItem("voiceRate0");
+            voiceRate[0] = parseFloat(localRate ? localRate : rateEle.value);
+            const voiceRateChange = () => {
+                let localRate = localStorage.getItem("voiceRate" + voiceType);
+                if (localRate) {
+                    voiceRate[voiceType] = parseFloat(localRate);
+                    rateEle.value = localRate;
+                    rateEle.style.backgroundSize = (rateEle.value - rateEle.min) * 100 / (rateEle.max - rateEle.min) + "% 100%";
+                } else {
+                    rateEle.dispatchEvent(new Event("input"));
+                }
+            }
+            rateEle.oninput = () => {
+                rateEle.style.backgroundSize = (rateEle.value - rateEle.min) * 100 / (rateEle.max - rateEle.min) + "% 100%";
+                voiceRate[voiceType] = parseFloat(rateEle.value);
+                localStorage.setItem("voiceRate" + voiceType, rateEle.value);
+            }
+            voiceRateChange();
+            let pitchEle = document.getElementById("voicePitch");
+            let localPitch = localStorage.getItem("voicePitch0");
+            voicePitch[0] = parseFloat(localPitch ? localPitch : pitchEle.value);
+            const voicePitchChange = () => {
+                let localPitch = localStorage.getItem("voicePitch" + voiceType);
+                if (localPitch) {
+                    voicePitch[voiceType] = parseFloat(localPitch);
+                    pitchEle.value = localPitch;
+                    pitchEle.style.backgroundSize = (pitchEle.value - pitchEle.min) * 100 / (pitchEle.max - pitchEle.min) + "% 100%";
+                } else {
+                    pitchEle.dispatchEvent(new Event("input"));
+                }
+            }
+            pitchEle.oninput = () => {
+                pitchEle.style.backgroundSize = (pitchEle.value - pitchEle.min) * 100 / (pitchEle.max - pitchEle.min) + "% 100%";
+                voicePitch[voiceType] = parseFloat(pitchEle.value);
+                localStorage.setItem("voicePitch" + voiceType, pitchEle.value);
+            }
+            voicePitchChange();
+            document.getElementById("voiceTypes").onclick = (ev) => {
+                let type = ev.target.dataset.type;
+                if (type !== void 0) {
+                    type = parseInt(type);
+                    if (type != voiceType) {
+                        voiceType = type;
+                        ev.target.classList.add("selVoiceType");
+                        ev.target.parentElement.children[type ^ 1].classList.remove("selVoiceType");
+                        voiceChange();
+                        voiceVolumeChange();
+                        voiceRateChange();
+                        voicePitchChange();
+                    }
+                };
+            };
+            const contVoiceEle = document.getElementById("enableContVoice");
+            let localCont = localStorage.getItem("enableContVoice");
+            if (localCont) {
+                enableContVoice = localCont === "true";
+                contVoiceEle.checked = enableContVoice;
+            }
+            contVoiceEle.onchange = () => {
+                enableContVoice = contVoiceEle.checked;
+                localStorage.setItem("enableContVoice", enableContVoice);
+            }
+            contVoiceEle.dispatchEvent(new Event("change"));
+            const autoVoiceEle = document.getElementById("enableAutoVoice");
+            let localAuto = localStorage.getItem("enableAutoVoice");
+            if (localAuto) {
+                enableAutoVoice = localAuto === "true";
+                autoVoiceEle.checked = enableAutoVoice;
+            }
+            autoVoiceEle.onchange = () => {
+                enableAutoVoice = autoVoiceEle.checked;
+                localStorage.setItem("enableAutoVoice", enableAutoVoice);
+            }
+            autoVoiceEle.dispatchEvent(new Event("change"));
+        };
+        speechServiceEle.dispatchEvent(new Event("change"));
+    </script>
+    <script src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
+    <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
+    <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
+    <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+    <script>
+        const API_URL = "v1/chat/completions";
+        let loading = false;
+        let presetRoleData = {
+            "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
+            "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
+            "emoji": "你的性格很活泼，每句话中都要有至少一个emoji图标",
+            "image": "当你需要发送图片的时候，请用 markdown 语言生成，不要反斜线，不要代码框，需要使用 unsplash API时，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
+        };
+        let modelVersion; // 模型版本
+        let apiHost; // api反代地址
+        let customAPIKey; // 自定义apiKey
+        let systemRole; // 自定义系统角色
+        let roleNature; // 角色性格
+        let roleTemp; // 回答质量
+        let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
+        let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
+        let longReplyFlag;
+        let textSpeed; // 打字机速度，越小越快
+        let voiceIns; // Audio or SpeechSynthesisUtterance
+        let supportMSE = !!window.MediaSource; // 是否支持MSE（除了ios应该都支持）
+        let voiceMIME = "audio/mpeg";
+        const scrollToBottom = () => {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
+                messagsEle.scrollTo(0, messagsEle.scrollHeight)
+            }
+        }
+        const scrollToBottomLoad = (ele) => {
+            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 128) {
+                messagsEle.scrollTo(0, messagsEle.scrollHeight)
+            }
+        }
+        const md = markdownit({
+            linkify: true, // 识别链接
+            highlight: function (str, lang) { // markdown高亮
+                try {
+                    return hljs.highlightAuto(str).value;
+                } catch (e) { }
+                return ""; // use external default escaping
+            }
+        });
+        md.use(texmath, {engine: katex, delimiters: "dollars", katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}})
+            .use(markdownitLinkAttributes, {attrs: {target: "_blank", rel: "noopener"}});
+        const x = {
+            getCodeLang(str = "") {
+                const res = str.match(/ class="language-(.*?)"/);
+                return (res && res[1]) || "";
+            },
+            getFragment(str = "") {
+                return str ? `<span class="u-mdic-copy-code_lang">${str}</span>` : "";
+            },
+        };
+        const strEncode = (str = "") => {
+            if (!str || str.length === 0) return "";
+            return str
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/'/g, '\'')
+                .replace(/"/g, '&quot;');
+        };
+        const getCodeLangFragment = (oriStr = "") => {
+            return x.getFragment(x.getCodeLang(oriStr));
+        };
+        const copyClickCode = (ele) => {
+            const input = document.createElement("textarea");
+            input.value = ele.dataset.mdicContent;
+            const nDom = ele.previousElementSibling;
+            const nDelay = ele.dataset.mdicNotifyDelay;
+            const cDom = nDom.previousElementSibling;
+            document.body.appendChild(input);
+            input.select();
+            input.setSelectionRange(0, 9999);
+            document.execCommand("copy");
+            document.body.removeChild(input);
+            if (nDom.style.display === "none") {
+                nDom.style.display = "block";
+                cDom && (cDom.style.display = "none");
+                setTimeout(() => {
+                    nDom.style.display = "none";
+                    cDom && (cDom.style.display = "block");
+                }, nDelay);
+            }
+        };
+        const copyClickMd = (idx) => {
+            const input = document.createElement("textarea");
+            input.value = data[idx].content;
+            document.body.appendChild(input);
+            input.select();
+            input.setSelectionRange(0, 9999);
+            document.execCommand("copy");
+            document.body.removeChild(input);
+        }
+        
+        const outputClickMD = (idx) => {
+            const input = document.createElement("textarea");
+            input.value = data[idx].content;
+            document.body.appendChild(input);
+            let date = new Date();
+            let MDfileName = "问答 - markdown - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".md";
+            let textareas = document.getElementsByTagName("textarea");
+            let textarea_last = textareas[textareas.length - 1];
+            let textval = textarea_last.value;
+            let element = document.createElement('a'); //创建一个下载链接
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textval)); //将Markdown格式的内容作为链接的href属性
+            element.setAttribute('download', MDfileName); //.style.display = 'none';
+            document.body.appendChild(element); //将链接添加至网页中
+            element.click(); //模拟点击链接进行下载
+            document.body.removeChild(element); //下载完成后移除链接
+            document.body.removeChild(input);
+            };
+        
+        const saveClickTXT = (idx) => {
+            const input = document.createElement("textarea");
+            input.value = data[idx].content;
+            document.body.appendChild(input);
+            let date = new Date();
+            let TXTfileName = "问答 - txt - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".txt";
+            let textareas = document.getElementsByTagName("textarea");
+            let textarea_last = textareas[textareas.length - 1];
+            let textval = textarea_last.value;
+            let htmlval = md.render(textval);
+            let txtval = htmlval.replace(/<[^>]+>/g, '');
+            let element = document.createElement('a'); //创建一个下载链接
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textval)); //将Markdown格式的内容作为链接的href属性
+            element.setAttribute('download', TXTfileName); //.style.display = 'none';
+            document.body.appendChild(element); //将链接添加至网页中
+            element.click(); //模拟点击链接进行下载
+            document.body.removeChild(element); //下载完成后移除链接
+            document.body.removeChild(input);
+            };
+        
+        const saveClickPNG = () => {
+            let messages = document.querySelector('.messages');
+            let date = new Date();
+            let PNGfileName = "问答 - 当前截图 - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".png";
+            html2canvas(messages).then((canvas) => {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = PNGfileName;
+            link.href = image;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            });
+            };
+        
+        const saveClickALLPNG = () => {
+                  Swal.fire({
+                  title: '是否将所有对话截图?',
+                  text: "此操作将截取所有对话内容并下载",
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+            let chatlog = document.querySelector('#chatlog');
+            let date = new Date();
+            let ALLPNGfileName = "问答 - 全部截图 - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".png";
+            html2canvas(chatlog).then((canvas) => {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = ALLPNGfileName;
+            link.href = image;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            });
+                    Swal.fire({
+                  title: '已开始截取并下载',
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                });
+                notyf.success("已生成完整截图");}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
+            };
+        
+        const enhanceCode = (render, options = {}) => (...args) => {
+            /* args = [tokens, idx, options, env, slf] */
+            const {
+                btnText = "复制代码", // button text
+                successText = "复制成功", // copy-success text
+                successTextDelay = 2000, // successText show time [ms]
+                showCodeLanguage = true, // false | show code language
+            } = options;
+            const [tokens = {}, idx = 0] = args;
+            const cont = strEncode(tokens[idx].content || "");
+            const originResult = render.apply(this, args);
+            const langFrag = showCodeLanguage ? getCodeLangFragment(originResult) : "";
+            const tpls = [
+                '<div class="m-mdic-copy-wrapper">',
+                `${langFrag}`,
+                `<div class="u-mdic-copy-notify" style="display:none;">${successText}</div>`,
+                '<button ',
+                'class="u-mdic-copy-btn j-mdic-copy-btn" ',
+                `data-mdic-content="${cont}" `,
+                `data-mdic-notify-delay="${successTextDelay}" `,
+                `onclick="copyClickCode(this)">${btnText}</button>`,
+                '</div>',
+            ];
+            const LAST_TAG = "</pre>";
+            const newResult = originResult.replace(LAST_TAG, `${tpls.join("")}${LAST_TAG}`);
+            return newResult;
+        };
+        const codeBlockRender = md.renderer.rules.code_block;
+        const fenceRender = md.renderer.rules.fence;
+        md.renderer.rules.code_block = enhanceCode(codeBlockRender);
+        md.renderer.rules.fence = enhanceCode(fenceRender);
+        md.renderer.rules.image = function (tokens, idx, options, env, slf) {
+            let token = tokens[idx];
+            token.attrs[token.attrIndex("alt")][1] = slf.renderInlineAsText(token.children, options, env);
+            token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
+            token.attrSet("onerror", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
+            return slf.renderToken(tokens, idx, options)
+        }
+        const mdOptionEvent = function (ev) {
+            let id = ev.target.dataset.id;
+            if (id) {
+                let parent = ev.target.parentElement;
+                let idxEle = parent.parentElement;
+                let idx = Array.prototype.indexOf.call(chatlog.children, this.parentElement);
+                if (id === "voiceMd") {
+                    let className = parent.className;
+                    if (className == "readyVoice") {
+                        if (chatlog.children[idx].dataset.loading !== "true") {
+                            idx = systemRole ? idx + 1 : idx;
+                            speechEvent(idx);
+                        }
+                    } else if (className == "pauseVoice") {
+                        if (existVoice >= 2) {
+                            if (voiceIns) voiceIns.pause();
+                        } else {
+                            speechSynthesis.pause();
+                        }
+                        parent.className = "resumeVoice";
+                    } else {
+                        if (existVoice >= 2) {
+                            if (voiceIns) voiceIns.play();
+                        } else {
+                            speechSynthesis.resume();
+                        }
+                        parent.className = "pauseVoice";
+                    }
+                } else if (id === "refreshMd") {
+                    if (!loading && chatlog.children[idx].dataset.loading !== "true") {
+                        let className = parent.className;
+                        if (className == "refreshReq") {
+                            chatlog.children[idx].children[0].innerHTML = "<br />";
+                            chatlog.children[idx].dataset.loading = true;
+                            idx = systemRole ? idx + 1 : idx;
+                            data[idx].content = "";
+                            if (idx === currentVoiceIdx) {endSpeak()};
+                            loadAction(true);
+                            refreshIdx = idx;
+                            streamGen();
+                        } else {
+                            chatlog.children[idx].dataset.loading = true;
+                            idx = systemRole ? idx + 1 : idx;
+                            progressData = data[idx].content;
+                            loadAction(true);
+                            refreshIdx = idx;
+                            streamGen(true);
+                        }
+                    }
+                } else if (id === "copyMd") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    copyClickMd(idx);
+                    
+                } else if (id === "outputMD") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    outputClickMD(idx);
+                    notyf.success("导出MarkDown成功");
+                } else if (id === "saveTXT") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    saveClickTXT(idx);
+                    notyf.success("导出TXT成功");
+                } else if (id === "savePNG") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    saveClickPNG(idx);
+                    notyf.success("保存当前窗口截图成功");
+                } else if (id === "delMd") {
+                    idxEle.classList.add("moreOptionHidden");
+                    if (!loading) {
+                 Swal.fire({
+                  title: '是否删除此消息？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                            if (currentVoiceIdx) {
+                                if (currentVoiceIdx === idx) {endSpeak()}
+                                else if (currentVoiceIdx > idx) {currentVoiceIdx -= 1}
+                            }
+                            chatlog.removeChild(chatlog.children[idx]);
+                            idx = systemRole ? idx + 1 : idx;
+                            data.splice(idx, 1);
+                            updateChats();
+                    Swal.fire({
+                  title: '已删除',
+                  text: "此消息已被删除",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
+                    }
+                } else if (id === "downAudio") {
+                    idxEle.classList.add("moreOptionHidden");
+                    if (chatlog.children[idx].dataset.loading !== "true") {
+                        idx = systemRole ? idx + 1 : idx;
+                        downloadAudio(idx);
+                    }
+                }
+            }
+        }
+        const moreOption = (ele) => {
+            ele.classList.remove("moreOptionHidden");
+        }
+        const formatMdEle = (ele) => {
+            let realMd = document.createElement("div");
+            realMd.className = ele.className === "request" ? "requestBody" : "markdown-body";
+            ele.appendChild(realMd);
+            let mdOption = document.createElement("div");
+            mdOption.className = "mdOption";
+            ele.appendChild(mdOption);
+            if (ele.className !== "request") {
+                mdOption.innerHTML = `<div class="refreshReq">
+                    <svg data-id="refreshMd" width="16" height="16" role="img"><title>刷新</title><use xlink:href="#refreshIcon" /></svg>
+                    <svg data-id="refreshMd" width="16" height="16" role="img"><title>继续</title><use xlink:href="#halfRefIcon" /></svg>
+                    </div>`
+            }
+            let optionWidth = existVoice >= 2 ? "196px" : "163px";
+            mdOption.innerHTML += `<div class="moreOption" onmouseenter="moreOption(this)">
+            <svg class="optionTrigger" width="16" height="16" role="img"><title>选项</title><use xlink:href="#optionIcon" /></svg>
+            <div class="optionItems" style="width:${optionWidth};left:-${optionWidth}">` + (existVoice >= 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
+                <svg width="20" height="20"><use xlink:href="#downAudioIcon" /></svg>
+            </div>` : "") + `<div data-id="delMd" class="optionItem" title="删除">
+                <svg width="20" height="20"><use xlink:href="#delIcon" /></svg>
+            </div>
+            <div data-id="copyMd" class="optionItem" title="复制">
+                <svg width="20" height="20"><use xlink:href="#copyIcon" /></svg>
+            </div><div data-id="outputMD" class="optionItem" title="导出MarkDown">
+                <svg width="20" height="20"><use xlink:href="#mdoutputIcon" /></svg>
+            </div><div data-id="saveTXT" class="optionItem" title="导出TXT">
+                <svg width="20" height="20"><use xlink:href="#savetxtIcon" /></svg>
+            </div><div data-id="savePNG" class="optionItem" title="保存当前窗口截图">
+                <svg width="20" height="20"><use xlink:href="#savepngIcon" /></svg>
+            </div></div></div>`;
+            if (existVoice) {
+                mdOption.innerHTML += `<div id="pronMd" class="readyVoice">
+                <svg width="16" height="16" data-id="voiceMd" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
+                <svg width="16" height="16" data-id="voiceMd" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
+                <svg width="16" height="16" data-id="voiceMd" role="img"><title>继续</title><use xlink:href="#resumeVoiceIcon" /></svg>
+                </div>`
+            }
+            mdOption.onclick = mdOptionEvent;
+        }
+        let chatsData = [];
+        let activeChatIdx = 0;
+        let data;
+        const chatEleAdd = (idx) => {
+            let chat = chatsData[idx];
+            let chatEle = document.createElement("div");
+            chatEle.className = "chatLi";
+            chatEle.innerHTML = `<svg width="24" height="24"><use xlink:href="#chatIcon" /></svg>
+                <div class="chatName">${chat.name}</div>
+                <div class="chatOption"><svg data-type="chatEdit" style="margin-right:4px" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
+                <svg data-type="chatDel" width="24" height="24" role="img"><title>删除</title><use xlink:href="#delIcon" /></svg></div>`
+            chatListEle.appendChild(chatEle);
+            chatEle.onclick = chatEleEvent;
+            return chatEle;
+        };
+        const addNewChat = () => {
+            let chat = {name: "新的会话", data: []};
+            chatsData.push(chat);
+            updateChats();
+        };
+        const delChat = (idx) => {
+                Swal.fire({
+                  title: '是否删除此会话？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) 
+                  {
+                endAll();
+                if (idx === activeChatIdx) {
+                    if (idx - 1 >= 0) {
+                        activeChatIdx = idx - 1;
+                    } else if (idx === chatsData.length - 1) {
+                        activeChatIdx = chatsData.length - 2;
+                    }
+                }
+                chatsData.splice(idx, 1);
+                chatListEle.children[idx].remove();
+                if (activeChatIdx === -1) {
+                    addNewChat();
+                    activeChatIdx = 0;
+                    chatEleAdd(activeChatIdx);
+                }
+                updateChats();
+                activeChat();
+                    Swal.fire({
+                  title: '已删除',
+                  text: "此会话已被删除",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
+        };
+        const endEditEvent = (ev) => {
+            let activeEle = document.getElementById("activeChatEdit")
+            if (!activeEle.contains(ev.target)) {
+                let ele = chatListEle.children[activeChatIdx];
+                chatsData[activeChatIdx].name = activeEle.value;
+                ele.children[1].textContent = activeEle.value;
+                ele.lastElementChild.remove();
+                updateChats();
+                document.body.removeEventListener("mousedown", endEditEvent, true);
+            }
+        };
+        const toEditChatName = (idx) => {
+            let inputEle = document.createElement("input");
+            inputEle.id = "activeChatEdit";
+            inputEle.value = chatsData[idx].name;
+            chatListEle.children[idx].appendChild(inputEle);
+            inputEle.focus();
+            document.body.addEventListener("mousedown", endEditEvent, true);
+        };
+        const chatEleEvent = function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            let idx = Array.prototype.indexOf.call(chatListEle.children, this);
+            if (ev.target.className === "chatLi") {
+                if (activeChatIdx !== idx) {
+                    endAll();
+                    activeChatIdx = idx;
+                    activeChat();
+                }
+                document.body.classList.remove("show-nav");
+            } else if (ev.target.dataset.type === "chatEdit") {
+                toEditChatName(idx);
+            } else if (ev.target.dataset.type === "chatDel") {
+                delChat(idx);
+            }
+        };
+        const updateChats = () => {
+            localStorage.setItem("chats", JSON.stringify(chatsData));
+        };
+        const createConvEle = (className) => {
+            let div = document.createElement("div");
+            div.className = className;
+            chatlog.appendChild(div);
+            formatMdEle(div);
+            return div;
+        }
+        const activeChat = () => {
+            data = chatsData[activeChatIdx]["data"];
+            Array.from(document.getElementsByClassName("activeChatLi")).forEach(item => {
+                item.classList.remove("activeChatLi");
+            });
+            chatListEle.children[activeChatIdx].classList.add("activeChatLi");
+            if (data[0] && data[0].role === "system") {
+                systemRole = data[0].content;
+                systemEle.value = systemRole;
+                localStorage.setItem("system", systemRole);
+            } else {
+                systemRole = "";
+                systemEle.value = "";
+                localStorage.setItem("system", systemRole);
+            }
+            chatlog.innerHTML = "";
+            if (systemRole ? data.length - 1 : data.length) {
+                let firstIdx = systemRole ? 1 : 0;
+                for (let i = firstIdx; i < data.length; i++) {
+                    if (data[i].role === "user") {
+                        createConvEle("request").children[0].textContent = data[i].content;
+                    } else {
+                        createConvEle("response").children[0].innerHTML = md.render(data[i].content) || "<br />";
+                    }
+                }
+            }
+            localStorage.setItem("activeChatIdx", activeChatIdx);
+        };
+        newChatEle.onclick = () => {
+            endAll();
+            addNewChat();
+            activeChatIdx = chatsData.length - 1;
+            chatEleAdd(activeChatIdx);
+            activeChat();
+        };
+        const initChats = () => {
+            let localChats = localStorage.getItem("chats");
+            let localChatIdx = localStorage.getItem("activeChatIdx")
+            activeChatIdx = (localChatIdx && parseInt(localChatIdx)) || 0;
+            if (localChats) {
+                chatsData = JSON.parse(localChats);
+                for (let i = 0; i < chatsData.length; i++) {
+                    chatEleAdd(i);
+                }
+            } else {
+                addNewChat();
+                chatEleAdd(activeChatIdx);
+            }
+        };
+        initChats();
+        activeChat();
+        document.getElementById("exportChat").onclick = () => {
+            if (loading) {
+                stopLoading();
+            }
+            let blob = new Blob([JSON.stringify(chatsData, null, 2)], {type: "application/json"});
+            let date = new Date();
+            let fileName = "chats-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
+            downBlob(blob, fileName);
+        };
+        const blobToText = (blob) => {
+            return new Promise((res, rej) => {
+                let reader = new FileReader();
+                reader.readAsText(blob);
+                reader.onload = () => {
+                    res(reader.result);
+                }
+                reader.onerror = (error) => {
+                    rej(error);
+                }
+            })
+        };
+        document.getElementById("importChatInput").onchange = function () {
+            let file = this.files[0];
+            blobToText(file).then(text => {
+                try {
+                    let json = JSON.parse(text);
+                    let checked = json.every(item => {
+                        return item.name !== void 0 && item.data !== void 0;
+                    });
+                    if (checked) {
+                        while (json.length) {
+                            chatsData.push(json.shift());
+                            chatEleAdd(chatsData.length - 1);
+                        }
+                        updateChats();
+                    } else {
+                        throw new Error("格式检查不通过")
+                    }
+                } catch (e) {
+                    notyf.error("导入失败，请检查文件是否正确！")
+                }
+                this.value = "";
+            })
+        };
+        document.getElementById("clearChat").onclick = () => {
+                Swal.fire({
+                  title: '是否清空所有会话？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                chatsData.length = 0;
+                chatListEle.innerHTML = "";
+                endAll();
+                addNewChat();
+                activeChatIdx = 0;
+                chatEleAdd(activeChatIdx);
+                updateChats();
+                activeChat();
+                    Swal.fire({
+                  title: '已清空',
+                  text: "所有会话已被清空",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
+        };
+        const endAll = () => {
+            endSpeak();
+            if (loading) stopLoading();
+        };
+        const initSetting = () => {
+            const modelEle = document.getElementById("preSetModel");
+            let localModel = localStorage.getItem("modelVersion");
+            if (localModel) {
+                modelVersion = localModel;
+                modelEle.value = localModel;
+            }
+            modelEle.onchange = () => {
+                modelVersion = modelEle.value;
+                localStorage.setItem("modelVersion", modelVersion);
+            }
+            modelEle.dispatchEvent(new Event("change"));
+            const apiHostEle = document.getElementById("apiHostInput");
+            let localApiHost = localStorage.getItem("APIHost");
+            if (localApiHost) {
+                apiHost = localApiHost;
+                apiHostEle.value = localApiHost;
+            }
+            apiHostEle.onchange = () => {
+                apiHost = apiHostEle.value;
+                if (apiHost.length && !apiHost.endsWith("/")) {
+                    apiHost += "/";
+                    apiHostEle.value = apiHost;
+                }
+                localStorage.setItem("APIHost", apiHost);
+            }
+            apiHostEle.dispatchEvent(new Event("change"));
+            const keyEle = document.getElementById("keyInput");
+            let localKey = localStorage.getItem("APIKey");
+            if (localKey) {
+                customAPIKey = localKey;
+                keyEle.value = localKey;
+            }
+            keyEle.onchange = () => {
+                customAPIKey = keyEle.value;
+                localStorage.setItem("APIKey", customAPIKey);
+            }
+            keyEle.dispatchEvent(new Event("change"));
+            if (systemRole === void 0) {
+                let localSystem = localStorage.getItem("system");
+                if (localSystem) {
+                    systemRole = localSystem;
+                    systemEle.value = localSystem;
+                    data.unshift({role: "system", content: systemRole});
+                    updateChats();
+                } else {
+                    systemRole = systemEle.value;
+                }
+            }
+            systemEle.onchange = () => {
+                systemRole = systemEle.value;
+                localStorage.setItem("system", systemRole);
+                if (systemRole) {
+                    if (data[0] && data[0].role === "system") {
+                        data[0].content = systemRole;
+                    } else {
+                        data.unshift({role: "system", content: systemRole});
+                    }
+                } else if (data[0] && data[0].role === "system") {
+                    data.shift();
+                }
+                updateChats();
+            }
+            const preEle = document.getElementById("preSetSystem");
+            preEle.onchange = () => {
+                let val = preEle.value;
+                if (val && presetRoleData[val]) {
+                    systemEle.value = presetRoleData[val];
+                } else {
+                    systemEle.value = "";
+                }
+                systemEle.dispatchEvent(new Event("change"));
+                systemEle.focus();
+            }
+            const topEle = document.getElementById("top_p");
+            let localTop = localStorage.getItem("top_p");
+            if (localTop) {
+                roleNature = parseFloat(localTop);
+                topEle.value = localTop;
+            }
+            topEle.oninput = () => {
+                topEle.style.backgroundSize = (topEle.value - topEle.min) * 100 / (topEle.max - topEle.min) + "% 100%";
+                roleNature = parseFloat(topEle.value);
+                localStorage.setItem("top_p", topEle.value);
+            }
+            topEle.dispatchEvent(new Event("input"));
+            const tempEle = document.getElementById("temp");
+            let localTemp = localStorage.getItem("temp");
+            if (localTemp) {
+                roleTemp = parseFloat(localTemp);
+                tempEle.value = localTemp;
+            }
+            tempEle.oninput = () => {
+                tempEle.style.backgroundSize = (tempEle.value - tempEle.min) * 100 / (tempEle.max - tempEle.min) + "% 100%";
+                roleTemp = parseFloat(tempEle.value);
+                localStorage.setItem("temp", tempEle.value);
+            }
+            tempEle.dispatchEvent(new Event("input"));
+            const speedEle = document.getElementById("textSpeed");
+            let localSpeed = localStorage.getItem("textSpeed");
+            if (localSpeed) {
+                textSpeed = parseFloat(speedEle.min) + (speedEle.max - localSpeed);
+                speedEle.value = localSpeed;
+            }
+            speedEle.oninput = () => {
+                speedEle.style.backgroundSize = (speedEle.value - speedEle.min) * 100 / (speedEle.max - speedEle.min) + "% 100%";
+                textSpeed = parseFloat(speedEle.min) + (speedEle.max - speedEle.value);
+                localStorage.setItem("textSpeed", speedEle.value);
+            }
+            speedEle.dispatchEvent(new Event("input"));
+            const contEle = document.getElementById("enableCont");
+            let localCont = localStorage.getItem("enableCont");
+            if (localCont) {
+                enableCont = localCont === "true";
+                contEle.checked = enableCont;
+            }
+            contEle.onchange = () => {
+                enableCont = contEle.checked;
+                localStorage.setItem("enableCont", enableCont);
+            }
+            contEle.dispatchEvent(new Event("change"));
+            const longEle = document.getElementById("enableLongReply");
+            let localLong = localStorage.getItem("enableLongReply");
+            if (localLong) {
+                enableLongReply = localLong === "true";
+                longEle.checked = enableLongReply;
+            }
+            longEle.onchange = () => {
+                enableLongReply = longEle.checked;
+                localStorage.setItem("enableLongReply", enableLongReply);
+            }
+            longEle.dispatchEvent(new Event("change"));
+        };
+        initSetting();
+        document.getElementById("loadMask").style.display = "none";
+        const closeEvent = (ev) => {
+            if (settingEle.contains(ev.target)) return;
+            if (!dialogEle.contains(ev.target)) {
+                dialogEle.style.display = "none";
+                document.removeEventListener("mousedown", closeEvent, true);
+                settingEle.classList.remove("showSetting");
+            }
+        }
+        settingEle.onmousedown = () => {
+            dialogEle.style.display = dialogEle.style.display === "block" ? "none" : "block";
+            if (dialogEle.style.display === "block") {
+                document.addEventListener("mousedown", closeEvent, true);
+                settingEle.classList.add("showSetting");
+            } else {
+                document.removeEventListener("mousedown", closeEvent, true);
+                settingEle.classList.remove("showSetting");
+            }
+        }
+        let delayId;
+        const delay = () => {
+            return new Promise((resolve) => delayId = setTimeout(resolve, textSpeed)); //打字机时间间隔
+        }
+        const uuidv4 = () => {
+            let uuid = ([1e7] + 1e3 + 4e3 + 8e3 + 1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+            return existVoice === 3 ? uuid.toUpperCase() : uuid;
+        }
+        const getTime = () => {
+            return existVoice === 3 ? new Date().toISOString() : new Date().toString();
+        }
+        const getWSPre = (date, requestId) => {
+            let osPlatform = (typeof window !== "undefined") ? "Browser" : "Node";
+            osPlatform += "/" + navigator.platform;
+            let osName = navigator.userAgent;
+            let osVersion = navigator.appVersion;
+            return `Path: speech.config\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/json\r\n\r\n{"context":{"system":{"name":"SpeechSDK","version":"1.26.0","build":"JavaScript","lang":"JavaScript","os":{"platform":"${osPlatform}","name":"${osName}","version":"${osVersion}"}}}}`
+        }
+        const getWSAudio = (date, requestId) => {
+            return existVoice === 3 ? `Path: synthesis.context\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/json\r\n\r\n{"synthesis":{"audio":{"metadataOptions":{"sentenceBoundaryEnabled":false,"wordBoundaryEnabled":false},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}`
+                : `X-Timestamp:${date}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"true"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`
+        }
+        const getWSText = (date, requestId, lang, voice, volume, rate, pitch, style, role, msg) => {
+            let fmtVolume = volume === 1 ? "+0%" : volume * 100 - 100 + "%";
+            let fmtRate = (rate >= 1 ? "+" : "") + (rate * 100 - 100) + "%";
+            let fmtPitch = (pitch >= 1 ? "+" : "") + (pitch - 1) + "Hz";
+            if (existVoice === 3) {
+                let fmtStyle = style ? ` style="${style}"` : "";
+                let fmtRole = role ? ` role="${role}"` : "";
+                let fmtExpress = fmtStyle + fmtRole;
+                return `Path: ssml\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/ssml+xml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='${lang}'><voice name='${voice}'><mstts:express-as${fmtExpress}><prosody pitch='${fmtPitch}' rate='${fmtRate}' volume='${fmtVolume}'>${msg}</prosody></mstts:express-as></voice></speak>`;
+            } else {
+                return `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nX-Timestamp:${date}Z\r\nPath:ssml\r\n\r\n<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xmlns:mstts='https://www.w3.org/2001/mstts' xml:lang='${lang}'><voice name='${voice}'><prosody pitch='${fmtPitch}' rate='${fmtRate}' volume='${fmtVolume}'>${msg}</prosody></voice></speak>`;
+            }
+        }
+        const getAzureWSURL = () => {
+            return `wss://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/websocket/v1?Authorization=bearer%20${azureToken}`
+        }
+        const edgeTTSURL = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4";
+        let currentVoiceIdx;
+        const resetSpeakIcon = () => {
+            if (currentVoiceIdx !== void 0) {
+                chatlog.children[systemRole ? currentVoiceIdx - 1 : currentVoiceIdx].children[1].lastChild.className = "readyVoice";
+            }
+        }
+        const endSpeak = () => {
+            resetSpeakIcon();
+            if (existVoice >= 2) {
+                if (voiceIns) {
+                    voiceIns.pause();
+                    voiceIns.currentTime = 0;
+                    URL.revokeObjectURL(voiceIns.src);
+                    voiceIns.removeAttribute("src");
+                    voiceIns.onended = voiceIns.onerror = null;
+                }
+                sourceBuffer = void 0;
+                speechPushing = false;
+                if (voiceSocket && voiceSocket["pending"]) {
+                    voiceSocket.close()
+                }
+                if (autoVoiceSocket && autoVoiceSocket["pending"]) {
+                    autoVoiceSocket.close()
+                }
+                speechQuene.length = 0;
+                autoMediaSource = void 0;
+                voiceContentQuene = [];
+                voiceEndFlagQuene = [];
+                voiceBlobURLQuene = [];
+                autoOnlineVoiceFlag = false;
+            } else {
+                speechSynthesis.cancel();
+            }
+            currentVoiceIdx = void 0;
+        }
+        const speakEvent = (ins, force = true, end = false) => {
+            return new Promise((res, rej) => {
+                ins.onerror = () => {
+                    if (end) {
+                        endSpeak();
+                    } else if (force) {
+                        resetSpeakIcon();
+                    }
+                    res();
+                }
+                if (existVoice >= 2) {
+                    ins.onended = ins.onerror;
+                    ins.play();
+                } else {
+                    ins.onend = ins.onerror;
+                    speechSynthesis.speak(voiceIns);
+                }
+            })
+        };
+        let voiceData = [];
+        let voiceSocket;
+        let speechPushing = false;
+        let speechQuene = [];
+        let sourceBuffer;
+        speechQuene.push = function (buffer) {
+            if (!speechPushing && !sourceBuffer.updating) {
+                speechPushing = true;
+                sourceBuffer.appendBuffer(buffer);
+            } else {
+                Array.prototype.push.call(this, buffer)
+            }
+        }
+        const initSocket = () => {
+            return new Promise((res, rej) => {
+                if (!voiceSocket || voiceSocket.readyState > 1) {
+                    voiceSocket = new WebSocket(existVoice === 3 ? getAzureWSURL() : edgeTTSURL);
+                    voiceSocket.binaryType = "arraybuffer";
+                    voiceSocket.onopen = () => {
+                        res();
+                    };
+                    voiceSocket.onerror = () => {
+                        rej();
+                    }
+                } else {
+                    return res();
+                }
+            })
+        }
+        const initStreamVoice = (mediaSource) => {
+            return new Promise((r, j) => {
+                Promise.all([initSocket(), new Promise(res => {
+                    mediaSource.onsourceopen = () => {
+                        res();
+                    };
+                })]).then(() => {
+                    r();
+                })
+            })
+        }
+        let downQuene = {};
+        let downSocket;
+        const downBlob = (blob, name) => {
+            let a = document.createElement("a");
+            a.download = name;
+            a.href = URL.createObjectURL(blob);
+            a.click();
+        }
+        const initDownSocket = () => {
+            return new Promise((res, rej) => {
+                if (!downSocket || downSocket.readyState > 1) {
+                    downSocket = new WebSocket(existVoice === 3 ? getAzureWSURL() : edgeTTSURL);
+                    downSocket.binaryType = "arraybuffer";
+                    downSocket.onopen = () => {
+                        res();
+                    };
+                    downSocket.onmessage = (e) => {
+                        if (e.data instanceof ArrayBuffer) {
+                            let text = new TextDecoder().decode(e.data.slice(0, 130));
+                            let reqIdx = text.indexOf(":");
+                            let uuid = text.slice(reqIdx + 1, reqIdx + 33);
+                            downQuene[uuid]["blob"].push(e.data.slice(130));
+                        } else if (e.data.indexOf("Path:turn.end") !== -1) {
+                            let reqIdx = e.data.indexOf(":");
+                            let uuid = e.data.slice(reqIdx + 1, reqIdx + 33);
+                            let blob = new Blob(downQuene[uuid]["blob"], {type: voiceMIME});
+                            let key = downQuene[uuid]["key"];
+                            let name = downQuene[uuid]["name"];
+                            voiceData[key] = blob;
+                            downBlob(blob, name.slice(0, 16) + ".mp3");
+                        }
+                    }
+                    downSocket.onerror = () => {
+                        rej();
+                    }
+                } else {
+                    return res();
+                }
+            })
+        }
+        const downloadAudio = async (idx) => {
+            if (existVoice < 2) {
+                return;
+            }
+            let type = data[idx].role === "user" ? 0 : 1;
+            let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
+            let volume = voiceVolume[type];
+            let rate = voiceRate[type];
+            let pitch = voicePitch[type];
+            let style = azureStyle[type];
+            let role = azureRole[type];
+            let content = data[idx].content;
+            let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
+            let blob = voiceData[key];
+            if (blob) {
+                downBlob(blob, content.slice(0, 16) + ".mp3");
+            } else {
+                await initDownSocket();
+                let currDate = getTime();
+                let lang = voiceRole[type].lang;
+                let uuid = uuidv4();
+                if (existVoice === 3) {
+                    downSocket.send(getWSPre(currDate, uuid));
+                }
+                downSocket.send(getWSAudio(currDate, uuid));
+                downSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
+                downSocket["pending"] = true;
+                downQuene[uuid] = {};
+                downQuene[uuid]["name"] = content;
+                downQuene[uuid]["key"] = key;
+                downQuene[uuid]["blob"] = [];
+            }
+        }
+        const NoMSEPending = (key) => {
+            return new Promise((res, rej) => {
+                let bufArray = [];
+                voiceSocket.onmessage = (e) => {
+                    if (e.data instanceof ArrayBuffer) {
+                        bufArray.push(e.data.slice(130));
+                    } else if (e.data.indexOf("Path:turn.end") !== -1) {
+                        voiceSocket["pending"] = false;
+                        voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                        res(voiceData[key]);
+                    }
+                }
+            })
+        }
+        const speechEvent = async (idx) => {
+            if (!data[idx]) return;
+            endSpeak();
+            currentVoiceIdx = idx;
+            if (!data[idx].content && enableContVoice) {
+                if (currentVoiceIdx !== data.length - 1) {return speechEvent(currentVoiceIdx + 1)}
+                else {return endSpeak()}
+            };
+            let type = data[idx].role === "user" ? 0 : 1;
+            chatlog.children[systemRole ? idx - 1 : idx].children[1].lastChild.className = "pauseVoice";
+            let content = data[idx].content;
+            let volume = voiceVolume[type];
+            let rate = voiceRate[type];
+            let pitch = voicePitch[type];
+            let style = azureStyle[type];
+            let role = azureRole[type];
+            if (existVoice >= 2) {
+                if (!voiceIns) {
+                    voiceIns = new Audio();
+                }
+                let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
+                let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
+                let currData = voiceData[key];
+                if (currData) {
+                    voiceIns.src = URL.createObjectURL(currData);
+                } else {
+                    let mediaSource;
+                    if (supportMSE) {
+                        mediaSource = new MediaSource;
+                        voiceIns.src = URL.createObjectURL(mediaSource);
+                        await initStreamVoice(mediaSource);
+                        if (!sourceBuffer) {
+                            sourceBuffer = mediaSource.addSourceBuffer(voiceMIME);
+                        }
+                        sourceBuffer.onupdateend = function () {
+                            speechPushing = false;
+                            if (speechQuene.length) {
+                                let buf = speechQuene.shift();
+                                if (buf["end"]) {
+                                    mediaSource.endOfStream();
+                                } else {
+                                    speechPushing = true;
+                                    sourceBuffer.appendBuffer(buf);
+                                }
+                            }
+                        };
+                        let bufArray = [];
+                        voiceSocket.onmessage = (e) => {
+                            if (e.data instanceof ArrayBuffer) {
+                                let buf = e.data.slice(130);
+                                bufArray.push(buf);
+                                speechQuene.push(buf);
+                            } else if (e.data.indexOf("Path:turn.end") !== -1) {
+                                voiceSocket["pending"] = false;
+                                voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                                if (!speechQuene.length && !speechPushing) {
+                                    mediaSource.endOfStream();
+                                } else {
+                                    let buf = new ArrayBuffer();
+                                    buf["end"] = true;
+                                    speechQuene.push(buf);
+                                }
+                            }
+                        }
+                    } else {
+                        await initSocket();
+                    }
+                    let currDate = getTime();
+                    let lang = voiceRole[type].lang;
+                    let uuid = uuidv4();
+                    if (existVoice === 3) {
+                        voiceSocket.send(getWSPre(currDate, uuid));
+                    }
+                    voiceSocket.send(getWSAudio(currDate, uuid));
+                    voiceSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
+                    voiceSocket["pending"] = true;
+                    if (!supportMSE) {
+                        let blob = await NoMSEPending(key);
+                        voiceIns.src = URL.createObjectURL(blob);
+                    }
+                }
+            } else {
+                if (!voiceIns) {
+                    voiceIns = new SpeechSynthesisUtterance();
+                }
+                voiceIns.voice = voiceRole[type];
+                voiceIns.volume = volume;
+                voiceIns.rate = rate;
+                voiceIns.pitch = pitch;
+                voiceIns.text = content;
+            }
+            await speakEvent(voiceIns);
+            if (enableContVoice) {
+                if (currentVoiceIdx !== data.length - 1) {return speechEvent(currentVoiceIdx + 1)}
+                else {endSpeak()}
+            }
+        };
+        let autoVoiceSocket;
+        let autoMediaSource;
+        let voiceContentQuene = [];
+        let voiceEndFlagQuene = [];
+        let voiceBlobURLQuene = [];
+        let autoOnlineVoiceFlag = false;
+        const autoAddQuene = () => {
+            if (voiceContentQuene.length) {
+                let content = voiceContentQuene.shift();
+                let currDate = getTime();
+                let uuid = uuidv4();
+                let voice = voiceRole[1].Name;
+                if (existVoice === 3) {
+                    autoVoiceSocket.send(getWSPre(currDate, uuid));
+                    voice = voiceRole[1].ShortName;
+                }
+                autoVoiceSocket.send(getWSAudio(currDate, uuid));
+                autoVoiceSocket.send(getWSText(currDate, uuid, voiceRole[1].lang, voice, voiceVolume[1], voiceRate[1], voicePitch[1], azureStyle[1], azureRole[1], content));
+                autoVoiceSocket["pending"] = true;
+                autoOnlineVoiceFlag = true;
+            }
+        }
+        const autoSpeechEvent = (content, ele, force = false, end = false) => {
+            if (ele.children[1].lastChild.className === "readyVoice") {
+                ele.children[1].lastChild.className = "pauseVoice";
+            }
+            if (existVoice >= 2) {
+                voiceContentQuene.push(content);
+                voiceEndFlagQuene.push(end);
+                if (!voiceIns) {
+                    voiceIns = new Audio();
+                }
+                if (!autoVoiceSocket || autoVoiceSocket.readyState > 1) {
+                    autoVoiceSocket = new WebSocket(existVoice === 3 ? getAzureWSURL() : edgeTTSURL);
+                    autoVoiceSocket.binaryType = "arraybuffer";
+                    autoVoiceSocket.onopen = () => {
+                        autoAddQuene();
+                    };
+
+                    autoVoiceSocket.onerror = () => {
+                        autoOnlineVoiceFlag = false;
+                    };
+                };
+                let bufArray = [];
+                autoVoiceSocket.onmessage = (e) => {
+                    if (e.data instanceof ArrayBuffer) {
+                        (supportMSE ? speechQuene : bufArray).push(e.data.slice(130));
+                    } else {
+                        if (e.data.indexOf("Path:turn.end") !== -1) {
+                            autoVoiceSocket["pending"] = false;
+                            autoOnlineVoiceFlag = false;
+                            if (!supportMSE) {
+                                let blob = new Blob(bufArray, {type: voiceMIME});
+                                bufArray = [];
+                                if (blob.size) {
+                                    let blobURL = URL.createObjectURL(blob);
+                                    if (!voiceIns.src) {
+                                        voiceIns.src = blobURL;
+                                        voiceIns.play();
+                                    } else {
+                                        voiceBlobURLQuene.push(blobURL);
+                                    }
+                                }
+                                autoAddQuene();
+                            }
+                            if (voiceEndFlagQuene.shift()) {
+                                if (supportMSE) {
+                                    if (!speechQuene.length && !speechPushing) {
+                                        autoMediaSource.endOfStream();
+                                    } else {
+                                        let buf = new ArrayBuffer();
+                                        buf["end"] = true;
+                                        speechQuene.push(buf);
+                                    }
+                                } else {
+                                    if (!voiceBlobURLQuene.length && !voiceIns.src) {
+                                        endSpeak();
+                                    } else {
+                                        voiceBlobURLQuene.push("end");
+                                    }
+                                }
+                            };
+                            if (supportMSE) {
+                                autoAddQuene();
+                            }
+                        }
+                    }
+                };
+                if (!autoOnlineVoiceFlag && autoVoiceSocket.readyState) {
+                    autoAddQuene();
+                }
+                if (supportMSE) {
+                    if (!autoMediaSource) {
+                        autoMediaSource = new MediaSource();
+                        autoMediaSource.onsourceopen = () => {
+                            if (!sourceBuffer) {
+                                sourceBuffer = autoMediaSource.addSourceBuffer(voiceMIME);
+                                sourceBuffer.onupdateend = () => {
+                                    speechPushing = false;
+                                    if (speechQuene.length) {
+                                        let buf = speechQuene.shift();
+                                        if (buf["end"]) {
+                                            autoMediaSource.endOfStream();
+                                        } else {
+                                            speechPushing = true;
+                                            sourceBuffer.appendBuffer(buf);
+                                        }
+                                    }
+                                };
+                            }
+                        }
+                    }
+                    if (!voiceIns.src) {
+                        voiceIns.src = URL.createObjectURL(autoMediaSource);
+                        voiceIns.play();
+                        voiceIns.onended = voiceIns.onerror = () => {
+                            endSpeak();
+                        }
+                    }
+                } else {
+                    voiceIns.onended = voiceIns.onerror = () => {
+                        if (voiceBlobURLQuene.length) {
+                            let src = voiceBlobURLQuene.shift();
+                            if (src === "end") {
+                                endSpeak();
+                            } else {
+                                voiceIns.src = src;
+                                voiceIns.currentTime = 0;
+                                voiceIns.play();
+                            }
+                        } else {
+                            voiceIns.currentTime = 0;
+                            voiceIns.removeAttribute("src");
+                        }
+                    }
+                }
+            } else {
+                voiceIns = new SpeechSynthesisUtterance(content);
+                voiceIns.volume = voiceVolume[1];
+                voiceIns.rate = voiceRate[1];
+                voiceIns.pitch = voicePitch[1];
+                voiceIns.voice = voiceRole[1];
+                speakEvent(voiceIns, force, end);
+            }
+        };
+        let autoVoiceIdx = 0;
+        let autoVoiceDataIdx;
+        let controller;
+        let controllerId;
+        let refreshIdx;
+        let currentResEle;
+        let progressData = "";
+        const streamGen = async (long) => {
+            controller = new AbortController();
+            controllerId = setTimeout(() => {
+                notyf.error("请求超时，请稍后重试！");
+                stopLoading();
+            }, 30000);
+            let headers = {"Content-Type": "application/json"};
+            if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
+            let isRefresh = refreshIdx !== void 0;
+            if (isRefresh) {
+                currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
+            } else if (!currentResEle) {
+                currentResEle = createConvEle("response");
+                currentResEle.children[0].innerHTML = "<br />";
+                currentResEle.dataset.loading = true;
+                scrollToBottom();
+            }
+            let idx = isRefresh ? refreshIdx : data.length;
+            if (existVoice && enableAutoVoice && !long) {
+                if (isRefresh) {
+                    endSpeak();
+                    autoVoiceDataIdx = currentVoiceIdx = idx;
+                } else if (currentVoiceIdx !== data.length) {
+                    endSpeak();
+                    autoVoiceDataIdx = currentVoiceIdx = idx;
+                }
+            }
+            let dataSlice;
+            if (long) {
+                idx = isRefresh ? refreshIdx : data.length - 1;
+                dataSlice = [data[idx - 1], data[idx]];
+                if (systemRole) {dataSlice.unshift(data[0]);}
+            } else if (enableCont) {
+                dataSlice = data.slice(0, idx);
+            } else {
+                dataSlice = [data[idx - 1]];
+                if (systemRole) {dataSlice.unshift(data[0]);}
+            }
+            try {
+                const res = await fetch(apiHost + API_URL, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({
+                        messages: dataSlice,
+                        model: modelVersion,
+                        stream: true,
+                        temperature: roleTemp,
+                        top_p: roleNature
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(controllerId);
+                controllerId = void 0;
+                if (res.status !== 200) {
+                    if (res.status === 401) {
+                        notyf.error("API key错误或失效，请检查API key！")
+                    } else if (res.status === 400) {
+                        notyf.error("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
+                    } else if (res.status === 404) {
+                        notyf.error("无权使用此模型，请打开设置选择其他GPT模型！");
+                    } else if (res.status === 429) {
+                        notyf.error(res.statusText ? "触发API调用频率限制，请稍后重试！" : "API使用超出限额，请检查您的账单！");
+                    } else {
+                        notyf.error("网关错误或超时，请稍后重试！");
+                    }
+                    stopLoading();
+                    return;
+                }
+                const decoder = new TextDecoder();
+                const reader = res.body.getReader();
+                const readChunk = async () => {
+                    return reader.read().then(async ({value, done}) => {
+                        if (!done) {
+                            value = decoder.decode(value);
+                            let chunks = value.split(/\n{2}/g);
+                            chunks = chunks.filter(item => {
+                                return item.trim();
+                            });
+                            for (let i = 0; i < chunks.length; i++) {
+                                let chunk = chunks[i];
+                                if (chunk) {
+                                    let payload;
+                                    try {
+                                        payload = JSON.parse(chunk.slice(6));
+                                    } catch (e) {
+                                        break;
+                                    }
+                                    if (payload.choices[0].finish_reason) {
+                                        let lenStop = payload.choices[0].finish_reason === "length";
+                                        let longReplyFlag = enableLongReply && lenStop;
+                                        if (!enableLongReply && lenStop) {currentResEle.children[1].children[0].className = "halfRefReq"}
+                                        else {currentResEle.children[1].children[0].className = "refreshReq"};
+                                        if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                            let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
+                                            autoSpeechEvent(voiceText, currentResEle, false, stop);
+                                        }
+                                        break;
+                                    } else {
+                                        let content = payload.choices[0].delta.content;
+                                        if (content) {
+                                            if (!progressData && !content.trim()) continue;
+                                            if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                                let spliter = content.match(/\.|\?|!|。|？|！|\n/);
+                                                if (spliter) {
+                                                    let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
+                                                    autoVoiceIdx += voiceText.length;
+                                                    autoSpeechEvent(voiceText, currentResEle);
+                                                }
+                                            }
+                                            if (progressData) await delay();
+                                            progressData += content;
+                                            currentResEle.children[0].innerHTML = md.render(progressData);
+                                            if (!isRefresh) {
+                                                scrollToBottom();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            return readChunk();
+                        } else {
+                            if (isRefresh) {
+                                data[refreshIdx].content = progressData;
+                                if (longReplyFlag) return streamGen(true);
+                            } else {
+                                if (long) {data[data.length - 1].content = progressData}
+                                else {data.push({role: "assistant", content: progressData})}
+                                if (longReplyFlag) return streamGen(true);
+                            }
+                            stopLoading(false);
+                        }
+                    });
+                };
+                await readChunk();
+            } catch (e) {
+                if (e.message.indexOf("aborted") === -1) {
+                    notyf.error("访问接口失败，请检查接口！")
+                    stopLoading();
+                }
+            }
+        };
+        const loadAction = (bool) => {
+            loading = bool;
+            sendBtnEle.disabled = bool;
+            sendBtnEle.className = bool ? " loading" : "loaded";
+            stopEle.style.display = bool ? "flex" : "none";
+            if(bool){document.querySelector('.messages').scrollTo({top:9999,behavior:'smooth'})};
+            textInputEvent();
+        }
+        const stopLoading = (abort = true) => {
+            stopEle.style.display = "none";
+            if (abort) {
+                controller.abort();
+                if (controllerId) clearTimeout(controllerId);
+                if (delayId) clearTimeout(delayId);
+                if (refreshIdx !== void 0) {data[refreshIdx].content = progressData}
+                else if (data[data.length - 1].role === "assistant") {data[data.length - 1].content = progressData}
+                else {data.push({role: "assistant", content: progressData})}
+                if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx && progressData.length) {
+                    let voiceText = progressData.slice(autoVoiceIdx);
+                    autoSpeechEvent(voiceText, currentResEle, false, true);
+                }
+            }
+            updateChats();
+            controllerId = delayId = refreshIdx = void 0;
+            autoVoiceIdx = 0;
+            currentResEle.dataset.loading = false;
+            currentResEle = null;
+            progressData = "";
+            loadAction(false);
+        }
+        const generateText = async (message) => {
+            loadAction(true);
+            let requestEle = createConvEle("request");
+            requestEle.children[0].textContent = message;
+            data.push({role: "user", content: message});
+            if (chatsData[activeChatIdx].name === "新的会话") {
+                if (message.length > 50) {
+                    message = message.slice(0, 47) + "...";
+                }
+                chatsData[activeChatIdx].name = message;
+                chatListEle.children[activeChatIdx].children[1].textContent = message;
+            }
+            updateChats();
+            scrollToBottom();
+            await streamGen();
+        };
+        textarea.onkeydown = (e) => {
+            if (e.keyCode === 13 && !e.shiftKey) {
+                e.preventDefault();
+                genFunc();
+            }
+        };
+        const genFunc = function () {
+            if (recing) {
+                toggleRecEv();
+            }
+            let message = textarea.value.trim();
+            if (message.length !== 0) {
+                if (loading === true) return;
+                textarea.value = "";
+                textarea.style.height = "47px";
+                generateText(message);
+            }
+        };
+        sendBtnEle.onclick = genFunc;
+        stopEle.onclick = stopLoading;
+        document.getElementById("clearConv").onclick = () => {
+                Swal.fire({
+                  title: '是否清空所有对话？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (!loading && result.isConfirmed) 
+                  {endSpeak();
+                    if (systemRole) {data.length = 1}
+                    else {data.length = 0}
+                    chatlog.innerHTML = "";
+                    updateChats();
+                    Swal.fire({
+                  title: '已清空',
+                  text: "所有对话已被清空",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })}
+    </script>
+    <link href="//cdn.staticfile.org/github-markdown-css/5.2.0/github-markdown-light.min.css" rel="stylesheet">
+    <link href="//cdn.staticfile.org/highlight.js/11.7.0/styles/github.min.css" rel="stylesheet">
+    <link href="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.css" rel="stylesheet">
+    <link href="//npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css" rel="stylesheet">
+    <script defer>
+        const downRoleController = new AbortController();
+        setTimeout(() => {
+            downRoleController.abort();
+        }, 10000);
+        const preEle = document.getElementById("preSetSystem");
+        fetch("https://cdn.jsdelivr.net/gh/PlexPt/awesome-chatgpt-prompts-zh/prompts-zh.json", {
+            signal: downRoleController.signal
+        }).then(async (response) => {
+            let res = await response.json();
+            for (let i = 0; i < res.length; i++) {
+                let key = "act" + i;
+                presetRoleData[key] = res[i].prompt.trim();
+                let optionEle = document.createElement("option");
+                optionEle.text = res[i].act;
+                optionEle.value = key;
+                preEle.options.add(optionEle);
+            }
+        }).catch(e => { })
+    </script>
+    <script>
+        document.addEventListener('copy', function (event) {
+            let clipboardData = event.clipboardData || window.clipboardData;
+                if (!clipboardData) { return; }
+            let text = window.getSelection().toString();
+                if (text) {
+                notyf.success("复制成功");
+            }
+        });
+    </script>
+    <style>
+        .darkmode-layer, .darkmode-toggle {
+          z-index: 9999;
+        }
+
+    </style>
+    <script>
+    function DarkmodeSwitch() {
+      const addDarkmode = new Darkmode();
+      var darkModeBtn = document.querySelector('#darkModeBtn');
+      if (darkModeBtn.value === 'nightmode') {
+        document.querySelector("#darkModeBtn #icon-1").classList.add("active"); 
+        document.querySelector("#darkModeBtn #icon-2").classList.remove("active");
+        darkModeBtn.value = 'daymode';
+      } else {
+        document.querySelector("#darkModeBtn #icon-2").classList.add("active"); 
+        document.querySelector("#darkModeBtn #icon-1").classList.remove("active");
+        darkModeBtn.value = 'nightmode';
+      }
+    }
+    </script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelector("#darkModeBtn #icon-2").classList.add("active"); 
+        document.querySelector("#darkModeBtn #icon-1").classList.remove("active");
+        darkModeBtn.value = 'nightmode';
+    });
+    </script>
+</body>
+
+</html>
