@@ -1,4 +1,4 @@
-# chatgpt-web-darkmode-and-other-upgrade
+# chatgpt-web-darkmode-and-other-upgrades
 Added some useful features based on chatgpt-web
 
 ## 增加的功能
