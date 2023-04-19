@@ -1,7 +1,7 @@
 # chatgpt-web-darkmode-and-other-upgrades
 Added some useful features based on chatgpt-web
 
-#网页预览
+# 网页预览
 [DEMO](https://taiyouweb.github.io/chatgpt-web-darkmode-and-other-upgrades/)
 
 ## 增加的功能
