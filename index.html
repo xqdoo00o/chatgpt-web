@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="description" content="使用ChatGPT接口，实现简单HTML网页版在线聊天" />
+<meta charset="utf-8">
+<meta name="description" content="chatgpt" />
+<meta name="keywords" content="chatgpt" />
+<meta name="renderer" content="webkit" />
+<meta name="format-detection" content="email=no" />
+<meta name="format-detection" content="telephone=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+<link rel="shortcut icon" href="https://taiyouweb.github.io/chatgpt-web-darkmode-and-other-upgrades/favicon.ico" />
+<title>chatgpt</title>
 
 <head>
-    <meta charset="utf-8">
-    <title>ChatGPT</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,7 +25,7 @@
         }
 
         body {
-            background-color: #edeff2;
+            background-color: var(--background);
             width: 100%;
             height: 100%;
             margin: 0;
@@ -28,20 +34,19 @@
         .chat_window {
             position: absolute;
             width: 100%;
-            max-width: 1100px;
+            max-width: 888px;
             height: 100%;
-            max-height: 888px;
             border-radius: 8px;
             background-color: #fff;
             left: 50%;
             top: 50%;
             overflow: hidden;
             transform: translate(-50%, -50%);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 4px 2px var(--box-shadow);
         }
 
         .top_menu {
-            background-color: #f6f6f6;
+            background-color: var(--menubar);
             width: 100%;
             height: 50px;
             padding: 12px 0;
@@ -59,7 +64,7 @@
         }
 
         .top_menu .toggler:hover {
-            background: #e7e7e8;
+            background: var(--setbackground);
         }
 
         .top_menu .toggler .button {
@@ -72,22 +77,22 @@
 
         .top_menu .toggler .button.close {
             top: 8px;
-            background-color: #99c959;
+            background-color: var(--color);
         }
 
         .top_menu .toggler .button.minimize {
             top: 18px;
-            background-color: #f8b26a;
+            background-color: var(--color);
         }
 
         .top_menu .toggler .button.maximize {
             top: 28px;
-            background-color: #e15b64;
+            background-color: var(--color);
         }
 
         .top_menu .title {
             text-align: center;
-            color: #909090;
+            color: var(--color);
             font-size: 20px;
             line-height: 26px;
         }
@@ -97,6 +102,7 @@
             height: calc(100% - 117px);
             overflow-x: hidden;
             overflow-y: auto;
+            background: var(--background);
         }
 
         .messages::-webkit-scrollbar,
@@ -123,11 +129,18 @@
             background-color: transparent;
         }
 
+        .messages::-webkit-scrollbar,
+        #chatlog .response>pre::-webkit-scrollbar,
+        #setDialog::-webkit-scrollbar,
+        #chatList::-webkit-scrollbar {
+            background-color: var(--background);
+        }
+
         .messages::-webkit-scrollbar-thumb,
         #chatlog .response>pre::-webkit-scrollbar-thumb,
         #setDialog::-webkit-scrollbar-thumb,
         #chatList::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: var(--request);
             background-clip: padding-box;
             border: solid transparent;
             border-radius: 10px;
@@ -137,7 +150,7 @@
         #chatlog .response>pre::-webkit-scrollbar-thumb:hover,
         #setDialog::-webkit-scrollbar-thumb:hover,
         #chatList::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: var(--request);
         }
 
         .messages .message {
@@ -186,6 +199,7 @@
         #chatlog {
             word-wrap: break-word;
             text-align: start;
+            background: #fff;
         }
 
         #chatlog>div {
@@ -194,6 +208,9 @@
 
         #chatlog .request {
             position: relative;
+            background-color: var(--request);
+            color: var(--requestc);
+            text-align: center;
         }
 
         .requestBody {
@@ -201,12 +218,19 @@
         }
 
         #chatlog .response {
-            background: #f7f7f8;
+            background-color: var(--background);
+            color: var(--color);
             position: relative;
         }
 
         .response .markdown-body {
-            background: #f7f7f8 !important;
+            background: var(--background) !important;
+            color: var(--color)!important;
+        }
+
+        .response .markdown-body p{
+            padding-bottom: 1px;
+            border-bottom: 1px solid rgba(180,180,180,0.75);
         }
 
         #chatlog .markdown-body>pre {
@@ -214,6 +238,7 @@
             padding: 10px;
             position: relative;
             background: rgba(180, 180, 180, 0.1);
+            border: 1px solid var(--border);
         }
 
         .m-mdic-copy-wrapper {
@@ -229,8 +254,8 @@
             font-family: system-ui;
             font-size: 12px;
             line-height: 18px;
-            color: #555;
-            opacity: 0.3;
+            color: var(--setcolorh);
+            opacity: 0.75;
         }
 
         .m-mdic-copy-wrapper div.u-mdic-copy-notify {
@@ -244,12 +269,12 @@
             font-family: system-ui;
             font-size: 12px;
             line-height: 18px;
-            color: #555;
-            opacity: 0.3;
+            color: var(--setcolorh);
             outline: none;
             opacity: 1;
             right: 100%;
             padding-right: 4px;
+            transform: scale(1);
         }
 
         .m-mdic-copy-wrapper button.u-mdic-copy-btn {
@@ -263,47 +288,52 @@
             font-family: system-ui;
             font-size: 12px;
             line-height: 18px;
-            color: #555;
-            opacity: 0.3;
+            color: var(--setcolor);
+            opacity: 1;
             outline: none;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0s;
         }
 
         .m-mdic-copy-wrapper button.u-mdic-copy-btn:hover {
-            opacity: 1;
+            color: var(--setcolorh);
         }
 
         #stopChat {
             display: none;
             margin: 0 auto;
             margin-top: 3px;
-            width: 80px;
+            width: 32px;
             height: 32px;
             text-align: center;
             line-height: 32px;
             color: white;
-            background: #f8b26a;
+            background: red;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 50%;
             position: sticky;
             bottom: 2px;
             justify-content: center;
             align-items: center;
+            opacity: 0.75;
         }
 
         #stopChat>svg {
-            margin-right: 8px;
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         #stopChat:hover {
-            background: #f0aa60;
+            opacity: 1;
         }
 
         .bottom_wrapper {
             position: relative;
             width: 100%;
-            background-color: #fff;
+            background: var(--menubar);
             padding: 10px 10px;
             position: absolute;
             bottom: 0;
@@ -311,29 +341,31 @@
 
         .bottom_wrapper .message_input_wrapper {
             border: none;
-            width: calc(100% - 143px);
+            width: calc(100% - 123px);
             position: relative;
             text-align: left;
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text {
             border-radius: 4px;
-            border: none;
+            border: 1px solid var(--setcolor);
             outline: none;
             resize: none;
-            background: #f6f6f6;
-            color: #24292f;
+            color: var(--color);
             height: 47px;
             font-size: 16px;
             max-height: 200px;
             padding: 13px 0 13px 16px;
             width: 100%;
             display: block;
-            transition: background 0.3s;
+            transition: background 0s;
+            background: var(--menubar);
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text:focus {
-            background: #f0f0f0;
+            border: 1px solid var(--color);
+            background: var(--background);
+            box-shadow: 0 0 3px 1px var(--inputboeder);
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text::-webkit-scrollbar {
@@ -343,21 +375,21 @@
         }
 
         #sendbutton {
-            width: 80px;
+            width: 60px;
             height: 47px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: normal;
             border-radius: 3px;
-            background-color: #b8da8b;
+            background-color: var(--border);
             border: none;
             padding: 0;
-            color: #fff;
+            color: var(--background);
             cursor: pointer;
-            transition: all 0.2s linear;
+            transition: all 0s linear;
             text-align: center;
             float: right;
             position: absolute;
-            right: 65px;
+            right: 10px;
             bottom: 10px;
             cursor: not-allowed;
         }
@@ -373,18 +405,18 @@
 
         #clearConv {
             position: absolute;
-            right: 10px;
+            right: 78px;
             bottom: 10px;
             width: 47px;
             height: 47px;
             font-size: 16px;
             display: inline-block;
             border-radius: 3px;
-            background-color: #909090;
-            border: 2px solid #909090;
-            color: #fff;
+            background-color: var(--border);
+            border: 2px solid var(--border);
+            color: var(--background);
             cursor: pointer;
-            transition: all 0.2s linear;
+            transition: all 0s linear;
         }
 
         #clearConv>svg {
@@ -396,8 +428,8 @@
         }
 
         #clearConv:hover {
-            background-color: gray;
-            border: 2px solid gray;
+            background-color: var(--setcolorh);
+            border: 2px solid var(--setcolorh);
         }
 
         .loaded>span {
@@ -409,7 +441,7 @@
         }
 
         .loading {
-            background: #e7e7e8 !important;
+            background: var(--border) !important;
         }
 
         .loading>span {
@@ -429,7 +461,7 @@
             display: block;
             width: 38px;
             height: 18px;
-            background: #909090;
+            background: var(--border);
             border-radius: 30px;
             cursor: pointer;
             position: relative;
@@ -443,7 +475,7 @@
             width: 16px;
             height: 16px;
             border-radius: 100%;
-            background: #fff;
+            background: var(--background);
             box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
             position: absolute;
             left: 1px;
@@ -455,7 +487,7 @@
         }
 
         .switch-slide input:checked+label {
-            background: #99c959;
+            background: var(--border);
             transition: 0.3s ease;
         }
 
@@ -475,18 +507,18 @@
         }
 
         #setting:hover {
-            background: #e7e7e8;
+            background: var(--setbackground);
         }
 
         .showSetting {
-            background: #b0b0b0 !important;
+            background: var(--setbackground) !important;
         }
 
         #setDialog {
             color: #303030;
             position: absolute;
             z-index: 2;
-            background: #f6f6f6;
+            background: var(--menubar);
             width: 320px;
             right: 6px;
             top: 46px;
@@ -522,6 +554,7 @@
         #speechDetail>div,
         #recOption div {
             margin-top: 10px;
+            color: var(--setcolorh);
         }
 
         .inputTextClass {
@@ -548,7 +581,7 @@
             display: block;
             margin: 6px 0 3px 0;
             height: 8px;
-            background: #909090;
+            background: var(--border);
             border-radius: 5px;
             background-image: linear-gradient(#99c959, #99c959);
             background-size: 100% 100%;
@@ -592,7 +625,7 @@
             display: flex;
             justify-content: space-between;
             font-size: 13px;
-            color: #707070;
+            color: var(--setcolor);
         }
 
         #preSetSpeech {
@@ -619,12 +652,13 @@
         }
 
         .mdOption>div>svg {
-            color: #e3e3e3;
+            color: #909090;
             display: block;
+            opacity: 0.85;
         }
 
         .mdOption svg:hover {
-            color: #989898;
+            opacity: 1;
         }
 
         .mdOption svg * {
@@ -650,7 +684,7 @@
             justify-content: space-between;
             visibility: hidden;
             z-index: 1;
-            color: #808080;
+            color: var(--setcolor);
         }
 
         .moreOptionHidden>div {
@@ -666,16 +700,37 @@
             visibility: visible;
         }
 
-        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(3) {
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(6) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 10ms;
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(5) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 30ms;
+            transition-duration: 60ms;
+        }
+
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(4) {
             transform: scale(1);
             visibility: visible;
             transition-delay: 50ms;
             transition-duration: 60ms;
         }
 
+        .optionTrigger:hover+.optionItems .optionItem:nth-of-type(3) {
+            transform: scale(1);
+            visibility: visible;
+            transition-delay: 70ms;
+            transition-duration: 60ms;
+        }
+
         .optionTrigger:hover+.optionItems .optionItem:nth-of-type(2) {
             visibility: visible;
-            transition-delay: 80ms;
+            transition-delay: 90ms;
             transform: scale(1);
             transition-duration: 60ms;
         }
@@ -688,15 +743,17 @@
         }
 
         .optionItem {
-            border-radius: 3px;
             height: 30px;
             width: 30px;
-            background-color: #f7f7f8;
             visibility: hidden;
             transform: scale(0);
             display: flex !important;
             justify-content: center;
             align-items: center;
+            border-radius: 3px;
+            background: var(--setbackground);
+            color: var(--color);
+            border:1px solid var(--border);
         }
 
         .optionItem * {
@@ -704,7 +761,9 @@
         }
 
         .optionItem:hover {
-            background: #e0e0e0;
+            background: var(--background);
+            color: var(--color);
+            border:1px solid var(--color);
         }
 
         .readyVoice svg:not(:first-child) {
@@ -727,11 +786,11 @@
         }
 
         #voiceTypes>span:hover {
-            background: #e7e7e7;
+            background: var(--setbackground);
         }
 
         .selVoiceType {
-            background: #d0d0d0 !important;
+            background: var(--setbackground); !important;
         }
 
         .overlay {
@@ -740,7 +799,7 @@
             position: absolute;
             left: 0;
             top: 0;
-            background-color: rgba(0, 0, 0, .3);
+            background-color: rgba(0, 0, 0, 0);
             z-index: 90;
             opacity: 0;
             visibility: hidden;
@@ -750,7 +809,7 @@
         .nav {
             width: 250px;
             height: 100%;
-            background-color: #fafafa;
+            background-color: var(--background);
             left: -250px;
             top: 0;
             position: fixed;
@@ -764,7 +823,7 @@
             text-align: center;
             width: 100%;
             height: 50px;
-            color: #404040;
+            color: var(--color);
             margin: 10px 0 10px 0;
             display: flex;
             align-items: center;
@@ -772,7 +831,7 @@
         }
 
         #newChat:hover {
-            background: #f0f0f0 !important;
+            background: var(--setbackground); !important;
         }
 
         #newChat>svg {
@@ -787,7 +846,7 @@
 
         .divider {
             width: 100%;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid var(--setbackground);
             margin: 8px 0;
         }
 
@@ -802,12 +861,12 @@
 
         .navFunc>div,
         .navFunc>label {
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--setbackground);
             border-radius: 3px;
             text-align: center;
             padding: 5px;
             width: 70px;
-            color: #404040;
+            color: var(--color);
             font-size: 14px;
             cursor: pointer;
             display: flex;
@@ -817,12 +876,12 @@
 
         .navFunc>div>svg,
         .navFunc>label>svg {
-            color: #666;
+            color: var(--color);
         }
 
         .navFunc>div:hover,
         .navFunc>label:hover {
-            background: #e0e0e0;
+            background: var(--setbackground);
         }
 
         .links {
@@ -830,16 +889,16 @@
         }
 
         .links a {
-            color: #404040;
+            color: var(--setcolorh);
             text-decoration: none;
         }
 
         .links a:hover {
-            color: black !important;
+            color: var(--color) !important;
         }
 
         .links a:visited {
-            color: #404040;
+            color: var(--color);
         }
 
         #chatList {
@@ -852,7 +911,7 @@
             cursor: pointer;
             width: 100%;
             height: 50px;
-            color: #909090;
+            color: var(--color) ;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -865,7 +924,7 @@
 
         .chatLi>svg {
             margin-left: 18px;
-            color: #505050;
+            color: var(--color);
         }
 
         .chatLi svg {
@@ -879,7 +938,7 @@
         .chatLi .chatName {
             position: absolute;
             left: 55px;
-            color: #404040;
+            color: var(--color);
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -896,15 +955,19 @@
         }
 
         .chatLi:hover {
-            background: #f0f0f0;
+            background: var(--setbackground);
         }
 
         .activeChatLi {
-            background: #e0e0e0 !important;
+            background: var(--setbackground) !important;
         }
 
         .activeChatLi .chatOption {
             visibility: visible !important;
+        }
+
+        .chatOption>svg {
+            color: var(--setcolorh) !important;
         }
 
         .activeChatLi #activeChatEdit {
@@ -912,7 +975,7 @@
             left: 52px;
             font-size: 16px;
             border-radius: 2px;
-            background: #f0f0f0;
+            background: var(--setbackground);;
             outline: none;
             border: none;
             pointer-events: auto;
@@ -925,7 +988,7 @@
 
         .show-nav .nav {
             left: 0;
-            box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 10px -5px, rgba(0, 0, 0, 0.14) 0px 16px 24px 2px, rgba(0, 0, 0, 0.12) 0px 6px 30px 5px;
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 5px -2.5px, rgba(0, 0, 0, 0.14) 0px 8px 12px 1px, rgba(0, 0, 0, 0.12) 0px 3px 15px 2.5px;
         }
 
         .show-nav .overlay {
@@ -958,15 +1021,52 @@
 
         #loadMask>div>div {
             font-size: 40px;
-            color: #909090;
+            color: var(--border);
         }
 
         #voiceRec {
             position: absolute;
-            right: 0;
+            right: 47px;
             top: 0;
             width: 47px;
             height: 100%;
+            display: none !important;
+        }
+
+        #pngDownLoad {
+            position: absolute;
+            right: 0px;
+            top: 0;
+            width: 47px;
+            height: 100%;
+        }
+
+        #pngDownLoadIcon {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s;
+        }
+
+        #pngDownLoadIcon:hover>svg {
+            color: var(--setcolor);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        #pngDownLoadIcon>svg {
+            width: 28px;
+            height: 28px;
+            color: var(--setcolor);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #pngDownLoadIcon>svg .animVoice {
+            display: none;
         }
 
         .message_if_voice {
@@ -982,7 +1082,7 @@
         }
 
         #voiceRecIcon:hover>svg {
-            color: #808080;
+            color: var(--setcolor);
         }
 
         #voiceRecIcon>svg {
@@ -1082,7 +1182,7 @@
             padding: 4px 4px;
             user-select: none;
             border-radius: 3px;
-            background-color: #f6f6f6;
+            background-color: var(--menubar);
             box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
         }
 
@@ -1116,21 +1216,22 @@
             line-height: 32px;
             text-align: center;
             cursor: pointer;
+            color: var(--color);
         }
 
         .setSwitch>div:hover {
-            background-color: #e0e0e0;
+            background-color: var(--setbackground);
         }
 
         .activeSwitch {
-            background-color: #d0d0d0 !important;
+            background-color: var(--setbackground); !important;
         }
 
         #checkVoiceLoad {
             height: 32px;
             border-radius: 3px;
             line-height: 32px;
-            background: #d0d0d0;
+            background: var(--setbackground);;
             text-align: center;
             display: flex;
             justify-content: center;
@@ -1161,6 +1262,129 @@
             line-height: 20px;
             vertical-align: top;
         }
+
+        #scrollTopBtn {
+            position: fixed;
+            right: 10px;
+            bottom: calc(50% + 24px);
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            display: inline-block;
+            border-radius: 3px 3px 0 0;
+            background-color: #989898;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            z-index: 9999;
+            opacity: 0.75;
+        }
+
+        #scrollTopBtn>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #scrollTopBtn:hover {
+            background-color: var(--border);
+            opacity: 1;
+        }
+
+        #scrollBottomBtn {
+            position: fixed;
+            right: 10px;
+            bottom: calc(50% - 24px);
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            display: inline-block;
+            border-radius: 0 0 3px 3px;
+            background-color: #989898;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            z-index: 9999;
+            opacity: 0.75;
+        }
+
+        #scrollBottomBtn>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #scrollBottomBtn:hover {
+            background-color: var(--border);
+            opacity: 1;
+        }
+
+        #darkModeBtn {
+            position: fixed;
+            right: 10px;
+            bottom: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            display: inline-block;
+            border-radius: 0 ;
+            background-color: #989898;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s linear;
+            z-index: 9999;
+            opacity: 0.75;
+        }
+
+        #darkModeBtn>svg {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: scale(0);
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 0.85s, opacity 0.85s, -webkit-transform 0.85s;
+        }
+
+        #darkModeBtn>svg.active {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%)  scale(0.85);
+            opacity: 1;
+            transition: transform 0.85s, opacity 0.85s, -webkit-transform 0.85s;
+        }
+
+        #darkModeBtn:hover {
+            background-color: var(--border);
+            opacity: 1;
+        }
+
+        .swal2-backdrop-show{
+            background: rgba(72,72,72,0.1)!important;
+        }
+        
+        .swal2-backdrop-hide{
+            background: rgba(72,72,72,0.1)!important;
+        }
+        
+        .darkmode-layer, .darkmode-toggle {
+          z-index: 99999 !important;
+        }
+        
+        .hljs-string{
+            color: var(--color) !important;
+        }
+        
+        #exportChat>svg, #importChat>svg, #clearChat>svg{
+            color: var(--color) !important;
+        }
     </style>
 </head>
 
@@ -1188,6 +1412,16 @@
                 <path fill="currentColor"
                     d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z">
                 </path>
+            </symbol>
+            <symbol width="20" height="20" viewBox="-1 -1 25 25" id="mdoutputIcon" style="fill: currentColor;transform: ;msFilter:;">
+                <path d="M20.553 18.15H3.447a1.443 1.443 0 0 1-1.442-1.441V7.291c0-.795.647-1.441 1.442-1.441h17.105c.795 0 1.442.646 1.442 1.441v9.418a1.441 1.441 0 0 1-1.441 1.441zM6.811 15.268V11.52l1.922 2.402 1.922-2.402v3.748h1.922V8.732h-1.922l-1.922 2.403-1.922-2.403H4.889v6.535h1.922zM19.688 12h-1.922V8.732h-1.923V12h-1.922l2.884 3.364L19.688 12z"></path>
+            </symbol>
+            <symbol width="20" height="20" viewBox="-1 -1 25 25" id="savepngIcon" style="fill: currentColor;transform: ;msFilter:;">
+                <path d="M7.782 14.576c-.186 0-.312.018-.377.036v1.193c.077.018.174.023.306.023.485 0 .785-.246.785-.659 0-.371-.258-.593-.714-.593z"></path>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9.03 16.105c-.313.293-.774.426-1.313.426-.12 0-.229-.007-.312-.019v1.445h-.906V13.97a7.504 7.504 0 0 1 1.235-.083c.563 0 .966.107 1.235.323.258.204.432.54.432.936s-.131.731-.371.959zm4.302 1.853h-.96l-.863-1.56c-.24-.432-.504-.953-.701-1.427l-.019.006c.024.534.036 1.104.036 1.763v1.218h-.84v-4.042h1.067l.84 1.481c.24.426.479.93.659 1.385h.019a14.746 14.746 0 0 1-.078-1.685v-1.182h.84v4.043zm4.169-.186a4.512 4.512 0 0 1-1.349.228c-.737 0-1.271-.186-1.644-.546-.371-.348-.575-.875-.569-1.469.006-1.344.983-2.111 2.309-2.111.521 0 .924.103 1.121.198l-.191.731c-.222-.096-.498-.174-.941-.174-.762 0-1.338.432-1.338 1.308 0 .833.522 1.325 1.271 1.325.21 0 .378-.024.45-.061v-.846h-.624v-.713h1.505v2.13zM14 9h-1V4l5 5h-4z"></path>
+            </symbol>
+            <symbol width="20" height="20" viewBox="-1 -1 25 25" id="savetxtIcon" style="fill: currentColor;transform: ;msFilter:;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zM9.998 14.768H8.895v3.274h-.917v-3.274H6.893V14h3.105v.768zm2.725 3.274-.365-.731c-.15-.282-.246-.492-.359-.726h-.013c-.083.233-.185.443-.312.726l-.335.731h-1.045l1.171-2.045L10.336 14h1.05l.354.738c.121.245.21.443.306.671h.013c.096-.258.174-.438.276-.671l.341-.738h1.043l-1.139 1.973 1.198 2.069h-1.055zm4.384-3.274h-1.104v3.274h-.917v-3.274h-1.085V14h3.105v.768zM14 9h-1V4l5 5h-4z"></path>
             </symbol>
             <symbol viewBox="0 0 24 24" id="delIcon">
                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -1227,6 +1461,22 @@
             <symbol viewBox="0 0 24 24" id="deleteIcon">
                 <path fill="currentColor"
                     d="M8 20v-5h2v5h9v-7H5v7h3zm-4-9h16V8h-6V4h-4v4H4v3zM3 21v-8H2V7a1 1 0 0 1 1-1h5V3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v3h5a1 1 0 0 1 1 1v6h-1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="scrollTopIcon">
+                <path d="M6 4h12v2H6zm.707 11.707L11 11.414V20h2v-8.586l4.293 4.293 1.414-1.414L12 7.586l-6.707 6.707z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="scrollBottomIcon">
+                <path d="M6 18h12v2H6zm5-14v8.586L6.707 8.293 5.293 9.707 12 16.414l6.707-6.707-1.414-1.414L13 12.586V4z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="nightModeIcon">
+                <path d="M20.742 13.045a8.088 8.088 0 0 1-2.077.271c-2.135 0-4.14-.83-5.646-2.336a8.025 8.025 0 0 1-2.064-7.723A1 1 0 0 0 9.73 2.034a10.014 10.014 0 0 0-4.489 2.582c-3.898 3.898-3.898 10.243 0 14.143a9.937 9.937 0 0 0 7.072 2.93 9.93 9.93 0 0 0 7.07-2.929 10.007 10.007 0 0 0 2.583-4.491 1.001 1.001 0 0 0-1.224-1.224zm-2.772 4.301a7.947 7.947 0 0 1-5.656 2.343 7.953 7.953 0 0 1-5.658-2.344c-3.118-3.119-3.118-8.195 0-11.314a7.923 7.923 0 0 1 2.06-1.483 10.027 10.027 0 0 0 2.89 7.848 9.972 9.972 0 0 0 7.848 2.891 8.036 8.036 0 0 1-1.484 2.059z">
+                </path>
+            </symbol>
+            <symbol fill="currentColor" width="24" height="24" viewBox="2 2 24 24" id="dayModeIcon">
+                <path d="M6.993 12c0 2.761 2.246 5.007 5.007 5.007s5.007-2.246 5.007-5.007S14.761 6.993 12 6.993 6.993 9.239 6.993 12zM12 8.993c1.658 0 3.007 1.349 3.007 3.007S13.658 15.007 12 15.007 8.993 13.658 8.993 12 10.342 8.993 12 8.993zM10.998 19h2v3h-2zm0-17h2v3h-2zm-9 9h3v2h-3zm17 0h3v2h-3zM4.219 18.363l2.12-2.122 1.415 1.414-2.12 2.122zM16.24 6.344l2.122-2.122 1.414 1.414-2.122 2.122zM6.342 7.759 4.22 5.637l1.415-1.414 2.12 2.122zm13.434 10.605-1.414 1.414-2.122-2.122 1.414-1.414z">
                 </path>
             </symbol>
             <symbol viewBox="0 0 24 24" id="addIcon" stroke="currentColor" fill="none" stroke-width="2"
@@ -1274,8 +1524,8 @@
     </div>
     <div id="loadMask">
         <div>
-            <div>ChatGPT</div>
-            <svg>
+            <div>chatgpt</div>
+            <svg style="display:none;">
                 <use xlink:href="#loadingIcon" />
             </svg>
         </div>
@@ -1314,8 +1564,8 @@
                 </div>
                 <div class="divider"></div>
                 <div class="links">
-                    <a href="https://github.com/xqdoo00o/chatgpt-web" target="_blank"
-                        rel="noopener noreferrer">Github</a>
+                    <a href="https://github.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrade" target="_blank"
+                        rel="noopener noreferrer nofollow">Github</a>
                 </div>
             </div>
         </nav>
@@ -1325,13 +1575,13 @@
                 <div class="button minimize"></div>
                 <div class="button maximize"></div>
             </div>
-            <div class="title">ChatGPT</div>
+            <div class="title">chatgpt</div>
             <button id="setting">
                 <svg viewBox="0 0 100 100" style="display:block;" role="img" width="30" height="30">
                     <title>设置</title>
-                    <circle cx="50" cy="20" r="10" fill="#e15b64" />
-                    <circle cx="50" cy="50" r="10" fill="#f8b26a" />
-                    <circle cx="50" cy="80" r="10" fill="#99c959" />
+                    <circle cx="50" cy="20" r="10" fill="#909090" />
+                    <circle cx="50" cy="50" r="10" fill="#909090" />
+                    <circle cx="50" cy="80" r="10" fill="#909090" />
                 </svg>
             </button>
             <div id="setDialog" style="display:none;">
@@ -1350,7 +1600,7 @@
                         </select>
                     </div>
                     <div>
-                        <div>自定义接口</div>
+                        <div >自定义接口</div>
                         <input class="inputTextClass" placeholder="https://example.com/" id="apiHostInput" />
                     </div>
                     <div>
@@ -1504,14 +1754,15 @@
                     </div>
                 </div>
                 <div id="recOption" style="display: none;">
-                    <div id="noRecTip" style="display: block;">当前环境不支持语音识别，请尝试使用chrome内核浏览器或重新部署https页面。</div>
-                    <div id="yesRec" style="display: none;">
-                        <div class="presetSelect presetModelCls">
+                    <div id="noRecTip" style="display: block;text-align:center;">当前环境暂不支持语音识别。</div>
+                    <div id="yesRec" style="display: none;text-align:center;">
+                        当前环境暂不支持语音识别。
+                        <div style="display: none;" class="presetSelect presetModelCls">
                             <label for="selectLangOption">语言</label>
                             <select id="selectLangOption">
                             </select>
                         </div>
-                        <div class="presetSelect presetModelCls">
+                        <div style="display: none;" class="presetSelect presetModelCls">
                             <label for="selectDiaOption">方言</label>
                             <select id="selectDiaOption">
                             </select>
@@ -1521,14 +1772,39 @@
             </div>
         </div>
         <div class="messages">
+            
+    <div id="scrollTopBtn" onclick="document.querySelector('.messages').scrollTo({top:0,behavior:'smooth'})">
+        <svg role="img" width="20px" height="20px">
+            <title>滑至顶端</title>
+                <use xlink:href="#scrollTopIcon" />
+        </svg>
+    </div>
+    <div id="darkModeBtn" onclick="DarkmodeSwitch();">
+        <svg id="icon-1" role="img" width="20px" height="20px">
+            <title>切至日间模式</title>
+                <use xlink:href="#dayModeIcon"/>
+        </svg>
+        <svg id="icon-2" role="img" width="20px" height="20px">
+            <title>切至夜间模式</title>
+                <use xlink:href="#nightModeIcon"/>
+        </svg>
+    </div>
+    <div id="scrollBottomBtn" onclick="document.querySelector('.messages').scrollTo({top:9999,behavior:'smooth'})">
+        <svg role="img" width="20px" height="20px">
+            <title>滑至底部</title>
+                <use xlink:href="#scrollBottomIcon"/>
+        </svg>
+    </div>
+    
             <div id="chatlog"></div>
-            <div id="stopChat"><svg width="24" height="24">
+            <div id="stopChat">
+                <svg width="24" height="24">
                     <use xlink:href="#stopResIcon" />
-                </svg>停止</div>
+                </svg></div>
         </div>
         <div class="bottom_wrapper clearfix">
             <div class="message_input_wrapper">
-                <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧" id="chatinput"></textarea>
+                <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧~" id="chatinput"></textarea>
                 <div id="voiceRec" style="display:none;">
                     <div id="voiceRecIcon">
                         <svg viewBox="0 0 48 48" id="voiceInputIcon">
@@ -1546,17 +1822,22 @@
                         <select id="select_dialect"></select>
                     </div>
                 </div>
+                <div title="保存全部截图" onclick="saveClickALLPNG();" id="pngDownLoad">
+                    <div id="pngDownLoadIcon">
+                        <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="pngDownLoadIcon"><path d="M19 3H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM5 19V5h14l.002 14H5z"></path><path d="m10 14-1-1-3 4h12l-5-7z"></path></svg>
+                    </div>
+                </div>
             </div>
+            <button id="clearConv"><svg role="img" width="20px" height="20px">
+                    <title>清空会话</title>
+                    <use xlink:href="#deleteIcon" />
+                </svg></button>
             <button class="loaded" id="sendbutton">
                 <span>发送</span>
                 <svg style="margin:0 auto;height:40px;width:100%;">
                     <use xlink:href="#loadingIcon" />
                 </svg>
             </button>
-            <button id="clearConv"><svg role="img" width="20px" height="20px">
-                    <title>清空会话</title>
-                    <use xlink:href="#deleteIcon" />
-                </svg></button>
         </div>
     </div>
     <link rel="stylesheet" href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css">
@@ -1635,23 +1916,109 @@
             yesRec.style.display = "block";
             document.getElementById("voiceRec").style.display = "block";
             textarea.classList.add("message_if_voice");
-            let langs = [ // from https://www.google.com/intl/en/chrome/demos/speech.html
-                ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
-                    ['cmn-Hans-HK', '普通话 (香港)'],
-                    ['cmn-Hant-TW', '中文 (台灣)'],
-                    ['yue-Hant-HK', '粵語 (香港)']],
-                ['English', ['en-US', 'United States'],
-                    ['en-GB', 'United Kingdom'],
-                    ['en-AU', 'Australia'],
-                    ['en-CA', 'Canada'],
-                    ['en-IN', 'India'],
-                    ['en-KE', 'Kenya'],
-                    ['en-TZ', 'Tanzania'],
-                    ['en-GH', 'Ghana'],
-                    ['en-NZ', 'New Zealand'],
-                    ['en-NG', 'Nigeria'],
-                    ['en-ZA', 'South Africa'],
-                    ['en-PH', 'Philippines']]
+            // from https://www.google.com/intl/en/chrome/demos/speech.html
+            let langs = [ 
+                    ['中文',            ['cmn-Hans-CN', '普通话 (中国大陆)'],
+                                        ['cmn-Hans-HK', '普通话 (香港)'],
+                                        ['cmn-Hant-TW', '中文 (台灣)'],
+                                        ['yue-Hant-HK', '粵語 (香港)']],
+                    ['日本語',           ['ja-JP']],
+                                        ['한국어',            ['ko-KR']],
+                    ['English',         ['en-AU', 'Australia'],
+                                        ['en-CA', 'Canada'],
+                                        ['en-IN', 'India'],
+                                        ['en-KE', 'Kenya'],
+                                        ['en-TZ', 'Tanzania'],
+                                        ['en-GH', 'Ghana'],
+                                        ['en-NZ', 'New Zealand'],
+                                        ['en-NG', 'Nigeria'],
+                                        ['en-ZA', 'South Africa'],
+                                        ['en-PH', 'Philippines'],
+                                        ['en-GB', 'United Kingdom'],
+                                        ['en-US', 'United States']],
+                    ['Afrikaans',       ['af-ZA']],
+                    ['አማርኛ',           ['am-ET']],
+                    ['Azərbaycanca',    ['az-AZ']],
+                    ['বাংলা',            ['bn-BD', 'বাংলাদেশ'],
+                                        ['bn-IN', 'ভারত']],
+                    ['Bahasa Indonesia',['id-ID']],
+                    ['Bahasa Melayu',   ['ms-MY']],
+                    ['Català',          ['ca-ES']],
+                    ['Čeština',         ['cs-CZ']],
+                    ['Dansk',           ['da-DK']],
+                    ['Deutsch',         ['de-DE']],
+                    ['Español',         ['es-AR', 'Argentina'],
+                                        ['es-BO', 'Bolivia'],
+                                        ['es-CL', 'Chile'],
+                                        ['es-CO', 'Colombia'],
+                                        ['es-CR', 'Costa Rica'],
+                                        ['es-EC', 'Ecuador'],
+                                        ['es-SV', 'El Salvador'],
+                                        ['es-ES', 'España'],
+                                        ['es-US', 'Estados Unidos'],
+                                        ['es-GT', 'Guatemala'],
+                                        ['es-HN', 'Honduras'],
+                                        ['es-MX', 'México'],
+                                        ['es-NI', 'Nicaragua'],
+                                        ['es-PA', 'Panamá'],
+                                        ['es-PY', 'Paraguay'],
+                                        ['es-PE', 'Perú'],
+                                        ['es-PR', 'Puerto Rico'],
+                                        ['es-DO', 'República Dominicana'],
+                                        ['es-UY', 'Uruguay'],
+                                        ['es-VE', 'Venezuela']],
+                    ['Euskara',         ['eu-ES']],
+                    ['Filipino',        ['fil-PH']],
+                    ['Français',        ['fr-FR']],
+                    ['Basa Jawa',       ['jv-ID']],
+                    ['Galego',          ['gl-ES']],
+                    ['ગુજરાતી',           ['gu-IN']],
+                    ['Hrvatski',        ['hr-HR']],
+                    ['IsiZulu',         ['zu-ZA']],
+                    ['Íslenska',        ['is-IS']],
+                    ['Italiano',        ['it-IT', 'Italia'],
+                                        ['it-CH', 'Svizzera']],
+                    ['ಕನ್ನಡ',             ['kn-IN']],
+                    ['ភាសាខ្មែរ',          ['km-KH']],
+                    ['Latviešu',        ['lv-LV']],
+                    ['Lietuvių',        ['lt-LT']],
+                    ['മലയാളം',          ['ml-IN']],
+                                       ['मराठी',             ['mr-IN']],
+                    ['Magyar',          ['hu-HU']],
+                    ['ລາວ',              ['lo-LA']],
+                    ['Nederlands',      ['nl-NL']],
+                    ['नेपाली भाषा',        ['ne-NP']],
+                    ['Norsk bokmål',    ['nb-NO']],
+                    ['Polski',          ['pl-PL']],
+                    ['Português',       ['pt-BR', 'Brasil'],
+                                        ['pt-PT', 'Portugal']],
+                    ['Română',          ['ro-RO']],
+                    ['සිංහල',          ['si-LK']],
+                    ['Slovenščina',     ['sl-SI']],
+                    ['Basa Sunda',      ['su-ID']],
+                    ['Slovenčina',      ['sk-SK']],
+                    ['Suomi',           ['fi-FI']],
+                    ['Svenska',         ['sv-SE']],
+                    ['Kiswahili',       ['sw-TZ', 'Tanzania'],
+                                        ['sw-KE', 'Kenya']],
+                    ['ქართული',       ['ka-GE']],
+                    ['Հայերեն',          ['hy-AM']],
+                    ['தமிழ்',            ['ta-IN', 'இந்தியா'],
+                                        ['ta-SG', 'சிங்கப்பூர்'],
+                                        ['ta-LK', 'இலங்கை'],
+                                        ['ta-MY', 'மலேசியா']],
+                    ['తెలుగు',           ['te-IN']],
+                    ['Tiếng Việt',      ['vi-VN']],
+                    ['Türkçe',          ['tr-TR']],
+                    ['اُردُو',            ['ur-PK', 'پاکستان'],
+                                        ['ur-IN', 'بھارت']],
+                    ['Ελληνικά',         ['el-GR']],
+                    ['български',         ['bg-BG']],
+                    ['Pусский',          ['ru-RU']],
+                    ['Српски',           ['sr-RS']],
+                    ['Українська',        ['uk-UA']],
+                    ['हिन्दी',             ['hi-IN']],
+                    ['ภาษาไทย',         ['th-TH']]
             ];
             langs.forEach((lang, i) => {
                 select_language.options.add(new Option(lang[0], i));
@@ -2069,8 +2436,8 @@
         const initVoiceSetting = (voices) => {
             let isOnline = existVoice >= 2;
             let voicesEle = document.getElementById("preSetSpeech");
-            // 支持中文和英文
-            voices = isOnline ? voices.filter(item => item.Locale.match(/^(zh-|en-)/)) : voices.filter(item => item.lang.match(/^(zh-|en-)/));
+            // 支持中文、英文和日文
+            voices = isOnline ? voices.filter(item => item.Locale.match(/^(ja-|zh-)/)) : voices.filter(item => item.lang.match(/^(ja-|zh-)/));
             if (isOnline) {
                 voices.map(item => {
                     item.name = item.FriendlyName || (`${item.DisplayName} Online (${item.VoiceType}) - ${item.LocaleName}`);
@@ -2078,8 +2445,8 @@
                 })
             }
             voices.sort((a, b) => {
-                if (a.lang.slice(0, 2) === b.lang.slice(0, 2)) return 0;
-                return (a.lang < b.lang) ? 1 : -1; // 中文在前"z"
+                if (a.lang.slice(0, 3) === b.lang.slice(0, 3)) return 0;
+                return (a.lang < b.lang) ? -1 : 1; // 中文在前"z"
             });
             voices.map(item => {
                 if (item.name.match(/^(Google |Microsoft )/)) {
@@ -2295,6 +2662,8 @@
     <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
     <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
     <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const API_URL = "v1/chat/completions";
         let loading = false;
@@ -2387,6 +2756,104 @@
             document.execCommand("copy");
             document.body.removeChild(input);
         }
+        
+        const outputClickMD = (idx) => {
+            const input = document.createElement("textarea");
+            input.value = data[idx].content;
+            document.body.appendChild(input);
+            let date = new Date();
+            let MDfileName = "问答 - markdown - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".md";
+            let textareas = document.getElementsByTagName("textarea");
+            let textarea_last = textareas[textareas.length - 1];
+            let textval = textarea_last.value;
+            let element = document.createElement('a'); //创建一个下载链接
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textval)); //将Markdown格式的内容作为链接的href属性
+            element.setAttribute('download', MDfileName); //.style.display = 'none';
+            document.body.appendChild(element); //将链接添加至网页中
+            element.click(); //模拟点击链接进行下载
+            document.body.removeChild(element); //下载完成后移除链接
+            document.body.removeChild(input);
+            };
+        
+        const saveClickTXT = (idx) => {
+            const input = document.createElement("textarea");
+            input.value = data[idx].content;
+            document.body.appendChild(input);
+            let date = new Date();
+            let TXTfileName = "问答 - txt - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".txt";
+            let textareas = document.getElementsByTagName("textarea");
+            let textarea_last = textareas[textareas.length - 1];
+            let textval = textarea_last.value;
+            let htmlval = md.render(textval);
+            let txtval = htmlval.replace(/<[^>]+>/g, '');
+            let element = document.createElement('a'); //创建一个下载链接
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textval)); //将Markdown格式的内容作为链接的href属性
+            element.setAttribute('download', TXTfileName); //.style.display = 'none';
+            document.body.appendChild(element); //将链接添加至网页中
+            element.click(); //模拟点击链接进行下载
+            document.body.removeChild(element); //下载完成后移除链接
+            document.body.removeChild(input);
+            };
+        
+        const saveClickPNG = () => {
+            let messages = document.querySelector('.messages');
+            let date = new Date();
+            let PNGfileName = "问答 - 当前截图 - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".png";
+            html2canvas(messages).then((canvas) => {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = PNGfileName;
+            link.href = image;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            });
+            };
+        
+        const saveClickALLPNG = () => {
+                  Swal.fire({
+                  title: '是否将所有对话截图?',
+                  text: "此操作将截取所有对话内容并下载",
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+            let chatlog = document.querySelector('#chatlog');
+            let date = new Date();
+            let ALLPNGfileName = "问答 - 全部截图 - " + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "  " + date.getHours() + "." + date.getMinutes() + "." + date.getSeconds() + ".png";
+            html2canvas(chatlog).then((canvas) => {
+            const image = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = ALLPNGfileName;
+            link.href = image;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            });
+                    Swal.fire({
+                  title: '已开始截取并准备下载',
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                });
+                notyf.success("已生成完整截图");}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
+            };
+        
         const enhanceCode = (render, options = {}) => (...args) => {
             /* args = [tokens, idx, options, env, slf] */
             const {
@@ -2478,11 +2945,36 @@
                     idxEle.classList.add("moreOptionHidden");
                     idx = systemRole ? idx + 1 : idx;
                     copyClickMd(idx);
-                    notyf.success("复制成功");
+                    
+                } else if (id === "outputMD") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    outputClickMD(idx);
+                    notyf.success("导出MarkDown成功");
+                } else if (id === "saveTXT") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    saveClickTXT(idx);
+                    notyf.success("导出TXT成功");
+                } else if (id === "savePNG") {
+                    idxEle.classList.add("moreOptionHidden");
+                    idx = systemRole ? idx + 1 : idx;
+                    saveClickPNG(idx);
+                    notyf.success("保存当前窗口截图成功");
                 } else if (id === "delMd") {
                     idxEle.classList.add("moreOptionHidden");
                     if (!loading) {
-                        if (confirmAction("是否删除此消息?")) {
+                 Swal.fire({
+                  title: '是否删除此消息？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) {
                             if (currentVoiceIdx) {
                                 if (currentVoiceIdx === idx) {endSpeak()}
                                 else if (currentVoiceIdx > idx) {currentVoiceIdx -= 1}
@@ -2491,7 +2983,24 @@
                             idx = systemRole ? idx + 1 : idx;
                             data.splice(idx, 1);
                             updateChats();
-                        }
+                    Swal.fire({
+                  title: '已删除',
+                  text: "此消息已被删除",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
                     }
                 } else if (id === "downAudio") {
                     idxEle.classList.add("moreOptionHidden");
@@ -2518,7 +3027,7 @@
                     <svg data-id="refreshMd" width="16" height="16" role="img"><title>继续</title><use xlink:href="#halfRefIcon" /></svg>
                     </div>`
             }
-            let optionWidth = existVoice >= 2 ? "96px" : "63px";
+            let optionWidth = existVoice >= 2 ? "196px" : "163px";
             mdOption.innerHTML += `<div class="moreOption" onmouseenter="moreOption(this)">
             <svg class="optionTrigger" width="16" height="16" role="img"><title>选项</title><use xlink:href="#optionIcon" /></svg>
             <div class="optionItems" style="width:${optionWidth};left:-${optionWidth}">` + (existVoice >= 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
@@ -2528,6 +3037,12 @@
             </div>
             <div data-id="copyMd" class="optionItem" title="复制">
                 <svg width="20" height="20"><use xlink:href="#copyIcon" /></svg>
+            </div><div data-id="outputMD" class="optionItem" title="导出MarkDown">
+                <svg width="20" height="20"><use xlink:href="#mdoutputIcon" /></svg>
+            </div><div data-id="saveTXT" class="optionItem" title="导出TXT">
+                <svg width="20" height="20"><use xlink:href="#savetxtIcon" /></svg>
+            </div><div data-id="savePNG" class="optionItem" title="保存当前窗口截图">
+                <svg width="20" height="20"><use xlink:href="#savepngIcon" /></svg>
             </div></div></div>`;
             if (existVoice) {
                 mdOption.innerHTML += `<div id="pronMd" class="readyVoice">
@@ -2559,7 +3074,18 @@
             updateChats();
         };
         const delChat = (idx) => {
-            if (confirmAction("是否删除会话?")) {
+                Swal.fire({
+                  title: '是否删除此会话？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) 
+                  {
                 endAll();
                 if (idx === activeChatIdx) {
                     if (idx - 1 >= 0) {
@@ -2577,7 +3103,24 @@
                 }
                 updateChats();
                 activeChat();
-            }
+                    Swal.fire({
+                  title: '已删除',
+                  text: "此会话已被删除",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
         };
         const endEditEvent = (ev) => {
             let activeEle = document.getElementById("activeChatEdit")
@@ -2721,7 +3264,17 @@
             })
         };
         document.getElementById("clearChat").onclick = () => {
-            if (confirmAction("是否清空所有会话?")) {
+                Swal.fire({
+                  title: '是否清空所有会话？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (result.isConfirmed) {
                 chatsData.length = 0;
                 chatListEle.innerHTML = "";
                 endAll();
@@ -2730,7 +3283,24 @@
                 chatEleAdd(activeChatIdx);
                 updateChats();
                 activeChat();
-            }
+                    Swal.fire({
+                  title: '已清空',
+                  text: "所有会话已被清空",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })
         };
         const endAll = () => {
             endSpeak();
@@ -3353,14 +3923,6 @@
                 speakEvent(voiceIns, force, end);
             }
         };
-        const confirmAction = (prompt) => {
-            if (window.confirm(prompt)) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
         let controller;
@@ -3514,6 +4076,7 @@
             sendBtnEle.disabled = bool;
             sendBtnEle.className = bool ? " loading" : "loaded";
             stopEle.style.display = bool ? "flex" : "none";
+            if(bool){document.querySelector('.messages').scrollTo({top:9999,behavior:'smooth'})};
             textInputEvent();
         }
         const stopLoading = (abort = true) => {
@@ -3575,14 +4138,40 @@
         sendBtnEle.onclick = genFunc;
         stopEle.onclick = stopLoading;
         document.getElementById("clearConv").onclick = () => {
-            if (!loading && confirmAction("是否清空会话?")) {
-                endSpeak();
-                if (systemRole) {data.length = 1}
-                else {data.length = 0}
-                chatlog.innerHTML = "";
-                updateChats();
-            }
-        }
+                Swal.fire({
+                  title: '是否清空所有对话？',
+                  text: "您将无法恢复此操作！",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消'
+                }).then((result) => {
+                  if (!loading && result.isConfirmed) 
+                  {endSpeak();
+                    if (systemRole) {data.length = 1}
+                    else {data.length = 0}
+                    chatlog.innerHTML = "";
+                    updateChats();
+                    Swal.fire({
+                  title: '已清空',
+                  text: "所有对话已被清空",
+                  icon: 'success',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                  else{
+                      Swal.fire({
+                  title: '已取消',
+                  text: "未进行任何操作",
+                  icon: 'error',
+                  showCancelButton: false,
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: '好的',
+                })}
+                })}
     </script>
     <link href="//cdn.staticfile.org/github-markdown-css/5.2.0/github-markdown-light.min.css" rel="stylesheet">
     <link href="//cdn.staticfile.org/highlight.js/11.7.0/styles/github.min.css" rel="stylesheet">
@@ -3607,6 +4196,72 @@
                 preEle.options.add(optionEle);
             }
         }).catch(e => { })
+    </script>
+    <script>
+        document.addEventListener('copy', function (event) {
+            let clipboardData = event.clipboardData || window.clipboardData;
+                if (!clipboardData) { return; }
+            let text = window.getSelection().toString();
+                if (text) {
+                notyf.success("复制成功");
+            }
+        });
+    </script>
+    <script>
+      var darkModeOBJ = {};
+      var getdarkMode = localStorage.getItem("ThemeSettings");
+      if(getdarkMode != null){
+        var darkmodeval = JSON.parse(getdarkMode).Darkmode;}
+    function daymode(){
+        document.documentElement.style.setProperty("--background",'#fff');
+        document.documentElement.style.setProperty("--color",'#000');
+        document.documentElement.style.setProperty("--request",'rgba(71,71,71,1)');
+        document.documentElement.style.setProperty("--requestc",'#fff');
+        document.documentElement.style.setProperty("--border",'#909090');
+        document.documentElement.style.setProperty("--menubar",'#f6f6f6');
+        document.documentElement.style.setProperty("--setcolor",'rgba(91,91,91,1)');
+        document.documentElement.style.setProperty("--setcolorh",'rgba(51,51,51,1)');
+        document.documentElement.style.setProperty("--setbackground","#e0e0e0");
+        document.documentElement.style.setProperty("--inputboeder","rgba(0,0,0,0.25)");
+        document.documentElement.style.setProperty("--box-shadow","rgba(0, 0, 0, 0.15)");
+        document.querySelector("#darkModeBtn #icon-2").classList.add("active"); 
+        document.querySelector("#darkModeBtn #icon-1").classList.remove("active");
+        darkModeOBJ.Darkmode = 'day';
+        localStorage.setItem("ThemeSettings",JSON.stringify(darkModeOBJ));
+    }
+    
+    function nightmode(){
+        document.documentElement.style.setProperty("--background",'#000');
+        document.documentElement.style.setProperty("--color",'#fff');
+        document.documentElement.style.setProperty("--request",'rgba(221,221,221,1)');
+        document.documentElement.style.setProperty("--requestc",'#000');
+        document.documentElement.style.setProperty("--border",'#c1c1c1');
+        document.documentElement.style.setProperty("--menubar",'#000');
+        document.documentElement.style.setProperty("--setcolor",'rgba(191,191,191,1)');
+        document.documentElement.style.setProperty("--setcolorh",'rgba(221,221,221,1)');
+        document.documentElement.style.setProperty("--setbackground","rgba(255,255,255,0.45)");
+        document.documentElement.style.setProperty("--inputboeder","rgba(255,255,255,0.25)");
+        document.documentElement.style.setProperty("--box-shadow","rgba(221, 221, 221, 0.5)");
+        document.querySelector("#darkModeBtn #icon-1").classList.add("active"); 
+        document.querySelector("#darkModeBtn #icon-2").classList.remove("active");
+        darkModeOBJ.Darkmode = 'night';
+        localStorage.setItem("ThemeSettings",JSON.stringify(darkModeOBJ));
+    }
+    
+    function DarkmodeSwitch() {
+      var getdarkMode = localStorage.getItem("ThemeSettings");
+      var darkmodeval = JSON.parse(getdarkMode).Darkmode;
+        if (darkmodeval == "day") {nightmode();} else {daymode();}
+      }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if(getdarkMode == null){daymode();}
+        else{ 
+            if(darkmodeval == "night"){
+                nightmode();}
+            else if(darkmodeval == "day"){daymode();}
+        }
+    });
     </script>
 </body>
 

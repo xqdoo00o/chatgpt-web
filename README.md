@@ -1,5 +1,50 @@
-# chatgpt-web
-Pure Javascript ChatGPT demo based on OpenAI API 
+# chatgpt-web-darkmode-and-other-upgrades
+Added some useful features based on chatgpt-web
+
+# 网页预览
+在线访问：[chatgpt-web-upgrades](https://taiyouweb.github.io/chatgpt-web-darkmode-and-other-upgrades/)网站。（使用需配置自定义API key和自定义接口）
+
+## 增加的功能
+- 1.基于原生js,增加了日夜模式的切换功能。
+
+- 2.基于sweetalert2.js，增加了美观的弹出确认窗口。
+
+- 3.基于html2canvas.js，增加了导出当前窗口截图，以及全部对话截图的功能。
+
+- 4.导出功能增强：新增markdown格式以及TXT格式导出内容。
+
+- 5.增加了滚动到顶部及底部的功能。
+
+
+## 优化的功能
+- 1.为了适配日夜模式，对整体样式做了适配，以更好的在日间和夜间良好的显示。
+   - 1.1.取消不必要的色彩，整体以黑白灰为基础进行全面的修改。
+   - 1.2.为了更鲜明的突出问答，用户的问题以黑底白字显示，文字处于中央；
+       chatgpt的回答以白底黑字为主体，代码块增加边框以便区分。
+   - 1.3.增加用户问题输入框边框以更好在黑夜模式下显示。
+   - 1.4.停止chatgpt输出内容的按钮，删除“停止”二字，样式做相应调整。
+- 2.在chatgpt开始输出内容的时候，将画面滚动到最底部，以便实时观看内容。
+  - （解决在页面内容过多时，重新进入页面时视窗会处于最顶端，输入问题后查看回答还需往下拉）
+- 3.增加复制弹窗功能，无论何种方式复制成功，都会弹出复制成功提示。
+- 4.隐藏了语音输入功能，由于此功能存在较大的使用限制，
+  且桌面及移动端设备自带的输入法已经具备了语音转文字功能，故做了隐藏，但代码做了保留。
+
+### 界面截图
+#### 日间样式
+![daymode](https://raw.githubusercontent.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrades/main/img/daymode.png)
+#### 夜间样式
+![nightmode](https://raw.githubusercontent.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrades/main/img/nightmode.png)
+#### 弹出框
+![popupbox](https://raw.githubusercontent.com/TaiYouWeb/chatgpt-web-darkmode-and-other-upgrades/main/img/popupbox.png)
+
+
+
+
+
+
+
+# 以下为原作者的readme。
+
 
 纯JS实现的ChatGPT项目，基于OpenAI API
 
