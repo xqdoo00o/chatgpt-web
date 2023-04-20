@@ -42,7 +42,7 @@
             top: 50%;
             overflow: hidden;
             transform: translate(-50%, -50%);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 4px 2px var(--box-shadow);
         }
 
         .top_menu {
@@ -4223,6 +4223,7 @@
         document.documentElement.style.setProperty("--setcolorh",'rgba(51,51,51,1)');
         document.documentElement.style.setProperty("--setbackground","#e0e0e0");
         document.documentElement.style.setProperty("--inputboeder","rgba(0,0,0,0.25)");
+        document.documentElement.style.setProperty("--box-shadow","rgba(0, 0, 0, 0.15)");
         document.querySelector("#darkModeBtn #icon-2").classList.add("active"); 
         document.querySelector("#darkModeBtn #icon-1").classList.remove("active");
         darkModeOBJ.Darkmode = 'day';
@@ -4240,6 +4241,7 @@
         document.documentElement.style.setProperty("--setcolorh",'rgba(221,221,221,1)');
         document.documentElement.style.setProperty("--setbackground","rgba(255,255,255,0.45)");
         document.documentElement.style.setProperty("--inputboeder","rgba(255,255,255,0.25)");
+        document.documentElement.style.setProperty("--box-shadow","rgba(221, 221, 221, 0.5)");
         document.querySelector("#darkModeBtn #icon-1").classList.add("active"); 
         document.querySelector("#darkModeBtn #icon-2").classList.remove("active");
         darkModeOBJ.Darkmode = 'night';
