@@ -5,7 +5,7 @@ Added some useful features based on chatgpt-web
 在线访问：[chatgpt-web-upgrades](https://taiyouweb.github.io/chatgpt-web-darkmode-and-other-upgrades/)网站。（使用需配置自定义API key和自定义接口）
 
 ## 增加的功能
-- 1.基于darkmode.js,增加了日夜模式的切换功能。
+- 1.基于原生js,增加了日夜模式的切换功能。
 
 - 2.基于sweetalert2.js，增加了美观的弹出确认窗口。
 
