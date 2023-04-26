@@ -2168,16 +2168,16 @@
     <script src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
     <script>
         const notyf = new Notyf({
-            position: {x: 'center', y: 'top'},
+            position: {x: "center", y: "top"},
             types: [
                 {
-                    type: 'success',
-                    background: '#99c959',
+                    type: "success",
+                    background: "#99c959",
                     duration: 2000,
                 },
                 {
-                    type: 'error',
-                    background: '#e15b64',
+                    type: "error",
+                    background: "#e15b64",
                     duration: 3000,
                 }
             ]
@@ -2260,8 +2260,8 @@
         let customDarkOut;
         const setDarkTheme = (is) => {
             let cssEle = document.getElementsByTagName("link")[0];
-            if (is) {document.documentElement.setAttribute('data-theme', 'dark')}
-            else {document.documentElement.removeAttribute('data-theme')}
+            if (is) {document.documentElement.setAttribute("data-theme", "dark")}
+            else {document.documentElement.removeAttribute("data-theme")}
             cssEle.href = cssEle.href.replace(is ? "light" : "dark", is ? "dark" : "light");
         }
         const handleAutoMode = (ele) => {
@@ -2447,8 +2447,8 @@
                     select_dialect.options.add(new Option(list[i][1], list[i][0]));
                     selectDiaOption.options.add(new Option(list[i][1], list[i][0]));
                 }
-                select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
-                selectDiaOption.parentElement.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+                select_dialect.style.visibility = list[1].length == 1 ? "hidden" : "visible";
+                selectDiaOption.parentElement.style.visibility = list[1].length == 1 ? "hidden" : "visible";
                 localStorage.setItem("voiceRecLang", select_dialect.value);
             };
             let localLangIdx = 0;
@@ -2483,7 +2483,7 @@
             let recRes = tempRes = "";
             let preRes, affRes;
             const resEvent = (event) => {
-                if (typeof (event.results) === 'undefined') {
+                if (typeof (event.results) === "undefined") {
                     toggleRecEvent();
                     return;
                 }
@@ -2508,13 +2508,13 @@
                 recing = false;
             };
             const errorEvent = (ev) => {
-                if (event.error === 'no-speech') {
+                if (event.error === "no-speech") {
                     notyf.error("未识别到语音，请调整设备后重试！")
                 }
-                if (event.error === 'audio-capture') {
+                if (event.error === "audio-capture") {
                     notyf.error("未找到麦克风，请确保已安装麦克风！")
                 }
-                if (event.error === 'not-allowed') {
+                if (event.error === "not-allowed") {
                     notyf.error("未允许使用麦克风的权限！")
                 }
                 endEvent();
@@ -2674,7 +2674,7 @@
                         signal,
                         method: "POST",
                         headers: {
-                            'Ocp-Apim-Subscription-Key': azureKey
+                            "Ocp-Apim-Subscription-Key": azureKey
                         }
                     }).then(response => {
                         response.text().then(text => {
@@ -2707,7 +2707,7 @@
                             fetch("https://" + azureRegion + ".tts.speech.microsoft.com/cognitiveservices/voices/list", {
                                 signal,
                                 headers: {
-                                    'Ocp-Apim-Subscription-Key': azureKey
+                                    "Ocp-Apim-Subscription-Key": azureKey
                                 }
                             }).then(response => {
                                 response.json().then(json => {
