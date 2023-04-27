@@ -61,6 +61,9 @@
             width: 100%;
             height: 100%;
             margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .chat_window {
@@ -71,10 +74,7 @@
             max-height: 888px;
             border-radius: 8px;
             background-color: var(--chat-back);
-            left: 50%;
-            top: 50%;
             overflow: hidden;
-            transform: translate(-50%, -50%);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
@@ -88,7 +88,8 @@
             z-index: 90;
             opacity: 0;
             visibility: hidden;
-            transition: all 120ms ease-in;
+            cursor: pointer;
+            transition: all 120ms ease-in-out;
         }
 
         @media screen and (max-width: 1188px) and (max-height: 888px) {
@@ -125,7 +126,7 @@
             .nav {
                 position: fixed !important;
                 left: -250px;
-                transition: left 150ms ease-in-out;
+                transition: left 120ms ease-in-out;
             }
 
             .show-nav .nav {
@@ -347,6 +348,8 @@
             position: absolute;
             top: 5px;
             right: 16px;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .m-mdic-copy-wrapper span.u-mdic-copy-code_lang {
@@ -497,21 +500,15 @@
             bottom: 10px;
             width: 47px;
             height: 47px;
-            font-size: 16px;
-            display: inline-block;
             border-radius: 3px;
             background: var(--text-color);
             border: none;
             color: #fff;
             cursor: pointer;
-            transition: all 0.2s linear;
         }
 
         .clearConv>svg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            margin: 0 auto;
         }
 
         .clearConv:hover {
@@ -850,16 +847,16 @@
             position: relative;
             height: 100%;
             visibility: hidden;
+            display: flex;
+            align-items: center;
         }
 
         .voiceCls>svg {
             color: var(--lighter-svg-color);
             display: block;
+            margin-left: 5px;
             position: relative;
             pointer-events: none;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
         }
 
         .voiceCls:hover>svg {
@@ -918,7 +915,6 @@
             width: 100%;
             padding: 5px 10px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
         }
 
@@ -960,10 +956,8 @@
         }
 
         #newFolder>svg {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            display: block;
+            margin: 8px auto;
         }
 
         .extraChat {
@@ -1364,6 +1358,7 @@
             left: -26px;
             z-index: 1;
             padding: 4px 4px;
+            -webkit-user-select: none;
             user-select: none;
             border-radius: 3px;
             background-color: var(--main-back);
@@ -1454,19 +1449,20 @@
             left: 0;
             bottom: 0;
             right: 0;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
             background: rgba(0, 0, 0, .4);
         }
 
         #sysContent {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: relative;
             background: var(--chat-back);
             color: var(--btn-color);
+            cursor: auto;
             width: 80%;
             max-width: 400px;
             border-radius: 4px;
-            transform: translate(-50%, -50%);
             padding: 12px 25px 20px 25px;
         }
 
@@ -1838,7 +1834,7 @@
                 </div>
                 <div class="title"><span>ChatGPT</span></div>
                 <div class="settings">
-                    <button class="setBtn" id="toggleFull" title="全屏/窗口">
+                    <button class="setBtn" id="toggleFull" title="全屏">
                         <svg width="30" height="30">
                             <use xlink:href="#expandFullIcon" />
                         </svg>
@@ -1960,7 +1956,7 @@
                         <div id="speechDetail">
                             <div>
                                 <div class="justSetLine">
-                                    <div>语音类型</div>
+                                    <div>选择语音</div>
                                     <div id="voiceTypes">
                                         <span data-type="0">提问语音</span>
                                         <span data-type="1" class="selVoiceType">回答语音</span>
@@ -2376,6 +2372,7 @@
             windowEle.classList.toggle("full_window");
             let isFull = windowEle.classList.contains("full_window");
             localStorage.setItem("fullWindow", isFull);
+            this.title = isFull ? "窗口" : "全屏";
             this.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", isFull ? "#collapseFullIcon" : "#expandFullIcon");
         }
         let localFull = localStorage.getItem("fullWindow");
@@ -2408,7 +2405,7 @@
         }
         document.getElementById("closeSet").onclick = endSet;
         document.getElementById("sysSetting").onclick = () => {
-            document.getElementById("sysDialog").style.display = "block";
+            document.getElementById("sysDialog").style.display = "flex";
             document.body.addEventListener("click", endSetEvent, true);
         }
         if (supportRec) {
@@ -3068,7 +3065,7 @@
     </script>
     <script src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
     <script src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.js"></script>
+    <script src="//cdn.staticfile.org/KaTeX/0.16.6/katex.min.js"></script>
     <script src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
     <script src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
     <script>
@@ -3137,13 +3134,13 @@
         };
         const copyClickCode = (ele) => {
             const input = document.createElement("textarea");
-            input.value = decodeURIComponent(escape(atob(ele.dataset.mdicContent)));
+            input.value = ele.parentElement.previousElementSibling.textContent;
             const nDom = ele.previousElementSibling;
             const nDelay = ele.dataset.mdicNotifyDelay;
             const cDom = nDom.previousElementSibling;
             document.body.appendChild(input);
             input.select();
-            input.setSelectionRange(0, 9999);
+            input.setSelectionRange(0, input.value.length);
             document.execCommand("copy");
             document.body.removeChild(input);
             if (nDom.style.display === "none") {
@@ -3160,7 +3157,7 @@
             input.value = data[idx].content;
             document.body.appendChild(input);
             input.select();
-            input.setSelectionRange(0, 9999);
+            input.setSelectionRange(0, input.value.length);
             document.execCommand("copy");
             document.body.removeChild(input);
         }
@@ -3173,7 +3170,6 @@
                 showCodeLanguage = true, // false | show code language
             } = options;
             const [tokens = {}, idx = 0] = args;
-            const cont = btoa(unescape(encodeURIComponent(tokens[idx].content || ""))); // base64 to avoid weird escape
             const originResult = render.apply(this, args);
             const langFrag = showCodeLanguage ? getCodeLangFragment(originResult) : "";
             const tpls = [
@@ -3182,7 +3178,6 @@
                 `<div class="u-mdic-copy-notify" style="display:none;">${successText}</div>`,
                 '<button ',
                 'class="u-mdic-copy-btn j-mdic-copy-btn" ',
-                `data-mdic-content="${cont}" `,
                 `data-mdic-notify-delay="${successTextDelay}" `,
                 `onclick="copyClickCode(this)">${btnText}</button>`,
                 '</div>',
@@ -4881,6 +4876,7 @@
                 data[idx].content = message;
                 resumeSend();
                 if (idx !== data.length - 1) {
+                    requestEle.children[1].textContent = message;
                     if (data[idx + 1].role !== "assistant") {
                         if (currentVoiceIdx !== void 0) {
                             if (currentVoiceIdx > idx) {currentVoiceIdx++}
@@ -4946,7 +4942,7 @@
         }
     </script>
     <link href="//cdn.staticfile.org/highlight.js/11.7.0/styles/github.min.css" rel="stylesheet">
-    <link href="//cdn.staticfile.org/KaTeX/0.16.4/katex.min.css" rel="stylesheet">
+    <link href="//cdn.staticfile.org/KaTeX/0.16.6/katex.min.css" rel="stylesheet">
     <link href="//npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css" rel="stylesheet">
     <script defer>
         const downRoleController = new AbortController();
