@@ -1465,11 +1465,13 @@
             background: var(--chat-back);
             color: var(--btn-color);
             cursor: auto;
-            max-height: 100vh;
+            max-height: 100%;
             width: 88%;
             max-width: 400px;
+            display: flex;
+            flex-direction: column;
             border-radius: 4px;
-            padding: 12px 20px 20px 20px;
+            padding: 12px 20px 16px 20px;
         }
 
         .sysTitle {
@@ -1479,7 +1481,7 @@
 
         .sysDetail {
             overflow-y: auto;
-            max-height: calc(100vh - 60px);
+            flex: 1;
             margin-top: 4px;
         }
 
@@ -1662,7 +1664,7 @@
             left: 0;
             top: 0;
             height: 12px;
-            min-width: 2px;
+            min-width: 1px;
             border-radius: 6px;
             background: #99c959;
         }
