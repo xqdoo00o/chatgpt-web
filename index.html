@@ -238,7 +238,8 @@
         .messages::-webkit-scrollbar,
         #chatlog .markdown-body>pre::-webkit-scrollbar,
         #setDialog::-webkit-scrollbar,
-        .allList::-webkit-scrollbar {
+        .allList::-webkit-scrollbar,
+        .sysDetail::-webkit-scrollbar {
             width: 10px;
             height: 10px;
         }
@@ -246,7 +247,8 @@
         .messages::-webkit-scrollbar-track,
         #chatlog .markdown-body>pre::-webkit-scrollbar-track,
         #setDialog::-webkit-scrollbar-track,
-        .allList::-webkit-scrollbar-track {
+        .allList::-webkit-scrollbar-track,
+        .sysDetail::-webkit-scrollbar-track {
             background-clip: padding-box;
             background: transparent;
             border: none;
@@ -255,14 +257,16 @@
         .messages::-webkit-scrollbar-corner,
         #chatlog .markdown-body>pre::-webkit-scrollbar-corner,
         #setDialog::-webkit-scrollbar-corner,
-        .allList::-webkit-scrollbar-corner {
+        .allList::-webkit-scrollbar-corner,
+        .sysDetail::-webkit-scrollbar-corner {
             background-color: transparent;
         }
 
         .messages::-webkit-scrollbar-thumb,
         #chatlog .markdown-body>pre::-webkit-scrollbar-thumb,
         #setDialog::-webkit-scrollbar-thumb,
-        .allList::-webkit-scrollbar-thumb {
+        .allList::-webkit-scrollbar-thumb,
+        .sysDetail::-webkit-scrollbar-thumb {
             background-color: rgba(0, 0, 0, 0.1);
             background-clip: padding-box;
             border: solid transparent;
@@ -272,7 +276,8 @@
         .messages::-webkit-scrollbar-thumb:hover,
         #chatlog .markdown-body>pre::-webkit-scrollbar-thumb:hover,
         #setDialog::-webkit-scrollbar-thumb:hover,
-        .allList::-webkit-scrollbar-thumb:hover {
+        .allList::-webkit-scrollbar-thumb:hover,
+        .sysDetail::-webkit-scrollbar-thumb:hover {
             background-color: rgba(0, 0, 0, 0.4);
         }
 
@@ -1460,6 +1465,7 @@
             background: var(--chat-back);
             color: var(--btn-color);
             cursor: auto;
+            max-height: 100vh;
             width: 88%;
             max-width: 400px;
             border-radius: 4px;
@@ -1471,12 +1477,18 @@
             font-weight: bold;
         }
 
+        .sysDetail {
+            overflow-y: auto;
+            max-height: calc(100vh - 60px);
+            margin-top: 4px;
+        }
+
         #closeSet {
             position: absolute;
             right: 0px;
             top: 0px;
             cursor: pointer;
-            padding: 12px;
+            padding: 10px 14px;
         }
 
         #closeSet:hover {
@@ -2153,136 +2165,138 @@
                 </svg>
             </div>
             <div class="sysTitle">设置</div>
-            <div class="setContent">
-                <div class="setTitle">OpenAI接口</div>
-                <div class="setDetail inputDetail">
-                    <input class="inputTextClass" placeholder="https://api.openai.com/" id="apiHostInput" />
-                </div>
-            </div>
-            <div class="setContent">
-                <div class="setTitle">API密钥</div>
-                <div class="setDetail inputDetail apiDetail">
-                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
-                        style="-webkit-text-security: disc;" />
-                    <div id="checkBillBtn" class="loaded">
-                        <span>检查API额度</span>
-                        <svg style="margin:0 auto;height:34px;width:100%;">
-                            <use xlink:href="#loadingIcon"></use>
-                        </svg>
+            <div class="sysDetail">
+                <div class="setContent">
+                    <div class="setTitle">OpenAI接口</div>
+                    <div class="setDetail inputDetail">
+                        <input class="inputTextClass" placeholder="https://api.openai.com/" id="apiHostInput" />
                     </div>
                 </div>
-            </div>
-            <div class="setContent" id="quotaContent" style="display: none;">
-                <div class="setTitle" id="quotaTitle">免费额度</div>
-                <div class="setDetail">
-                    <div class="progressBar">
-                        <div class="nowProgress" id="usedQuotaBar"></div>
-                    </div>
-                    <div class="progressDetail">
-                        <div><span>已用 </span><span id="usedQuota"></span></div>
-                        <div><span>可用 </span><span id="availableQuota"></span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="setContent">
-                <div class="setTitle">主题</div>
-                <div class="setDetail themeDetail lightTheme" id="setLight">
-                    <div title="深色">
-                        <svg width="24" height="24">
-                            <use xlink:href="#darkThemeIcon"></use>
-                        </svg>
-                    </div>
-                    <div title="浅色">
-                        <svg width="24" height="24">
-                            <use xlink:href="#lightThemeIcon"></use>
-                        </svg>
-                    </div>
-                    <div title="自动">
-                        <svg width="24" height="24">
-                            <use xlink:href="#autoThemeIcon"></use>
-                        </svg>
+                <div class="setContent">
+                    <div class="setTitle">API密钥</div>
+                    <div class="setDetail inputDetail apiDetail">
+                        <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
+                            style="-webkit-text-security: disc;" />
+                        <div id="checkBillBtn" class="loaded">
+                            <span>检查API额度</span>
+                            <svg style="margin:0 auto;height:34px;width:100%;">
+                                <use xlink:href="#loadingIcon"></use>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="setContent" id="autoDetail" style="display: none;font-size: 15px;">
-                <div class="setDetail">
-                    <div>
-                        <input type="radio" id="autoTheme1" name="autoLight" value="1" checked />
-                        <label for="autoTheme1">跟随系统</label>
+                <div class="setContent" id="quotaContent" style="display: none;">
+                    <div class="setTitle" id="quotaTitle">免费额度</div>
+                    <div class="setDetail">
+                        <div class="progressBar">
+                            <div class="nowProgress" id="usedQuotaBar"></div>
+                        </div>
+                        <div class="progressDetail">
+                            <div><span>已用 </span><span id="usedQuota"></span></div>
+                            <div><span>可用 </span><span id="availableQuota"></span></div>
+                        </div>
                     </div>
-                    <div style="margin-top: 8px;">
-                        <input type="radio" id="autoTheme0" name="autoLight" value="0" />
-                        <label for="autoTheme0">自定义深色主题时间</label>
+                </div>
+                <div class="setContent">
+                    <div class="setTitle">主题</div>
+                    <div class="setDetail themeDetail lightTheme" id="setLight">
+                        <div title="深色">
+                            <svg width="24" height="24">
+                                <use xlink:href="#darkThemeIcon"></use>
+                            </svg>
+                        </div>
+                        <div title="浅色">
+                            <svg width="24" height="24">
+                                <use xlink:href="#lightThemeIcon"></use>
+                            </svg>
+                        </div>
+                        <div title="自动">
+                            <svg width="24" height="24">
+                                <use xlink:href="#autoThemeIcon"></use>
+                            </svg>
+                        </div>
                     </div>
-                    <div id="customAutoSet" style="display: none; margin-top: 10px;">
+                </div>
+                <div class="setContent" id="autoDetail" style="display: none;font-size: 15px;">
+                    <div class="setDetail">
                         <div>
-                            <label for="customStart">开始时间</label>
-                            <input type="time" id="customStart" required>
+                            <input type="radio" id="autoTheme1" name="autoLight" value="1" checked />
+                            <label for="autoTheme1">跟随系统</label>
                         </div>
-                        <div style="margin-top: 10px;">
-                            <label for="customEnd">结束时间</label>
-                            <input type="time" id="customEnd" required>
+                        <div style="margin-top: 8px;">
+                            <input type="radio" id="autoTheme0" name="autoLight" value="0" />
+                            <label for="autoTheme0">自定义深色主题时间</label>
+                        </div>
+                        <div id="customAutoSet" style="display: none; margin-top: 10px;">
+                            <div>
+                                <label for="customStart">开始时间</label>
+                                <input type="time" id="customStart" required>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <label for="customEnd">结束时间</label>
+                                <input type="time" id="customEnd" required>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="setContent">
-                <div class="setTitle">会话</div>
-                <div class="setDetail dataDetail">
-                    <div id="exportChat">
-                        <svg width="24" height="24">
-                            <use xlink:href="#exportIcon" />
-                        </svg>
-                        <span>导出</span>
-                    </div>
-                    <label id="importChat" for="importChatInput">
-                        <svg width="24" height="24">
-                            <use xlink:href="#importIcon" />
-                        </svg>
-                        <span>导入</span>
-                    </label>
-                    <input type="file" style="display: none;" id="importChatInput" accept="application/json" />
-                    <div id="clearChatSet">
-                        <svg width="24" height="24">
-                            <use xlink:href="#clearAllIcon" />
-                        </svg>
-                        <span>清空</span>
-                    </div>
-                </div>
-            </div>
-            <div class="setContent">
-                <div class="setTitle">设置</div>
-                <div class="setDetail dataDetail">
-                    <div id="exportSet">
-                        <svg width="24" height="24">
-                            <use xlink:href="#exportSetIcon" />
-                        </svg>
-                        <span>导出</span>
-                    </div>
-                    <label id="importSet" for="importSetInput">
-                        <svg width="24" height="24">
-                            <use xlink:href="#importSetIcon" />
-                        </svg>
-                        <span>导入</span>
-                    </label>
-                    <input type="file" style="display: none;" id="importSetInput" accept="application/json" />
-                    <div id="resetSet">
-                        <svg width="22" height="22" style="transform: scaleX(-1)">
-                            <use xlink:href="#refreshIcon" />
-                        </svg>
-                        <span>重置</span>
+                <div class="setContent">
+                    <div class="setTitle">会话</div>
+                    <div class="setDetail dataDetail">
+                        <div id="exportChat">
+                            <svg width="24" height="24">
+                                <use xlink:href="#exportIcon" />
+                            </svg>
+                            <span>导出</span>
+                        </div>
+                        <label id="importChat" for="importChatInput">
+                            <svg width="24" height="24">
+                                <use xlink:href="#importIcon" />
+                            </svg>
+                            <span>导入</span>
+                        </label>
+                        <input type="file" style="display: none;" id="importChatInput" accept="application/json" />
+                        <div id="clearChatSet">
+                            <svg width="24" height="24">
+                                <use xlink:href="#clearAllIcon" />
+                            </svg>
+                            <span>清空</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="setContent">
-                <div class="setTitle">本地存储</div>
-                <div class="setDetail">
-                    <div class="progressBar">
-                        <div class="nowProgress" id="usedStorageBar"></div>
+                <div class="setContent">
+                    <div class="setTitle">设置</div>
+                    <div class="setDetail dataDetail">
+                        <div id="exportSet">
+                            <svg width="24" height="24">
+                                <use xlink:href="#exportSetIcon" />
+                            </svg>
+                            <span>导出</span>
+                        </div>
+                        <label id="importSet" for="importSetInput">
+                            <svg width="24" height="24">
+                                <use xlink:href="#importSetIcon" />
+                            </svg>
+                            <span>导入</span>
+                        </label>
+                        <input type="file" style="display: none;" id="importSetInput" accept="application/json" />
+                        <div id="resetSet">
+                            <svg width="22" height="22" style="transform: scaleX(-1)">
+                                <use xlink:href="#refreshIcon" />
+                            </svg>
+                            <span>重置</span>
+                        </div>
                     </div>
-                    <div class="progressDetail">
-                        <div><span>已用 </span><span id="usedStorage"></span></div>
-                        <div><span>可用 </span><span id="availableStorage"></span></div>
+                </div>
+                <div class="setContent">
+                    <div class="setTitle">本地存储</div>
+                    <div class="setDetail">
+                        <div class="progressBar">
+                            <div class="nowProgress" id="usedStorageBar"></div>
+                        </div>
+                        <div class="progressDetail">
+                            <div><span>已用 </span><span id="usedStorage"></span></div>
+                            <div><span>可用 </span><span id="availableStorage"></span></div>
+                        </div>
                     </div>
                 </div>
             </div>
