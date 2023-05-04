@@ -7,7 +7,7 @@ Pure Javascript ChatGPT demo based on OpenAI API
 
 支持复制/更新/刷新会话，语音输入，朗读等功能，以及众多[自定义选项](#自定义选项)。
 
-支持搜索会话，深色模式，自定义头像等。
+支持搜索会话，深色模式，自定义头像，API额度显示等。
 
 参考项目: 
 [markdown-it](https://github.com/markdown-it/markdown-it), 
@@ -29,7 +29,7 @@ Pure Javascript ChatGPT demo based on OpenAI API
 ___
 - **仅部署HTML**
 
-    使用任意http server部署index.html。打开网页设置，填写自定义API Key，自定义接口，当本地
+    使用任意http server部署index.html。打开网页设置，填写API密钥，填写OpenAI接口，当本地
 
     - 可正常访问`api.openai.com`，填写`https://api.openai.com/`
 
@@ -97,13 +97,15 @@ ___
 
 ## 自定义选项
 
-- 左边栏支持，搜索会话，新建/重命名/删除(会话/文件夹)，浅色/深色/自动主题模式，导出数据，导入数据，清空所有数据，自定义头像。
+- 左边栏支持，搜索会话，新建/重命名/删除(会话/文件夹)，浅色/深色/自动主题模式，导出/导入/重置会话和设置数据，显示API额度，显示本地存储。
 
 - 可选GPT模型，默认gpt-3.5，当前使用gpt-4模型需通过openai的表单申请。
 
-- 可选自定义接口地址，使用nginx或caddy部署反代后可以不设置。
+- 可选OpenAI接口地址，使用nginx或caddy部署反代后可以不设置。
 
-- 可选API key，默认不设置，**如需网页设置自定义API key使用，反代接口最好配置https，公网以http方式明文传输API key极易被中间人截获。**
+- 可选API密钥，默认不设置，**如需网页设置自定义API key使用，反代接口最好配置https，公网以http方式明文传输API key极易被中间人截获。**
+
+- 可选用户头像，可修改为任意图片地址。
 
 - 可选系统角色，默认不开启，有四个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
 - 可选角色性格，默认灵活创新，对应接口文档的top_p参数。

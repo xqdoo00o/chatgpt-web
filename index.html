@@ -1069,7 +1069,7 @@
         }
 
         .dragingChat {
-            background: var(--lighter-svg-color);
+            background: var(--lighter-active-color);
         }
 
         .expandFolder>.headLi>svg {
@@ -1460,10 +1460,10 @@
             background: var(--chat-back);
             color: var(--btn-color);
             cursor: auto;
-            width: 80%;
+            width: 88%;
             max-width: 400px;
             border-radius: 4px;
-            padding: 12px 25px 20px 25px;
+            padding: 12px 20px 20px 20px;
         }
 
         .sysTitle {
@@ -1473,20 +1473,22 @@
 
         #closeSet {
             position: absolute;
-            right: 6px;
-            top: 6px;
+            right: 0px;
+            top: 0px;
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            padding: 8px;
+            padding: 12px;
+        }
+
+        #closeSet:hover {
+            color: var(--black-color);
         }
 
         .setContent {
-            margin-top: 12px;
+            margin-top: 8px;
         }
 
         .setTitle {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: bold;
         }
 
@@ -1496,8 +1498,6 @@
 
         .dataDetail {
             display: flex;
-            width: 180px;
-            justify-content: space-between;
         }
 
         .dataDetail svg {
@@ -1508,7 +1508,8 @@
         .dataDetail>label {
             border-radius: 3px;
             text-align: center;
-            padding: 6px 10px;
+            padding: 6px 8px;
+            margin-right: 12px;
             color: var(--btn-color);
             font-size: 15px;
             cursor: pointer;
@@ -1524,25 +1525,53 @@
 
         .avatarDetail {
             display: flex;
+            margin-top: 2px;
         }
 
-        .avatarDetail input {
+        .avatarDetail img {
+            border-radius: 2px;
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            margin-right: 10px;
+            margin-top: 2px;
+        }
+
+        .inputDetail input {
             outline: none;
             border-radius: 3px;
             padding-left: 8px;
             font-size: 15px;
-            width: calc(100% - 44px);
-            height: 36px;
+            width: 100%;
+            height: 34px;
             border: 1px solid rgba(0, 0, 0, .3);
             background: var(--chat-back);
             color: var(--chat-text-color);
         }
 
-        .avatarDetail img {
-            border-radius: 2px;
-            width: 36px;
-            height: 36px;
-            margin-right: 8px;
+        .apiDetail {
+            display: flex;
+        }
+
+        .apiDetail input {
+            flex: 1;
+        }
+
+        .apiDetail>div {
+            margin-left: 6px;
+            background: var(--lighter-active-color);
+            border-radius: 3px;
+            width: 108px;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 2px;
+            height: 34px;
+            line-height: 34px;
+            font-size: 15px;
+        }
+
+        .apiDetail>div:hover {
+            background: var(--active-btn);
         }
 
         .themeDetail {
@@ -1601,6 +1630,35 @@
 
         #customAutoSet label {
             margin-right: 8px;
+        }
+
+        .progressBar {
+            position: relative;
+            width: 100%;
+            height: 12px;
+            border-radius: 6px;
+            background: var(--active-btn);
+            overflow: hidden;
+        }
+
+        .expiredBar {
+            background: #e15b64;
+        }
+
+        .nowProgress {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 12px;
+            min-width: 2px;
+            border-radius: 6px;
+            background: #99c959;
+        }
+
+        .progressDetail {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
         }
     </style>
 </head>
@@ -1762,6 +1820,16 @@
                         d="M37.5324 16.8707C37.9808 15.5241 38.1363 14.0974 37.9886 12.6859C37.8409 11.2744 37.3934 9.91076 36.676 8.68622C35.6126 6.83404 33.9882 5.3676 32.0373 4.4985C30.0864 3.62941 27.9098 3.40259 25.8215 3.85078C24.8796 2.7893 23.7219 1.94125 22.4257 1.36341C21.1295 0.785575 19.7249 0.491269 18.3058 0.500197C16.1708 0.495044 14.0893 1.16803 12.3614 2.42214C10.6335 3.67624 9.34853 5.44666 8.6917 7.47815C7.30085 7.76286 5.98686 8.3414 4.8377 9.17505C3.68854 10.0087 2.73073 11.0782 2.02839 12.312C0.956464 14.1591 0.498905 16.2988 0.721698 18.4228C0.944492 20.5467 1.83612 22.5449 3.268 24.1293C2.81966 25.4759 2.66413 26.9026 2.81182 28.3141C2.95951 29.7256 3.40701 31.0892 4.12437 32.3138C5.18791 34.1659 6.8123 35.6322 8.76321 36.5013C10.7141 37.3704 12.8907 37.5973 14.9789 37.1492C15.9208 38.2107 17.0786 39.0587 18.3747 39.6366C19.6709 40.2144 21.0755 40.5087 22.4946 40.4998C24.6307 40.5054 26.7133 39.8321 28.4418 38.5772C30.1704 37.3223 31.4556 35.5506 32.1119 33.5179C33.5027 33.2332 34.8167 32.6547 35.9659 31.821C37.115 30.9874 38.0728 29.9178 38.7752 28.684C39.8458 26.8371 40.3023 24.6979 40.0789 22.5748C39.8556 20.4517 38.9639 18.4544 37.5324 16.8707ZM22.4978 37.8849C20.7443 37.8874 19.0459 37.2733 17.6994 36.1501C17.7601 36.117 17.8666 36.0586 17.936 36.0161L25.9004 31.4156C26.1003 31.3019 26.2663 31.137 26.3813 30.9378C26.4964 30.7386 26.5563 30.5124 26.5549 30.2825V19.0542L29.9213 20.998C29.9389 21.0068 29.9541 21.0198 29.9656 21.0359C29.977 21.052 29.9842 21.0707 29.9867 21.0902V30.3889C29.9842 32.375 29.1946 34.2791 27.7909 35.6841C26.3872 37.0892 24.4838 37.8806 22.4978 37.8849ZM6.39227 31.0064C5.51397 29.4888 5.19742 27.7107 5.49804 25.9832C5.55718 26.0187 5.66048 26.0818 5.73461 26.1244L13.699 30.7248C13.8975 30.8408 14.1233 30.902 14.3532 30.902C14.583 30.902 14.8088 30.8408 15.0073 30.7248L24.731 25.1103V28.9979C24.7321 29.0177 24.7283 29.0376 24.7199 29.0556C24.7115 29.0736 24.6988 29.0893 24.6829 29.1012L16.6317 33.7497C14.9096 34.7416 12.8643 35.0097 10.9447 34.4954C9.02506 33.9811 7.38785 32.7263 6.39227 31.0064ZM4.29707 13.6194C5.17156 12.0998 6.55279 10.9364 8.19885 10.3327C8.19885 10.4013 8.19491 10.5228 8.19491 10.6071V19.808C8.19351 20.0378 8.25334 20.2638 8.36823 20.4629C8.48312 20.6619 8.64893 20.8267 8.84863 20.9404L18.5723 26.5542L15.206 28.4979C15.1894 28.5089 15.1703 28.5155 15.1505 28.5173C15.1307 28.5191 15.1107 28.516 15.0924 28.5082L7.04046 23.8557C5.32135 22.8601 4.06716 21.2235 3.55289 19.3046C3.03862 17.3858 3.30624 15.3413 4.29707 13.6194ZM31.955 20.0556L22.2312 14.4411L25.5976 12.4981C25.6142 12.4872 25.6333 12.4805 25.6531 12.4787C25.6729 12.4769 25.6928 12.4801 25.7111 12.4879L33.7631 17.1364C34.9967 17.849 36.0017 18.8982 36.6606 20.1613C37.3194 21.4244 37.6047 22.849 37.4832 24.2684C37.3617 25.6878 36.8382 27.0432 35.9743 28.1759C35.1103 29.3086 33.9415 30.1717 32.6047 30.6641C32.6047 30.5947 32.6047 30.4733 32.6047 30.3889V21.188C32.6066 20.9586 32.5474 20.7328 32.4332 20.5338C32.319 20.3348 32.154 20.1698 31.955 20.0556ZM35.3055 15.0128C35.2464 14.9765 35.1431 14.9142 35.069 14.8717L27.1045 10.2712C26.906 10.1554 26.6803 10.0943 26.4504 10.0943C26.2206 10.0943 25.9948 10.1554 25.7963 10.2712L16.0726 15.8858V11.9982C16.0715 11.9783 16.0753 11.9585 16.0837 11.9405C16.0921 11.9225 16.1048 11.9068 16.1207 11.8949L24.1719 7.25025C25.4053 6.53903 26.8158 6.19376 28.2383 6.25482C29.6608 6.31589 31.0364 6.78077 32.2044 7.59508C33.3723 8.40939 34.2842 9.53945 34.8334 10.8531C35.3826 12.1667 35.5464 13.6095 35.3055 15.0128ZM14.2424 21.9419L10.8752 19.9981C10.8576 19.9893 10.8423 19.9763 10.8309 19.9602C10.8195 19.9441 10.8122 19.9254 10.8098 19.9058V10.6071C10.8107 9.18295 11.2173 7.78848 11.9819 6.58696C12.7466 5.38544 13.8377 4.42659 15.1275 3.82264C16.4173 3.21869 17.8524 2.99464 19.2649 3.1767C20.6775 3.35876 22.0089 3.93941 23.1034 4.85067C23.0427 4.88379 22.937 4.94215 22.8668 4.98473L14.9024 9.58517C14.7025 9.69878 14.5366 9.86356 14.4215 10.0626C14.3065 10.2616 14.2466 10.4877 14.2479 10.7175L14.2424 21.9419ZM16.071 17.9991L20.4018 15.4978L24.7325 17.9975V22.9985L20.4018 25.4983L16.071 22.9985V17.9991Z">
                     </path>
                 </symbol>
+                <symbol viewBox="0 0 24 24" id="importSetIcon">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m12 21l-8-4.5v-9L12 3l8 4.5V12m-8 0l8-4.5M12 12v9m0-9L4 7.5M22 18h-7m3-3l-3 3l3 3" />
+                </symbol>
+                <symbol viewBox="0 0 24 24" id="exportSetIcon">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m12 21l-8-4.5v-9L12 3l8 4.5V12m-8 0l8-4.5M12 12v9m0-9L4 7.5M15 18h7m-3-3l3 3l-3 3" />
+                </symbol>
         </svg>
     </div>
     <div id="loadMask">
@@ -1802,7 +1870,7 @@
             </div>
             <div class="navFooter">
                 <div class="navFunc">
-                    <div id="clearChat" title="清空所有">
+                    <div id="clearChat" title="清空">
                         <svg width="24" height="24">
                             <use xlink:href="#clearAllIcon" />
                         </svg>
@@ -1864,13 +1932,11 @@
                             </select>
                         </div>
                         <div>
-                            <div>自定义接口</div>
-                            <input class="inputTextClass" placeholder="https://example.com/" id="apiHostInput" />
-                        </div>
-                        <div>
-                            <div>自定义API key</div>
-                            <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
-                                style="-webkit-text-security: disc;" />
+                            <div>用户头像</div>
+                            <div class="avatarDetail">
+                                <img id="setAvatarPre" src="" />
+                                <input class="inputTextClass" type="text" id="setAvatar" />
+                            </div>
                         </div>
                         <div>
                             <div class="justSetLine presetSelect">
@@ -1916,7 +1982,7 @@
                         <div>
                             <span class="inlineTitle">连续对话</span>
                             <label class="switch-slide">
-                                <input type="checkbox" id="enableCont" checked hidden />
+                                <input type="checkbox" id="enableCont" checked="true" hidden />
                                 <label for="enableCont" class="switch-slide-label"></label>
                             </label>
                         </div>
@@ -2004,7 +2070,7 @@
                             <div>
                                 <span class="inlineTitle">连续朗读</span>
                                 <label class="switch-slide">
-                                    <input type="checkbox" id="enableContVoice" checked hidden />
+                                    <input type="checkbox" id="enableContVoice" checked="true" hidden />
                                     <label for="enableContVoice" class="switch-slide-label"></label>
                                 </label>
                             </div>
@@ -2086,30 +2152,36 @@
                     <use xlink:href="#closeIcon" />
                 </svg>
             </div>
-            <div class="sysTitle">系统设置</div>
+            <div class="sysTitle">设置</div>
             <div class="setContent">
-                <div class="setTitle">头像</div>
-                <div class="setDetail avatarDetail">
-                    <img id="setAvatarPre" src="" />
-                    <input type="text" id="setAvatar" />
+                <div class="setTitle">OpenAI接口</div>
+                <div class="setDetail inputDetail">
+                    <input class="inputTextClass" placeholder="https://api.openai.com/" id="apiHostInput" />
                 </div>
             </div>
             <div class="setContent">
-                <div class="setTitle">数据</div>
-                <div class="setDetail dataDetail">
-                    <div id="exportChat">
-                        <svg width="24" height="24">
-                            <use xlink:href="#exportIcon" />
+                <div class="setTitle">API密钥</div>
+                <div class="setDetail inputDetail apiDetail">
+                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
+                        style="-webkit-text-security: disc;" />
+                    <div id="checkBillBtn" class="loaded">
+                        <span>检查API额度</span>
+                        <svg style="margin:0 auto;height:34px;width:100%;">
+                            <use xlink:href="#loadingIcon"></use>
                         </svg>
-                        <span>导出</span>
                     </div>
-                    <label id="importChat" for="importChatInput">
-                        <svg width="24" height="24">
-                            <use xlink:href="#importIcon" />
-                        </svg>
-                        <span>导入</span>
-                    </label>
-                    <input type="file" style="display: none;" id="importChatInput" accept="application/json" />
+                </div>
+            </div>
+            <div class="setContent" id="quotaContent" style="display: none;">
+                <div class="setTitle" id="quotaTitle">免费额度</div>
+                <div class="setDetail">
+                    <div class="progressBar">
+                        <div class="nowProgress" id="usedQuotaBar"></div>
+                    </div>
+                    <div class="progressDetail">
+                        <div><span>已用 </span><span id="usedQuota"></span></div>
+                        <div><span>可用 </span><span id="availableQuota"></span></div>
+                    </div>
                 </div>
             </div>
             <div class="setContent">
@@ -2132,28 +2204,85 @@
                     </div>
                 </div>
             </div>
-            <div class="setContent" id="autoDetail" style="display: none;">
-                <div class="setTitle">自动主题模式</div>
+            <div class="setContent" id="autoDetail" style="display: none;font-size: 15px;">
                 <div class="setDetail">
                     <div>
-                        <input type="radio" id="autoTheme1" onchange="handleAutoMode(this)" name="autoLight" value="1"
-                            checked />
+                        <input type="radio" id="autoTheme1" name="autoLight" value="1" checked />
                         <label for="autoTheme1">跟随系统</label>
                     </div>
                     <div style="margin-top: 8px;">
-                        <input type="radio" id="autoTheme0" onchange="handleAutoMode(this)" name="autoLight"
-                            value="0" />
+                        <input type="radio" id="autoTheme0" name="autoLight" value="0" />
                         <label for="autoTheme0">自定义深色主题时间</label>
                     </div>
                     <div id="customAutoSet" style="display: none; margin-top: 10px;">
                         <div>
                             <label for="customStart">开始时间</label>
-                            <input type="time" id="customStart" onchange="handleAutoTime(this,0)" required>
+                            <input type="time" id="customStart" required>
                         </div>
                         <div style="margin-top: 10px;">
                             <label for="customEnd">结束时间</label>
-                            <input type="time" id="customEnd" onchange="handleAutoTime(this,1)" required>
+                            <input type="time" id="customEnd" required>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="setContent">
+                <div class="setTitle">会话</div>
+                <div class="setDetail dataDetail">
+                    <div id="exportChat">
+                        <svg width="24" height="24">
+                            <use xlink:href="#exportIcon" />
+                        </svg>
+                        <span>导出</span>
+                    </div>
+                    <label id="importChat" for="importChatInput">
+                        <svg width="24" height="24">
+                            <use xlink:href="#importIcon" />
+                        </svg>
+                        <span>导入</span>
+                    </label>
+                    <input type="file" style="display: none;" id="importChatInput" accept="application/json" />
+                    <div id="clearChatSet">
+                        <svg width="24" height="24">
+                            <use xlink:href="#clearAllIcon" />
+                        </svg>
+                        <span>清空</span>
+                    </div>
+                </div>
+            </div>
+            <div class="setContent">
+                <div class="setTitle">设置</div>
+                <div class="setDetail dataDetail">
+                    <div id="exportSet">
+                        <svg width="24" height="24">
+                            <use xlink:href="#exportSetIcon" />
+                        </svg>
+                        <span>导出</span>
+                    </div>
+                    <label id="importSet" for="importSetInput">
+                        <svg width="24" height="24">
+                            <use xlink:href="#importSetIcon" />
+                        </svg>
+                        <span>导入</span>
+                    </label>
+                    <input type="file" style="display: none;" id="importSetInput" accept="application/json" />
+                    <div id="resetSet">
+                        <svg width="22" height="22" style="transform: scaleX(-1)">
+                            <use xlink:href="#refreshIcon" />
+                        </svg>
+                        <span>重置</span>
+                    </div>
+                </div>
+            </div>
+            <div class="setContent">
+                <div class="setTitle">本地存储</div>
+                <div class="setDetail">
+                    <div class="progressBar">
+                        <div class="nowProgress" id="usedStorageBar"></div>
+                    </div>
+                    <div class="progressDetail">
+                        <div><span>已用 </span><span id="usedStorage"></span></div>
+                        <div><span>可用 </span><span id="availableStorage"></span></div>
                     </div>
                 </div>
             </div>
@@ -2162,6 +2291,22 @@
     <link href="//cdn.staticfile.org/github-markdown-css/5.2.0/github-markdown-light.min.css" rel="stylesheet">
     <link href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css" rel="stylesheet">
     <script src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
+    <script>
+        const isMobile = navigator.userAgent.match(/iPhone|iPad|iPod|Android|BlackBerry|webOS/);
+        if (isMobile) {
+            const script = document.createElement('script');
+            script.src = "https://cdn.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/index.min.js";
+            script.defer = true;
+            script.onload = () => {
+                MobileDragDrop.polyfill();
+            }
+            document.body.appendChild(script);
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = "https://cdn.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
+            document.body.appendChild(link);
+        }
+    </script>
     <script>
         const notyf = new Notyf({
             position: {x: "center", y: "top"},
@@ -2216,6 +2361,7 @@
         let supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
         let recing = false;
         let toggleRecEv;
+        const dayMs = 8.64e7;
         const noLoading = () => {
             return !loading && (!currentResEle || currentResEle.dataset.loading !== "true")
         }
@@ -2246,152 +2392,6 @@
                 }
             }
         });
-        let localPin = localStorage.getItem("pinNav");
-        if (localPin && localPin === "true" && window.innerWidth > 800) {
-            document.body.classList.toggle("show-nav");
-        };
-        let themeMode = 1; // 2: 自动， 1: 浅色，0: 深色
-        let autoThemeMode = 1; // 1: 跟随系统，0:自定义时间
-        let customDarkTime = ["21:00", "07:00"]; // 开始，结束时间
-        let customDarkOut;
-        const setDarkTheme = (is) => {
-            let cssEle = document.getElementsByTagName("link")[0];
-            if (is) {document.documentElement.setAttribute("data-theme", "dark")}
-            else {document.documentElement.removeAttribute("data-theme")}
-            cssEle.href = cssEle.href.replace(is ? "light" : "dark", is ? "dark" : "light");
-        }
-        const handleAutoMode = (ele) => {
-            if (ele.checked) {
-                autoThemeMode = parseInt(ele.value);
-                localStorage.setItem("autoThemeMode", autoThemeMode);
-                initAutoTime();
-                if (autoThemeMode) {
-                    if (customDarkOut !== void 0) {
-                        clearTimeout(customDarkOut);
-                        customDarkOut = void 0;
-                    }
-                    setDarkTheme(window.matchMedia("prefers-color-scheme: dark").matches);
-                } else {
-                    checkCustomTheme();
-                }
-            }
-        }
-        const handleAutoTime = (ele, idx) => {
-            let otherIdx = 1 - idx;
-            if (ele.value !== customDarkTime[otherIdx]) {
-                customDarkTime[idx] = ele.value;
-                localStorage.setItem("customDarkTime", JSON.stringify(customDarkTime));
-                checkCustomTheme();
-            } else {
-                ele.value = customDarkTime[idx];
-                notyf.error("开始时间和结束时间不能相同！");
-            }
-        }
-        const initAutoTime = () => {
-            customAutoSet.style.display = autoThemeMode === 0 ? "block" : "none";
-            if (autoThemeMode === 0) {
-                customStart.value = customDarkTime[0];
-                customEnd.value = customDarkTime[1];
-            }
-        }
-        const initAutoThemeEle = () => {
-            autoThemeEle.querySelector("#autoTheme" + autoThemeMode).checked = true;
-            initAutoTime();
-        }
-        const checkCustomTheme = () => {
-            if (customDarkOut !== void 0) clearTimeout(customDarkOut);
-            let date = new Date();
-            let nowTime = date.getTime();
-            let start = customDarkTime[0].split(":");
-            let startTime = new Date().setHours(start[0], start[1], 0, 0);
-            let end = customDarkTime[1].split(":");
-            let endTime = new Date().setHours(end[0], end[1], 0, 0);
-            let order = endTime > startTime;
-            let isDark = order ? (nowTime > startTime && endTime > nowTime) : !(nowTime > endTime && startTime > nowTime);
-            let nextChange = isDark ? endTime - nowTime : startTime - nowTime;
-            if (nextChange < 0) nextChange += 8.64e7;
-            setDarkTheme(isDark);
-            customDarkOut = setTimeout(() => {
-                checkCustomTheme();
-            }, nextChange);
-        }
-        const setDarkMode = () => {
-            if (customDarkOut !== void 0) {
-                clearTimeout(customDarkOut);
-                customDarkOut = void 0;
-            }
-            autoThemeEle.style.display = "none";
-            let themeClass, title;
-            if (themeMode === 2) {
-                autoThemeEle.style.display = "block";
-                if (autoThemeMode) {
-                    setDarkTheme(window.matchMedia("prefers-color-scheme: dark").matches);
-                } else {
-                    checkCustomTheme();
-                    initAutoThemeEle();
-                }
-                themeClass = "autoTheme";
-                title = "自动";
-            } else if (themeMode === 1) {
-                setDarkTheme(false);
-                themeClass = "lightTheme";
-                title = "浅色";
-            } else {
-                setDarkTheme(true);
-                themeClass = "darkTheme";
-                title = "深色";
-            }
-            localStorage.setItem("themeMode", themeMode);
-            setLightEle.className = "setDetail themeDetail " + themeClass;
-            lightEle.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#" + themeClass + "Icon");
-            lightEle.title = title;
-        }
-        lightEle.onclick = () => {
-            themeMode = themeMode - 1;
-            if (themeMode === -1) themeMode = 2;
-            setDarkMode();
-        }
-        setLightEle.onclick = (ev) => {
-            let idx = Array.prototype.indexOf.call(setLightEle.children, ev.target);
-            if (themeMode !== idx) {
-                themeMode = idx;
-                setDarkMode();
-            }
-        }
-        let localTheme = localStorage.getItem("themeMode");
-        if (localTheme) themeMode = parseInt(localTheme);
-        let localAutoTheme = localStorage.getItem("autoThemeMode");
-        if (localAutoTheme) autoThemeMode = parseInt(localAutoTheme);
-        let localCustomDark = localStorage.getItem("customDarkTime");
-        if (localCustomDark) customDarkTime = JSON.parse(localCustomDark);
-        if (themeMode !== 1) setDarkMode();
-        window.matchMedia("(prefers-color-scheme: dark)").addListener(e => {
-            if (themeMode === 2 && autoThemeMode) setDarkTheme(e.matches);
-        });
-        document.getElementById("toggleFull").onclick = function () {
-            windowEle.classList.toggle("full_window");
-            let isFull = windowEle.classList.contains("full_window");
-            localStorage.setItem("fullWindow", isFull);
-            this.title = isFull ? "窗口" : "全屏";
-            this.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", isFull ? "#collapseFullIcon" : "#expandFullIcon");
-        }
-        let localFull = localStorage.getItem("fullWindow");
-        if (localFull && localFull === "true") document.getElementById("toggleFull").dispatchEvent(new Event("click"));
-        const updateAvatar = () => {
-            setAvatarPre.src = userAvatar;
-            chatlog.querySelectorAll(".request>.chatAvatar").forEach(ele => {
-                ele.children[0].src = userAvatar;
-            })
-        }
-        let userAvatar = "https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/avatar.jpg";
-        let localAvatar = localStorage.getItem("userAvatar");
-        if (localAvatar) userAvatar = localAvatar;
-        setAvatarPre.src = setAvatar.value = userAvatar;
-        setAvatar.onchange = () => {
-            userAvatar = setAvatar.value;
-            localStorage.setItem("userAvatar", userAvatar);
-            updateAvatar()
-        }
         const endSetEvent = (ev) => {
             if (!document.getElementById("sysContent").contains(ev.target)) {
                 ev.preventDefault();
@@ -2406,176 +2406,180 @@
         document.getElementById("closeSet").onclick = endSet;
         document.getElementById("sysSetting").onclick = () => {
             document.getElementById("sysDialog").style.display = "flex";
+            checkStorage();
             document.body.addEventListener("click", endSetEvent, true);
-        }
-        if (supportRec) {
-            noRecTip.style.display = "none";
-            yesRec.style.display = "block";
-            document.getElementById("voiceRec").style.display = "block";
-            textarea.classList.add("message_if_voice");
-            let langs = [ // from https://www.google.com/intl/en/chrome/demos/speech.html
-                ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
-                    ['cmn-Hans-HK', '普通话 (香港)'],
-                    ['cmn-Hant-TW', '中文 (台灣)'],
-                    ['yue-Hant-HK', '粵語 (香港)']],
-                ['English', ['en-US', 'United States'],
-                    ['en-GB', 'United Kingdom'],
-                    ['en-AU', 'Australia'],
-                    ['en-CA', 'Canada'],
-                    ['en-IN', 'India'],
-                    ['en-KE', 'Kenya'],
-                    ['en-TZ', 'Tanzania'],
-                    ['en-GH', 'Ghana'],
-                    ['en-NZ', 'New Zealand'],
-                    ['en-NG', 'Nigeria'],
-                    ['en-ZA', 'South Africa'],
-                    ['en-PH', 'Philippines']]
-            ];
-            langs.forEach((lang, i) => {
-                select_language.options.add(new Option(lang[0], i));
-                selectLangOption.options.add(new Option(lang[0], i))
-            });
-            const updateCountry = function () {
-                selectLangOption.selectedIndex = select_language.selectedIndex = this.selectedIndex;
-                select_dialect.innerHTML = "";
-                selectDiaOption.innerHTML = "";
-                let list = langs[select_language.selectedIndex];
-                for (let i = 1; i < list.length; i++) {
-                    select_dialect.options.add(new Option(list[i][1], list[i][0]));
-                    selectDiaOption.options.add(new Option(list[i][1], list[i][0]));
-                }
-                select_dialect.style.visibility = list[1].length == 1 ? "hidden" : "visible";
-                selectDiaOption.parentElement.style.visibility = list[1].length == 1 ? "hidden" : "visible";
-                localStorage.setItem("voiceRecLang", select_dialect.value);
-            };
-            let localLangIdx = 0;
-            let localDiaIdx = 0;
-            let localRecLang = localStorage.getItem("voiceRecLang");
-            if (localRecLang) {
-                let localIndex = langs.findIndex(item => {
-                    let diaIdx = item.findIndex(lang => {return lang instanceof Array && lang[0] === localRecLang});
-                    if (diaIdx !== -1) {
-                        localDiaIdx = diaIdx - 1;
-                        return true;
-                    }
-                    return false;
+        };
+        const initRecSetting = () => {
+            if (supportRec) {
+                noRecTip.style.display = "none";
+                yesRec.style.display = "block";
+                document.getElementById("voiceRec").style.display = "block";
+                textarea.classList.add("message_if_voice");
+                let langs = [ // from https://www.google.com/intl/en/chrome/demos/speech.html
+                    ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
+                        ['cmn-Hans-HK', '普通话 (香港)'],
+                        ['cmn-Hant-TW', '中文 (台灣)'],
+                        ['yue-Hant-HK', '粵語 (香港)']],
+                    ['English', ['en-US', 'United States'],
+                        ['en-GB', 'United Kingdom'],
+                        ['en-AU', 'Australia'],
+                        ['en-CA', 'Canada'],
+                        ['en-IN', 'India'],
+                        ['en-KE', 'Kenya'],
+                        ['en-TZ', 'Tanzania'],
+                        ['en-GH', 'Ghana'],
+                        ['en-NZ', 'New Zealand'],
+                        ['en-NG', 'Nigeria'],
+                        ['en-ZA', 'South Africa'],
+                        ['en-PH', 'Philippines']]
+                ];
+                langs.forEach((lang, i) => {
+                    select_language.options.add(new Option(lang[0], i));
+                    selectLangOption.options.add(new Option(lang[0], i))
                 });
-                if (localIndex !== -1) localLangIdx = localIndex;
-            }
-            selectLangOption.onchange = updateCountry;
-            select_language.onchange = updateCountry;
-            selectDiaOption.onchange = select_dialect.onchange = function () {
-                selectDiaOption.selectedIndex = select_dialect.selectedIndex = this.selectedIndex;
-                localStorage.setItem("voiceRecLang", select_dialect.value);
-            }
-            selectLangOption.selectedIndex = select_language.selectedIndex = localLangIdx;
-            select_language.dispatchEvent(new Event("change"));
-            selectDiaOption.selectedIndex = select_dialect.selectedIndex = localDiaIdx;
-            select_dialect.dispatchEvent(new Event("change"));
-            let recIns = new webkitSpeechRecognition();
-            // prevent some Android bug
-            recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
-            recIns.interimResults = true;
-            recIns.maxAlternatives = 1;
-            let recRes = tempRes = "";
-            let preRes, affRes;
-            const resEvent = (event) => {
-                if (typeof (event.results) === "undefined") {
-                    toggleRecEvent();
-                    return;
-                }
-                let isFinal;
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    isFinal = event.results[i].isFinal;
-                    if (isFinal) {recRes += event.results[i][0].transcript}
-                    else {tempRes = recRes + event.results[i][0].transcript}
-                }
-                textarea.value = preRes + (isFinal ? recRes : tempRes) + affRes;
-                textInputEvent();
-                textarea.focus();
-                textarea.selectionEnd = textarea.value.length - affRes.length;
-            };
-            const endEvent = (event) => {
-                if (!(event && event.type === "end")) recIns.stop();
-                recIns.onresult = null;
-                recIns.onerror = null;
-                recIns.onend = null;
-                recRes = tempRes = "";
-                voiceRecEle.classList.remove("voiceRecing");
-                recing = false;
-            };
-            const errorEvent = (ev) => {
-                if (event.error === "no-speech") {
-                    notyf.error("未识别到语音，请调整设备后重试！")
-                }
-                if (event.error === "audio-capture") {
-                    notyf.error("未找到麦克风，请确保已安装麦克风！")
-                }
-                if (event.error === "not-allowed") {
-                    notyf.error("未允许使用麦克风的权限！")
-                }
-                endEvent();
-            }
-            const closeEvent = (ev) => {
-                if (voiceRecSetEle.contains(ev.target)) return;
-                if (!voiceRecSetEle.contains(ev.target)) {
-                    voiceRecSetEle.style.display = "none";
-                    document.removeEventListener("mousedown", closeEvent, true);
-                    voiceRecEle.classList.remove("voiceLong");
-                }
-            }
-            const longEvent = () => {
-                voiceRecSetEle.style.display = "block";
-                document.addEventListener("mousedown", closeEvent, true);
-            }
-            const toggleRecEvent = () => {
-                voiceRecEle.classList.toggle("voiceRecing");
-                if (voiceRecEle.classList.contains("voiceRecing")) {
-                    try {
-                        preRes = textarea.value.slice(0, textarea.selectionStart);
-                        affRes = textarea.value.slice(textarea.selectionEnd);
-                        recIns.lang = select_dialect.value;
-                        recIns.start();
-                        recIns.onresult = resEvent;
-                        recIns.onerror = errorEvent;
-                        recIns.onend = endEvent;
-                        recing = true;
-                    } catch (e) {
-                        endEvent();
+                const updateCountry = function () {
+                    selectLangOption.selectedIndex = select_language.selectedIndex = this.selectedIndex;
+                    select_dialect.innerHTML = "";
+                    selectDiaOption.innerHTML = "";
+                    let list = langs[select_language.selectedIndex];
+                    for (let i = 1; i < list.length; i++) {
+                        select_dialect.options.add(new Option(list[i][1], list[i][0]));
+                        selectDiaOption.options.add(new Option(list[i][1], list[i][0]));
                     }
-                } else {
+                    select_dialect.style.visibility = list[1].length == 1 ? "hidden" : "visible";
+                    selectDiaOption.parentElement.style.visibility = list[1].length == 1 ? "hidden" : "visible";
+                    localStorage.setItem("voiceRecLang", select_dialect.value);
+                };
+                let localLangIdx = 0;
+                let localDiaIdx = 0;
+                let localRecLang = localStorage.getItem("voiceRecLang") || "cmn-Hans-CN";
+                if (localRecLang) {
+                    let localIndex = langs.findIndex(item => {
+                        let diaIdx = item.findIndex(lang => {return lang instanceof Array && lang[0] === localRecLang});
+                        if (diaIdx !== -1) {
+                            localDiaIdx = diaIdx - 1;
+                            return true;
+                        }
+                        return false;
+                    });
+                    if (localIndex !== -1) localLangIdx = localIndex;
+                }
+                selectLangOption.onchange = updateCountry;
+                select_language.onchange = updateCountry;
+                selectDiaOption.onchange = select_dialect.onchange = function () {
+                    selectDiaOption.selectedIndex = select_dialect.selectedIndex = this.selectedIndex;
+                    localStorage.setItem("voiceRecLang", select_dialect.value);
+                }
+                selectLangOption.selectedIndex = select_language.selectedIndex = localLangIdx;
+                select_language.dispatchEvent(new Event("change"));
+                selectDiaOption.selectedIndex = select_dialect.selectedIndex = localDiaIdx;
+                select_dialect.dispatchEvent(new Event("change"));
+                let recIns = new webkitSpeechRecognition();
+                // prevent some Android bug
+                recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
+                recIns.interimResults = true;
+                recIns.maxAlternatives = 1;
+                let recRes = tempRes = "";
+                let preRes, affRes;
+                const resEvent = (event) => {
+                    if (typeof (event.results) === "undefined") {
+                        toggleRecEvent();
+                        return;
+                    }
+                    let isFinal;
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        isFinal = event.results[i].isFinal;
+                        if (isFinal) {recRes += event.results[i][0].transcript}
+                        else {tempRes = recRes + event.results[i][0].transcript}
+                    }
+                    textarea.value = preRes + (isFinal ? recRes : tempRes) + affRes;
+                    textInputEvent();
+                    textarea.focus();
+                    textarea.selectionEnd = textarea.value.length - affRes.length;
+                };
+                const endEvent = (event) => {
+                    if (!(event && event.type === "end")) recIns.stop();
+                    recIns.onresult = null;
+                    recIns.onerror = null;
+                    recIns.onend = null;
+                    recRes = tempRes = "";
+                    voiceRecEle.classList.remove("voiceRecing");
+                    recing = false;
+                };
+                const errorEvent = (ev) => {
+                    if (event.error === "no-speech") {
+                        notyf.error("未识别到语音，请调整设备后重试！")
+                    }
+                    if (event.error === "audio-capture") {
+                        notyf.error("未找到麦克风，请确保已安装麦克风！")
+                    }
+                    if (event.error === "not-allowed") {
+                        notyf.error("未允许使用麦克风的权限！")
+                    }
                     endEvent();
                 }
-            };
-            toggleRecEv = toggleRecEvent;
-            let timer;
-            const voiceDownEvent = (ev) => {
-                ev.preventDefault();
-                let i = 0;
-                voiceRecEle.classList.add("voiceLong");
-                timer = setInterval(() => {
-                    i += 1;
-                    if (i >= 3) {
+                const closeEvent = (ev) => {
+                    if (voiceRecSetEle.contains(ev.target)) return;
+                    if (!voiceRecSetEle.contains(ev.target)) {
+                        voiceRecSetEle.style.display = "none";
+                        document.removeEventListener("mousedown", closeEvent, true);
+                        voiceRecEle.classList.remove("voiceLong");
+                    }
+                }
+                const longEvent = () => {
+                    voiceRecSetEle.style.display = "block";
+                    document.addEventListener("mousedown", closeEvent, true);
+                }
+                const toggleRecEvent = () => {
+                    voiceRecEle.classList.toggle("voiceRecing");
+                    if (voiceRecEle.classList.contains("voiceRecing")) {
+                        try {
+                            preRes = textarea.value.slice(0, textarea.selectionStart);
+                            affRes = textarea.value.slice(textarea.selectionEnd);
+                            recIns.lang = select_dialect.value;
+                            recIns.start();
+                            recIns.onresult = resEvent;
+                            recIns.onerror = errorEvent;
+                            recIns.onend = endEvent;
+                            recing = true;
+                        } catch (e) {
+                            endEvent();
+                        }
+                    } else {
+                        endEvent();
+                    }
+                };
+                toggleRecEv = toggleRecEvent;
+                let timer;
+                const voiceDownEvent = (ev) => {
+                    ev.preventDefault();
+                    let i = 0;
+                    voiceRecEle.classList.add("voiceLong");
+                    timer = setInterval(() => {
+                        i += 1;
+                        if (i >= 3) {
+                            clearInterval(timer);
+                            timer = void 0;
+                            longEvent();
+                        }
+                    }, 100)
+                };
+                const voiceUpEvent = (ev) => {
+                    ev.preventDefault();
+                    if (timer !== void 0) {
+                        toggleRecEvent();
                         clearInterval(timer);
                         timer = void 0;
-                        longEvent();
+                        voiceRecEle.classList.remove("voiceLong");
                     }
-                }, 100)
-            };
-            const voiceUpEvent = (ev) => {
-                ev.preventDefault();
-                if (timer !== void 0) {
-                    toggleRecEvent();
-                    clearInterval(timer);
-                    timer = void 0;
-                    voiceRecEle.classList.remove("voiceLong");
                 }
-            }
-            voiceRecEle.addEventListener("mousedown", voiceDownEvent);
-            voiceRecEle.addEventListener("touchstart", voiceDownEvent);
-            voiceRecEle.addEventListener("mouseup", voiceUpEvent);
-            voiceRecEle.addEventListener("touchend", voiceUpEvent);
+                voiceRecEle.onmousedown = voiceDownEvent;
+                voiceRecEle.ontouchstart = voiceDownEvent;
+                voiceRecEle.onmouseup = voiceUpEvent;
+                voiceRecEle.ontouchend = voiceUpEvent;
+            };
         };
+        initRecSetting();
         document.getElementsByClassName("setSwitch")[0].onclick = function (ev) {
             let activeEle = this.getElementsByClassName("activeSwitch")[0];
             if (ev.target !== activeEle) {
@@ -2585,14 +2589,14 @@
                 document.getElementById(activeEle.dataset.id).style.display = "none";
             }
         };
-        let localVoiceType = localStorage.getItem("existVoice");
-        if (localVoiceType) {
-            existVoice = parseInt(localVoiceType);
-            speechServiceEle.value = existVoice;
-        }
         if (!(window.speechSynthesis && window.SpeechSynthesisUtterance)) {
             speechServiceEle.remove(2);
         }
+        const initVoiceVal = () => {
+            let localVoiceType = localStorage.getItem("existVoice");
+            speechServiceEle.value = existVoice = parseInt(localVoiceType || "2");
+        }
+        initVoiceVal();
         const clearAzureVoice = () => {
             azureKey = void 0;
             azureRegion = void 0;
@@ -2638,7 +2642,7 @@
         }
         const loadAzureVoice = () => {
             let checking = false;
-            checkVoiceLoad.onclick = () => {
+            const checkAzureFunc = () => {
                 if (checking) return;
                 if (azureKey) {
                     checking = true;
@@ -2664,7 +2668,8 @@
                         checking = false;
                     })
                 }
-            }
+            };
+            checkVoiceLoad.onclick = checkAzureFunc;
             const getAzureToken = (signal) => {
                 return new Promise((res, rej) => {
                     fetch("https://" + azureRegion + ".api.cognitive.microsoft.com/sts/v1.0/issueToken", {
@@ -2757,7 +2762,7 @@
             }
             azureKeyEle.dispatchEvent(new Event("change"));
             if (azureKey) {
-                checkVoiceLoad.dispatchEvent(new Event("click"))
+                checkAzureFunc();
             }
         }
         const loadEdgeVoice = () => {
@@ -2766,7 +2771,7 @@
                 checkVoiceLoad.classList.remove("voiceChecking");
                 checking = false;
             };
-            checkVoiceLoad.onclick = () => {
+            const checkEdgeFunc = () => {
                 if (checking) return;
                 checking = true;
                 checkVoiceLoad.classList.add("voiceChecking");
@@ -2794,7 +2799,8 @@
                     })
                 }
             };
-            checkVoiceLoad.dispatchEvent(new Event("click"));
+            checkEdgeFunc();
+            checkVoiceLoad.onclick = checkEdgeFunc;
         };
         const loadLocalVoice = () => {
             if (systemVoiceData) {
@@ -2961,6 +2967,8 @@
                     if (localIndex === -1) localIndex = 0;
                     voiceRole[voiceType] = voices[localIndex];
                     voicesEle.value = localIndex;
+                } else {
+                    voiceRole[voiceType] = voices[0];
                 }
                 voicesEle.dispatchEvent(new Event("change"));
             }
@@ -2968,16 +2976,11 @@
             loadAnother(voiceType);
             let volumeEle = document.getElementById("voiceVolume");
             let localVolume = localStorage.getItem("voiceVolume0");
-            voiceVolume[0] = parseFloat(localVolume ? localVolume : volumeEle.value);
+            voiceVolume[0] = parseFloat(localVolume || volumeEle.getAttribute("value"));
             const voiceVolumeChange = () => {
                 let localVolume = localStorage.getItem("voiceVolume" + voiceType);
-                if (localVolume) {
-                    voiceVolume[voiceType] = parseFloat(localVolume);
-                    volumeEle.value = localVolume;
-                    volumeEle.style.backgroundSize = (volumeEle.value - volumeEle.min) * 100 / (volumeEle.max - volumeEle.min) + "% 100%";
-                } else {
-                    volumeEle.dispatchEvent(new Event("input"));
-                }
+                volumeEle.value = voiceVolume[voiceType] = parseFloat(localVolume || volumeEle.getAttribute("value"));
+                volumeEle.style.backgroundSize = (volumeEle.value - volumeEle.min) * 100 / (volumeEle.max - volumeEle.min) + "% 100%";
             }
             volumeEle.oninput = () => {
                 volumeEle.style.backgroundSize = (volumeEle.value - volumeEle.min) * 100 / (volumeEle.max - volumeEle.min) + "% 100%";
@@ -2987,16 +2990,11 @@
             voiceVolumeChange();
             let rateEle = document.getElementById("voiceRate");
             let localRate = localStorage.getItem("voiceRate0");
-            voiceRate[0] = parseFloat(localRate ? localRate : rateEle.value);
+            voiceRate[0] = parseFloat(localRate || rateEle.getAttribute("value"));
             const voiceRateChange = () => {
                 let localRate = localStorage.getItem("voiceRate" + voiceType);
-                if (localRate) {
-                    voiceRate[voiceType] = parseFloat(localRate);
-                    rateEle.value = localRate;
-                    rateEle.style.backgroundSize = (rateEle.value - rateEle.min) * 100 / (rateEle.max - rateEle.min) + "% 100%";
-                } else {
-                    rateEle.dispatchEvent(new Event("input"));
-                }
+                rateEle.value = voiceRate[voiceType] = parseFloat(localRate || rateEle.getAttribute("value"));
+                rateEle.style.backgroundSize = (rateEle.value - rateEle.min) * 100 / (rateEle.max - rateEle.min) + "% 100%";
             }
             rateEle.oninput = () => {
                 rateEle.style.backgroundSize = (rateEle.value - rateEle.min) * 100 / (rateEle.max - rateEle.min) + "% 100%";
@@ -3006,16 +3004,11 @@
             voiceRateChange();
             let pitchEle = document.getElementById("voicePitch");
             let localPitch = localStorage.getItem("voicePitch0");
-            voicePitch[0] = parseFloat(localPitch ? localPitch : pitchEle.value);
+            voicePitch[0] = parseFloat(localPitch || pitchEle.getAttribute("value"));
             const voicePitchChange = () => {
                 let localPitch = localStorage.getItem("voicePitch" + voiceType);
-                if (localPitch) {
-                    voicePitch[voiceType] = parseFloat(localPitch);
-                    pitchEle.value = localPitch;
-                    pitchEle.style.backgroundSize = (pitchEle.value - pitchEle.min) * 100 / (pitchEle.max - pitchEle.min) + "% 100%";
-                } else {
-                    pitchEle.dispatchEvent(new Event("input"));
-                }
+                pitchEle.value = voicePitch[voiceType] = parseFloat(localPitch || pitchEle.getAttribute("value"));
+                pitchEle.style.backgroundSize = (pitchEle.value - pitchEle.min) * 100 / (pitchEle.max - pitchEle.min) + "% 100%";
             }
             pitchEle.oninput = () => {
                 pitchEle.style.backgroundSize = (pitchEle.value - pitchEle.min) * 100 / (pitchEle.max - pitchEle.min) + "% 100%";
@@ -3040,10 +3033,7 @@
             };
             const contVoiceEle = document.getElementById("enableContVoice");
             let localCont = localStorage.getItem("enableContVoice");
-            if (localCont) {
-                enableContVoice = localCont === "true";
-                contVoiceEle.checked = enableContVoice;
-            }
+            contVoiceEle.checked = enableContVoice = (localCont || contVoiceEle.getAttribute("checked")) === "true";
             contVoiceEle.onchange = () => {
                 enableContVoice = contVoiceEle.checked;
                 localStorage.setItem("enableContVoice", enableContVoice);
@@ -3051,10 +3041,7 @@
             contVoiceEle.dispatchEvent(new Event("change"));
             const autoVoiceEle = document.getElementById("enableAutoVoice");
             let localAuto = localStorage.getItem("enableAutoVoice");
-            if (localAuto) {
-                enableAutoVoice = localAuto === "true";
-                autoVoiceEle.checked = enableAutoVoice;
-            }
+            autoVoiceEle.checked = enableAutoVoice = (localAuto || autoVoiceEle.getAttribute("checked")) === "true";
             autoVoiceEle.onchange = () => {
                 enableAutoVoice = autoVoiceEle.checked;
                 localStorage.setItem("enableAutoVoice", enableAutoVoice);
@@ -3090,6 +3077,11 @@
         let voiceIns; // Audio or SpeechSynthesisUtterance
         const supportMSE = !!window.MediaSource; // 是否支持MSE（除了ios应该都支持）
         let voiceMIME = "audio/mpeg";
+        let userAvatar; // 用户头像
+        let themeMode; // 2: 自动， 1: 浅色，0: 深色
+        let autoThemeMode; // 1: 跟随系统，0:自定义时间
+        let customDarkTime; // 开始，结束时间
+        let customDarkOut;
         const scrollToBottom = () => {
             if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
@@ -3101,14 +3093,136 @@
             }
         }
         const escapeTextarea = document.createElement("textarea");
-        const getEscape = (str) => {
+        const getEscape = str => {
             escapeTextarea.textContent = str;
             return escapeTextarea.innerHTML;
         }
-        const getUnescape = (html) => {
+        const getUnescape = html => {
             escapeTextarea.innerHTML = html;
             return escapeTextarea.textContent;
         }
+        const formatDate = date => {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        const checkBill = async () => {
+            let headers = {"Content-Type": "application/json"};
+            if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
+            let subCtrl = new AbortController();
+            const subRes = await fetch(apiHost + "v1/dashboard/billing/subscription", {
+                headers,
+                signal: subCtrl.signal,
+                credentials: "omit"
+            });
+            if (subRes.status !== 200) {
+                return;
+            }
+            const subData = await subRes.json();
+            const totalQuota = subData.hard_limit_usd;
+            const isSubsrcibed = subData.has_payment_method;
+            const urlUsage = apiHost + "v1/dashboard/billing/usage?";
+            let useCtrl = new AbortController();
+            const nowDate = new Date(new Date().getTime() + dayMs);
+            let usedData;
+            let expired;
+            setTimeout(() => {
+                useCtrl.abort();
+            }, 20000);
+            if (isSubsrcibed) {
+                const subDate = new Date();
+                subDate.setDate(1);
+                try {
+                    const useRes = await fetch(urlUsage + `start_date=${formatDate(subDate)}&end_date=${formatDate(nowDate)}`, {
+                        headers,
+                        signal: useCtrl.signal
+                    });
+                    const useJson = await useRes.json();
+                    usedData = useJson.total_usage / 100;
+                } catch (e) {
+                    return;
+                }
+            } else {
+                let urls = [];
+                const expireTime = subData.access_until * 1000;
+                expired = new Date(expireTime);
+                const startDate = new Date(expireTime - 128 * dayMs);
+                const midDate = new Date(expireTime - 64 * dayMs);
+                const endDate = new Date(expireTime + dayMs);
+                if (nowDate < midDate) {
+                    urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(nowDate)}`);
+                } else if (nowDate < endDate) {
+                    urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(midDate)}`);
+                    if (nowDate !== midDate) {
+                        urls.push(`start_date=${formatDate(midDate)}&end_date=${formatDate(nowDate)}`);
+                    }
+                } else {
+                    urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(midDate)}`);
+                    urls.push(`start_date=${formatDate(midDate)}&end_date=${formatDate(endDate)}`);
+                }
+                try {
+                    const uses = await Promise.all(urls.map(async url => {
+                        return new Promise((res, rej) => {
+                            fetch(urlUsage + url, {
+                                headers,
+                                signal: useCtrl.signal
+                            }).then(response => {
+                                response.json().then(json => res(json.total_usage));
+                            }).catch(() => {
+                                rej();
+                            })
+                        })
+                    }));
+                    usedData = uses.reduce((prev, curr) => prev + curr, 0) / 100;
+                } catch (e) {
+                    return;
+                }
+            }
+            if (usedData > totalQuota) usedData = totalQuota;
+            return [totalQuota, usedData, isSubsrcibed, expired];
+        }
+        let checkingBill = false;
+        checkBillBtn.onclick = async () => {
+            if (checkingBill) return;
+            checkingBill = true;
+            checkBillBtn.className = "loading";
+            quotaContent.style.display = "none";
+            try {
+                let res = await checkBill();
+                if (!res) throw new Error("API error");
+                let [total, used, isSub, exp] = res;
+                usedQuotaBar.style.width = (used / total * 100).toFixed(2) + "%";
+                usedQuotaBar.parentElement.classList.remove("expiredBar");
+                usedQuota.textContent = "$" + parseFloat(used.toFixed(2));
+                let remain = total - used;
+                availableQuota.textContent = "$" + Math.floor(remain * 100) / 100;
+                if (isSub) {
+                    quotaTitle.textContent = "本月额度";
+                } else {
+                    let isExpired = new Date() > exp;
+                    if (isExpired) usedQuotaBar.parentElement.classList.add("expiredBar");
+                    let accessDate = formatDate(exp);
+                    quotaTitle.innerHTML = "免费额度-有效期至：" + `<span style="color: ${isExpired ? "#e15b64" : "#99c959"} ">${accessDate}</span>`;
+                }
+                quotaContent.style.display = "block";
+            } catch (e) {
+                notyf.error("API密钥错误或失效，请检查API密钥！");
+            }
+            checkingBill = false;
+            checkBillBtn.className = "loaded";
+        }
+        const checkStorage = () => {
+            let used = 0;
+            for (let key in localStorage) {
+                localStorage.hasOwnProperty(key) && (used += localStorage[key].length)
+            }
+            let remain = 5242880 - used;
+            usedStorageBar.style.width = (used / 5242880 * 100).toFixed(2) + "%";
+            let usedMBs = used / 1048576;
+            usedStorage.textContent = (usedMBs < 1 ? usedMBs.toPrecision(2) : usedMBs.toFixed(2)) + "MB";
+            availableStorage.textContent = Math.floor(remain / 1048576 * 100) / 100 + "MB";
+        };
         const md = markdownit({
             linkify: true, // 识别链接
             highlight: function (str, lang) { // markdown高亮
@@ -3949,18 +4063,6 @@
                     folderListEle.children[i].style.display = null;
                 }
             }
-        }
-        document.getElementById("exportChat").onclick = () => {
-            if (loading) stopLoading();
-            let data = {
-                chatsData: chatsData,
-                folderData: folderData,
-                chatIdxs: chatIdxs
-            }
-            let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
-            let date = new Date();
-            let fileName = "chats-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
-            downBlob(blob, fileName);
         };
         const blobToText = (blob) => {
             return new Promise((res, rej) => {
@@ -3973,6 +4075,18 @@
                     rej(error);
                 }
             })
+        };
+        document.getElementById("exportChat").onclick = () => {
+            if (loading) stopLoading();
+            let data = {
+                chatsData: chatsData,
+                folderData: folderData,
+                chatIdxs: chatIdxs
+            }
+            let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            let date = new Date();
+            let fileName = "chats-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
+            downBlob(blob, fileName);
         };
         document.getElementById("importChatInput").onchange = function () {
             let file = this.files[0];
@@ -4005,16 +4119,17 @@
                             }
                         }
                         updateChats();
+                        checkStorage();
                     } else {
-                        throw new Error("格式检查不通过")
+                        throw new Error("fmt error");
                     }
                 } catch (e) {
-                    notyf.error("导入失败，请检查文件是否正确！")
+                    notyf.error("导入失败，请检查文件格式！");
                 }
                 this.value = "";
             })
         };
-        document.getElementById("clearChat").onclick = () => {
+        clearChatSet.onclick = clearChat.onclick = () => {
             if (confirmAction("是否清空所有会话和文件夹?")) {
                 chatsData.length = 0;
                 chatIdxs.length = 0;
@@ -4026,9 +4141,61 @@
                 activeChatIdx = 0;
                 chatEleAdd(activeChatIdx);
                 updateChats();
+                checkStorage();
                 activeChat(chatListEle.firstElementChild);
             }
         };
+        let localSetKeys = ['modelVersion', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        document.getElementById("exportSet").onclick = () => {
+            let data = {}
+            for (let i = 0; i < localSetKeys.length; i++) {
+                let key = localSetKeys[i];
+                let val = localStorage.getItem(key);
+                if (val != void 0) data[key] = val;
+            }
+            let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            let date = new Date();
+            let fileName = "settings-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
+            downBlob(blob, fileName);
+        };
+        document.getElementById("importSetInput").onchange = function () {
+            let file = this.files[0];
+            blobToText(file).then(text => {
+                try {
+                    let json = JSON.parse(text);
+                    let keys = Object.keys(json);
+                    for (let i = 0; i < localSetKeys.length; i++) {
+                        let key = localSetKeys[i];
+                        let val = json[key];
+                        if (val !== void 0) localStorage.setItem(key, val);
+                        else localStorage.removeItem(key);
+                    }
+                    initSetting(true);
+                    initVoiceVal();
+                    speechServiceEle.dispatchEvent(new Event("change"));
+                    initRecSetting();
+                    checkStorage();
+                } catch (e) {
+                    notyf.error("导入失败，请检查文件格式！");
+                }
+                this.value = "";
+            })
+        };
+        document.getElementById("resetSet").onclick = () => {
+            if (confirmAction("是否还原所有设置为默认值?")) {
+                endAll();
+                let data = {};
+                for (let i = 0; i < localSetKeys.length; i++) {
+                    let key = localSetKeys[i];
+                    let val = localStorage.removeItem(key);
+                }
+                initSetting(true);
+                initVoiceVal();
+                speechServiceEle.dispatchEvent(new Event("change"));
+                initRecSetting();
+                checkStorage();
+            }
+        }
         const endAll = () => {
             endSpeak();
             if (editingIdx !== void 0) resumeSend();
@@ -4038,13 +4205,11 @@
             if (currentVoiceIdx !== void 0) currentVoiceIdx += plus;
             if (editingIdx !== void 0) editingIdx += plus;
         }
-        const initSetting = () => {
+        const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
+        const initSetting = (force = false) => {
             const modelEle = document.getElementById("preSetModel");
             let localModel = localStorage.getItem("modelVersion");
-            if (localModel) {
-                modelVersion = localModel;
-                modelEle.value = localModel;
-            }
+            modelVersion = modelEle.value = localModel || "gpt-3.5-turbo";
             modelEle.onchange = () => {
                 modelVersion = modelEle.value;
                 localStorage.setItem("modelVersion", modelVersion);
@@ -4052,10 +4217,7 @@
             modelEle.dispatchEvent(new Event("change"));
             const apiHostEle = document.getElementById("apiHostInput");
             let localApiHost = localStorage.getItem("APIHost");
-            if (localApiHost) {
-                apiHost = localApiHost;
-                apiHostEle.value = localApiHost;
-            }
+            apiHost = apiHostEle.value = localApiHost || apiHostEle.getAttribute("value") || "";
             apiHostEle.onchange = () => {
                 apiHost = apiHostEle.value;
                 if (apiHost.length && !apiHost.endsWith("/")) {
@@ -4067,27 +4229,28 @@
             apiHostEle.dispatchEvent(new Event("change"));
             const keyEle = document.getElementById("keyInput");
             let localKey = localStorage.getItem("APIKey");
-            if (localKey) {
-                customAPIKey = localKey;
-                keyEle.value = localKey;
-            }
+            customAPIKey = keyEle.value = localKey || keyEle.getAttribute("value") || "";
             keyEle.onchange = () => {
+                quotaContent.style.display = "none";
                 customAPIKey = keyEle.value;
                 localStorage.setItem("APIKey", customAPIKey);
             }
             keyEle.dispatchEvent(new Event("change"));
-            if (systemRole === void 0) {
-                let localSystem = localStorage.getItem("system");
-                if (localSystem) {
-                    systemRole = localSystem;
-                    systemEle.value = localSystem;
-                    data.unshift({role: "system", content: systemRole});
-                    processIdx(1);
-                    updateChats();
-                } else {
-                    systemRole = systemEle.value;
-                }
+            const updateAvatar = () => {
+                setAvatarPre.src = userAvatar;
+                chatlog.querySelectorAll(".request>.chatAvatar").forEach(ele => {
+                    ele.children[0].src = userAvatar;
+                })
             }
+            let localAvatar = localStorage.getItem("userAvatar");
+            userAvatar = setAvatarPre.src = setAvatar.value = localAvatar || setAvatar.getAttribute("value") || "https://cdn.jsdelivr.net/gh/xqdoo00o/chatgpt-web@master/avatar.jpg";
+            setAvatar.onchange = () => {
+                userAvatar = setAvatar.value;
+                localStorage.setItem("userAvatar", userAvatar);
+                updateAvatar();
+            }
+            setAvatar.dispatchEvent(new Event("change"));
+            let localSystem = localStorage.getItem("system");
             systemEle.onchange = () => {
                 systemRole = systemEle.value;
                 localStorage.setItem("system", systemRole);
@@ -4104,6 +4267,20 @@
                 }
                 updateChats();
             }
+            if (systemRole === void 0) {
+                if (localSystem) {
+                    systemRole = localSystem;
+                    systemEle.value = localSystem;
+                    data.unshift({role: "system", content: systemRole});
+                    processIdx(1);
+                    updateChats();
+                } else {
+                    systemRole = systemEle.value;
+                }
+            } else if (force) {
+                systemRole = systemEle.value = localSystem || systemEle.getAttribute("value") || "";
+                systemEle.dispatchEvent(new Event("change"));
+            }
             const preEle = document.getElementById("preSetSystem");
             preEle.onchange = () => {
                 let val = preEle.value;
@@ -4117,10 +4294,7 @@
             }
             const topEle = document.getElementById("top_p");
             let localTop = localStorage.getItem("top_p");
-            if (localTop) {
-                roleNature = parseFloat(localTop);
-                topEle.value = localTop;
-            }
+            topEle.value = roleNature = parseFloat(localTop || topEle.getAttribute("value"));
             topEle.oninput = () => {
                 topEle.style.backgroundSize = (topEle.value - topEle.min) * 100 / (topEle.max - topEle.min) + "% 100%";
                 roleNature = parseFloat(topEle.value);
@@ -4129,10 +4303,7 @@
             topEle.dispatchEvent(new Event("input"));
             const tempEle = document.getElementById("temp");
             let localTemp = localStorage.getItem("temp");
-            if (localTemp) {
-                roleTemp = parseFloat(localTemp);
-                tempEle.value = localTemp;
-            }
+            tempEle.value = roleTemp = parseFloat(localTemp || tempEle.getAttribute("value"));
             tempEle.oninput = () => {
                 tempEle.style.backgroundSize = (tempEle.value - tempEle.min) * 100 / (tempEle.max - tempEle.min) + "% 100%";
                 roleTemp = parseFloat(tempEle.value);
@@ -4141,10 +4312,8 @@
             tempEle.dispatchEvent(new Event("input"));
             const speedEle = document.getElementById("textSpeed");
             let localSpeed = localStorage.getItem("textSpeed");
-            if (localSpeed) {
-                textSpeed = parseFloat(speedEle.min) + (speedEle.max - localSpeed);
-                speedEle.value = localSpeed;
-            }
+            speedEle.value = localSpeed || speedEle.getAttribute("value");
+            textSpeed = parseFloat(speedEle.min) + (speedEle.max - speedEle.value);
             speedEle.oninput = () => {
                 speedEle.style.backgroundSize = (speedEle.value - speedEle.min) * 100 / (speedEle.max - speedEle.min) + "% 100%";
                 textSpeed = parseFloat(speedEle.min) + (speedEle.max - speedEle.value);
@@ -4153,10 +4322,7 @@
             speedEle.dispatchEvent(new Event("input"));
             const contEle = document.getElementById("enableCont");
             let localCont = localStorage.getItem("enableCont");
-            if (localCont) {
-                enableCont = localCont === "true";
-                contEle.checked = enableCont;
-            }
+            contEle.checked = enableCont = (localCont || contEle.getAttribute("checked")) === "true";
             contEle.onchange = () => {
                 enableCont = contEle.checked;
                 localStorage.setItem("enableCont", enableCont);
@@ -4164,15 +4330,153 @@
             contEle.dispatchEvent(new Event("change"));
             const longEle = document.getElementById("enableLongReply");
             let localLong = localStorage.getItem("enableLongReply");
-            if (localLong) {
-                enableLongReply = localLong === "true";
-                longEle.checked = enableLongReply;
-            }
+            longEle.checked = enableLongReply = (localLong || longEle.getAttribute("checked")) === "true";
             longEle.onchange = () => {
                 enableLongReply = longEle.checked;
                 localStorage.setItem("enableLongReply", enableLongReply);
             }
             longEle.dispatchEvent(new Event("change"));
+            let localPin = localStorage.getItem("pinNav");
+            if (window.innerWidth > 800 && !(localPin && localPin === "false")) {
+                document.body.classList.add("show-nav");
+            };
+            const setDarkTheme = (is) => {
+                let cssEle = document.getElementsByTagName("link")[0];
+                if (is) {document.documentElement.setAttribute("data-theme", "dark")}
+                else {document.documentElement.removeAttribute("data-theme")}
+                cssEle.href = cssEle.href.replace(is ? "light" : "dark", is ? "dark" : "light");
+            }
+            const handleAutoMode = (ele) => {
+                if (ele.checked) {
+                    autoThemeMode = parseInt(ele.value);
+                    localStorage.setItem("autoThemeMode", autoThemeMode);
+                    initAutoTime();
+                    if (autoThemeMode) {
+                        if (customDarkOut !== void 0) {
+                            clearTimeout(customDarkOut);
+                            customDarkOut = void 0;
+                        }
+                        setDarkTheme(darkMedia.matches);
+                    } else {
+                        checkCustomTheme();
+                    }
+                }
+            }
+            autoTheme0.onchange = autoTheme1.onchange = function () {handleAutoMode(this)};
+            const handleAutoTime = (ele, idx) => {
+                let otherIdx = 1 - idx;
+                if (ele.value !== customDarkTime[otherIdx]) {
+                    customDarkTime[idx] = ele.value;
+                    localStorage.setItem("customDarkTime", JSON.stringify(customDarkTime));
+                    checkCustomTheme();
+                } else {
+                    ele.value = customDarkTime[idx];
+                    notyf.error("开始时间和结束时间不能相同！");
+                }
+            }
+            customStart.onchange = function () {handleAutoTime(this, 0)};
+            customEnd.onchange = function () {handleAutoTime(this, 1)};
+            const initAutoTime = () => {
+                customAutoSet.style.display = autoThemeMode === 0 ? "block" : "none";
+                if (autoThemeMode === 0) {
+                    customStart.value = customDarkTime[0];
+                    customEnd.value = customDarkTime[1];
+                }
+            }
+            const initAutoThemeEle = () => {
+                autoThemeEle.querySelector("#autoTheme" + autoThemeMode).checked = true;
+                initAutoTime();
+            }
+            const checkCustomTheme = () => {
+                if (customDarkOut !== void 0) clearTimeout(customDarkOut);
+                let date = new Date();
+                let nowTime = date.getTime();
+                let start = customDarkTime[0].split(":");
+                let startTime = new Date().setHours(start[0], start[1], 0, 0);
+                let end = customDarkTime[1].split(":");
+                let endTime = new Date().setHours(end[0], end[1], 0, 0);
+                let order = endTime > startTime;
+                let isDark = order ? (nowTime > startTime && endTime > nowTime) : !(nowTime > endTime && startTime > nowTime);
+                let nextChange = isDark ? endTime - nowTime : startTime - nowTime;
+                if (nextChange < 0) nextChange += dayMs;
+                setDarkTheme(isDark);
+                customDarkOut = setTimeout(() => {
+                    checkCustomTheme();
+                }, nextChange);
+            }
+            const setDarkMode = () => {
+                if (customDarkOut !== void 0) {
+                    clearTimeout(customDarkOut);
+                    customDarkOut = void 0;
+                }
+                autoThemeEle.style.display = "none";
+                let themeClass, title;
+                if (themeMode === 2) {
+                    autoThemeEle.style.display = "block";
+                    if (autoThemeMode) {
+                        setDarkTheme(darkMedia.matches);
+                    } else {
+                        checkCustomTheme();
+                        initAutoThemeEle();
+                    }
+                    themeClass = "autoTheme";
+                    title = "自动";
+                } else if (themeMode === 1) {
+                    setDarkTheme(false);
+                    themeClass = "lightTheme";
+                    title = "浅色";
+                } else {
+                    setDarkTheme(true);
+                    themeClass = "darkTheme";
+                    title = "深色";
+                }
+                localStorage.setItem("themeMode", themeMode);
+                setLightEle.className = "setDetail themeDetail " + themeClass;
+                lightEle.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#" + themeClass + "Icon");
+                lightEle.title = title;
+            }
+            lightEle.onclick = () => {
+                themeMode = themeMode - 1;
+                if (themeMode === -1) themeMode = 2;
+                setDarkMode();
+            }
+            setLightEle.onclick = (ev) => {
+                let idx = Array.prototype.indexOf.call(setLightEle.children, ev.target);
+                if (themeMode !== idx) {
+                    themeMode = idx;
+                    setDarkMode();
+                }
+            }
+            let localTheme = localStorage.getItem("themeMode");
+            themeMode = parseInt(localTheme || "1");
+            let localAutoTheme = localStorage.getItem("autoThemeMode");
+            autoThemeMode = parseInt(localAutoTheme || "1");
+            let localCustomDark = localStorage.getItem("customDarkTime");
+            customDarkTime = JSON.parse(localCustomDark || '["21:00", "07:00"]');
+            setDarkMode();
+            darkMedia.onchange = e => {
+                if (themeMode === 2 && autoThemeMode) setDarkTheme(e.matches);
+            };
+            const fullFunc = () => {
+                let isFull = windowEle.classList.contains("full_window");
+                localStorage.setItem("fullWindow", isFull);
+                toggleFull.title = isFull ? "窗口" : "全屏";
+                toggleFull.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", isFull ? "#collapseFullIcon" : "#expandFullIcon");
+            }
+            toggleFull.onclick = function () {
+                windowEle.classList.toggle("full_window");
+                fullFunc();
+            }
+            let localFull = localStorage.getItem("fullWindow");
+            if (localFull && localFull === "true") {
+                if (!windowEle.classList.contains("full_window")) {
+                    windowEle.classList.add("full_window");
+                    fullFunc();
+                }
+            } else if (windowEle.classList.contains("full_window")) {
+                windowEle.classList.remove("full_window");
+                fullFunc();
+            }
         };
         initSetting();
         document.getElementById("loadMask").style.display = "none";
@@ -4576,7 +4880,6 @@
                     autoVoiceSocket.onopen = () => {
                         autoAddQuene();
                     };
-
                     autoVoiceSocket.onerror = () => {
                         autoOnlineVoiceFlag = false;
                     };
@@ -4749,7 +5052,7 @@
                 controllerId = void 0;
                 if (res.status !== 200) {
                     if (res.status === 401) {
-                        notyf.error("API key错误或失效，请检查API key！")
+                        notyf.error("API密钥错误或失效，请检查API密钥！")
                     } else if (res.status === 400) {
                         notyf.error("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
                     } else if (res.status === 404) {
