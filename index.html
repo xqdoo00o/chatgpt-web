@@ -2310,15 +2310,15 @@
     <script>
         const isMobile = navigator.userAgent.match(/iPhone|iPad|iPod|Android|BlackBerry|webOS/);
         if (isMobile) {
-            const script = document.createElement('script');
+            const script = document.createElement("script");
             script.src = "https://cdn.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/index.min.js";
             script.defer = true;
             script.onload = () => {
                 MobileDragDrop.polyfill();
             }
             document.body.appendChild(script);
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
             link.href = "https://cdn.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
             document.body.appendChild(link);
         }
@@ -3119,8 +3119,8 @@
         }
         const formatDate = date => {
             const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, "0");
+            const day = date.getDate().toString().padStart(2, "0");
             return `${year}-${month}-${day}`;
         }
         const checkBill = async () => {
@@ -3477,6 +3477,34 @@
         let activeChatEle;
         let operateChatIdx, operateFolderIdx;
         let dragLi, dragType, dragIdx;
+        let mobileDragOut;
+        const mobileDragStartEV = function (ev) {
+            if (mobileDragOut !== void 0) {
+                clearTimeout(mobileDragOut);
+                mobileDragOut = void 0;
+            }
+            mobileDragOut = setTimeout(() => {
+                this.setAttribute("draggable", "true");
+                this.dispatchEvent(ev);
+            }, 200);
+        };
+        if (isMobile) {
+            let stopDragOut = () => {
+                if (mobileDragOut !== void 0) {
+                    clearTimeout(mobileDragOut);
+                    mobileDragOut = void 0;
+                }
+            };
+            let stopDrag = () => {
+                stopDragOut();
+                document.querySelectorAll("[draggable=true]").forEach(ele => {
+                    ele.setAttribute("draggable", "false");
+                })
+            };
+            document.body.addEventListener("touchmove", stopDragOut);
+            document.body.addEventListener("touchend", stopDrag);
+            document.body.addEventListener("touchcancel", stopDrag);
+        };
         const delDragIdx = () => {
             let chatIdx = chatIdxs.indexOf(dragIdx);
             if (chatIdx !== -1) {
@@ -3680,7 +3708,8 @@
             let folder = folderData[idx];
             let folderEle = document.createElement("div");
             folderEle.className = "folderLi";
-            folderEle.setAttribute("draggable", "true");
+            if (!isMobile) folderEle.setAttribute("draggable", "true");
+            else folderEle.ontouchstart = mobileDragStartEV;
             let headEle = document.createElement("div");
             headEle.className = "headLi";
             headEle.innerHTML = `<svg width="24" height="24"><use xlink:href="#expandFolderIcon" /></svg>
@@ -3718,12 +3747,13 @@
                 if (first) {chatPreview = first.content.slice(0, 30)}
             }
             chatEle.children[1].children[1].textContent = chatPreview;
-        }
+        };
         const chatEleAdd = (idx, appendChat = true) => {
             let chat = chatsData[idx];
             let chatEle = document.createElement("div");
             chatEle.className = "chatLi";
-            chatEle.setAttribute("draggable", "true");
+            if (!isMobile) chatEle.setAttribute("draggable", "true");
+            else chatEle.ontouchstart = mobileDragStartEV;
             chatEle.ondragstart = chatDragStartEv;
             chatEle.innerHTML = `<svg width="24" height="24"><use xlink:href="#chatIcon" /></svg>
                 <div class="chatInfo">
