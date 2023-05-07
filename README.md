@@ -96,7 +96,9 @@ ___
         **Caddy 2.6.5及之后版本支持https_proxy和http_proxy环境变量，如服务器无法正常访问`api.openai.com`，可先设置代理环境变量**
 
 ## PWA应用
-部署文件[icon.png](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/icon.png)，[manifest.json](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/manifest.json)，[sw.js](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/sw.js)到index.html同目录下，即可支持PWA应用
+部署文件[icon.png](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/icon.png)，[manifest.json](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/manifest.json)，[sw.js](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/sw.js)到index.html同目录下，即可支持PWA应用。
+
+部署PWA应用后，**更新index.html需同步更新sw.js**，不然无法更新成功。
 
 ## 自定义选项
 
