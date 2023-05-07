@@ -1,11 +1,10 @@
-const cacheName = "caches-v0.9.0";
+const cacheName = "caches-v0.9.1";
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches.open(cacheName)
       .then(cache => cache.addAll(["./", "./index.html", "./icon.png"]))
-      .then(() => self.skipWaiting())
-  );
+  )
 });
 
 self.addEventListener("fetch", (e) => {
@@ -23,7 +22,7 @@ self.addEventListener("fetch", (e) => {
         return response;
       })
     })
-  );
+  )
 });
 
 self.addEventListener("activate", (e) => {
@@ -35,9 +34,7 @@ self.addEventListener("activate", (e) => {
             return caches.delete(key);
           }
         })
-      );
-    }).then(() => {
-      return self.clients.claim();
+      )
     })
-  );
+  )
 });

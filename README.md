@@ -40,6 +40,11 @@ ___
     - 使用nginx，示例配置如下
 
         ```
+        map $http_authorization $gptauth {
+            default  $http_authorization;
+            #配置默认API密钥，在Bearer 后填写。如只允许在网页端设置API密钥使用，请删除下一行。
+            ""       "Bearer sk-your-token";
+        }
         server {
             listen       80;
             server_name  example.com;
@@ -55,10 +60,9 @@ ___
                 proxy_set_header Host api.openai.com;
                 proxy_ssl_name api.openai.com;
                 proxy_ssl_server_name on;
-                #注意Bearer 后改为正确的token。如需网页设置自定义API key使用，则注释掉下一行
-                proxy_set_header  Authorization "Bearer sk-your-token";
+                proxy_set_header Authorization $gptauth;
                 proxy_pass_header Authorization;
-                #流式传输，不关闭buffering缓存会卡顿卡死，必须配置！！！
+                #流式传输，不关闭buffering缓存会卡死，必须配置！！！
                 proxy_buffering off;
             }
             #与上面反代接口的路径保持一致
@@ -98,7 +102,9 @@ ___
 ## PWA应用
 部署文件[icon.png](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/icon.png)，[manifest.json](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/manifest.json)，[sw.js](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/sw.js)到index.html同目录下，即可支持PWA应用。
 
-部署PWA应用后，**更新index.html需同步更新sw.js**，不然无法更新成功。
+**注意：如果重命名index.html使用，则sw.js文件中`./index.html`也需修改。**
+
+**部署PWA应用后，更新html文件需同步更新sw.js，不然无法更新成功。**
 
 ## 自定义选项
 
