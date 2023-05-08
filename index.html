@@ -143,7 +143,7 @@
             }
 
             .sysDetail {
-                margin-left: 8px;
+                margin-left: 12px;
                 margin-top: 5px;
             }
         }
@@ -356,7 +356,7 @@
 
         .response>.chatAvatar {
             background: #10a37f;
-            top: 18px;
+            top: 15px;
         }
 
         .chatAvatar>img {
@@ -1316,8 +1316,8 @@
         }
 
         #voiceRecIcon>svg {
-            width: 28px;
-            height: 28px;
+            width: 25px;
+            height: 25px;
             color: #b0b0b0;
             position: absolute;
             top: 50%;
@@ -3255,7 +3255,8 @@
                 try {
                     const useRes = await fetch(urlUsage + `start_date=${formatDate(subDate)}&end_date=${formatDate(nowDate)}`, {
                         headers,
-                        signal: useCtrl.signal
+                        signal: useCtrl.signal,
+                        credentials: "omit"
                     });
                     const useJson = await useRes.json();
                     usedData = useJson.total_usage / 100;
@@ -3285,7 +3286,8 @@
                         return new Promise((res, rej) => {
                             fetch(urlUsage + url, {
                                 headers,
-                                signal: useCtrl.signal
+                                signal: useCtrl.signal,
+                                credentials: "omit"
                             }).then(response => {
                                 response.json().then(json => res(json.total_usage));
                             }).catch(() => {
@@ -3313,7 +3315,7 @@
                 let [total, used, isSub, exp] = res;
                 usedQuotaBar.style.width = (used / total * 100).toFixed(2) + "%";
                 usedQuotaBar.parentElement.classList.remove("expiredBar");
-                usedQuota.textContent = "$" + parseFloat(used.toFixed(2));
+                usedQuota.textContent = "$" + used.toFixed(2);
                 let remain = total - used;
                 availableQuota.textContent = "$" + Math.floor(remain * 100) / 100;
                 if (isSub) {
@@ -5196,7 +5198,8 @@
                         temperature: roleTemp,
                         top_p: roleNature
                     }),
-                    signal: controller.signal
+                    signal: controller.signal,
+                    credentials: "omit"
                 });
                 clearTimeout(controllerId);
                 controllerId = void 0;
