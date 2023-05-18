@@ -153,6 +153,10 @@
                 display: block;
             }
 
+            .mainContent {
+                width: 100%;
+            }
+
             .nav {
                 position: absolute !important;
                 left: -250px;
@@ -3230,12 +3234,17 @@
             let headers = {"Content-Type": "application/json"};
             if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
             let subCtrl = new AbortController();
-            const subRes = await fetch(apiHost + "v1/dashboard/billing/subscription", {
-                headers,
-                signal: subCtrl.signal,
-                credentials: "omit"
-            });
-            if (subRes.status !== 200) {
+            setTimeout(() => {
+                subCtrl.abort();
+            }, 20000);
+            let subRes;
+            try {
+                subRes = await fetch(apiHost + "v1/dashboard/billing/subscription", {
+                    headers,
+                    signal: subCtrl.signal
+                });
+                if (subRes.status !== 200) return;
+            } catch (e) {
                 return;
             }
             const subData = await subRes.json();
@@ -3255,8 +3264,7 @@
                 try {
                     const useRes = await fetch(urlUsage + `start_date=${formatDate(subDate)}&end_date=${formatDate(nowDate)}`, {
                         headers,
-                        signal: useCtrl.signal,
-                        credentials: "omit"
+                        signal: useCtrl.signal
                     });
                     const useJson = await useRes.json();
                     usedData = useJson.total_usage / 100;
@@ -3286,8 +3294,7 @@
                         return new Promise((res, rej) => {
                             fetch(urlUsage + url, {
                                 headers,
-                                signal: useCtrl.signal,
-                                credentials: "omit"
+                                signal: useCtrl.signal
                             }).then(response => {
                                 response.json().then(json => res(json.total_usage));
                             }).catch(() => {
@@ -3779,6 +3786,11 @@
                 })
                 let len = idxs.filter(j => {return activeChatIdx > j}).length;
                 if (len) activeChatIdx -= len;
+                if (activeChatIdx === -1) {
+                    addNewChat();
+                    activeChatIdx = 0;
+                    chatEleAdd(activeChatIdx);
+                }
                 updateChats();
                 activeChat();
             }
@@ -5155,8 +5167,6 @@
                 notyf.error("请求超时，请稍后重试！");
                 stopLoading();
             }, 30000);
-            let headers = {"Content-Type": "application/json"};
-            if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
             let isRefresh = refreshIdx !== void 0;
             if (isRefresh) {
                 currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
@@ -5175,19 +5185,21 @@
                     endSpeak();
                     autoVoiceDataIdx = currentVoiceIdx = idx;
                 }
-            }
-            let dataSlice;
-            if (long) {
-                idx = isRefresh ? refreshIdx : data.length - 1;
-                dataSlice = [data[idx - 1], data[idx]];
-                if (systemRole) {dataSlice.unshift(data[0]);}
-            } else if (enableCont) {
-                dataSlice = data.slice(0, idx);
-            } else {
-                dataSlice = [data[idx - 1]];
-                if (systemRole) {dataSlice.unshift(data[0]);}
-            }
+            };
             try {
+                let dataSlice;
+                if (long) {
+                    idx = isRefresh ? refreshIdx : data.length - 1;
+                    dataSlice = [data[idx - 1], data[idx]];
+                    if (systemRole) {dataSlice.unshift(data[0]);}
+                } else if (enableCont) {
+                    dataSlice = data.slice(0, idx);
+                } else {
+                    dataSlice = [data[idx - 1]];
+                    if (systemRole) {dataSlice.unshift(data[0]);}
+                }
+                let headers = {"Content-Type": "application/json"};
+                if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
                 const res = await fetch(apiHost + API_URL, {
                     method: "POST",
                     headers,
@@ -5198,8 +5210,7 @@
                         temperature: roleTemp,
                         top_p: roleNature
                     }),
-                    signal: controller.signal,
-                    credentials: "omit"
+                    signal: controller.signal
                 });
                 clearTimeout(controllerId);
                 controllerId = void 0;
