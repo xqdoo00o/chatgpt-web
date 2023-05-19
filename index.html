@@ -5236,6 +5236,7 @@
                         if (!done) {
                             value = decoder.decode(value);
                             let chunks = value.match(/[^\n]+/g);
+                            if (!chunks) return readChunk();
                             for (let i = 0; i < chunks.length; i++) {
                                 let chunk = chunks[i];
                                 if (chunk) {
