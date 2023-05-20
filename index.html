@@ -1110,6 +1110,7 @@
 
         .allList {
             width: 100%;
+            position: relative;
             flex: 1;
             overflow-y: auto;
         }
@@ -1175,12 +1176,18 @@
             pointer-events: none;
         }
 
-        .headLi .folderInfo,
+        .headLi .folderInfo {
+            position: absolute;
+            left: 40px;
+            height: 40px;
+            max-width: calc(100% - 115px);
+        }
+
         .chatLi .chatInfo {
             position: absolute;
-            left: 45px;
+            left: 40px;
             height: 40px;
-            max-width: calc(100% - 100px);
+            max-width: calc(100% - 90px);
         }
 
         .folderInfo *,
@@ -1219,7 +1226,21 @@
             visibility: hidden;
             display: flex;
             color: #777;
-            margin-right: 5px;
+            margin-right: 2px;
+        }
+
+        .folderLi .chatLi>svg {
+            margin-left: 5px;
+        }
+
+        .folderLi .chatLi .chatInfo {
+            left: 35px;
+            max-width: calc(100% - 85px);
+        }
+
+        .folderLi .chatLi #activeChatEdit {
+            left: 32px;
+            width: calc(100% - 60px)
         }
 
         .folderLi:hover {
@@ -1244,13 +1265,14 @@
             visibility: visible !important;
         }
 
+        .folderOption>svg:hover,
         .chatOption>svg:hover {
             color: #444;
         }
 
         #activeChatEdit {
             position: absolute;
-            left: 42px;
+            left: 37px;
             font-size: 16px;
             border-radius: 2px;
             color: var(--chat-text-color);
@@ -1260,7 +1282,7 @@
             pointer-events: auto;
             height: 24px;
             line-height: 24px;
-            width: calc(100% - 75px);
+            width: calc(100% - 65px);
             padding: 20px 3px;
             z-index: 1;
         }
@@ -3581,7 +3603,7 @@
             }
             mdOption.onclick = mdOptionEvent;
         }
-        let allEle = chatListEle.parentElement;
+        let allListEle = chatListEle.parentElement;
         let folderData = [];
         let chatsData = [];
         let chatIdxs = [];
@@ -3641,7 +3663,7 @@
         folderListEle.ondragenter = chatListEle.ondragenter = function (ev) {
             ev.preventDefault();
             if (ev.target === dragLi) return;
-            allEle.querySelectorAll(".dragingChat").forEach(ele => {
+            allListEle.querySelectorAll(".dragingChat").forEach(ele => {
                 ele.classList.remove("dragingChat");
             })
             if (dragType === "chat") {
@@ -3716,7 +3738,7 @@
         }
         folderListEle.ondragend = chatListEle.ondragend = (ev) => {
             document.getElementsByClassName("dragingLi")[0].classList.remove("dragingLi");
-            allEle.querySelectorAll(".dragingChat").forEach(ele => {
+            allListEle.querySelectorAll(".dragingChat").forEach(ele => {
                 ele.classList.remove("dragingChat");
             })
             dragType = dragIdx = dragLi = void 0;
@@ -3744,9 +3766,7 @@
             }
             if (folderNewIdx === -1) {
                 for (let i = folderIdx + 1; i < folderData.length; i++) {
-                    if (folderData[i].idxs.length) {
-                        folderNewIdx = i;
-                    }
+                    if (folderData[i].idxs.length) folderNewIdx = i;
                 }
             }
             if (folderNewIdx !== -1) {
@@ -3795,6 +3815,18 @@
                 activeChat();
             }
         }
+        const folderAddChat = (folderIdx, headEle) => {
+            endAll();
+            let chat = {name: "新的会话", data: []};
+            chatsData.push(chat);
+            activeChatIdx = chatsData.length - 1;
+            folderData[folderIdx].idxs.push(activeChatIdx);
+            let ele = chatEleAdd(activeChatIdx, false)
+            headEle.nextElementSibling.appendChild(ele);
+            updateFolder(folderIdx);
+            updateChats();
+            activeChat(ele);
+        }
         const folderEleEvent = function (ev) {
             ev.preventDefault();
             ev.stopPropagation();
@@ -3809,6 +3841,8 @@
                         parent.classList.add("activeFolder");
                     }
                 }
+            } else if (ev.target.dataset.type === "folderAddChat") {
+                folderAddChat(idx, this);
             } else if (ev.target.dataset.type === "folderEdit") {
                 toEditName(idx, this, 0);
             } else if (ev.target.dataset.type === "folderDel") {
@@ -3834,8 +3868,11 @@
                     <div class="folderName"></div>
                     <div class="folderNum"></div>
                 </div>
-                <div class="folderOption"><svg data-type="folderEdit" style="margin-right:2px" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
-                <svg data-type="folderDel" width="24" height="24" role="img"><title>删除</title><use xlink:href="#delIcon" /></svg></div>`
+                <div class="folderOption">
+                    <svg data-type="folderAddChat" width="24" height="24" role="img"><title>新建会话</title><use xlink:href="#addIcon" /></svg>
+                    <svg data-type="folderEdit" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
+                    <svg data-type="folderDel" width="24" height="24" role="img"><title>删除</title><use xlink:href="#delIcon" /></svg>
+                </div>`
             headEle.children[1].children[0].textContent = folder.name;
             headEle.children[1].children[1].textContent = folder.idxs.length + "个会话";
             folderEle.appendChild(headEle);
@@ -3877,7 +3914,7 @@
                     <div class="chatName"></div>
                     <div class="chatPre"></div>
                 </div>
-                <div class="chatOption"><svg data-type="chatEdit" style="margin-right:2px" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
+                <div class="chatOption"><svg data-type="chatEdit" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
                 <svg data-type="chatDel" width="24" height="24" role="img"><title>删除</title><use xlink:href="#delIcon" /></svg></div>`
             if (appendChat) chatListEle.appendChild(chatEle);
             initChatEle(idx, chatEle);
@@ -3892,7 +3929,7 @@
         };
         const delChat = (idx, ele, folderIdx, inFolderIdx) => {
             if (confirmAction("是否删除会话?")) {
-                endAll();
+                if (idx === activeChatIdx) endAll();
                 if (folderIdx !== void 0) {
                     let folder = folderData[folderIdx];
                     folder.idxs.splice(inFolderIdx, 1);
@@ -3917,9 +3954,7 @@
                         } else {
                             let folderNewIdx = -1;
                             for (let i = folderData.length - 1; i >= 0; i--) {
-                                if (folderData[i].idxs.length) {
-                                    folderNewIdx = i;
-                                }
+                                if (folderData[i].idxs.length) folderNewIdx = i;
                             }
                             if (folderNewIdx !== -1) {
                                 activeChatIdx = folderData[folderNewIdx].idxs[0];
@@ -3935,9 +3970,7 @@
                 folderData.forEach(item => {
                     if (item.idxs.length) {
                         item.idxs.forEach((i, ix) => {
-                            if (i > idx) {
-                                item.idxs[ix] = i - 1;
-                            }
+                            if (i > idx) item.idxs[ix] = i - 1;
                         })
                     }
                 })
@@ -3989,6 +4022,7 @@
                 inputEle.value = folderData[idx].name;
                 operateFolderIdx = idx;
             }
+            inputEle.setSelectionRange(0, 0);
             inputEle.focus();
             inputEle.onkeydown = (e) => {
                 if (e.keyCode === 13) {
@@ -4060,10 +4094,10 @@
         }
         const activeChat = (ele) => {
             data = chatsData[activeChatIdx]["data"];
-            allEle.querySelectorAll(".activeChatLi").forEach(ele => {
+            allListEle.querySelectorAll(".activeChatLi").forEach(ele => {
                 ele.classList.remove("activeChatLi");
             })
-            allEle.querySelectorAll(".activeFolder").forEach(ele => {
+            allListEle.querySelectorAll(".activeFolder").forEach(ele => {
                 ele.classList.remove("activeFolder")
             })
             if (!ele) ele = getChatEle(activeChatIdx);
@@ -4094,6 +4128,8 @@
                     }
                 }
             }
+            let top = ele.offsetTop + ele.offsetHeight - allListEle.clientHeight;
+            if (allListEle.scrollTop < top) allListEle.scrollTop = top;
             localStorage.setItem("activeChatIdx", activeChatIdx);
         };
         newChatEle.onclick = () => {
@@ -4102,7 +4138,6 @@
             activeChatIdx = chatsData.length - 1;
             chatEleAdd(activeChatIdx);
             activeChat(chatListEle.lastElementChild);
-            chatListEle.parentElement.scrollTop = chatListEle.parentElement.scrollHeight;
         };
         const initChats = () => {
             let localChats = localStorage.getItem("chats");
