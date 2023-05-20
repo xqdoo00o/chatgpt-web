@@ -94,10 +94,12 @@
             top: 0;
             background-color: rgba(0, 0, 0, .3);
             z-index: 90;
-            opacity: 0;
-            visibility: hidden;
             cursor: pointer;
-            transition: all 120ms ease-in-out;
+            visibility: hidden;
+            opacity: 0;
+            -webkit-tap-highlight-color: transparent;
+            transition: all 250ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @media screen and (max-width: 1188px) and (max-height: 888px) {
@@ -118,7 +120,8 @@
             .nav {
                 position: relative;
                 margin-left: -250px;
-                transition: margin-left 120ms ease-in-out;
+                transition: margin-left 250ms;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .show-nav .nav {
@@ -160,7 +163,8 @@
             .nav {
                 position: absolute !important;
                 left: -250px;
-                transition: left 120ms ease-in-out;
+                transition: left 250ms;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .show-nav .nav {
@@ -169,8 +173,8 @@
             }
 
             .show-nav .overlay {
-                opacity: 1;
                 visibility: visible;
+                opacity: 1;
             }
 
             #sysDialog {
@@ -231,6 +235,7 @@
             padding: 5px 7px;
             border-radius: 4px;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .top_menu .toggler:hover {
@@ -330,14 +335,6 @@
         .allList::-webkit-scrollbar-thumb:hover,
         .sysDetail::-webkit-scrollbar-thumb:hover {
             background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .messages .message {
-            clear: both;
-            overflow: hidden;
-            margin-bottom: 20px;
-            transition: all 0.5s linear;
-            opacity: 0;
         }
 
         #chatlog {
@@ -449,7 +446,7 @@
             color: #bbb;
             outline: none;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: color 250ms;
         }
 
         .m-mdic-copy-wrapper button.u-mdic-copy-btn:hover {
@@ -500,7 +497,7 @@
             border: none;
             outline: none;
             resize: none;
-            background: var(--main-back);
+            background-color: var(--main-back);
             color: var(--chat-text-color);
             height: 47px;
             font-size: 16px;
@@ -508,11 +505,11 @@
             padding: 13px 0 13px 16px;
             width: 100%;
             display: block;
-            transition: background 0.3s;
+            transition: background-color 250ms;
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text:focus {
-            background: var(--code-color);
+            background-color: var(--code-color);
         }
 
         .bottom_wrapper .message_input_wrapper .message_input_text::-webkit-scrollbar {
@@ -532,7 +529,7 @@
             padding: 0;
             color: #fff;
             cursor: pointer;
-            transition: all 0.2s linear;
+            transition: all 250ms;
             text-align: center;
             float: right;
             position: absolute;
@@ -628,8 +625,8 @@
             border-radius: 30px;
             cursor: pointer;
             position: relative;
-            -webkit-transition: 0.3s ease;
-            transition: 0.3s ease;
+            -webkit-transition: all 250ms;
+            transition: all 250ms;
         }
 
         .switch-slide-label:after {
@@ -645,13 +642,14 @@
             top: 1px;
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
-            -webkit-transition: 0.3s ease;
-            transition: 0.3s ease;
+            -webkit-transition: all 250ms;
+            transition: all 250ms;
         }
 
         .switch-slide input:checked+label {
             background: #99c959;
-            transition: 0.3s ease;
+            -webkit-transition: all 250ms;
+            transition: all 250ms;
         }
 
         .switch-slide input:checked+label:after {
@@ -1508,6 +1506,7 @@
             justify-content: center;
             align-items: center;
             background: rgba(0, 0, 0, .4);
+            -webkit-tap-highlight-color: transparent;
         }
 
         #sysDialog {
