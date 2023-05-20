@@ -3001,8 +3001,14 @@
                 })
             }
             voices.sort((a, b) => {
-                if (a.lang.slice(0, 2) === b.lang.slice(0, 2)) return 0;
-                return (a.lang < b.lang) ? 1 : -1; // 中文在前"z"
+                if (a.lang.slice(0, 2) === b.lang.slice(0, 2)) {
+                    if (a.lang.slice(0, 2) === "zh") {
+                        return (a.lang === b.lang) ? 0 : (a.lang > b.lang) ? 1 : -1; // zh-CN 在前
+                    } else {
+                        return 0
+                    }
+                }
+                return (a.lang < b.lang) ? 1 : -1; // 中文"z"在前
             });
             voices.map(item => {
                 if (item.name.match(/^(Google |Microsoft )/)) {
