@@ -16,6 +16,15 @@
     <link rel="apple-touch-icon" href="icon.png" sizes="144x144">
     <title>ChatGPT</title>
     <style>
+        .requestBody,
+        .response .markdown-body {
+            max-width: calc(100% - 88px);
+        }
+
+        .bottom_wrapper {
+            max-width: 100%;
+        }
+
         * {
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
@@ -342,22 +351,25 @@
             text-align: start;
         }
 
-        #chatlog>div {
-            padding: 18px 30px 18px 54px;
-        }
-
         .chatAvatar {
-            position: absolute;
-            top: 14px;
-            left: 13px;
+            margin: 14px 14px 13px 13px;
             width: 30px;
             height: 30px;
+            flex-shrink: 0;
             border-radius: 2px;
         }
 
         .response>.chatAvatar {
-            background: #10a37f;
-            top: 15px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .response .gpt3Avatar {
+            background: #19c37d;
+        }
+
+        .response .gpt4Avatar {
+            background: #ab68ff;
         }
 
         .chatAvatar>img {
@@ -375,18 +387,26 @@
 
         #chatlog .request {
             position: relative;
+            display: flex;
+            justify-content: center;
         }
 
         .requestBody {
             white-space: pre-wrap;
+            margin: 18px 0;
+            flex: 1;
         }
 
         #chatlog .response {
             background: var(--response-color);
             position: relative;
+            display: flex;
+            justify-content: center;
         }
 
         .response .markdown-body {
+            margin: 18px 0;
+            flex: 1;
             background: var(--response-color) !important;
         }
 
@@ -483,6 +503,7 @@
             position: relative;
             width: 100%;
             padding: 10px 10px;
+            margin: 0 auto;
         }
 
         .bottom_wrapper .message_input_wrapper {
@@ -738,7 +759,7 @@
         #speechOption>div,
         #speechDetail>div,
         #recOption div {
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         #voiceRecSetting select,
@@ -771,7 +792,7 @@
             -webkit-appearance: none;
             appearance: none;
             display: block;
-            margin: 6px 0 3px 0;
+            margin: 4px 0 3px 0;
             height: 8px;
             background: var(--text-color);
             border-radius: 5px;
@@ -799,6 +820,41 @@
         .justSetLine {
             display: flex;
             justify-content: space-between;
+        }
+
+        .justSetBtn {
+            height: 32px;
+            border-radius: 3px;
+            line-height: 32px;
+            background: var(--lighter-active);
+            text-align: center;
+            padding: 0px 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .justSetBtn:hover {
+            background-color: var(--sel-btn);
+        }
+
+        .justSetBtn>svg {
+            color: var(--svg-color);
+        }
+
+        .readyTestVoice>div:not(:first-child) {
+            display: none;
+        }
+
+        .pauseTestVoice>div:nth-child(1),
+        .pauseTestVoice>div:nth-child(3) {
+            display: none;
+        }
+
+        .resumeTestVoice>div:nth-child(1),
+        .resumeTestVoice>div:nth-child(2) {
+            display: none;
         }
 
         .presetSelect>div {
@@ -832,11 +888,9 @@
         }
 
         .mdOption {
-            position: absolute;
-            right: 0px;
-            top: 0;
+            flex-shrink: 0;
+            position: relative;
             width: 30px;
-            height: 100%;
             pointer-events: none;
         }
 
@@ -1941,6 +1995,9 @@
                 <path fill="currentColor"
                     d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.59 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4m6 14c0 .5-2.13 2-6 2s-6-1.5-6-2v-2.23c1.61.78 3.72 1.23 6 1.23s4.39-.45 6-1.23V17m0-4.55c-1.3.95-3.58 1.55-6 1.55s-4.7-.6-6-1.55V9.64c1.47.83 3.61 1.36 6 1.36s4.53-.53 6-1.36v2.81M12 9C8.13 9 6 7.5 6 7s2.13-2 6-2s6 1.5 6 2s-2.13 2-6 2Z" />
             </symbol>
+            <symbol viewBox="0 0 24 24" id="stopIcon">
+                <path fill="currentColor" d="M6 5h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+            </symbol>
         </svg>
     </div>
     <div id="loadMask">
@@ -2039,6 +2096,7 @@
                             <select id="preSetModel">
                                 <option value="gpt-3.5-turbo">gpt-3.5</option>
                                 <option value="gpt-4">gpt-4</option>
+                                <option value="gpt-4-browsing">gpt-4-联网</option>
                                 <option value="gpt-4-32k">gpt-4-32k</option>
                             </select>
                         </div>
@@ -2080,6 +2138,14 @@
                             <div class="selectDef">
                                 <span>重复保守</span>
                                 <span>胡言乱语</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>会话宽度</span>
+                            <input type="range" id="convWidth" min="30" max="100" value="100" step="1" />
+                            <div class="selectDef">
+                                <span>30%</span>
+                                <span>100%</span>
                             </div>
                         </div>
                         <div>
@@ -2141,6 +2207,37 @@
                                 </div>
                                 <select id="preSetSpeech">
                                 </select>
+                            </div>
+                            <div>
+                                <div class="justSetLine">
+                                    <input class="inputTextClass" id="testVoiceText" value="你好，很高兴认识你。" />
+                                </div>
+                                <div class="justSetLine readyTestVoice" id="testVoiceBtn" style="margin-top: 6px;">
+                                    <div class="justSetBtn" onclick="startTestVoice()">
+                                        <svg width="20" height="20">
+                                            <use xlink:href="#readyVoiceIcon" />
+                                        </svg>
+                                        <span>播放</span>
+                                    </div>
+                                    <div class="justSetBtn" onclick="pauseTestVoice()">
+                                        <svg width="20" height="20">
+                                            <use xlink:href="#pauseVoiceIcon" />
+                                        </svg>
+                                        <span>暂停</span>
+                                    </div>
+                                    <div class="justSetBtn" onclick="resumeTestVoice()">
+                                        <svg width="20" height="20">
+                                            <use xlink:href="#resumeVoiceIcon" />
+                                        </svg>
+                                        <span>恢复</span>
+                                    </div>
+                                    <div class="justSetBtn" style="margin-right: 130px" onclick="stopTestVoice()">
+                                        <svg width="20" height="20">
+                                            <use xlink:href="#stopIcon" />
+                                        </svg>
+                                        <span>停止</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="justSetLine presetSelect" id="azureExtra" style="display:none;">
                                 <div class="presetModelCls">
@@ -2489,6 +2586,7 @@
         const voiceRecSetEle = document.getElementById("voiceRecSetting");
         let voiceType = 1; // 设置 0: 提问语音，1：回答语音
         let voiceRole = []; // 语音
+        let voiceTestText; // 测试语音文本
         let voiceVolume = []; //音量
         let voiceRate = []; // 语速
         let voicePitch = []; // 音调
@@ -3181,6 +3279,13 @@
                     }
                 };
             };
+            const voiceTestEle = document.getElementById("testVoiceText");
+            let localTestVoice = localStorage.getItem("voiceTestText");
+            voiceTestText = voiceTestEle.value = localTestVoice || voiceTestEle.getAttribute("value");
+            voiceTestEle.oninput = () => {
+                voiceTestText = voiceTestEle.value;
+                localStorage.setItem("voiceTestText", voiceTestText);
+            }
             const contVoiceEle = document.getElementById("enableContVoice");
             let localCont = localStorage.getItem("enableContVoice");
             contVoiceEle.checked = enableContVoice = (localCont || contVoiceEle.getAttribute("checked")) === "true";
@@ -3201,8 +3306,8 @@
         speechServiceEle.dispatchEvent(new Event("change"));
     </script>
     <script crossorigin="anonymous" src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
-    <script crossorigin="anonymous" src="//cdn.staticfile.org/highlight.js/11.7.0/highlight.min.js"></script>
-    <script crossorigin="anonymous" src="//cdn.staticfile.org/KaTeX/0.16.6/katex.min.js"></script>
+    <script crossorigin="anonymous" src="//cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
+    <script crossorigin="anonymous" src="//cdn.staticfile.org/KaTeX/0.16.7/katex.min.js"></script>
     <script crossorigin="anonymous" src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
     <script crossorigin="anonymous"
         src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
@@ -3221,10 +3326,11 @@
         let systemRole; // 自定义系统角色
         let roleNature; // 角色性格
         let roleTemp; // 回答质量
+        let convWidth = []; // 会话宽度，0:窗口宽度，1:全屏宽度
+        let textSpeed; // 打字机速度，越小越快
         let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
         let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
         let longReplyFlag;
-        let textSpeed; // 打字机速度，越小越快
         let voiceIns; // Audio or SpeechSynthesisUtterance
         const supportMSE = !!window.MediaSource; // 是否支持MSE（除了ios应该都支持）
         let voiceMIME = "audio/mpeg";
@@ -3242,6 +3348,11 @@
             if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 128) {
                 messagsEle.scrollTo(0, messagsEle.scrollHeight)
             }
+        }
+        const forceRepaint = (ele) => {
+            ele.style.display = "none";
+            ele.offsetHeight;
+            ele.style.display = null;
         }
         const escapeTextarea = document.createElement("textarea");
         const getEscape = str => {
@@ -3490,22 +3601,24 @@
                             speechEvent(idx);
                         }
                     } else if (classList.contains("pauseVoice")) {
-                        if (existVoice >= 2) {
-                            if (voiceIns) voiceIns.pause();
-                        } else {
-                            speechSynthesis.pause();
-                            classList.remove("readyVoice");
-                            classList.remove("pauseVoice");
-                            classList.add("resumeVoice");
+                        if (voiceIns) {
+                            if (voiceIns instanceof Audio) voiceIns.pause();
+                            else {
+                                speechSynthesis.pause();
+                                classList.remove("readyVoice");
+                                classList.remove("pauseVoice");
+                                classList.add("resumeVoice");
+                            }
                         }
                     } else {
-                        if (existVoice >= 2) {
-                            if (voiceIns) voiceIns.play();
-                        } else {
-                            speechSynthesis.resume();
-                            classList.remove("readyVoice");
-                            classList.remove("resumeVoice");
-                            classList.add("pauseVoice");
+                        if (voiceIns) {
+                            if (voiceIns instanceof Audio) voiceIns.play();
+                            else {
+                                speechSynthesis.resume();
+                                classList.remove("readyVoice");
+                                classList.remove("resumeVoice");
+                                classList.add("pauseVoice");
+                            }
                         }
                     }
                 } else if (id === "editMd") {
@@ -3553,6 +3666,7 @@
                         if (confirmAction("是否删除此消息?")) {
                             chatlog.removeChild(chatlog.children[idx]);
                             idx = systemRole ? idx + 1 : idx;
+                            let firstIdx = data.findIndex(item => {return item.role === "assistant"});
                             if (currentVoiceIdx !== void 0) {
                                 if (currentVoiceIdx === idx) {endSpeak()}
                                 else if (currentVoiceIdx > idx) {currentVoiceIdx--}
@@ -3562,6 +3676,7 @@
                                 else if (editingIdx > idx) {editingIdx--}
                             }
                             data.splice(idx, 1);
+                            if (firstIdx === idx) updateChatPre();
                             updateChats();
                         }
                     }
@@ -3573,9 +3688,10 @@
                 }
             }
         }
-        const formatMdEle = (ele) => {
+        const formatMdEle = (ele, model) => {
             let avatar = document.createElement("div");
             avatar.className = "chatAvatar";
+            if (ele.className === "response") avatar.classList.add((model && model.startsWith("gpt-4")) ? "gpt4Avatar" : "gpt3Avatar");
             avatar.innerHTML = ele.className === "request" ? `<img src="${userAvatar}" />` : `<svg width="22" height="22"><use xlink:href="#aiIcon"></use></svg>`;
             ele.appendChild(avatar);
             let realMd = document.createElement("div");
@@ -3604,7 +3720,7 @@
                 mdOption.innerHTML += `<div class="voiceCls readyVoice" data-id="voiceMd">
                 <svg width="21" height="21" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
                 <svg width="21" height="21" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
-                <svg width="21" height="21" role="img"><title>继续</title><use xlink:href="#resumeVoiceIcon" /></svg>
+                <svg width="21" height="21" role="img"><title>恢复</title><use xlink:href="#resumeVoiceIcon" /></svg>
                 </div>`
             }
             mdOption.onclick = mdOptionEvent;
@@ -4074,10 +4190,10 @@
             localStorage.setItem("chatIdxs", JSON.stringify(chatIdxs));
             localStorage.setItem("folders", JSON.stringify(folderData));
         }
-        const createConvEle = (className, append = true) => {
+        const createConvEle = (className, append = true, model) => {
             let div = document.createElement("div");
             div.className = className;
-            formatMdEle(div);
+            formatMdEle(div, model);
             if (append) {
                 chatlog.appendChild(div);
             }
@@ -4130,7 +4246,7 @@
                     if (data[i].role === "user") {
                         createConvEle("request").children[1].textContent = data[i].content;
                     } else {
-                        createConvEle("response").children[1].innerHTML = md.render(data[i].content) || "<br />";
+                        createConvEle("response", true, data[i].model).children[1].innerHTML = md.render(data[i].content) || "<br />";
                     }
                 }
             }
@@ -4349,7 +4465,7 @@
                 activeChat(chatListEle.firstElementChild);
             }
         };
-        let localSetKeys = ['modelVersion', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -4514,6 +4630,48 @@
                 localStorage.setItem("temp", tempEle.value);
             }
             tempEle.dispatchEvent(new Event("input"));
+            let isFull = false;
+            const convWEle = document.getElementById("convWidth");
+            const styleSheet = document.styleSheets[0];
+            convWEle.oninput = () => {
+                let type = isFull ? 1 : 0;
+                convWEle.style.backgroundSize = (convWEle.value - convWEle.min) * 100 / (convWEle.max - convWEle.min) + "% 100%";
+                convWidth[type] = parseInt(convWEle.value);
+                localStorage.setItem("convWidth" + type, convWEle.value);
+                styleSheet.deleteRule(0);
+                styleSheet.deleteRule(0);
+                styleSheet.insertRule(`.bottom_wrapper{max-width:${convWidth[type]}%;}`, 0);
+                styleSheet.insertRule(`.requestBody,.response .markdown-body{max-width:calc(${convWidth[type]}% - 88px);}`, 0);
+            }
+            const setConvValue = () => {
+                let type = isFull ? 1 : 0;
+                let localConv = localStorage.getItem("convWidth" + type);
+                convWEle.value = parseInt(localConv || (type ? "60" : "100"));
+                convWEle.dispatchEvent(new Event("input"));
+            }
+            const fullFunc = () => {
+                isFull = windowEle.classList.contains("full_window");
+                localStorage.setItem("fullWindow", isFull);
+                setConvValue();
+                toggleFull.title = isFull ? "窗口" : "全屏";
+                toggleFull.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", isFull ? "#collapseFullIcon" : "#expandFullIcon");
+            }
+            toggleFull.onclick = function () {
+                windowEle.classList.toggle("full_window");
+                fullFunc();
+            }
+            let localFull = localStorage.getItem("fullWindow");
+            if (localFull && localFull === "true") {
+                if (!windowEle.classList.contains("full_window")) {
+                    windowEle.classList.add("full_window");
+                    fullFunc();
+                }
+            } else if (windowEle.classList.contains("full_window")) {
+                windowEle.classList.remove("full_window");
+                fullFunc();
+            } else {
+                setConvValue();
+            }
             const speedEle = document.getElementById("textSpeed");
             let localSpeed = localStorage.getItem("textSpeed");
             speedEle.value = localSpeed || speedEle.getAttribute("value");
@@ -4549,7 +4707,7 @@
                 if (is) document.documentElement.setAttribute("data-theme", "dark");
                 else document.documentElement.removeAttribute("data-theme");
                 cssEle.href = cssEle.href.replace(is ? "light" : "dark", is ? "dark" : "light");
-                document.head.children[4].content = document.head.children[5].content = document.head.children[6].content = getComputedStyle(document.documentElement).getPropertyValue('--background');
+                document.head.children[4].content = document.head.children[5].content = document.head.children[6].content = getComputedStyle(document.documentElement).getPropertyValue("--background");
             }
             const handleAutoMode = (ele) => {
                 if (ele.checked) {
@@ -4662,26 +4820,6 @@
             darkMedia.onchange = e => {
                 if (themeMode === 2 && autoThemeMode) setDarkTheme(e.matches);
             };
-            const fullFunc = () => {
-                let isFull = windowEle.classList.contains("full_window");
-                localStorage.setItem("fullWindow", isFull);
-                toggleFull.title = isFull ? "窗口" : "全屏";
-                toggleFull.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", isFull ? "#collapseFullIcon" : "#expandFullIcon");
-            }
-            toggleFull.onclick = function () {
-                windowEle.classList.toggle("full_window");
-                fullFunc();
-            }
-            let localFull = localStorage.getItem("fullWindow");
-            if (localFull && localFull === "true") {
-                if (!windowEle.classList.contains("full_window")) {
-                    windowEle.classList.add("full_window");
-                    fullFunc();
-                }
-            } else if (windowEle.classList.contains("full_window")) {
-                windowEle.classList.remove("full_window");
-                fullFunc();
-            }
         };
         initSetting();
         document.getElementById("loadMask").style.display = "none";
@@ -4691,6 +4829,7 @@
                 dialogEle.style.display = "none";
                 document.removeEventListener("mousedown", closeEvent, true);
                 settingEle.classList.remove("showSetting");
+                stopTestVoice();
             }
         }
         settingEle.onmousedown = () => {
@@ -4755,14 +4894,12 @@
         const endSpeak = () => {
             resetSpeakIcon();
             currentVoiceIdx = void 0;
-            if (existVoice >= 2) {
-                if (voiceIns) {
-                    voiceIns.pause();
-                    voiceIns.currentTime = 0;
-                    URL.revokeObjectURL(voiceIns.src);
-                    voiceIns.removeAttribute("src");
-                    voiceIns.onended = voiceIns.onerror = null;
-                }
+            if (voiceIns && voiceIns instanceof Audio) {
+                voiceIns.pause();
+                voiceIns.currentTime = 0;
+                URL.revokeObjectURL(voiceIns.src);
+                voiceIns.removeAttribute("src");
+                voiceIns.onended = voiceIns.onerror = null;
                 sourceBuffer = void 0;
                 speechPushing = false;
                 if (voiceSocket && voiceSocket["pending"]) {
@@ -4791,7 +4928,7 @@
                     }
                     res();
                 }
-                if (existVoice >= 2) {
+                if (ins instanceof Audio) {
                     ins.onended = ins.onerror;
                     ins.play();
                 } else {
@@ -4869,7 +5006,12 @@
                             let key = downQuene[uuid]["key"];
                             let name = downQuene[uuid]["name"];
                             voiceData[key] = blob;
-                            downBlob(blob, name.slice(0, 16) + ".mp3");
+                            if (downQuene[uuid]["isTest"]) {
+                                testVoiceBlob = blob;
+                                playTestAudio();
+                            } else {
+                                downBlob(blob, name.slice(0, 16) + ".mp3");
+                            }
                         }
                     }
                     downSocket.onerror = () => {
@@ -4879,6 +5021,100 @@
                     return res();
                 }
             })
+        }
+        let testVoiceBlob;
+        let testVoiceIns;
+        const playTestAudio = () => {
+            if (existVoice >= 2) {
+                if (!testVoiceIns || testVoiceIns instanceof Audio === false) {
+                    testVoiceIns = new Audio();
+                    testVoiceIns.onended = testVoiceIns.onerror = () => {
+                        stopTestVoice();
+                    }
+                }
+                testVoiceIns.src = URL.createObjectURL(testVoiceBlob);
+                testVoiceIns.play();
+            } else {
+                speechSynthesis.speak(testVoiceIns);
+            }
+        }
+        const pauseTestVoice = () => {
+            if (testVoiceIns) {
+                if (testVoiceIns && testVoiceIns instanceof Audio) {
+                    testVoiceIns.pause();
+                } else {
+                    speechSynthesis.pause();
+                }
+            }
+            testVoiceBtn.className = "justSetLine resumeTestVoice";
+        }
+        const resumeTestVoice = () => {
+            if (testVoiceIns) {
+                if (testVoiceIns && testVoiceIns instanceof Audio) {
+                    testVoiceIns.play();
+                } else {
+                    speechSynthesis.resume();
+                }
+            }
+            testVoiceBtn.className = "justSetLine pauseTestVoice";
+        }
+        const stopTestVoice = () => {
+            if (testVoiceIns) {
+                if (testVoiceIns instanceof Audio) {
+                    testVoiceIns.pause();
+                    testVoiceIns.currentTime = 0;
+                    URL.revokeObjectURL(testVoiceIns.src);
+                    testVoiceIns.removeAttribute("src");
+                } else {
+                    speechSynthesis.cancel();
+                }
+            }
+            testVoiceBtn.className = "justSetLine readyTestVoice";
+        }
+        const startTestVoice = async () => {
+            testVoiceBtn.className = "justSetLine pauseTestVoice";
+            let volume = voiceVolume[voiceType];
+            let rate = voiceRate[voiceType];
+            let pitch = voicePitch[voiceType];
+            let content = voiceTestText;
+            if (existVoice >= 2) {
+                let voice = existVoice === 3 ? voiceRole[voiceType].ShortName : voiceRole[voiceType].Name;
+                let style = azureStyle[voiceType];
+                let role = azureRole[voiceType];
+                let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
+                let blob = voiceData[key];
+                if (blob) {
+                    testVoiceBlob = blob;
+                    playTestAudio();
+                } else {
+                    await initDownSocket();
+                    let currDate = getTime();
+                    let lang = voiceRole[voiceType].lang;
+                    let uuid = uuidv4();
+                    if (existVoice === 3) {
+                        downSocket.send(getWSPre(currDate, uuid));
+                    }
+                    downSocket.send(getWSAudio(currDate, uuid));
+                    downSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
+                    downSocket["pending"] = true;
+                    downQuene[uuid] = {};
+                    downQuene[uuid]["name"] = content;
+                    downQuene[uuid]["key"] = key;
+                    downQuene[uuid]["isTest"] = true;
+                    downQuene[uuid]["blob"] = [];
+                }
+            } else {
+                testVoiceIns = new SpeechSynthesisUtterance();
+                testVoiceIns.onend = testVoiceIns.onerror = () => {
+                    stopTestVoice();
+                }
+                testVoiceIns.voice = voiceRole[voiceType];
+                testVoiceIns.volume = volume;
+                testVoiceIns.rate = rate;
+                testVoiceIns.pitch = pitch;
+                testVoiceIns.text = content;
+                playTestAudio();
+            }
         }
         const downloadAudio = async (idx) => {
             if (existVoice < 2) {
@@ -4962,7 +5198,7 @@
             let style = azureStyle[type];
             let role = azureRole[type];
             if (existVoice >= 2) {
-                if (!voiceIns) {
+                if (!voiceIns || voiceIns instanceof Audio === false) {
                     voiceIns = new Audio();
                     voiceIns.onpause = pauseEv;
                     voiceIns.onplay = resumeEv;
@@ -5029,9 +5265,7 @@
                     }
                 }
             } else {
-                if (!voiceIns) {
-                    voiceIns = new SpeechSynthesisUtterance();
-                }
+                voiceIns = new SpeechSynthesisUtterance();
                 voiceIns.voice = voiceRole[type];
                 voiceIns.volume = volume;
                 voiceIns.rate = rate;
@@ -5074,7 +5308,7 @@
             if (existVoice >= 2) {
                 voiceContentQuene.push(content);
                 voiceEndFlagQuene.push(end);
-                if (!voiceIns) {
+                if (!voiceIns || voiceIns instanceof Audio === false) {
                     voiceIns = new Audio();
                     voiceIns.onpause = pauseEv;
                     voiceIns.onplay = resumeEv;
@@ -5207,12 +5441,12 @@
             controllerId = setTimeout(() => {
                 notyf.error("请求超时，请稍后重试！");
                 stopLoading();
-            }, 30000);
+            }, 120000);
             let isRefresh = refreshIdx !== void 0;
             if (isRefresh) {
                 currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
             } else if (!currentResEle) {
-                currentResEle = createConvEle("response");
+                currentResEle = createConvEle("response", true, modelVersion);
                 currentResEle.children[1].innerHTML = "<br />";
                 currentResEle.dataset.loading = true;
                 scrollToBottom();
@@ -5239,6 +5473,10 @@
                     dataSlice = [data[idx - 1]];
                     if (systemRole) {dataSlice.unshift(data[0]);}
                 }
+                dataSlice = dataSlice.map(item => {
+                    if (item.role === "assistant") return {role: item.role, content: item.content};
+                    else return item;
+                })
                 let headers = {"Content-Type": "application/json"};
                 if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
                 const res = await fetch(apiHost + API_URL, {
@@ -5258,7 +5496,7 @@
                 if (res.status !== 200) {
                     if (res.status === 401) {
                         notyf.error("API密钥错误或失效，请检查API密钥！")
-                    } else if (res.status === 400) {
+                    } else if (res.status === 400 || res.status === 413) {
                         notyf.error("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
                     } else if (res.status === 404) {
                         notyf.error("无权使用此模型，请打开设置选择其他GPT模型！");
@@ -5327,7 +5565,7 @@
                                 if (longReplyFlag) return streamGen(true);
                             } else {
                                 if (long) {data[data.length - 1].content = progressData}
-                                else {data.push({role: "assistant", content: progressData})}
+                                else {data.push({role: "assistant", content: progressData, model: modelVersion})}
                                 if (longReplyFlag) return streamGen(true);
                             }
                             stopLoading(false);
@@ -5349,6 +5587,12 @@
             stopEle.style.display = bool ? "flex" : "none";
             textInputEvent();
         };
+        const updateChatPre = () => {
+            let ele = activeChatEle.children[1].children[1];
+            let first = data.find(item => {return item.role === "assistant"});
+            ele.textContent = first ? first.content.slice(0, 30) : "";
+            forceRepaint(ele.parentElement)
+        }
         const stopLoading = (abort = true) => {
             stopEle.style.display = "none";
             if (abort) {
@@ -5357,23 +5601,13 @@
                 if (delayId) clearTimeout(delayId);
                 if (refreshIdx !== void 0) {data[refreshIdx].content = progressData}
                 else if (data[data.length - 1].role === "assistant") {data[data.length - 1].content = progressData}
-                else {data.push({role: "assistant", content: progressData})}
+                else {data.push({role: "assistant", content: progressData, model: modelVersion})}
                 if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx && progressData.length) {
                     let voiceText = progressData.slice(autoVoiceIdx);
                     autoSpeechEvent(voiceText, currentResEle, false, true);
                 }
             }
-            if (activeChatEle.children[1].children[1].textContent === "") {
-                let ele = activeChatEle.children[1].children[1];
-                let first = data.find(item => {return item.role === "assistant"});
-                if (first) {
-                    ele.textContent = first.content.slice(0, 30);
-                    // force repaint
-                    ele.parentElement.style.display = "none";
-                    ele.parentElement.offsetHeight;
-                    ele.parentElement.style.display = null;
-                }
-            }
+            if (activeChatEle.children[1].children[1].textContent === "") updateChatPre();
             updateChats();
             controllerId = delayId = refreshIdx = autoVoiceDataIdx = void 0;
             autoVoiceIdx = 0;
@@ -5397,8 +5631,8 @@
                         if (currentVoiceIdx !== void 0) {
                             if (currentVoiceIdx > idx) {currentVoiceIdx++}
                         }
-                        data.splice(idx + 1, 0, {role: "assistant", content: ""});
-                        chatlog.insertBefore(createConvEle("response", false), chatlog.children[eleIdx + 1]);
+                        data.splice(idx + 1, 0, {role: "assistant", content: "", model: modelVersion});
+                        chatlog.insertBefore(createConvEle("response", false, modelVersion), chatlog.children[eleIdx + 1]);
                     }
                     chatlog.children[eleIdx + 1].children[1].innerHTML = "<br />";
                     chatlog.children[eleIdx + 1].dataset.loading = true;
@@ -5450,6 +5684,7 @@
                     if (systemRole) {data.length = 1}
                     else {data.length = 0}
                     chatlog.innerHTML = "";
+                    updateChatPre();
                     updateChats();
                 }
             } else {
@@ -5457,9 +5692,9 @@
             }
         }
     </script>
-    <link crossorigin="anonymous" href="//cdn.staticfile.org/highlight.js/11.7.0/styles/github.min.css"
+    <link crossorigin="anonymous" href="//cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
         rel="stylesheet">
-    <link crossorigin="anonymous" href="//cdn.staticfile.org/KaTeX/0.16.6/katex.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="//cdn.staticfile.org/KaTeX/0.16.7/katex.min.css" rel="stylesheet">
     <link crossorigin="anonymous" href="//npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css" rel="stylesheet">
     <script defer>
         const downRoleController = new AbortController();

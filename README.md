@@ -110,7 +110,7 @@ ___
 
 - 左边栏支持，搜索会话，新建/重命名/删除(会话/文件夹)，浅色/深色/自动主题模式，导出/导入/重置会话和设置数据，显示API额度，显示本地存储。
 
-- 可选GPT模型，默认gpt-3.5，当前使用gpt-4模型需通过openai的表单申请。
+- 可选GPT模型，默认gpt-3.5，当前使用gpt-4模型需通过OpenAI的表单申请，或使用[ChatGPT-to-API](https://github.com/xqdoo00o/ChatGPT-to-API)模拟网页ChatGPT为API使用（使用gpt-4需Plus账户）。
 
 - 可选OpenAI接口地址，使用nginx或caddy部署反代后可以不设置。
 
