@@ -1824,6 +1824,26 @@
             justify-content: space-between;
             font-size: 15px;
         }
+
+        .cursorCls {
+            background: var(--chat-text-color);
+            width: 4px;
+            animation: 1s cursor-blinker infinite step-start;
+        }
+
+        @keyframes cursor-blinker {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -3640,7 +3660,7 @@
                 } else if (id === "refreshMd") {
                     if (noLoading()) {
                         if (ev.target.classList.contains("refreshReq")) {
-                            chatlog.children[idx].children[1].innerHTML = "<br />";
+                            chatlog.children[idx].children[1].innerHTML = "<p class='cursorCls'><br /></p>";
                             chatlog.children[idx].dataset.loading = true;
                             idx = systemRole ? idx + 1 : idx;
                             data[idx].content = "";
@@ -5447,7 +5467,7 @@
                 currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
             } else if (!currentResEle) {
                 currentResEle = createConvEle("response", true, modelVersion);
-                currentResEle.children[1].innerHTML = "<br />";
+                currentResEle.children[1].innerHTML = "<p class='cursorCls'><br /></p>";
                 currentResEle.dataset.loading = true;
                 scrollToBottom();
             }
@@ -5595,6 +5615,7 @@
         }
         const stopLoading = (abort = true) => {
             stopEle.style.display = "none";
+            if (currentResEle.children[1].querySelector(".cursorCls")) currentResEle.children[1].innerHTML = "<br />";
             if (abort) {
                 controller.abort();
                 if (controllerId) clearTimeout(controllerId);
@@ -5634,7 +5655,7 @@
                         data.splice(idx + 1, 0, {role: "assistant", content: "", model: modelVersion});
                         chatlog.insertBefore(createConvEle("response", false, modelVersion), chatlog.children[eleIdx + 1]);
                     }
-                    chatlog.children[eleIdx + 1].children[1].innerHTML = "<br />";
+                    chatlog.children[eleIdx + 1].children[1].innerHTML = "<p class='cursorCls'><br /></p>";
                     chatlog.children[eleIdx + 1].dataset.loading = true;
                     idx = idx + 1;
                     data[idx].content = "";
