@@ -1620,6 +1620,8 @@
             font-weight: bold;
             display: flex;
             align-items: center;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .sysSwitch>div>svg {
@@ -1844,6 +1846,60 @@
                 opacity: 0;
             }
         }
+
+        #apiSelect {
+            position: absolute;
+            top: 36px;
+            padding: 4px 0;
+            background: var(--chat-back);
+            width: 100%;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        #apiSelect>div {
+            pointer-events: auto;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 6px 0 6px 8px;
+            height: 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #apiSelect>div:hover {
+            background: var(--lighter-active-color);
+        }
+
+        #apiSelect>div>span {
+            height: 100%;
+            line-height: 23px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        #apiSelect>div * {
+            pointer-events: none;
+        }
+
+        .delApiOption:hover {
+            background: var(--lighter-svg-color);
+        }
+
+        .delApiOption {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            pointer-events: auto !important;
+        }
+
+        .delApiOption>svg {
+            margin: 6px;
+            display: block;
+        }
     </style>
 </head>
 
@@ -2018,6 +2074,10 @@
             <symbol viewBox="0 0 24 24" id="stopIcon">
                 <path fill="currentColor" d="M6 5h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
             </symbol>
+            <symbol viewBox="0 0 24 24" id="forceRefreshIcon">
+                <path fill="currentColor"
+                    d="M13.82 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2c0 .5-.04 1-.1 1.46c.6-.5 1.32-.89 2.1-1.14V12c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2v.18c.7.17 1.35.45 1.95.82c.05-.32.05-.66.05-1c0-5.5-4.5-10-10-10C6.47 2 2 6.5 2 12s4.5 10 10 10c.34 0 .68 0 1-.05c-.41-.66-.71-1.4-.87-2.2c-.04.07-.08.14-.13.21c-.83-1.2-1.5-2.53-1.91-3.96h2.41c.31-.75.76-1.42 1.32-2m5.1-6h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26m.82 2H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 0 1 5.08 16M8 8H5.08A7.923 7.923 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m12.83 7.67L22 14.5v4h-4l1.77-1.77A2.5 2.5 0 1 0 20 20h1.71A3.991 3.991 0 0 1 18 22.5c-2.21 0-4-1.79-4-4s1.79-4 4-4c1.11 0 2.11.45 2.83 1.17Z" />
+            </symbol>
         </svg>
     </div>
     <div id="loadMask">
@@ -2058,6 +2118,11 @@
             </div>
             <div class="navFooter">
                 <div class="navFunc">
+                    <div id="refreshPage" title="强制刷新页面">
+                        <svg width="24" height="24">
+                            <use xlink:href="#forceRefreshIcon" />
+                        </svg>
+                    </div>
                     <div id="clearChat" title="清空">
                         <svg width="24" height="24">
                             <use xlink:href="#clearAllIcon" />
@@ -2440,8 +2505,10 @@
                         </div>
                         <div class="setContent">
                             <div class="setTitle">OpenAI接口</div>
-                            <div class="setDetail inputDetail">
-                                <input class="inputTextClass" placeholder="https://api.openai.com/" id="apiHostInput" />
+                            <div class="setDetail inputDetail" style="position: relative;">
+                                <input class="inputTextClass" placeholder="https://api.openai.com/" autocomplete="off"
+                                    id="apiHostInput" />
+                                <div id="apiSelect" style="display: none;"></div>
                             </div>
                         </div>
                         <div class="setContent">
@@ -2619,11 +2686,17 @@
         let azureKey;
         let azureRole = [];
         let azureStyle = [];
-        let isSafeEnv = location.hostname.match(/127.|localhost/) || location.protocol.match(/https:|file:/); // https或本地安全环境
-        let supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
+        const supportSpe = !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
+        const isSafeEnv = location.hostname.match(/127.|localhost/) || location.protocol.match(/https:|file:/); // https或本地安全环境
+        const supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
         let recing = false;
         let toggleRecEv;
         const dayMs = 8.64e7;
+        refreshPage.onclick = () => {
+            if (confirmAction("是否强制刷新页面?")) {
+                location.href = location.origin + location.pathname + "?" + new Date().getTime()
+            }
+        };
         const noLoading = () => {
             return !loading && (!currentResEle || currentResEle.dataset.loading !== "true")
         };
@@ -2851,7 +2924,7 @@
                 document.getElementById(activeEle.dataset.id).style.display = "none";
             }
         };
-        if (!(window.speechSynthesis && window.SpeechSynthesisUtterance)) {
+        if (!supportSpe) {
             speechServiceEle.remove(2);
         }
         const initVoiceVal = () => {
@@ -3342,6 +3415,7 @@
         };
         let modelVersion; // 模型版本
         let apiHost; // api反代地址
+        let apiSelects = []; // api地址列表
         let customAPIKey; // 自定义apiKey
         let systemRole; // 自定义系统角色
         let roleNature; // 角色性格
@@ -3624,7 +3698,7 @@
                         if (voiceIns) {
                             if (voiceIns instanceof Audio) voiceIns.pause();
                             else {
-                                speechSynthesis.pause();
+                                if (supportSpe) speechSynthesis.pause();
                                 classList.remove("readyVoice");
                                 classList.remove("pauseVoice");
                                 classList.add("resumeVoice");
@@ -3634,7 +3708,7 @@
                         if (voiceIns) {
                             if (voiceIns instanceof Audio) voiceIns.play();
                             else {
-                                speechSynthesis.resume();
+                                if (supportSpe) speechSynthesis.resume();
                                 classList.remove("readyVoice");
                                 classList.remove("resumeVoice");
                                 classList.add("pauseVoice");
@@ -4524,6 +4598,7 @@
         document.getElementById("resetSet").onclick = () => {
             if (confirmAction("是否还原所有设置为默认值?")) {
                 endAll();
+                if (existVoice === 3) localStorage.removeItem(azureRegion + "voiceData");
                 let data = {};
                 for (let i = 0; i < localSetKeys.length; i++) {
                     let key = localSetKeys[i];
@@ -4556,6 +4631,60 @@
             }
             modelEle.dispatchEvent(new Event("change"));
             const apiHostEle = document.getElementById("apiHostInput");
+            const apiSelectEle = document.getElementById("apiSelect");
+            let localApiSelect = localStorage.getItem("APISelect");
+            if (localApiSelect) {
+                try {
+                    apiSelects = JSON.parse(localApiSelect);
+                } catch (e) {
+                    apiSelects.length = 0;
+                }
+            } else {
+                apiSelects.length = 0;
+            }
+            const delApiOption = function (ev) {
+                ev.stopPropagation();
+                let index = Array.prototype.indexOf.call(apiSelectEle.children, this.parentElement);
+                apiSelects.splice(index, 1);
+                this.parentElement.remove();
+                localStorage.setItem("APISelect", JSON.stringify(apiSelects));
+            }
+            const appendApiOption = () => {
+                apiSelects.push(apiHost);
+                initApiOption(apiHost);
+                localStorage.setItem("APISelect", JSON.stringify(apiSelects));
+            }
+            const selApiOption = function () {
+                let index = Array.prototype.indexOf.call(apiSelectEle.children, this);
+                apiHostEle.value = apiSelects[index];
+                apiHostEle.dispatchEvent(new Event("change"));
+            }
+            const initApiOption = (api) => {
+                let optionEle = document.createElement("div");
+                optionEle.onmousedown = selApiOption;
+                let textEle = document.createElement("span");
+                textEle.textContent = api;
+                optionEle.appendChild(textEle);
+                let delEle = document.createElement("div");
+                delEle.className = "delApiOption";
+                delEle.onmousedown = delApiOption;
+                delEle.innerHTML = `<svg width="24" height="24"><use xlink:href="#closeIcon" /></svg>`;
+                optionEle.appendChild(delEle);
+                apiSelectEle.appendChild(optionEle);
+            }
+            const initApiSelectEle = () => {
+                apiSelectEle.innerHTML = "";
+                for (let i = 0; i < apiSelects.length; i++) {
+                    initApiOption(apiSelects[i]);
+                }
+            }
+            initApiSelectEle();
+            apiHostEle.onfocus = () => {
+                if (apiSelects.length) apiSelectEle.style.display = "block";
+            }
+            apiHostEle.onblur = () => {
+                apiSelectEle.style.display = "none";
+            }
             let localApiHost = localStorage.getItem("APIHost");
             apiHost = apiHostEle.value = localApiHost || apiHostEle.getAttribute("value") || "";
             apiHostEle.onchange = () => {
@@ -4564,6 +4693,7 @@
                     apiHost += "/";
                     apiHostEle.value = apiHost;
                 }
+                if (apiSelects.indexOf(apiHost) === -1) appendApiOption();
                 localStorage.setItem("APIHost", apiHost);
             }
             apiHostEle.dispatchEvent(new Event("change"));
@@ -4934,7 +5064,7 @@
                 voiceEndFlagQuene = [];
                 voiceBlobURLQuene = [];
                 autoOnlineVoiceFlag = false;
-            } else {
+            } else if (supportSpe) {
                 speechSynthesis.cancel();
             }
         }
@@ -5054,7 +5184,7 @@
                 }
                 testVoiceIns.src = URL.createObjectURL(testVoiceBlob);
                 testVoiceIns.play();
-            } else {
+            } else if (supportSpe) {
                 speechSynthesis.speak(testVoiceIns);
             }
         }
@@ -5062,7 +5192,7 @@
             if (testVoiceIns) {
                 if (testVoiceIns && testVoiceIns instanceof Audio) {
                     testVoiceIns.pause();
-                } else {
+                } else if (supportSpe) {
                     speechSynthesis.pause();
                 }
             }
@@ -5072,7 +5202,7 @@
             if (testVoiceIns) {
                 if (testVoiceIns && testVoiceIns instanceof Audio) {
                     testVoiceIns.play();
-                } else {
+                } else if (supportSpe) {
                     speechSynthesis.resume();
                 }
             }
@@ -5085,7 +5215,7 @@
                     testVoiceIns.currentTime = 0;
                     URL.revokeObjectURL(testVoiceIns.src);
                     testVoiceIns.removeAttribute("src");
-                } else {
+                } else if (supportSpe) {
                     speechSynthesis.cancel();
                 }
             }
