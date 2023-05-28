@@ -3515,7 +3515,7 @@
                     urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(nowDate)}`);
                 } else if (nowDate < endDate) {
                     urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(midDate)}`);
-                    if (nowDate !== midDate) {
+                    if (formatDate(nowDate) !== formatDate(midDate)) {
                         urls.push(`start_date=${formatDate(midDate)}&end_date=${formatDate(nowDate)}`);
                     }
                 } else {
