@@ -158,6 +158,10 @@
                 margin-left: 12px;
                 margin-top: 5px;
             }
+
+            .setNotNormalFlow {
+                width: calc(100% - 212px);
+            }
         }
 
         @media screen and (max-width: 800px) {
@@ -201,6 +205,10 @@
 
             .sysDetail {
                 margin-top: 8px;
+            }
+
+            .setNotNormalFlow {
+                width: calc(100% - 40px);
             }
         }
 
@@ -304,7 +312,8 @@
         #chatlog .markdown-body>pre::-webkit-scrollbar,
         #setDialog::-webkit-scrollbar,
         .allList::-webkit-scrollbar,
-        .sysDetail::-webkit-scrollbar {
+        .sysDetail::-webkit-scrollbar,
+        #apiSelect::-webkit-scrollbar {
             width: 10px;
             height: 10px;
         }
@@ -313,7 +322,8 @@
         #chatlog .markdown-body>pre::-webkit-scrollbar-track,
         #setDialog::-webkit-scrollbar-track,
         .allList::-webkit-scrollbar-track,
-        .sysDetail::-webkit-scrollbar-track {
+        .sysDetail::-webkit-scrollbar-track,
+        #apiSelect::-webkit-scrollbar-track {
             background-clip: padding-box;
             background: transparent;
             border: none;
@@ -323,7 +333,8 @@
         #chatlog .markdown-body>pre::-webkit-scrollbar-corner,
         #setDialog::-webkit-scrollbar-corner,
         .allList::-webkit-scrollbar-corner,
-        .sysDetail::-webkit-scrollbar-corner {
+        .sysDetail::-webkit-scrollbar-corner,
+        #apiSelect::-webkit-scrollbar-corner {
             background-color: transparent;
         }
 
@@ -331,7 +342,8 @@
         #chatlog .markdown-body>pre::-webkit-scrollbar-thumb,
         #setDialog::-webkit-scrollbar-thumb,
         .allList::-webkit-scrollbar-thumb,
-        .sysDetail::-webkit-scrollbar-thumb {
+        .sysDetail::-webkit-scrollbar-thumb,
+        #apiSelect::-webkit-scrollbar-thumb {
             background-color: rgba(0, 0, 0, 0.1);
             background-clip: padding-box;
             border: solid transparent;
@@ -342,7 +354,8 @@
         #chatlog .markdown-body>pre::-webkit-scrollbar-thumb:hover,
         #setDialog::-webkit-scrollbar-thumb:hover,
         .allList::-webkit-scrollbar-thumb:hover,
-        .sysDetail::-webkit-scrollbar-thumb:hover {
+        .sysDetail::-webkit-scrollbar-thumb:hover,
+        #apiSelect::-webkit-scrollbar-thumb:hover {
             background-color: rgba(0, 0, 0, 0.4);
         }
 
@@ -1653,6 +1666,10 @@
             margin-bottom: 10px;
         }
 
+        .setNotNormalFlow {
+            position: absolute;
+        }
+
         .setTitle {
             margin-bottom: 6px;
             font-weight: bold;
@@ -1854,7 +1871,7 @@
             background: var(--chat-back);
             width: 100%;
             box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
-            max-height: 250px;
+            max-height: 180px;
             overflow-y: auto;
         }
 
@@ -2503,7 +2520,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="setContent">
+                        <div class="setContent setNotNormalFlow">
                             <div class="setTitle">OpenAI接口</div>
                             <div class="setDetail inputDetail" style="position: relative;">
                                 <input class="inputTextClass" placeholder="https://api.openai.com/" autocomplete="off"
@@ -2511,7 +2528,7 @@
                                 <div id="apiSelect" style="display: none;"></div>
                             </div>
                         </div>
-                        <div class="setContent">
+                        <div class="setContent" style="margin-top: 83px;">
                             <div class="setTitle">API密钥</div>
                             <div class="setDetail inputDetail apiDetail">
                                 <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
@@ -4559,7 +4576,7 @@
                 activeChat(chatListEle.firstElementChild);
             }
         };
-        let localSetKeys = ['modelVersion', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -4654,20 +4671,24 @@
                 initApiOption(apiHost);
                 localStorage.setItem("APISelect", JSON.stringify(apiSelects));
             }
-            const selApiOption = function () {
+            const selApiOption = function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                apiSelectEle.style.display = "none";
                 let index = Array.prototype.indexOf.call(apiSelectEle.children, this);
                 apiHostEle.value = apiSelects[index];
                 apiHostEle.dispatchEvent(new Event("change"));
             }
             const initApiOption = (api) => {
                 let optionEle = document.createElement("div");
-                optionEle.onmousedown = selApiOption;
+                optionEle.setAttribute("tabindex", "-1");
+                optionEle.onclick = selApiOption;
                 let textEle = document.createElement("span");
                 textEle.textContent = api;
                 optionEle.appendChild(textEle);
                 let delEle = document.createElement("div");
                 delEle.className = "delApiOption";
-                delEle.onmousedown = delApiOption;
+                delEle.onclick = delApiOption;
                 delEle.innerHTML = `<svg width="24" height="24"><use xlink:href="#closeIcon" /></svg>`;
                 optionEle.appendChild(delEle);
                 apiSelectEle.appendChild(optionEle);
@@ -4682,8 +4703,8 @@
             apiHostEle.onfocus = () => {
                 if (apiSelects.length) apiSelectEle.style.display = "block";
             }
-            apiHostEle.onblur = () => {
-                apiSelectEle.style.display = "none";
+            apiHostEle.onblur = (ev) => {
+                if (!(ev.relatedTarget && apiSelectEle.contains(ev.relatedTarget))) apiSelectEle.style.display = "none";
             }
             let localApiHost = localStorage.getItem("APIHost");
             apiHost = apiHostEle.value = localApiHost || apiHostEle.getAttribute("value") || "";
@@ -4693,7 +4714,7 @@
                     apiHost += "/";
                     apiHostEle.value = apiHost;
                 }
-                if (apiSelects.indexOf(apiHost) === -1) appendApiOption();
+                if (apiHost && apiSelects.indexOf(apiHost) === -1) appendApiOption();
                 localStorage.setItem("APIHost", apiHost);
             }
             apiHostEle.dispatchEvent(new Event("change"));
