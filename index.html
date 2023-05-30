@@ -784,7 +784,7 @@
         .inputTextClass {
             outline: none;
             border-radius: 2px;
-            margin-top: 2px;
+            margin-top: 3px;
             height: 32px;
             font-size: 15px;
             padding-left: 6px;
@@ -1873,6 +1873,8 @@
             box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
             max-height: 180px;
             overflow-y: auto;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         #apiSelect>div {
@@ -2406,6 +2408,10 @@
                                 <select id="selectDiaOption">
                                 </select>
                             </div>
+                            <div>
+                                <div>自动发送检测词语</div>
+                                <input class="inputTextClass" id="autoSendText" placeholder="发送" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2525,7 +2531,7 @@
                             <div class="setDetail inputDetail" style="position: relative;">
                                 <input class="inputTextClass" placeholder="https://api.openai.com/" autocomplete="off"
                                     id="apiHostInput" />
-                                <div id="apiSelect" style="display: none;"></div>
+                                <div id="apiSelect" tabindex="-1" style="display: none;"></div>
                             </div>
                         </div>
                         <div class="setContent" style="margin-top: 83px;">
@@ -2707,6 +2713,7 @@
         const isSafeEnv = location.hostname.match(/127.|localhost/) || location.protocol.match(/https:|file:/); // https或本地安全环境
         const supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
         let recing = false;
+        let autoSendWord; // 自动发送检测词语
         let toggleRecEv;
         const dayMs = 8.64e7;
         refreshPage.onclick = () => {
@@ -2826,6 +2833,13 @@
                 select_language.dispatchEvent(new Event("change"));
                 selectDiaOption.selectedIndex = select_dialect.selectedIndex = localDiaIdx;
                 select_dialect.dispatchEvent(new Event("change"));
+                let localAutoSendWord = localStorage.getItem("autoVoiceSendWord");
+                autoSendWord = autoSendText.value = localAutoSendWord || autoSendText.getAttribute("value") || "";
+                autoSendText.onchange = () => {
+                    autoSendWord = autoSendText.value;
+                    localStorage.setItem("autoVoiceSendWord", autoSendWord);
+                }
+                autoSendText.dispatchEvent(new Event("change"));
                 let recIns = new webkitSpeechRecognition();
                 // prevent some Android bug
                 recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
@@ -2839,15 +2853,30 @@
                         return;
                     }
                     let isFinal;
+                    let autoSend;
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         isFinal = event.results[i].isFinal;
-                        if (isFinal) {recRes += event.results[i][0].transcript}
+                        if (isFinal) {
+                            recRes += event.results[i][0].transcript
+                            if (autoSendWord) {
+                                let idx = recRes.indexOf(autoSendWord)
+                                if (idx !== -1) {
+                                    recRes = recRes.slice(0, idx);
+                                    autoSend = true;
+                                    break;
+                                }
+                            }
+                        }
                         else {tempRes = recRes + event.results[i][0].transcript}
                     }
                     textarea.value = preRes + (isFinal ? recRes : tempRes) + affRes;
                     textInputEvent();
                     textarea.focus();
                     textarea.selectionEnd = textarea.value.length - affRes.length;
+                    if (autoSend) {
+                        endEvent();
+                        genFunc();
+                    }
                 };
                 const endEvent = (event) => {
                     if (!(event && event.type === "end")) recIns.stop();
@@ -2860,7 +2889,7 @@
                 };
                 const errorEvent = (ev) => {
                     if (event.error === "no-speech") {
-                        notyf.error("未识别到语音，请调整设备后重试！")
+                        notyf.error("未识别到语音，请调整麦克风后重试！")
                     }
                     if (event.error === "audio-capture") {
                         notyf.error("未找到麦克风，请确保已安装麦克风！")
@@ -4576,7 +4605,7 @@
                 activeChat(chatListEle.firstElementChild);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -4681,7 +4710,6 @@
             }
             const initApiOption = (api) => {
                 let optionEle = document.createElement("div");
-                optionEle.setAttribute("tabindex", "-1");
                 optionEle.onclick = selApiOption;
                 let textEle = document.createElement("span");
                 textEle.textContent = api;
