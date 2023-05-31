@@ -2409,8 +2409,19 @@
                                 </select>
                             </div>
                             <div>
-                                <div>自动发送检测词语</div>
+                                <div>自动发送关键词</div>
                                 <input class="inputTextClass" id="autoSendText" placeholder="发送" />
+                            </div>
+                            <div>
+                                <div>自动停止关键词</div>
+                                <input class="inputTextClass" id="autoStopText" placeholder="停止" />
+                            </div>
+                            <div>
+                                <span class="inlineTitle">保持监听</span>
+                                <label class="switch-slide">
+                                    <input type="checkbox" id="keepListenMic" checked="false" hidden />
+                                    <label for="keepListenMic" class="switch-slide-label"></label>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -2636,7 +2647,7 @@
     <script>
         const registerSW = () => {
             if ("serviceWorker" in navigator) {
-                navigator.serviceWorker.register("sw.js").then(reg => console.log("Service worker register succeeded"),
+                navigator.serviceWorker.register("sw.js" + location.search).then(reg => console.log("Service worker register succeeded"),
                     error => console.error(`Service worker register failed: ${error}`))
             }
         };
@@ -2675,7 +2686,7 @@
             ]
         });
         const windowEle = document.getElementsByClassName("chat_window")[0];
-        const messagsEle = document.getElementsByClassName("messages")[0];
+        const messagesEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
         const stopEle = document.getElementById("stopChat");
         const sendBtnEle = document.getElementById("sendbutton");
@@ -2713,7 +2724,9 @@
         const isSafeEnv = location.hostname.match(/127.|localhost/) || location.protocol.match(/https:|file:/); // https或本地安全环境
         const supportRec = !!window.webkitSpeechRecognition && isSafeEnv; // 是否支持语音识别输入
         let recing = false;
-        let autoSendWord; // 自动发送检测词语
+        let autoSendWord; // 自动发送关键词
+        let autoStopWord; // 自动停止关键词
+        let keepListenMic; // 保持监听麦克风
         let toggleRecEv;
         const dayMs = 8.64e7;
         refreshPage.onclick = () => {
@@ -2840,6 +2853,21 @@
                     localStorage.setItem("autoVoiceSendWord", autoSendWord);
                 }
                 autoSendText.dispatchEvent(new Event("change"));
+                let localAutoStopWord = localStorage.getItem("autoVoiceStopWord");
+                autoStopWord = autoStopText.value = localAutoStopWord || autoStopText.getAttribute("value") || "";
+                autoStopText.onchange = () => {
+                    autoStopWord = autoStopText.value;
+                    localStorage.setItem("autoVoiceStopWord", autoStopWord);
+                }
+                autoStopText.dispatchEvent(new Event("change"));
+                const keepMicEle = document.getElementById("keepListenMic");
+                let localKeepMic = localStorage.getItem("keepListenMic");
+                keepMicEle.checked = keepListenMic = (localKeepMic || keepMicEle.getAttribute("checked")) === "true";
+                keepMicEle.onchange = () => {
+                    keepListenMic = keepMicEle.checked;
+                    localStorage.setItem("keepListenMic", keepListenMic);
+                }
+                keepMicEle.dispatchEvent(new Event("change"));
                 let recIns = new webkitSpeechRecognition();
                 // prevent some Android bug
                 recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
@@ -2853,16 +2881,24 @@
                         return;
                     }
                     let isFinal;
-                    let autoSend;
+                    let autoFlag;
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         isFinal = event.results[i].isFinal;
                         if (isFinal) {
                             recRes += event.results[i][0].transcript
                             if (autoSendWord) {
-                                let idx = recRes.indexOf(autoSendWord)
+                                let idx = recRes.indexOf(autoSendWord);
                                 if (idx !== -1) {
                                     recRes = recRes.slice(0, idx);
-                                    autoSend = true;
+                                    autoFlag = 1;
+                                    break;
+                                }
+                            }
+                            if (autoStopWord) {
+                                let idx = recRes.indexOf(autoStopWord);
+                                if (idx !== -1) {
+                                    recRes = recRes.slice(0, idx);
+                                    autoFlag = 2;
                                     break;
                                 }
                             }
@@ -2873,19 +2909,41 @@
                     textInputEvent();
                     textarea.focus();
                     textarea.selectionEnd = textarea.value.length - affRes.length;
-                    if (autoSend) {
-                        endEvent();
-                        genFunc();
+                    if (autoFlag) {
+                        if (autoFlag === 1) {
+                            genFunc();
+                            if (keepListenMic) resetRecRes();
+                        } else {
+                            endEvent(false, false);
+                        }
                     }
                 };
-                const endEvent = (event) => {
-                    if (!(event && event.type === "end")) recIns.stop();
+                const resetRecRes = () => {
+                    preRes = textarea.value.slice(0, textarea.selectionStart);
+                    affRes = textarea.value.slice(textarea.selectionEnd);
+                    recRes = tempRes = "";
+                }
+                const stopAction = () => {
                     recIns.onresult = null;
                     recIns.onerror = null;
                     recIns.onend = null;
-                    recRes = tempRes = "";
                     voiceRecEle.classList.remove("voiceRecing");
                     recing = false;
+                }
+                const endEvent = (event, flag) => {
+                    if (flag !== void 0) {
+                        if (!flag) {
+                            recIns.stop();
+                            stopAction();
+                        }
+                    } else if (event && (event.type === "end" || event.error === "no-speech")) {
+                        if (keepListenMic) {
+                            recIns.start();
+                            resetRecRes();
+                        } else {
+                            stopAction();
+                        }
+                    }
                 };
                 const errorEvent = (ev) => {
                     if (event.error === "no-speech") {
@@ -2897,7 +2955,7 @@
                     if (event.error === "not-allowed") {
                         notyf.error("未允许使用麦克风的权限！")
                     }
-                    endEvent();
+                    endEvent(ev);
                 }
                 const closeEvent = (ev) => {
                     if (voiceRecSetEle.contains(ev.target)) return;
@@ -2915,8 +2973,7 @@
                     voiceRecEle.classList.toggle("voiceRecing");
                     if (voiceRecEle.classList.contains("voiceRecing")) {
                         try {
-                            preRes = textarea.value.slice(0, textarea.selectionStart);
-                            affRes = textarea.value.slice(textarea.selectionEnd);
+                            resetRecRes();
                             recIns.lang = select_dialect.value;
                             recIns.start();
                             recIns.onresult = resEvent;
@@ -2924,10 +2981,10 @@
                             recIns.onend = endEvent;
                             recing = true;
                         } catch (e) {
-                            endEvent();
+                            endEvent(false, false);
                         }
                     } else {
-                        endEvent();
+                        endEvent(false, false);
                     }
                 };
                 toggleRecEv = toggleRecEvent;
@@ -3480,13 +3537,13 @@
         let customDarkTime; // 开始，结束时间
         let customDarkOut;
         const scrollToBottom = () => {
-            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < 128) {
-                messagsEle.scrollTo(0, messagsEle.scrollHeight)
+            if (messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < 128) {
+                messagesEle.scrollTo(0, messagesEle.scrollHeight)
             }
         }
         const scrollToBottomLoad = (ele) => {
-            if (messagsEle.scrollHeight - messagsEle.scrollTop - messagsEle.clientHeight < ele.clientHeight + 128) {
-                messagsEle.scrollTo(0, messagsEle.scrollHeight)
+            if (messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < ele.clientHeight + 128) {
+                messagesEle.scrollTo(0, messagesEle.scrollHeight)
             }
         }
         const forceRepaint = (ele) => {
@@ -3869,6 +3926,7 @@
         let folderData = [];
         let chatsData = [];
         let chatIdxs = [];
+        let searchIdxs = [];
         let activeChatIdx = 0;
         let activeChatEle;
         let operateChatIdx, operateFolderIdx;
@@ -4307,8 +4365,8 @@
                 inFolderIdx = Array.prototype.indexOf.call(this.parentElement.children, this);
                 idx = folderData[folderIdx].idxs[inFolderIdx];
             }
-            if (ev.target.className === "chatLi") {
-                if (activeChatIdx !== idx) {
+            if (ev.target.classList.contains("chatLi")) {
+                if (searchChatEle.value || activeChatIdx !== idx) {
                     endAll();
                     activeChatIdx = idx;
                     activeChat(this);
@@ -4393,7 +4451,24 @@
             let top = ele.offsetTop + ele.offsetHeight - allListEle.clientHeight;
             if (allListEle.scrollTop < top) allListEle.scrollTop = top;
             localStorage.setItem("activeChatIdx", activeChatIdx);
+            if (searchIdxs[activeChatIdx] !== void 0) {
+                let dataIdx = searchIdxs[activeChatIdx];
+                if (dataIdx !== -1) {
+                    let childs = chatlog.children[systemRole ? dataIdx - 1 : dataIdx].children[1].getElementsByTagName("*");
+                    for (let i = childs.length - 1; i >= 0; i--) {
+                        if (childs[i].textContent && childs[i].textContent.indexOf(searchChatEle.value) !== -1) {
+                            let offTop = findOffsetTop(childs[i], messagesEle);
+                            messagesEle.scrollTop = offTop + childs[i].offsetHeight - messagesEle.clientHeight * 0.15;
+                            break;
+                        }
+                    }
+                } else messagesEle.scrollTop = 0;
+            }
         };
+        const findOffsetTop = (ele, target) => { // target is positioned ancestor element
+            if (ele.offsetParent !== target) return ele.offsetTop + findOffsetTop(ele.offsetParent, target)
+            else return ele.offsetTop
+        }
         newChatEle.onclick = () => {
             endAll();
             addNewChat();
@@ -4464,24 +4539,23 @@
             }
             lastCompositon = void 0;
         });
-        let searchIdxs = [];
         searchChatEle.oninput = (ev) => {
             if (ev.isComposing) lastCompositon = ev.data;
             if (compositionFlag) return;
             let value = searchChatEle.value;
             if (value.length) {
                 searchIdxs.length = 0;
-                let data = [];
                 for (let i = 0; i < chatsData.length; i++) {
                     let chatEle = getChatEle(i);
                     chatEle.style.display = null;
                     let nameIdx = chatsData[i].name.indexOf(value);
-                    let data = chatsData[i].data.find(item => {
-                        return item.content.indexOf(value) !== -1
+                    let dataIdx = chatsData[i].data.findIndex(item => {
+                        return item.role !== "system" && item.content.indexOf(value) !== -1
                     })
-                    if (nameIdx !== -1 || data) {
+                    if (nameIdx !== -1 || dataIdx !== -1) {
                         let ele = chatEle.children[1];
-                        if (data) {
+                        if (dataIdx !== -1) {
+                            let data = chatsData[i].data[dataIdx];
                             let idx = data.content.indexOf(value);
                             ele.children[1].textContent = (idx > 8 ? "..." : "") + data.content.slice(idx > 8 ? idx - 5 : 0, idx);
                             ele.children[1].appendChild(document.createElement("span"));
@@ -4498,7 +4572,7 @@
                         } else {
                             ele.children[0].textContent = chatsData[i].name;
                         }
-                        searchIdxs.push(i);
+                        searchIdxs[i] = dataIdx;
                     } else {
                         chatEle.style.display = "none";
                         initChatEle(i, chatEle);
@@ -4605,7 +4679,7 @@
                 activeChat(chatListEle.firstElementChild);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -5865,7 +5939,7 @@
             }
         };
         const genFunc = function () {
-            if (recing) {
+            if (!keepListenMic && recing) {
                 toggleRecEv();
             }
             let message = textarea.value.trim();
