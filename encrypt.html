@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加密HTML</title>
+    <style>
+        .main {
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        .main>* {
+            margin-top: 10px;
+        }
+
+        textarea {
+            border-radius: 3px;
+            width: 100%;
+            height: 200px;
+        }
+
+        #passData {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div>请输入密码</div>
+        <input id="passData" placeholder="密码（越复杂安全性越好）" />
+        <div>
+            <label for="enableCompress">是否压缩</label>
+            <input type="checkbox" id="enableCompress" checked="true">
+        </div>
+        <div>
+            <label for="enableRemember">允许记住密码</label>
+            <input type="checkbox" id="enableRemember" checked="true">
+        </div>
+        <div id="expireRemember">
+            <span>记住密码有效期（单位：天）</span>
+            <input id="expireDays" placeholder="默认：0（永不过期）" />
+        </div>
+        <div>请输入要加密的HTML内容</div>
+        <textarea id="inputData" placeholder="<html><head>..."></textarea>
+        <button id="genHTML">生成加密HTML</button>
+        <textarea id="outputData" style="display: none;"></textarea>
+        <button id="downHTML" style="display: none;">下载加密HTML文件</button>
+    </div>
+    <script>
+        var n = Uint8Array, r = Uint16Array, e = Int32Array, i = new n([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0, 0]), o = new n([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 0, 0]), s = new n([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]), a = function (n, f) {for (var a = new r(31), t = 0; t < 31; ++t)a[t] = f += 1 << n[t - 1]; var o = new e(a[30]); for (t = 1; t < 30; ++t)for (var i = a[t]; i < a[t + 1]; ++i)o[i] = i - a[t] << 5 | t; return {b: a, r: o}}, u = a(i, 2), h = u.b, f = u.r; h[28] = 258, f[258] = 28; for (var c = a(o, 0), p = c.r, v = new r(32768), d = 0; d < 32768; ++d) {var g = (43690 & d) >> 1 | (21845 & d) << 1; v[d] = ((65280 & (g = (61680 & (g = (52428 & g) >> 2 | (13107 & g) << 2)) >> 4 | (3855 & g) << 4)) >> 8 | (255 & g) << 8) >> 1} var y = function (n, f, e) {for (var a = n.length, t = 0, o = new r(f); t < a; ++t)n[t] && ++o[n[t] - 1]; var i, l = new r(f); for (t = 1; t < f; ++t)l[t] = l[t - 1] + o[t - 1] << 1; if (e) {i = new r(1 << f); var u = 15 - f; for (t = 0; t < a; ++t)if (n[t]) for (var s = t << 4 | n[t], h = f - n[t], w = l[n[t] - 1]++ << h, c = w | (1 << h) - 1; w <= c; ++w)i[v[w] >> u] = s} else for (i = new r(a), t = 0; t < a; ++t)n[t] && (i[t] = v[l[n[t] - 1]++] >> 15 - n[t]); return i}, m = new n(288); for (d = 0; d < 144; ++d)m[d] = 8; for (d = 144; d < 256; ++d)m[d] = 9; for (d = 256; d < 280; ++d)m[d] = 7; for (d = 280; d < 288; ++d)m[d] = 8; var b = new n(32); for (d = 0; d < 32; ++d)b[d] = 5; var w = y(m, 9, 0), z = y(b, 5, 0), T = function (r) {return (r + 7) / 8 | 0}, D = function (r, f, e) {(null == f || f < 0) && (f = 0), (null == e || e > r.length) && (e = r.length); var a = new n(e - f); return a.set(r.subarray(f, e)), a}, F = function (r, n, f) {var e = n / 8 | 0; r[e] |= f <<= 7 & n, r[e + 1] |= f >> 8}, E = function (r, n, f) {var e = n / 8 | 0; r[e] |= f <<= 7 & n, r[e + 1] |= f >> 8, r[e + 2] |= f >> 16}, Z = function (f, e) {for (var a = [], t = 0; t < f.length; ++t)f[t] && a.push({s: t, f: f[t]}); var o = a.length, i = a.slice(); if (!o) return {t: N, l: 0}; if (1 == o) {var v = new n(a[0].s + 1); return v[a[0].s] = 1, {t: v, l: 1}} a.sort((function (r, n) {return r.f - n.f})), a.push({s: -1, f: 25001}); var l = a[0], u = a[1], s = 0, h = 1, w = 2; for (a[0] = {s: -1, f: l.f + u.f, l: l, r: u}; h != o - 1;)l = a[a[s].f < a[w].f ? s++ : w++], u = a[s != h && a[s].f < a[w].f ? s++ : w++], a[h++] = {s: -1, f: l.f + u.f, l: l, r: u}; var c = i[0].s; for (t = 1; t < o; ++t)i[t].s > c && (c = i[t].s); var d = new r(c + 1), g = O(a[h - 1], d, 0); if (g > e) {t = 0; var m = 0, y = g - e, b = 1 << y; for (i.sort((function (r, n) {return d[n.s] - d[r.s] || r.f - n.f})); t < o; ++t) {var M = i[t].s; if (!(d[M] > e)) break; m += b - (1 << g - d[M]), d[M] = e} for (m >>= y; m > 0;) {var F = i[t].s; d[F] < e ? m -= 1 << e - d[F]++ - 1 : ++t} for (; t >= 0 && m; --t) {var p = i[t].s; d[p] == e && (--d[p], ++m)} g = e} return {t: new n(d), l: g}}, O = function (r, n, f) {return -1 == r.s ? Math.max(O(r.l, n, f + 1), O(r.r, n, f + 1)) : n[r.s] = f}, G = function (n) {for (var f = n.length; f && !n[--f];); for (var e = new r(++f), a = 0, t = n[0], o = 1, i = function (r) {e[a++] = r}, v = 1; v <= f; ++v)if (n[v] == t && v != f) ++o; else {if (!t && o > 2) {for (; o > 138; o -= 138)i(32754); o > 2 && (i(o > 10 ? o - 11 << 5 | 28690 : o - 3 << 5 | 12305), o = 0)} else if (o > 3) {for (i(t), --o; o > 6; o -= 6)i(8304); o > 2 && (i(o - 3 << 5 | 8208), o = 0)} for (; o--;)i(t); o = 1, t = n[v]} return {c: e.subarray(0, a), n: f}}, L = function (r, n) {for (var f = 0, e = 0; e < n.length; ++e)f += r[e] * n[e]; return f}, q = function (r, n, f) {var e = f.length, a = T(n + 2); r[a] = 255 & e, r[a + 1] = e >> 8, r[a + 2] = 255 ^ r[a], r[a + 3] = 255 ^ r[a + 1]; for (var t = 0; t < e; ++t)r[a + t + 4] = f[t]; return 8 * (a + 4 + e)}, H = function (n, f, e, a, t, v, l, u, h, c, d) {F(f, d++, e), ++t[256]; for (var g = Z(t, 15), M = g.t, p = g.l, O = Z(v, 15), x = O.t, A = O.l, H = G(M), T = H.c, j = H.n, k = G(x), D = k.c, K = k.n, N = new r(19), P = 0; P < T.length; ++P)++N[31 & T[P]]; for (P = 0; P < D.length; ++P)++N[31 & D[P]]; for (var U = Z(N, 7), I = U.t, S = U.l, B = 19; B > 4 && !I[s[B - 1]]; --B); var C, J, Q, R, V = c + 5 << 3, W = L(t, m) + L(v, b) + l, X = L(t, M) + L(v, x) + l + 14 + 3 * B + L(N, I) + 2 * N[16] + 3 * N[17] + 7 * N[18]; if (h >= 0 && V <= W && V <= X) return q(f, d, n.subarray(h, h + c)); if (F(f, d, 1 + (X < W)), d += 2, X < W) {C = y(M, p, 0), J = M, Q = y(x, A, 0), R = x; var Y = y(I, S, 0); for (F(f, d, j - 257), F(f, d + 5, K - 1), F(f, d + 10, B - 4), d += 14, P = 0; P < B; ++P)F(f, d + 3 * P, I[s[P]]); d += 3 * B; for (var $ = [T, D], _ = 0; _ < 2; ++_) {var rr = $[_]; for (P = 0; P < rr.length; ++P)F(f, d, Y[fr = 31 & rr[P]]), d += I[fr], fr > 15 && (F(f, d, rr[P] >> 5 & 127), d += rr[P] >> 12)} } else C = w, J = m, Q = z, R = b; for (P = 0; P < u; ++P) {var nr = a[P]; if (nr > 255) {var fr; E(f, d, C[257 + (fr = nr >> 18 & 31)]), d += J[fr + 257], fr > 7 && (F(f, d, nr >> 23 & 31), d += i[fr]); var er = 31 & nr; E(f, d, Q[er]), d += R[er], er > 3 && (E(f, d, nr >> 5 & 8191), d += o[er])} else E(f, d, C[nr]), d += J[nr]} return E(f, d, C[256]), d + J[256]}, j = new e([65540, 131080, 131088, 131104, 262176, 1048704, 1048832, 2114560, 2117632]), N = new n(0), P = function (a, t, v, l, u, s) {var h = s.z || a.length, w = new n(l + h + 5 * (1 + Math.ceil(h / 7e3)) + u), c = w.subarray(l, w.length - u), d = s.l, g = 7 & (s.r || 0); if (t) {g && (c[0] = s.r >> 3); for (var m = j[t - 1], y = m >> 13, b = 8191 & m, M = (1 << v) - 1, F = s.p || new r(32768), E = s.h || new r(M + 1), L = Math.ceil(v / 3), O = 2 * L, Z = function (r) {return (a[r] ^ a[r + 1] << L ^ a[r + 2] << O) & M}, x = new e(25e3), z = new r(288), A = new r(32), G = 0, k = 0, K = s.i || 0, N = 0, P = s.w || 0, U = 0; K + 2 < h; ++K) {var I = Z(K), S = 32767 & K, B = E[I]; if (F[S] = B, E[I] = S, P <= K) {var C = h - K; if ((G > 7e3 || N > 24576) && (C > 423 || !d)) {g = H(a, c, 0, x, z, A, k, N, U, K - U, g), N = G = k = 0, U = K; for (var J = 0; J < 286; ++J)z[J] = 0; for (J = 0; J < 30; ++J)A[J] = 0} var Q = 2, R = 0, V = b, W = S - B & 32767; if (C > 2 && I == Z(K - W)) for (var X = Math.min(y, C) - 1, Y = Math.min(32767, K), $ = Math.min(258, C); W <= Y && --V && S != B;) {if (a[K + Q] == a[K + Q - W]) {for (var _ = 0; _ < $ && a[K + _] == a[K + _ - W]; ++_); if (_ > Q) {if (Q = _, R = W, _ > X) break; var rr = Math.min(W, _ - 2), nr = 0; for (J = 0; J < rr; ++J) {var fr = K - W + J & 32767, er = fr - F[fr] & 32767; er > nr && (nr = er, B = fr)} } } W += (S = B) - (B = F[S]) & 32767} if (R) {x[N++] = 268435456 | f[Q] << 18 | p[R]; var ar = 31 & f[Q], tr = 31 & p[R]; k += i[ar] + o[tr], ++z[257 + ar], ++A[tr], P = K + Q, ++G} else x[N++] = a[K], ++z[a[K]]} } for (K = Math.max(K, P); K < h; ++K)x[N++] = a[K], ++z[a[K]]; g = H(a, c, d, x, z, A, k, N, U, K - U, g), d || (s.r = 7 & g | c[g / 8 | 0] << 3, g -= 7, s.h = E, s.p = F, s.i = K, s.w = P)} else {for (K = s.w || 0; K < h + d; K += 65535) {var or = K + 65535; or >= h && (c[g / 8 | 0] = d, or = h), g = q(c, g + 1, a.subarray(K, or))} s.i = h} return D(w, 0, l + T(g) + u)}, K = function (r, f, e, a, t) {if (!t && (t = {l: 1}, f.dictionary)) {var o = f.dictionary.subarray(-32768), i = new n(o.length + r.length); i.set(o), i.set(r, o.length), r = i, t.w = o.length} return P(r, null == f.level ? 6 : f.level, null == f.mem ? Math.ceil(1.5 * Math.max(8, Math.min(13, Math.log(r.length)))) : 12 + f.mem, e, a, t)}; function deflateSync(r, n) {return K(r, n || {}, 0, 0)}
+    </script>
+    <script>
+        const sjcl = {
+            cipher: {},
+            hash: {},
+            keyexchange: {},
+            mode: {},
+            misc: {},
+            codec: {},
+            exception: {
+                corrupt: function (message) {
+                    this.toString = function () {return "CORRUPT: " + this.message;};
+                    this.message = message;
+                },
+                invalid: function (message) {
+                    this.toString = function () {return "INVALID: " + this.message;};
+                    this.message = message;
+                },
+                bug: function (message) {
+                    this.toString = function () {return "BUG: " + this.message;};
+                    this.message = message;
+                },
+                notReady: function (message) {
+                    this.toString = function () {return "NOT READY: " + this.message;};
+                    this.message = message;
+                }
+            }
+        };
+        sjcl.bitArray = {
+            bitSlice: function (a, bstart, bend) {
+                a = sjcl.bitArray._shiftRight(a.slice(bstart / 32), 32 - (bstart & 31)).slice(1);
+                return (bend === undefined) ? a : sjcl.bitArray.clamp(a, bend - bstart);
+            },
+            concat: function (a1, a2) {
+                if (a1.length === 0 || a2.length === 0) {
+                    return a1.concat(a2);
+                }
+                let last = a1[a1.length - 1], shift = sjcl.bitArray.getPartial(last);
+                if (shift === 32) {
+                    return a1.concat(a2);
+                } else {
+                    return sjcl.bitArray._shiftRight(a2, shift, last | 0, a1.slice(0, a1.length - 1));
+                }
+            },
+            bitLength: function (a) {
+                let l = a.length, x;
+                if (l === 0) {return 0;}
+                x = a[l - 1];
+                return (l - 1) * 32 + sjcl.bitArray.getPartial(x);
+            },
+            clamp: function (a, len) {
+                if (a.length * 32 < len) {return a;}
+                a = a.slice(0, Math.ceil(len / 32));
+                let l = a.length;
+                len = len & 31;
+                if (l > 0 && len) {
+                    a[l - 1] = sjcl.bitArray.partial(len, a[l - 1] & 0x80000000 >> (len - 1), 1);
+                }
+                return a;
+            },
+            partial: function (len, x, _end) {
+                if (len === 32) {return x;}
+                return (_end ? x | 0 : x << (32 - len)) + len * 0x10000000000;
+            },
+            getPartial: function (x) {
+                return Math.round(x / 0x10000000000) || 32;
+            },
+            equal: function (a, b) {
+                if (sjcl.bitArray.bitLength(a) !== sjcl.bitArray.bitLength(b)) {
+                    return false;
+                }
+                let x = 0, i;
+                for (i = 0; i < a.length; i++) {
+                    x |= a[i] ^ b[i];
+                }
+                return (x === 0);
+            },
+            _shiftRight: function (a, shift, carry, out) {
+                let i, last2 = 0, shift2;
+                if (out === undefined) {out = [];}
+                for (; shift >= 32; shift -= 32) {
+                    out.push(carry);
+                    carry = 0;
+                }
+                if (shift === 0) {
+                    return out.concat(a);
+                }
+                for (i = 0; i < a.length; i++) {
+                    out.push(carry | a[i] >>> shift);
+                    carry = a[i] << (32 - shift);
+                }
+                last2 = a.length ? a[a.length - 1] : 0;
+                shift2 = sjcl.bitArray.getPartial(last2);
+                out.push(sjcl.bitArray.partial(shift + shift2 & 31, (shift + shift2 > 32) ? carry : out.pop(), 1));
+                return out;
+            }
+        };
+        sjcl.codec.bytes = {
+            fromBits: function (arr) {
+                let out = [], bl = sjcl.bitArray.bitLength(arr), i, tmp;
+                for (i = 0; i < bl / 8; i++) {
+                    if ((i & 3) === 0) {
+                        tmp = arr[i / 4];
+                    }
+                    out.push(tmp >>> 24);
+                    tmp <<= 8;
+                }
+                return out;
+            },
+            toBits: function (bytes) {
+                let out = [], i, tmp = 0;
+                for (i = 0; i < bytes.length; i++) {
+                    tmp = tmp << 8 | bytes[i];
+                    if ((i & 3) === 3) {
+                        out.push(tmp);
+                        tmp = 0;
+                    }
+                }
+                if (i & 3) {
+                    out.push(sjcl.bitArray.partial(8 * (i & 3), tmp));
+                }
+                return out;
+            }
+        };
+        sjcl.codec.utf8String = {
+            fromBits: function (arr) {
+                let out = "", bl = sjcl.bitArray.bitLength(arr), i, tmp;
+                for (i = 0; i < bl / 8; i++) {
+                    if ((i & 3) === 0) {
+                        tmp = arr[i / 4];
+                    }
+                    out += String.fromCharCode(tmp >>> 8 >>> 8 >>> 8);
+                    tmp <<= 8;
+                }
+                return decodeURIComponent(escape(out));
+            },
+            toBits: function (str) {
+                str = unescape(encodeURIComponent(str));
+                let out = [], i, tmp = 0;
+                for (i = 0; i < str.length; i++) {
+                    tmp = tmp << 8 | str.charCodeAt(i);
+                    if ((i & 3) === 3) {
+                        out.push(tmp);
+                        tmp = 0;
+                    }
+                }
+                if (i & 3) {
+                    out.push(sjcl.bitArray.partial(8 * (i & 3), tmp));
+                }
+                return out;
+            }
+        };
+        sjcl.hash.sha1 = function (hash) {
+            if (hash) {
+                this._h = hash._h.slice(0);
+                this._buffer = hash._buffer.slice(0);
+                this._length = hash._length;
+            } else {
+                this.reset();
+            }
+        };
+        sjcl.hash.sha1.hash = function (data) {
+            return (new sjcl.hash.sha1()).update(data).finalize();
+        };
+        sjcl.hash.sha1.prototype = {
+            blockSize: 512,
+            reset: function () {
+                this._h = this._init.slice(0);
+                this._buffer = [];
+                this._length = 0;
+                return this;
+            },
+            update: function (data) {
+                if (typeof data === "string") {
+                    data = sjcl.codec.utf8String.toBits(data);
+                }
+                let i, b = this._buffer = sjcl.bitArray.concat(this._buffer, data),
+                    ol = this._length,
+                    nl = this._length = ol + sjcl.bitArray.bitLength(data);
+                if (nl > 9007199254740991) {
+                    throw new sjcl.exception.invalid("Cannot hash more than 2^53 - 1 bits");
+                }
+                if (typeof Uint32Array !== "undefined") {
+                    let c = new Uint32Array(b);
+                    let j = 0;
+                    for (i = this.blockSize + ol - ((this.blockSize + ol) & (this.blockSize - 1)); i <= nl;
+                        i += this.blockSize) {
+                        this._block(c.subarray(16 * j, 16 * (j + 1)));
+                        j += 1;
+                    }
+                    b.splice(0, 16 * j);
+                } else {
+                    for (i = this.blockSize + ol - ((this.blockSize + ol) & (this.blockSize - 1)); i <= nl;
+                        i += this.blockSize) {
+                        this._block(b.splice(0, 16));
+                    }
+                }
+                return this;
+            },
+            finalize: function () {
+                let i, b = this._buffer, h = this._h;
+                b = sjcl.bitArray.concat(b, [sjcl.bitArray.partial(1, 1)]);
+                for (i = b.length + 2; i & 15; i++) {
+                    b.push(0);
+                }
+                b.push(Math.floor(this._length / 0x100000000));
+                b.push(this._length | 0);
+                while (b.length) {
+                    this._block(b.splice(0, 16));
+                }
+                this.reset();
+                return h;
+            },
+            _init: [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0],
+            _key: [0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6],
+            _f: function (t, b, c, d) {
+                if (t <= 19) {
+                    return (b & c) | (~b & d);
+                } else if (t <= 39) {
+                    return b ^ c ^ d;
+                } else if (t <= 59) {
+                    return (b & c) | (b & d) | (c & d);
+                } else if (t <= 79) {
+                    return b ^ c ^ d;
+                }
+            },
+            _S: function (n, x) {
+                return (x << n) | (x >>> 32 - n);
+            },
+            _block: function (words) {
+                let t, tmp, a, b, c, d, e,
+                    h = this._h;
+                let w;
+                if (typeof Uint32Array !== "undefined") {
+                    w = Array(80);
+                    for (let j = 0; j < 16; j++) {
+                        w[j] = words[j];
+                    }
+                } else {
+                    w = words;
+                }
+                a = h[0]; b = h[1]; c = h[2]; d = h[3]; e = h[4];
+                for (t = 0; t <= 79; t++) {
+                    if (t >= 16) {
+                        w[t] = this._S(1, w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]);
+                    }
+                    tmp = (this._S(5, a) + this._f(t, b, c, d) + e + w[t] +
+                        this._key[Math.floor(t / 20)]) | 0;
+                    e = d;
+                    d = c;
+                    c = this._S(30, b);
+                    b = a;
+                    a = tmp;
+                }
+                h[0] = (h[0] + a) | 0;
+                h[1] = (h[1] + b) | 0;
+                h[2] = (h[2] + c) | 0;
+                h[3] = (h[3] + d) | 0;
+                h[4] = (h[4] + e) | 0;
+            }
+        };
+        sjcl.cipher.aes = function (key) {
+            if (!this._tables[0][0][0]) {
+                this._precompute();
+            }
+            let i, j, tmp,
+                encKey, decKey,
+                sbox = this._tables[0][4], decTable = this._tables[1],
+                keyLen = key.length, rcon = 1;
+            if (keyLen !== 4 && keyLen !== 6 && keyLen !== 8) {
+                throw new sjcl.exception.invalid("invalid aes key size");
+            }
+            this._key = [encKey = key.slice(0), decKey = []];
+            for (i = keyLen; i < 4 * keyLen + 28; i++) {
+                tmp = encKey[i - 1];
+                if (i % keyLen === 0 || (keyLen === 8 && i % keyLen === 4)) {
+                    tmp = sbox[tmp >>> 24] << 24 ^ sbox[tmp >> 16 & 255] << 16 ^ sbox[tmp >> 8 & 255] << 8 ^ sbox[tmp & 255];
+                    if (i % keyLen === 0) {
+                        tmp = tmp << 8 ^ tmp >>> 24 ^ rcon << 24;
+                        rcon = rcon << 1 ^ (rcon >> 7) * 283;
+                    }
+                }
+                encKey[i] = encKey[i - keyLen] ^ tmp;
+            }
+            for (j = 0; i; j++, i--) {
+                tmp = encKey[j & 3 ? i : i - 4];
+                if (i <= 4 || j < 4) {
+                    decKey[j] = tmp;
+                } else {
+                    decKey[j] = decTable[0][sbox[tmp >>> 24]] ^
+                        decTable[1][sbox[tmp >> 16 & 255]] ^
+                        decTable[2][sbox[tmp >> 8 & 255]] ^
+                        decTable[3][sbox[tmp & 255]];
+                }
+            }
+        };
+        sjcl.cipher.aes.prototype = {
+            encrypt: function (data) {return this._crypt(data, 0);},
+            decrypt: function (data) {return this._crypt(data, 1);},
+            _tables: [[[], [], [], [], []], [[], [], [], [], []]],
+            _precompute: function () {
+                let encTable = this._tables[0], decTable = this._tables[1],
+                    sbox = encTable[4], sboxInv = decTable[4],
+                    i, x, xInv, d = [], th = [], x2, x4, x8, s, tEnc, tDec;
+                for (i = 0; i < 256; i++) {
+                    th[(d[i] = i << 1 ^ (i >> 7) * 283) ^ i] = i;
+                }
+                for (x = xInv = 0; !sbox[x]; x ^= x2 || 1, xInv = th[xInv] || 1) {
+                    s = xInv ^ xInv << 1 ^ xInv << 2 ^ xInv << 3 ^ xInv << 4;
+                    s = s >> 8 ^ s & 255 ^ 99;
+                    sbox[x] = s;
+                    sboxInv[s] = x;
+                    x8 = d[x4 = d[x2 = d[x]]];
+                    tDec = x8 * 0x1010101 ^ x4 * 0x10001 ^ x2 * 0x101 ^ x * 0x1010100;
+                    tEnc = d[s] * 0x101 ^ s * 0x1010100;
+                    for (i = 0; i < 4; i++) {
+                        encTable[i][x] = tEnc = tEnc << 24 ^ tEnc >>> 8;
+                        decTable[i][s] = tDec = tDec << 24 ^ tDec >>> 8;
+                    }
+                }
+                for (i = 0; i < 5; i++) {
+                    encTable[i] = encTable[i].slice(0);
+                    decTable[i] = decTable[i].slice(0);
+                }
+            },
+            _crypt: function (input, dir) {
+                if (input.length !== 4) {
+                    throw new sjcl.exception.invalid("invalid aes block size");
+                }
+                let key = this._key[dir],
+                    a = input[0] ^ key[0],
+                    b = input[dir ? 3 : 1] ^ key[1],
+                    c = input[2] ^ key[2],
+                    d = input[dir ? 1 : 3] ^ key[3],
+                    a2, b2, c2,
+                    nInnerRounds = key.length / 4 - 2,
+                    i,
+                    kIndex = 4,
+                    out = [0, 0, 0, 0],
+                    table = this._tables[dir],
+                    t0 = table[0],
+                    t1 = table[1],
+                    t2 = table[2],
+                    t3 = table[3],
+                    sbox = table[4];
+                for (i = 0; i < nInnerRounds; i++) {
+                    a2 = t0[a >>> 24] ^ t1[b >> 16 & 255] ^ t2[c >> 8 & 255] ^ t3[d & 255] ^ key[kIndex];
+                    b2 = t0[b >>> 24] ^ t1[c >> 16 & 255] ^ t2[d >> 8 & 255] ^ t3[a & 255] ^ key[kIndex + 1];
+                    c2 = t0[c >>> 24] ^ t1[d >> 16 & 255] ^ t2[a >> 8 & 255] ^ t3[b & 255] ^ key[kIndex + 2];
+                    d = t0[d >>> 24] ^ t1[a >> 16 & 255] ^ t2[b >> 8 & 255] ^ t3[c & 255] ^ key[kIndex + 3];
+                    kIndex += 4;
+                    a = a2; b = b2; c = c2;
+                }
+                for (i = 0; i < 4; i++) {
+                    out[dir ? 3 & -i : i] =
+                        sbox[a >>> 24] << 24 ^
+                        sbox[b >> 16 & 255] << 16 ^
+                        sbox[c >> 8 & 255] << 8 ^
+                        sbox[d & 255] ^
+                        key[kIndex++];
+                    a2 = a; a = b; b = c; c = d; d = a2;
+                }
+                return out;
+            }
+        };
+        sjcl.misc.hmac = function (key, Hash) {
+            this._hash = Hash = Hash || sjcl.hash.sha1;
+            let exKey = [[], []], i,
+                bs = Hash.prototype.blockSize / 32;
+            this._baseHash = [new Hash(), new Hash()];
+            if (key.length > bs) {
+                key = Hash.hash(key);
+            }
+            for (i = 0; i < bs; i++) {
+                exKey[0][i] = key[i] ^ 0x36363636;
+                exKey[1][i] = key[i] ^ 0x5C5C5C5C;
+            }
+            this._baseHash[0].update(exKey[0]);
+            this._baseHash[1].update(exKey[1]);
+            this._resultHash = new Hash(this._baseHash[0]);
+        };
+        sjcl.misc.hmac.prototype.encrypt = sjcl.misc.hmac.prototype.mac = function (data) {
+            if (!this._updated) {
+                this.update(data);
+                return this.digest(data);
+            } else {
+                throw new sjcl.exception.invalid("encrypt on already updated hmac called!");
+            }
+        };
+        sjcl.misc.hmac.prototype.reset = function () {
+            this._resultHash = new this._hash(this._baseHash[0]);
+            this._updated = false;
+        };
+        sjcl.misc.hmac.prototype.update = function (data) {
+            this._updated = true;
+            this._resultHash.update(data);
+        };
+        sjcl.misc.hmac.prototype.digest = function () {
+            let w = this._resultHash.finalize(), result = new (this._hash)(this._baseHash[1]).update(w).finalize();
+            this.reset();
+            return result;
+        };
+        sjcl.misc.pbkdf2 = function (password, salt, count, length, Prff) {
+            count = count || 10000;
+            if (length < 0 || count < 0) {
+                throw new sjcl.exception.invalid("invalid params to pbkdf2");
+            }
+            if (typeof password === "string") {
+                password = sjcl.codec.utf8String.toBits(password);
+            }
+            if (typeof salt === "string") {
+                salt = sjcl.codec.utf8String.toBits(salt);
+            }
+            Prff = Prff || sjcl.misc.hmac;
+            let prf = new Prff(password),
+                u, ui, i, j, k, out = [], b = sjcl.bitArray;
+            for (k = 1; 32 * out.length < (length || 1); k++) {
+                u = ui = prf.encrypt(b.concat(salt, [k]));
+                for (i = 1; i < count; i++) {
+                    ui = prf.encrypt(ui);
+                    for (j = 0; j < ui.length; j++) {
+                        u[j] ^= ui[j];
+                    }
+                }
+                out = out.concat(u);
+            }
+            if (length) {out = b.clamp(out, length);}
+            return out;
+        };
+        sjcl.random = {
+            randomWords: function (nbytes) {
+                function getCryptoModule() {
+                    try {
+                        return require("crypto");
+                    }
+                    catch (e) {
+                        return null;
+                    }
+                }
+                let crypto;
+                if (typeof window !== "undefined") {
+                    if (window.crypto) {
+                        crypto = window.crypto;
+                    } else if (window.msCrypto) {
+                        crypto = window.msCrypto;
+                    }
+                } else if (typeof self !== "undefined" && self.crypto) {
+                    crypto = self.crypto;
+                } else if (typeof module !== "undefined" && module.exports) {
+                    crypto = getCryptoModule();
+                } else if (typeof global !== "undefined" && global.crypto) {
+                    crypto = global.crypto;
+                }
+                try {
+                    if (crypto) {
+                        if (crypto.getRandomValues) {
+                            return sjcl.codec.bytes.toBits(crypto.getRandomValues(new Uint8Array(nbytes)));
+                        }
+                        if (crypto.randomBytes) {
+                            return sjcl.codec.bytes.toBits(new Uint8Array(crypto.randomBytes(nbytes)));
+                        }
+                    } else {
+                        return getRandomValues(nbytes);
+                    }
+                } catch (e) {
+                    return getRandomValues(nbytes);
+                }
+            },
+            getRandomValues: function (nbytes) {
+                let words = [];
+                let r = function (m_w) {
+                    let m_z = 0x3ade68b1;
+                    let mask = 0xffffffff;
+                    return function () {
+                        m_z = (0x9069 * (m_z & 0xFFFF) + (m_z >> 0x10)) & mask;
+                        m_w = (0x4650 * (m_w & 0xFFFF) + (m_w >> 0x10)) & mask;
+                        let result = ((m_z << 0x10) + m_w) & mask;
+                        result /= 0x100000000;
+                        result += 0.5;
+                        return result * (Math.random() > .5 ? 1 : -1);
+                    };
+                };
+                for (let i = 0, rcache; i < nbytes; i += 4) {
+                    let _r = r((rcache || Math.random()) * 0x100000000);
+                    rcache = _r() * 0x3ade67b7;
+                    words.push((_r() * 0x100000000) | 0);
+                }
+                return words;
+            }
+        };
+        sjcl.mode.ctr = {
+            name: "ctr",
+            encrypt: function (prf, plaintext, iv) {
+                return sjcl.mode.ctr._calculate(prf, plaintext, iv);
+            },
+            decrypt: function (prf, ciphertext, iv) {
+                return sjcl.mode.ctr._calculate(prf, ciphertext, iv);
+            },
+            _calculate: function (prf, data, iv) {
+                let l, bl, res, c, d, e, i;
+                if (sjcl.bitArray.bitLength(iv) !== 128) {
+                    throw new sjcl.exception.invalid("ctr iv must be 128 bits");
+                }
+                if (!(l = data.length)) {
+                    return [];
+                }
+                c = iv.slice(0);
+                d = data.slice(0);
+                bl = sjcl.bitArray.bitLength(d);
+                for (i = 0; i < l; i += 4) {
+                    e = prf.encrypt(c);
+                    d[i] ^= e[0];
+                    d[i + 1] ^= e[1];
+                    d[i + 2] ^= e[2];
+                    d[i + 3] ^= e[3];
+                    for (let carry = 3; carry >= 0; carry--) {
+                        if (++c[carry]) break;
+                    }
+                }
+                return sjcl.bitArray.clamp(d, bl);
+            }
+        };
+    </script>
+    <script>
+        enableRemember.onchange = () => {
+            expireRemember.style.display = enableRemember.checked ? "block" : "none";
+        }
+        genHTML.onclick = () => {
+            downHTML.style.display = outputData.style.display = "none";
+            if (!passData.value) {
+                alert("密码不能为空！");
+                return;
+            }
+            if (!inputData.value) {
+                alert("HTML不能为空！");
+                return;
+            }
+            encryptString(inputData.value, passData.value);
+        }
+        downHTML.onclick = () => {
+            let a = document.createElement("a");
+            a.download = "encrypted_index.html";
+            a.href = URL.createObjectURL(new Blob([outputData.value]));
+            a.click();
+        }
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
+        const passwordVerifierLen = 4;
+        const aesKeyLen = 16;
+        const saltLen = 8;
+        function encryptString(data, password) {
+            const salt = sjcl.random.randomWords(saltLen);
+            const derivedKey = sjcl.misc.pbkdf2(password, salt, 1000, (aesKeyLen + passwordVerifierLen) * 8);
+            const aesKey = sjcl.bitArray.bitSlice(derivedKey, 0, aesKeyLen * 8);
+            const derivedPassVerifier = sjcl.bitArray.bitSlice(derivedKey, aesKeyLen * 8);
+            const preData = sjcl.bitArray.concat(salt, derivedPassVerifier);
+            let uint8Data = encoder.encode(data);
+            if (enableCompress.checked) {
+                uint8Data = deflateSync(uint8Data);
+            }
+            const result = sjcl.mode.ctr.encrypt(new sjcl.cipher.aes(aesKey), sjcl.codec.bytes.toBits(uint8Data), [0, 0, 0, 0]);
+            const reader = new FileReader()
+            reader.onload = () => {
+                let baseRes = reader.result.substring(reader.result.indexOf(',') + 1);
+                let htmlRes = `<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加密页面</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+        }
+
+        #loadMask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background-color: #edeff2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loadMask>div {
+            text-align: center;
+        }
+
+        #loadMask>div>div {
+            font-size: 40px;
+            color: #909090;
+        }
+
+        #loadMask svg {
+            width: 160px;
+            height: 80px;
+        }
+
+        .passArea {
+            width: 200px;
+        }
+
+        #passData {
+            height: 40px;
+            display: block;
+            outline: none;
+            border: none;
+            width: 100%;
+            padding-left: 10px;
+            font-size: 18px;
+            border-radius: 3px;
+            -webkit-text-security: disc;
+        }
+
+        .activeBtn {
+            background: #99c959 !important;
+        }
+
+        label {
+            margin-top: 8px;
+            font-size: 16px;
+            display: flex;
+            color: #909090;
+            align-items: center;
+            line-height: 20px;
+            height: 20px;
+        }
+
+        #rememberMe {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #909090;
+            border-radius: 2px;
+            margin: 0 8px 0 0;
+        }
+
+        #rememberMe::before {
+            content: "";
+            display: block;
+            /* margin: 1px; */
+            width: 16px;
+            height: 16px;
+            transform: scale(0);
+            background: #99c959;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        #rememberMe:checked::before {
+            transform: scale(1);
+        }
+
+        #goChat {
+            margin-top: 8px;
+            font-size: 18px;
+            background: #b8da8b;
+            border-radius: 3px;
+            height: 100%;
+            color: white;
+            padding: 0 15px;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loadMask">
+        <div>
+            <div>ChatGPT</div>
+            <svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMid">
+                <g transform="translate(50 50)">
+                    <circle cx="0" cy="0" r="15" fill="#e15b64">
+                        <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
+                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
+                            dur="1s" repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+                <g transform="translate(100 50)">
+                    <circle cx="0" cy="0" r="15" fill="#f8b26a">
+                        <animateTransform attributeName="transform" type="scale" begin="-0.16666666666666666s"
+                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
+                            dur="1s" repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+                <g transform="translate(150 50)">
+                    <circle cx="0" cy="0" r="15" fill="#99c959">
+                        <animateTransform attributeName="transform" type="scale" begin="0s" calcMode="spline"
+                            keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s"
+                            repeatCount="indefinite"></animateTransform>
+                    </circle>
+                </g>
+            </svg>
+            <div class="passArea">
+                <input id="passData" type="text" placeholder="请输入密码" autocomplete="off" />
+                `+(enableRemember.checked ?`<label for="rememberMe">
+                    <input type="checkbox" id="rememberMe" checked="true">
+                    记住密码
+                </label>`:"") +
+                `<div id="goChat">开始</div>
+            </div>
+        </div>
+    </div>
+    ` + (enableCompress.checked ? `<script>
+        var n = Uint8Array, r = Uint16Array, e = Int32Array, i = new n([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0, 0]), o = new n([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 0, 0]), s = new n([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]), a = function (n, a) {for (var i = new r(31), t = 0; t < 31; ++t)i[t] = a += 1 << n[t - 1]; var f = new e(i[30]); for (t = 1; t < 30; ++t)for (var o = i[t]; o < i[t + 1]; ++o)f[o] = o - i[t] << 5 | t; return {b: i, r: f}}, u = a(i, 2), h = u.b, f = u.r; h[28] = 258, f[258] = 28; for (var c = a(o, 0), l = c.b, v = new r(32768), d = 0; d < 32768; ++d) {var g = (43690 & d) >> 1 | (21845 & d) << 1; v[d] = ((65280 & (g = (61680 & (g = (52428 & g) >> 2 | (13107 & g) << 2)) >> 4 | (3855 & g) << 4)) >> 8 | (255 & g) << 8) >> 1} var y = function (n, a, e) {for (var i = n.length, t = 0, f = new r(a); t < i; ++t)n[t] && ++f[n[t] - 1]; var o, d = new r(a); for (t = 1; t < a; ++t)d[t] = d[t - 1] + f[t - 1] << 1; if (e) {o = new r(1 << a); var l = 15 - a; for (t = 0; t < i; ++t)if (n[t]) for (var u = t << 4 | n[t], c = a - n[t], b = d[n[t] - 1]++ << c, g = b | (1 << c) - 1; b <= g; ++b)o[v[b] >> l] = u} else for (o = new r(i), t = 0; t < i; ++t)n[t] && (o[t] = v[d[n[t] - 1]++] >> 15 - n[t]); return o}, m = new n(288); for (d = 0; d < 144; ++d)m[d] = 8; for (d = 144; d < 256; ++d)m[d] = 9; for (d = 256; d < 280; ++d)m[d] = 7; for (d = 280; d < 288; ++d)m[d] = 8; var b = new n(32); for (d = 0; d < 32; ++d)b[d] = 5; var x = y(m, 9, 1), k = y(b, 5, 1), M = function (r) {for (var n = r[0], a = 1; a < r.length; ++a)r[a] > n && (n = r[a]); return n}, A = function (r, n, a) {var e = n / 8 | 0; return (r[e] | r[e + 1] << 8) >> (7 & n) & a}, S = function (r, n) {var a = n / 8 | 0; return (r[a] | r[a + 1] << 8 | r[a + 2] << 16) >> (7 & n)}, T = function (r) {return (r + 7) / 8 | 0}, D = function (r, a, e) {(null == a || a < 0) && (a = 0), (null == e || e > r.length) && (e = r.length); var i = new n(e - a); return i.set(r.subarray(a, e)), i}, C = ["unexpected EOF", "invalid block type", "invalid length/literal", "invalid distance", "stream finished", "no stream handler", , "no callback", "invalid UTF-8 data", "extra field too long", "date not in range 1980-2099", "filename too long", "stream finishing", "invalid zip data"], I = function (r, n, a) {var e = Error(n || C[r]); if (e.code = r, Error.captureStackTrace && Error.captureStackTrace(e, I), !a) throw e; return e}, U = function (r, a, e, t) {var f = r.length, v = t ? t.length : 0; if (!f || a.f && !a.l) return e || new n(0); var d = !e || 2 != a.i, u = a.i; e || (e = new n(3 * f)); var c = function (r) {var a = e.length; if (r > a) {var i = new n(Math.max(2 * a, r)); i.set(e), e = i} }, b = a.f || 0, g = a.p || 0, w = a.b || 0, m = a.l, p = a.d, U = a.m, E = a.n, C = 8 * f; do {if (!m) {b = A(r, g, 1); var F = A(r, g + 1, 3); if (g += 3, !F) {var z = r[(P = T(g) + 4) - 4] | r[P - 3] << 8, O = P + z; if (O > f) {u && I(0); break} d && c(w + z), e.set(r.subarray(P, O), w), a.b = w += z, a.p = g = 8 * O, a.f = b; continue} if (1 == F) m = x, p = k, U = 9, E = 5; else if (2 == F) {var j = A(r, g, 31) + 257, q = A(r, g + 10, 15) + 4, B = j + A(r, g + 5, 31) + 1; g += 14; for (var G = new n(B), H = new n(19), J = 0; J < q; ++J)H[s[J]] = A(r, g + 3 * J, 7); g += 3 * q; var K = M(H), L = (1 << K) - 1, N = y(H, K, 1); for (J = 0; J < B;) {var P, Q = N[A(r, g, L)]; if (g += 15 & Q, (P = Q >> 4) < 16) G[J++] = P; else {var R = 0, V = 0; for (16 == P ? (V = 3 + A(r, g, 3), g += 2, R = G[J - 1]) : 17 == P ? (V = 3 + A(r, g, 7), g += 3) : 18 == P && (V = 11 + A(r, g, 127), g += 7); V--;)G[J++] = R} } var W = G.subarray(0, j), X = G.subarray(j); U = M(W), E = M(X), m = y(W, U, 1), p = y(X, E, 1)} else I(1); if (g > C) {u && I(0); break} } d && c(w + 131072); for (var Y = (1 << U) - 1, Z = (1 << E) - 1, $ = g; ; $ = g) {var _ = (R = m[S(r, g) & Y]) >> 4; if ((g += 15 & R) > C) {u && I(0); break} if (R || I(2), _ < 256) e[w++] = _; else {if (256 == _) {$ = g, m = null; break} var rr = _ - 254; _ > 264 && (rr = A(r, g, (1 << (er = i[J = _ - 257])) - 1) + h[J], g += er); var nr = p[S(r, g) & Z], ar = nr >> 4; if (nr || I(3), g += 15 & nr, X = l[ar], ar > 3) {var er = o[ar]; X += S(r, g) & (1 << er) - 1, g += er} if (g > C) {u && I(0); break} d && c(w + 131072); var ir = w + rr; if (w < X) {var tr = v - X, fr = Math.min(X, ir); for (tr + w < 0 && I(3); w < fr; ++w)e[w] = t[tr + w]} for (; w < ir; w += 4)e[w] = e[w - X], e[w + 1] = e[w + 1 - X], e[w + 2] = e[w + 2 - X], e[w + 3] = e[w + 3 - X]; w = ir} } a.l = m, a.p = $, a.b = w, a.f = b, m && (b = 1, a.m = U, a.d = p, a.n = E)} while (!b); return w == e.length ? e : D(e, 0, w)}; function inflateSync(r, n) {return U(r, {i: 2}, n && n.out, n && n.dictionary)}
+    <\/script>` : "") +
+    `<script>
+        const sjcl = {
+            cipher: {},
+            hash: {},
+            keyexchange: {},
+            mode: {},
+            misc: {},
+            codec: {},
+            exception: {
+                corrupt: function (message) {
+                    this.toString = function () {return "CORRUPT: " + this.message;};
+                    this.message = message;
+                },
+                invalid: function (message) {
+                    this.toString = function () {return "INVALID: " + this.message;};
+                    this.message = message;
+                },
+                bug: function (message) {
+                    this.toString = function () {return "BUG: " + this.message;};
+                    this.message = message;
+                },
+                notReady: function (message) {
+                    this.toString = function () {return "NOT READY: " + this.message;};
+                    this.message = message;
+                }
+            }
+        };
+        sjcl.bitArray = {
+            bitSlice: function (a, bstart, bend) {
+                a = sjcl.bitArray._shiftRight(a.slice(bstart / 32), 32 - (bstart & 31)).slice(1);
+                return (bend === undefined) ? a : sjcl.bitArray.clamp(a, bend - bstart);
+            },
+            concat: function (a1, a2) {
+                if (a1.length === 0 || a2.length === 0) {
+                    return a1.concat(a2);
+                }
+                let last = a1[a1.length - 1], shift = sjcl.bitArray.getPartial(last);
+                if (shift === 32) {
+                    return a1.concat(a2);
+                } else {
+                    return sjcl.bitArray._shiftRight(a2, shift, last | 0, a1.slice(0, a1.length - 1));
+                }
+            },
+            bitLength: function (a) {
+                let l = a.length, x;
+                if (l === 0) {return 0;}
+                x = a[l - 1];
+                return (l - 1) * 32 + sjcl.bitArray.getPartial(x);
+            },
+            clamp: function (a, len) {
+                if (a.length * 32 < len) {return a;}
+                a = a.slice(0, Math.ceil(len / 32));
+                let l = a.length;
+                len = len & 31;
+                if (l > 0 && len) {
+                    a[l - 1] = sjcl.bitArray.partial(len, a[l - 1] & 0x80000000 >> (len - 1), 1);
+                }
+                return a;
+            },
+            partial: function (len, x, _end) {
+                if (len === 32) {return x;}
+                return (_end ? x | 0 : x << (32 - len)) + len * 0x10000000000;
+            },
+            getPartial: function (x) {
+                return Math.round(x / 0x10000000000) || 32;
+            },
+            equal: function (a, b) {
+                if (sjcl.bitArray.bitLength(a) !== sjcl.bitArray.bitLength(b)) {
+                    return false;
+                }
+                let x = 0, i;
+                for (i = 0; i < a.length; i++) {
+                    x |= a[i] ^ b[i];
+                }
+                return (x === 0);
+            },
+            _shiftRight: function (a, shift, carry, out) {
+                let i, last2 = 0, shift2;
+                if (out === undefined) {out = [];}
+                for (; shift >= 32; shift -= 32) {
+                    out.push(carry);
+                    carry = 0;
+                }
+                if (shift === 0) {
+                    return out.concat(a);
+                }
+                for (i = 0; i < a.length; i++) {
+                    out.push(carry | a[i] >>> shift);
+                    carry = a[i] << (32 - shift);
+                }
+                last2 = a.length ? a[a.length - 1] : 0;
+                shift2 = sjcl.bitArray.getPartial(last2);
+                out.push(sjcl.bitArray.partial(shift + shift2 & 31, (shift + shift2 > 32) ? carry : out.pop(), 1));
+                return out;
+            }
+        };
+        sjcl.codec.bytes = {
+            fromBits: function (arr) {
+                let out = [], bl = sjcl.bitArray.bitLength(arr), i, tmp;
+                for (i = 0; i < bl / 8; i++) {
+                    if ((i & 3) === 0) {
+                        tmp = arr[i / 4];
+                    }
+                    out.push(tmp >>> 24);
+                    tmp <<= 8;
+                }
+                return out;
+            },
+            toBits: function (bytes) {
+                let out = [], i, tmp = 0;
+                for (i = 0; i < bytes.length; i++) {
+                    tmp = tmp << 8 | bytes[i];
+                    if ((i & 3) === 3) {
+                        out.push(tmp);
+                        tmp = 0;
+                    }
+                }
+                if (i & 3) {
+                    out.push(sjcl.bitArray.partial(8 * (i & 3), tmp));
+                }
+                return out;
+            }
+        };
+        sjcl.codec.utf8String = {
+            fromBits: function (arr) {
+                let out = "", bl = sjcl.bitArray.bitLength(arr), i, tmp;
+                for (i = 0; i < bl / 8; i++) {
+                    if ((i & 3) === 0) {
+                        tmp = arr[i / 4];
+                    }
+                    out += String.fromCharCode(tmp >>> 8 >>> 8 >>> 8);
+                    tmp <<= 8;
+                }
+                return decodeURIComponent(escape(out));
+            },
+            toBits: function (str) {
+                str = unescape(encodeURIComponent(str));
+                let out = [], i, tmp = 0;
+                for (i = 0; i < str.length; i++) {
+                    tmp = tmp << 8 | str.charCodeAt(i);
+                    if ((i & 3) === 3) {
+                        out.push(tmp);
+                        tmp = 0;
+                    }
+                }
+                if (i & 3) {
+                    out.push(sjcl.bitArray.partial(8 * (i & 3), tmp));
+                }
+                return out;
+            }
+        };
+        sjcl.hash.sha1 = function (hash) {
+            if (hash) {
+                this._h = hash._h.slice(0);
+                this._buffer = hash._buffer.slice(0);
+                this._length = hash._length;
+            } else {
+                this.reset();
+            }
+        };
+        sjcl.hash.sha1.hash = function (data) {
+            return (new sjcl.hash.sha1()).update(data).finalize();
+        };
+        sjcl.hash.sha1.prototype = {
+            blockSize: 512,
+            reset: function () {
+                this._h = this._init.slice(0);
+                this._buffer = [];
+                this._length = 0;
+                return this;
+            },
+            update: function (data) {
+                if (typeof data === "string") {
+                    data = sjcl.codec.utf8String.toBits(data);
+                }
+                let i, b = this._buffer = sjcl.bitArray.concat(this._buffer, data),
+                    ol = this._length,
+                    nl = this._length = ol + sjcl.bitArray.bitLength(data);
+                if (nl > 9007199254740991) {
+                    throw new sjcl.exception.invalid("Cannot hash more than 2^53 - 1 bits");
+                }
+                if (typeof Uint32Array !== "undefined") {
+                    let c = new Uint32Array(b);
+                    let j = 0;
+                    for (i = this.blockSize + ol - ((this.blockSize + ol) & (this.blockSize - 1)); i <= nl;
+                        i += this.blockSize) {
+                        this._block(c.subarray(16 * j, 16 * (j + 1)));
+                        j += 1;
+                    }
+                    b.splice(0, 16 * j);
+                } else {
+                    for (i = this.blockSize + ol - ((this.blockSize + ol) & (this.blockSize - 1)); i <= nl;
+                        i += this.blockSize) {
+                        this._block(b.splice(0, 16));
+                    }
+                }
+                return this;
+            },
+            finalize: function () {
+                let i, b = this._buffer, h = this._h;
+                b = sjcl.bitArray.concat(b, [sjcl.bitArray.partial(1, 1)]);
+                for (i = b.length + 2; i & 15; i++) {
+                    b.push(0);
+                }
+                b.push(Math.floor(this._length / 0x100000000));
+                b.push(this._length | 0);
+                while (b.length) {
+                    this._block(b.splice(0, 16));
+                }
+                this.reset();
+                return h;
+            },
+            _init: [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0],
+            _key: [0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6],
+            _f: function (t, b, c, d) {
+                if (t <= 19) {
+                    return (b & c) | (~b & d);
+                } else if (t <= 39) {
+                    return b ^ c ^ d;
+                } else if (t <= 59) {
+                    return (b & c) | (b & d) | (c & d);
+                } else if (t <= 79) {
+                    return b ^ c ^ d;
+                }
+            },
+            _S: function (n, x) {
+                return (x << n) | (x >>> 32 - n);
+            },
+            _block: function (words) {
+                let t, tmp, a, b, c, d, e,
+                    h = this._h;
+                let w;
+                if (typeof Uint32Array !== "undefined") {
+                    w = Array(80);
+                    for (let j = 0; j < 16; j++) {
+                        w[j] = words[j];
+                    }
+                } else {
+                    w = words;
+                }
+                a = h[0]; b = h[1]; c = h[2]; d = h[3]; e = h[4];
+                for (t = 0; t <= 79; t++) {
+                    if (t >= 16) {
+                        w[t] = this._S(1, w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16]);
+                    }
+                    tmp = (this._S(5, a) + this._f(t, b, c, d) + e + w[t] +
+                        this._key[Math.floor(t / 20)]) | 0;
+                    e = d;
+                    d = c;
+                    c = this._S(30, b);
+                    b = a;
+                    a = tmp;
+                }
+                h[0] = (h[0] + a) | 0;
+                h[1] = (h[1] + b) | 0;
+                h[2] = (h[2] + c) | 0;
+                h[3] = (h[3] + d) | 0;
+                h[4] = (h[4] + e) | 0;
+            }
+        };
+        sjcl.cipher.aes = function (key) {
+            if (!this._tables[0][0][0]) {
+                this._precompute();
+            }
+            let i, j, tmp,
+                encKey, decKey,
+                sbox = this._tables[0][4], decTable = this._tables[1],
+                keyLen = key.length, rcon = 1;
+            if (keyLen !== 4 && keyLen !== 6 && keyLen !== 8) {
+                throw new sjcl.exception.invalid("invalid aes key size");
+            }
+            this._key = [encKey = key.slice(0), decKey = []];
+            for (i = keyLen; i < 4 * keyLen + 28; i++) {
+                tmp = encKey[i - 1];
+                if (i % keyLen === 0 || (keyLen === 8 && i % keyLen === 4)) {
+                    tmp = sbox[tmp >>> 24] << 24 ^ sbox[tmp >> 16 & 255] << 16 ^ sbox[tmp >> 8 & 255] << 8 ^ sbox[tmp & 255];
+                    if (i % keyLen === 0) {
+                        tmp = tmp << 8 ^ tmp >>> 24 ^ rcon << 24;
+                        rcon = rcon << 1 ^ (rcon >> 7) * 283;
+                    }
+                }
+                encKey[i] = encKey[i - keyLen] ^ tmp;
+            }
+            for (j = 0; i; j++, i--) {
+                tmp = encKey[j & 3 ? i : i - 4];
+                if (i <= 4 || j < 4) {
+                    decKey[j] = tmp;
+                } else {
+                    decKey[j] = decTable[0][sbox[tmp >>> 24]] ^
+                        decTable[1][sbox[tmp >> 16 & 255]] ^
+                        decTable[2][sbox[tmp >> 8 & 255]] ^
+                        decTable[3][sbox[tmp & 255]];
+                }
+            }
+        };
+        sjcl.cipher.aes.prototype = {
+            encrypt: function (data) {return this._crypt(data, 0);},
+            decrypt: function (data) {return this._crypt(data, 1);},
+            _tables: [[[], [], [], [], []], [[], [], [], [], []]],
+            _precompute: function () {
+                let encTable = this._tables[0], decTable = this._tables[1],
+                    sbox = encTable[4], sboxInv = decTable[4],
+                    i, x, xInv, d = [], th = [], x2, x4, x8, s, tEnc, tDec;
+                for (i = 0; i < 256; i++) {
+                    th[(d[i] = i << 1 ^ (i >> 7) * 283) ^ i] = i;
+                }
+                for (x = xInv = 0; !sbox[x]; x ^= x2 || 1, xInv = th[xInv] || 1) {
+                    s = xInv ^ xInv << 1 ^ xInv << 2 ^ xInv << 3 ^ xInv << 4;
+                    s = s >> 8 ^ s & 255 ^ 99;
+                    sbox[x] = s;
+                    sboxInv[s] = x;
+                    x8 = d[x4 = d[x2 = d[x]]];
+                    tDec = x8 * 0x1010101 ^ x4 * 0x10001 ^ x2 * 0x101 ^ x * 0x1010100;
+                    tEnc = d[s] * 0x101 ^ s * 0x1010100;
+                    for (i = 0; i < 4; i++) {
+                        encTable[i][x] = tEnc = tEnc << 24 ^ tEnc >>> 8;
+                        decTable[i][s] = tDec = tDec << 24 ^ tDec >>> 8;
+                    }
+                }
+                for (i = 0; i < 5; i++) {
+                    encTable[i] = encTable[i].slice(0);
+                    decTable[i] = decTable[i].slice(0);
+                }
+            },
+            _crypt: function (input, dir) {
+                if (input.length !== 4) {
+                    throw new sjcl.exception.invalid("invalid aes block size");
+                }
+                let key = this._key[dir],
+                    a = input[0] ^ key[0],
+                    b = input[dir ? 3 : 1] ^ key[1],
+                    c = input[2] ^ key[2],
+                    d = input[dir ? 1 : 3] ^ key[3],
+                    a2, b2, c2,
+                    nInnerRounds = key.length / 4 - 2,
+                    i,
+                    kIndex = 4,
+                    out = [0, 0, 0, 0],
+                    table = this._tables[dir],
+                    t0 = table[0],
+                    t1 = table[1],
+                    t2 = table[2],
+                    t3 = table[3],
+                    sbox = table[4];
+                for (i = 0; i < nInnerRounds; i++) {
+                    a2 = t0[a >>> 24] ^ t1[b >> 16 & 255] ^ t2[c >> 8 & 255] ^ t3[d & 255] ^ key[kIndex];
+                    b2 = t0[b >>> 24] ^ t1[c >> 16 & 255] ^ t2[d >> 8 & 255] ^ t3[a & 255] ^ key[kIndex + 1];
+                    c2 = t0[c >>> 24] ^ t1[d >> 16 & 255] ^ t2[a >> 8 & 255] ^ t3[b & 255] ^ key[kIndex + 2];
+                    d = t0[d >>> 24] ^ t1[a >> 16 & 255] ^ t2[b >> 8 & 255] ^ t3[c & 255] ^ key[kIndex + 3];
+                    kIndex += 4;
+                    a = a2; b = b2; c = c2;
+                }
+                for (i = 0; i < 4; i++) {
+                    out[dir ? 3 & -i : i] =
+                        sbox[a >>> 24] << 24 ^
+                        sbox[b >> 16 & 255] << 16 ^
+                        sbox[c >> 8 & 255] << 8 ^
+                        sbox[d & 255] ^
+                        key[kIndex++];
+                    a2 = a; a = b; b = c; c = d; d = a2;
+                }
+                return out;
+            }
+        };
+        sjcl.misc.hmac = function (key, Hash) {
+            this._hash = Hash = Hash || sjcl.hash.sha1;
+            let exKey = [[], []], i,
+                bs = Hash.prototype.blockSize / 32;
+            this._baseHash = [new Hash(), new Hash()];
+            if (key.length > bs) {
+                key = Hash.hash(key);
+            }
+            for (i = 0; i < bs; i++) {
+                exKey[0][i] = key[i] ^ 0x36363636;
+                exKey[1][i] = key[i] ^ 0x5C5C5C5C;
+            }
+            this._baseHash[0].update(exKey[0]);
+            this._baseHash[1].update(exKey[1]);
+            this._resultHash = new Hash(this._baseHash[0]);
+        };
+        sjcl.misc.hmac.prototype.encrypt = sjcl.misc.hmac.prototype.mac = function (data) {
+            if (!this._updated) {
+                this.update(data);
+                return this.digest(data);
+            } else {
+                throw new sjcl.exception.invalid("encrypt on already updated hmac called!");
+            }
+        };
+        sjcl.misc.hmac.prototype.reset = function () {
+            this._resultHash = new this._hash(this._baseHash[0]);
+            this._updated = false;
+        };
+        sjcl.misc.hmac.prototype.update = function (data) {
+            this._updated = true;
+            this._resultHash.update(data);
+        };
+        sjcl.misc.hmac.prototype.digest = function () {
+            let w = this._resultHash.finalize(), result = new (this._hash)(this._baseHash[1]).update(w).finalize();
+            this.reset();
+            return result;
+        };
+        sjcl.misc.pbkdf2 = function (password, salt, count, length, Prff) {
+            count = count || 10000;
+            if (length < 0 || count < 0) {
+                throw new sjcl.exception.invalid("invalid params to pbkdf2");
+            }
+            if (typeof password === "string") {
+                password = sjcl.codec.utf8String.toBits(password);
+            }
+            if (typeof salt === "string") {
+                salt = sjcl.codec.utf8String.toBits(salt);
+            }
+            Prff = Prff || sjcl.misc.hmac;
+            let prf = new Prff(password),
+                u, ui, i, j, k, out = [], b = sjcl.bitArray;
+            for (k = 1; 32 * out.length < (length || 1); k++) {
+                u = ui = prf.encrypt(b.concat(salt, [k]));
+                for (i = 1; i < count; i++) {
+                    ui = prf.encrypt(ui);
+                    for (j = 0; j < ui.length; j++) {
+                        u[j] ^= ui[j];
+                    }
+                }
+                out = out.concat(u);
+            }
+            if (length) {out = b.clamp(out, length);}
+            return out;
+        };
+        sjcl.random = {
+            randomWords: function (nbytes) {
+                function getCryptoModule() {
+                    try {
+                        return require("crypto");
+                    }
+                    catch (e) {
+                        return null;
+                    }
+                }
+                let crypto;
+                if (typeof window !== "undefined") {
+                    if (window.crypto) {
+                        crypto = window.crypto;
+                    } else if (window.msCrypto) {
+                        crypto = window.msCrypto;
+                    }
+                } else if (typeof self !== "undefined" && self.crypto) {
+                    crypto = self.crypto;
+                } else if (typeof module !== "undefined" && module.exports) {
+                    crypto = getCryptoModule();
+                } else if (typeof global !== "undefined" && global.crypto) {
+                    crypto = global.crypto;
+                }
+                try {
+                    if (crypto) {
+                        if (crypto.getRandomValues) {
+                            return sjcl.codec.bytes.toBits(crypto.getRandomValues(new Uint8Array(nbytes)));
+                        }
+                        if (crypto.randomBytes) {
+                            return sjcl.codec.bytes.toBits(new Uint8Array(crypto.randomBytes(nbytes)));
+                        }
+                    } else {
+                        return getRandomValues(nbytes);
+                    }
+                } catch (e) {
+                    return getRandomValues(nbytes);
+                }
+            },
+            getRandomValues: function (nbytes) {
+                let words = [];
+                let r = function (m_w) {
+                    let m_z = 0x3ade68b1;
+                    let mask = 0xffffffff;
+                    return function () {
+                        m_z = (0x9069 * (m_z & 0xFFFF) + (m_z >> 0x10)) & mask;
+                        m_w = (0x4650 * (m_w & 0xFFFF) + (m_w >> 0x10)) & mask;
+                        let result = ((m_z << 0x10) + m_w) & mask;
+                        result /= 0x100000000;
+                        result += 0.5;
+                        return result * (Math.random() > .5 ? 1 : -1);
+                    };
+                };
+                for (let i = 0, rcache; i < nbytes; i += 4) {
+                    let _r = r((rcache || Math.random()) * 0x100000000);
+                    rcache = _r() * 0x3ade67b7;
+                    words.push((_r() * 0x100000000) | 0);
+                }
+                return words;
+            }
+        };
+        sjcl.mode.ctr = {
+            name: "ctr",
+            encrypt: function (prf, plaintext, iv) {
+                return sjcl.mode.ctr._calculate(prf, plaintext, iv);
+            },
+            decrypt: function (prf, ciphertext, iv) {
+                return sjcl.mode.ctr._calculate(prf, ciphertext, iv);
+            },
+            _calculate: function (prf, data, iv) {
+                let l, bl, res, c, d, e, i;
+                if (sjcl.bitArray.bitLength(iv) !== 128) {
+                    throw new sjcl.exception.invalid("ctr iv must be 128 bits");
+                }
+                if (!(l = data.length)) {
+                    return [];
+                }
+                c = iv.slice(0);
+                d = data.slice(0);
+                bl = sjcl.bitArray.bitLength(d);
+                for (i = 0; i < l; i += 4) {
+                    e = prf.encrypt(c);
+                    d[i] ^= e[0];
+                    d[i + 1] ^= e[1];
+                    d[i + 2] ^= e[2];
+                    d[i + 3] ^= e[3];
+                    for (let carry = 3; carry >= 0; carry--) {
+                        if (++c[carry]) break;
+                    }
+                }
+                return sjcl.bitArray.clamp(d, bl);
+            }
+        };
+    <\/script>
+    <script>
+        const encryptedHTML = "` + baseRes + `";
+        passData.focus();
+        passData.oninput = () => {
+            if (passData.value.trim().length) {
+                goChat.classList.add("activeBtn");
+            } else {
+                goChat.classList.remove("activeBtn");
+            }
+        }
+        goChat.onclick = () => {
+            decryptString(encryptedHTML, passData.value);
+        }
+        const decoder = new TextDecoder();
+        const passwordVerifierLen = 4;
+        const aesKeyLen = 16; // aes-128-ctr
+        const saltLen = 8;
+        const base64ToUint8Array = (base64) => {
+            let byteString = atob(base64);
+            let bytes = new Uint8Array(byteString.length);
+            for (let i = 0; i < byteString.length; i++) {
+                bytes[i] = byteString.charCodeAt(i);
+            }
+            return bytes
+        }
+        const decryptFromKey = (derivedKey, uint8Data) => {
+            const derivedPassVerifier = sjcl.bitArray.bitSlice(derivedKey, aesKeyLen * 8);
+            const passVerifyValue = sjcl.codec.bytes.toBits(uint8Data.subarray(saltLen, saltLen + passwordVerifierLen));
+            if (!sjcl.bitArray.equal(passVerifyValue, derivedPassVerifier)) {
+                alert("密码错误，请重试！")
+                return;
+            }
+            ` + (enableRemember.checked ? `if (rememberMe && rememberMe.checked) {
+                let baseKey = btoa(String.fromCharCode.apply(null, sjcl.codec.bytes.fromBits(derivedKey)));
+                localStorage.setItem("staticDerivedKey", baseKey);
+                if (expireDays) {
+                    localStorage.setItem("staticKeyExpire", new Date().getTime() + expireDays * 8.64e7);
+                }
+            }` : "") +
+            `const aesKey = sjcl.bitArray.bitSlice(derivedKey, 0, aesKeyLen * 8);
+            const encryptedData = uint8Data.subarray(saltLen + passwordVerifierLen);
+            let result = new Uint8Array(sjcl.codec.bytes.fromBits(sjcl.mode.ctr.decrypt(new sjcl.cipher.aes(aesKey), sjcl.codec.bytes.toBits(encryptedData), [0, 0, 0, 0])));
+            if (self.inflateSync) {
+                result = inflateSync(result);
+            }
+            const utf8Result = decoder.decode(result)
+            document.write(utf8Result);
+            document.close();
+        }
+        const decryptString = (data, password) => {
+            const uint8Data = base64ToUint8Array(data);
+            const salt = sjcl.codec.bytes.toBits(uint8Data.subarray(0, saltLen));
+            const derivedKey = sjcl.misc.pbkdf2(password, salt, 1000, (aesKeyLen + passwordVerifierLen) * 8);
+            decryptFromKey(derivedKey, uint8Data)
+        }
+        ` + (enableRemember.checked ? `const expireDays = ${expireDays.value || 0};
+        window.onload = () => {
+            let localKey = localStorage.getItem("staticDerivedKey");
+            if (localKey) {
+                let localExpire = localStorage.getItem("staticKeyExpire")
+                if (localExpire && (localExpire < new Date().getTime())) {
+                    localStorage.removeItem("staticDerivedKey")
+                    return;
+                }
+                const derivedKey = sjcl.codec.bytes.toBits(base64ToUint8Array(localKey));
+                const uint8Data = base64ToUint8Array(encryptedHTML);
+                decryptFromKey(derivedKey, uint8Data);
+            }
+        }`:"")+`
+    <\/script>
+</body>
+
+</html>`;
+                outputData.value = htmlRes;
+                downHTML.style.display = outputData.style.display = "block";
+            }
+            reader.readAsDataURL(new Blob([new Uint8Array(sjcl.codec.bytes.fromBits(sjcl.bitArray.concat(preData, result)))]))
+        }
+        function decryptString(data, password) {
+            const byteString = window.atob(data);
+            const uint8Data = new Uint8Array(byteString.length);
+            for (let i = 0; i < byteString.length; i++) {
+                uint8Data[i] = byteString.charCodeAt(i);
+            }
+            const salt = sjcl.codec.bytes.toBits(uint8Data.subarray(0, saltLen));
+            const derivedKey = sjcl.misc.pbkdf2(password, salt, 1000, (aesKeyLen + passwordVerifierLen) * 8);
+            const derivedPassVerifier = sjcl.bitArray.bitSlice(derivedKey, aesKeyLen * 8);
+            const passVerifyValue = sjcl.codec.bytes.toBits(uint8Data.subarray(saltLen, saltLen + passwordVerifierLen));
+            if (!sjcl.bitArray.equal(passVerifyValue, derivedPassVerifier)) {
+                throw new Error("Wrong password!");
+            }
+            const aesKey = sjcl.bitArray.bitSlice(derivedKey, 0, aesKeyLen * 8);
+            const encryptedData = uint8Data.subarray(saltLen + passwordVerifierLen);
+            const result = sjcl.mode.ctr.decrypt(new sjcl.cipher.aes(aesKey), sjcl.codec.bytes.toBits(encryptedData), [0, 0, 0, 0]);
+            const utf8Result = decoder.decode(new Uint8Array(sjcl.codec.bytes.fromBits(result)))
+            console.log(utf8Result);
+        }
+    </script>
+</body>
+
+</html>

@@ -7,7 +7,9 @@ Pure Javascript ChatGPT demo based on OpenAI API
 
 支持复制/更新/刷新会话，语音输入，朗读等功能，以及众多[自定义选项](#自定义选项)。
 
-支持搜索会话，深色模式，自定义头像，[PWA应用](#pwa应用)，API额度显示等。
+支持搜索会话，深色模式，自定义头像，快捷键，[PWA应用](#pwa应用)，API额度显示等。
+
+支持[加密HTML文件](#加密html文件)。
 
 参考项目: 
 [markdown-it](https://github.com/markdown-it/markdown-it), 
@@ -108,7 +110,7 @@ ___
 
 ## 自定义选项
 
-- 左边栏支持，搜索会话，新建/重命名/删除(会话/文件夹)，浅色/深色/自动主题模式，导出/导入/重置会话和设置数据，显示API额度，显示本地存储。
+- 左边栏支持，搜索会话，新建/重命名/删除(会话/文件夹)，浅色/深色/自动主题模式，导出/导入/重置会话和设置数据，快捷键，显示API额度，显示本地存储。
 
 - 可选GPT模型，默认gpt-3.5，当前使用gpt-4模型需通过OpenAI的表单申请，或使用[ChatGPT-to-API](https://github.com/xqdoo00o/ChatGPT-to-API)模拟网页ChatGPT为API使用（使用gpt-4需Plus账户）。
 
@@ -142,3 +144,21 @@ ___
 - 允许自动朗读，默认关闭，自动朗读新的回答。**（iOS需打开设置-自动播放视频预览，Mac上Safari需打开此网站的设置-允许全部自动播放）**
 
 - 支持语音输入，默认识别为普通话，可长按语音按钮修改识别选项。**语音识别必需条件：使用chrome内核系浏览器 + https网页或本地网页。** 如点击语音按钮没反应，可能是未授予麦克风权限或者没安装麦克风设备。
+
+## 加密HTML文件
+
+使用[encrypt.html](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/encrypt.html)可加密index.html文件。
+
+- 密码，打开加密HTML的密码。
+
+- 是否压缩，较大HTML可减少加密后文件体积。
+
+- 允许记住密码，是否允许前端记住密码。
+
+- 记住密码有效期，超时之后需重新输入密码。
+
+- 拷贝index.html到需加密的HTML文本框，点击生成按钮后，即可下载加密HTML，并替换index.html使用。
+
+**注意：该方式仅加密前端HTML，不加密OpenAI接口。**
+
+**可取消OpenAI接口的默认API密钥，打开[index.html代码](https://github.com/xqdoo00o/chatgpt-web/blob/main/index.html#L2587)，此行添加代码`value="sk-xxx"`，则默认使用该密钥**
