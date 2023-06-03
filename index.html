@@ -1706,6 +1706,29 @@
             background: var(--lighter-active-color);
         }
 
+        .hotKeyDetail>div {
+            position: relative;
+            height: 30px;
+            margin-bottom: 2px;
+        }
+
+        .hotKeyDetail label {
+            line-height: 30px;
+        }
+
+        .hotKeyDetail select {
+            position: absolute;
+            left: 100px;
+            outline: none;
+            border-radius: 3px;
+            width: 120px;
+            border-color: rgba(0, 0, 0, .3);
+            background: var(--chat-back);
+            color: var(--chat-text-color);
+            height: 30px;
+            font-size: 15px;
+        }
+
         .avatarDetail {
             display: flex;
             margin-top: 2px;
@@ -1957,11 +1980,11 @@
                     d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z">
                 </path>
             </symbol>
-            <symbol viewBox="0 0 16 16" id="pauseVoiceIcon">
-                <path stroke="currentColor" stroke-width="2" d="M5 2v12M11 2v12"></path>
+            <symbol viewBox="0 0 20 20" id="pauseVoiceIcon">
+                <path stroke="currentColor" stroke-width="2.4" d="M6 3v14M14 3v14"></path>
             </symbol>
             <symbol viewBox="0 0 16 16" id="resumeVoiceIcon">
-                <path fill="currentColor" d="M4 2L4 14L12 8Z"></path>
+                <path fill="currentColor" d="M4 3L4 13L12 8Z"></path>
             </symbol>
             <symbol viewBox="0 0 24 24" id="stopResIcon">
                 <path fill="currentColor"
@@ -2097,6 +2120,14 @@
                 <path fill="currentColor"
                     d="M13.82 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2c0 .5-.04 1-.1 1.46c.6-.5 1.32-.89 2.1-1.14V12c0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2v.18c.7.17 1.35.45 1.95.82c.05-.32.05-.66.05-1c0-5.5-4.5-10-10-10C6.47 2 2 6.5 2 12s4.5 10 10 10c.34 0 .68 0 1-.05c-.41-.66-.71-1.4-.87-2.2c-.04.07-.08.14-.13.21c-.83-1.2-1.5-2.53-1.91-3.96h2.41c.31-.75.76-1.42 1.32-2m5.1-6h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26m.82 2H8c.35 1.25.8 2.45 1.4 3.56A8.008 8.008 0 0 1 5.08 16M8 8H5.08A7.923 7.923 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m12.83 7.67L22 14.5v4h-4l1.77-1.77A2.5 2.5 0 1 0 20 20h1.71A3.991 3.991 0 0 1 18 22.5c-2.21 0-4-1.79-4-4s1.79-4 4-4c1.11 0 2.11.45 2.83 1.17Z" />
             </symbol>
+            <symbol viewBox="0 0 24 24" id="hotkeyIcon">
+                <g fill="none">
+                    <path
+                        d="M24 0v24H0V0h24ZM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427c-.002-.01-.009-.017-.017-.018Zm.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093c.012.004.023 0 .029-.008l.004-.014l-.034-.614c-.003-.012-.01-.02-.02-.022Zm-.715.002a.023.023 0 0 0-.027.006l-.006.014l-.034.614c0 .012.007.02.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01l-.184-.092Z" />
+                    <path fill="currentColor"
+                        d="M18 3a3 3 0 0 1 2.995 2.824L21 6v12a3 3 0 0 1-2.824 2.995L18 21H6a3 3 0 0 1-2.995-2.824L3 18V6a3 3 0 0 1 2.824-2.995L6 3h12Zm-2.707 13.708A2.99 2.99 0 0 1 14 17H5v1a1 1 0 0 0 1 1h11.586l-2.293-2.292ZM18 5h-1v9c0 .386-.073.755-.206 1.094l-.086.2L19 17.585V6a1 1 0 0 0-.883-.993L18 5Zm-3 0H6a1 1 0 0 0-.993.883L5 6v9h9a1 1 0 0 0 .993-.883L15 14V5ZM9 7a1 1 0 0 1 .993.883L10 8v.631l1.445-.963a1 1 0 0 1 1.203 1.594l-.093.07l-1.377.918l1.377.918a1 1 0 0 1-1.009 1.723l-.1-.059L10 11.868V12a1 1 0 0 1-1.993.117L8 12V8a1 1 0 0 1 1-1Z" />
+                </g>
+            </symbol>
         </svg>
     </div>
     <div id="loadMask">
@@ -2167,7 +2198,7 @@
         </nav>
         <div class="mainContent">
             <div class="top_menu">
-                <div class="toggler">
+                <div class="toggler" title="导航">
                     <div class="button close"></div>
                     <div class="button minimize"></div>
                     <div class="button maximize"></div>
@@ -2291,8 +2322,8 @@
                         </div>
                         <div>
                             <div>Azure Access Key</div>
-                            <input class="inputTextClass" type="password" placeholder="Azure Key" id="azureKeyInput"
-                                style="-webkit-text-security: disc;" />
+                            <input class="inputTextClass" type="text" placeholder="Azure Key" id="azureKeyInput"
+                                autocomplete="off" style="-webkit-text-security: disc;" />
                         </div>
                         <div id="checkVoiceLoad" style="display: none;">
                             <svg>
@@ -2487,6 +2518,11 @@
                             <use xlink:href="#settingIcon" />
                         </svg>通用
                     </div>
+                    <div data-id="hotkeyOption">
+                        <svg width="24" height="24">
+                            <use xlink:href="#hotkeyIcon" />
+                        </svg>快捷键
+                    </div>
                     <div data-id="dataOption">
                         <svg width="24" height="24">
                             <use xlink:href="#databaseIcon" />
@@ -2548,8 +2584,8 @@
                         <div class="setContent" style="margin-top: 83px;">
                             <div class="setTitle">API密钥</div>
                             <div class="setDetail inputDetail apiDetail">
-                                <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
-                                    style="-webkit-text-security: disc;" />
+                                <input class="inputTextClass" type="text" placeholder="sk-xxxxxx" id="keyInput"
+                                    autocomplete="off" style="-webkit-text-security: disc;" />
                                 <div id="checkBillBtn" class="loaded">
                                     <span>检查API额度</span>
                                     <svg style="margin:0 auto;height:34px;width:100%;">
@@ -2570,7 +2606,64 @@
                                 </div>
                             </div>
                         </div>
-
+                    </div>
+                    <div id="hotkeyOption" style="display: none;">
+                        <div class="setContent">
+                            <div class="setTitle">UI</div>
+                            <div class="setDetail hotKeyDetail">
+                                <div>
+                                    <label for="hotKeyNav">切换导航</label>
+                                    <select id="hotKeyNav">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hotKeyWindow">全屏/窗口</label>
+                                    <select id="hotKeyWindow">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hotKeyTheme">切换主题</label>
+                                    <select id="hotKeyTheme">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="setTitle">会话</div>
+                            <div class="setDetail hotKeyDetail">
+                                <div>
+                                    <label for="hotKeySearch">搜索</label>
+                                    <select id="hotKeySearch">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hotKeyInput">输入框</label>
+                                    <select id="hotKeyInput">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hotKeyNewChat">新建会话</label>
+                                    <select id="hotKeyNewChat">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hotKeyClearChat">清空会话</label>
+                                    <select id="hotKeyClearChat">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="setTitle">语音</div>
+                            <div class="setDetail hotKeyDetail">
+                                <div style="display: none;">
+                                    <label for="hotKeyVoiceRec">语音输入</label>
+                                    <select id="hotKeyVoiceRec">
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="hotKeyVoiceSpeak">朗读会话</label>
+                                    <select id="hotKeyVoiceSpeak">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="dataOption" style="display: none;">
                         <div class="setContent">
@@ -2691,7 +2784,7 @@
         const stopEle = document.getElementById("stopChat");
         const sendBtnEle = document.getElementById("sendbutton");
         const clearEle = document.getElementsByClassName("clearConv")[0];
-        const textarea = document.getElementById("chatinput");
+        const inputAreaEle = document.getElementById("chatinput");
         const settingEle = document.getElementById("setting");
         const dialogEle = document.getElementById("setDialog");
         const lightEle = document.getElementById("toggleLight");
@@ -2728,6 +2821,8 @@
         let autoStopWord; // 自动停止关键词
         let keepListenMic; // 保持监听麦克风
         let toggleRecEv;
+        const isAndroid = /\bAndroid\b/i.test(navigator.userAgent);
+        const isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent);
         const dayMs = 8.64e7;
         refreshPage.onclick = () => {
             if (confirmAction("是否强制刷新页面?")) {
@@ -2737,25 +2832,28 @@
         const noLoading = () => {
             return !loading && (!currentResEle || currentResEle.dataset.loading !== "true")
         };
-        textarea.focus();
+        inputAreaEle.focus();
         const textInputEvent = () => {
             if (noLoading()) {
-                if (textarea.value.trim().length) {
+                if (inputAreaEle.value.trim().length) {
                     sendBtnEle.classList.add("activeSendBtn");
                 } else {
                     sendBtnEle.classList.remove("activeSendBtn");
                 }
             }
-            textarea.style.height = "47px";
-            textarea.style.height = textarea.scrollHeight + "px";
+            inputAreaEle.style.height = "47px";
+            inputAreaEle.style.height = inputAreaEle.scrollHeight + "px";
         };
-        textarea.oninput = textInputEvent;
+        inputAreaEle.oninput = textInputEvent;
+        const toggleNavEv = () => {
+            document.body.classList.toggle("show-nav");
+            if (window.innerWidth > 800) {
+                localStorage.setItem("pinNav", document.body.classList.contains("show-nav"))
+            }
+        }
         document.body.addEventListener("click", event => {
             if (event.target.className === "toggler") {
-                document.body.classList.toggle("show-nav");
-                if (window.innerWidth > 800) {
-                    localStorage.setItem("pinNav", document.body.classList.contains("show-nav"))
-                }
+                toggleNavEv();
             } else if (event.target.className === "overlay") {
                 document.body.classList.remove("show-nav");
             } else if (event.target === document.body) {
@@ -2785,8 +2883,9 @@
             if (supportRec) {
                 noRecTip.style.display = "none";
                 yesRec.style.display = "block";
+                hotKeyVoiceRec.parentElement.style.display = "block";
                 document.getElementById("voiceRec").style.display = "block";
-                textarea.classList.add("message_if_voice");
+                inputAreaEle.classList.add("message_if_voice");
                 let langs = [ // from https://www.google.com/intl/en/chrome/demos/speech.html
                     ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
                         ['cmn-Hans-HK', '普通话 (香港)'],
@@ -2870,7 +2969,7 @@
                 keepMicEle.dispatchEvent(new Event("change"));
                 let recIns = new webkitSpeechRecognition();
                 // prevent some Android bug
-                recIns.continuous = !(/\bAndroid\b/i.test(navigator.userAgent));
+                recIns.continuous = !isAndroid;
                 recIns.interimResults = true;
                 recIns.maxAlternatives = 1;
                 let recRes = tempRes = "";
@@ -2905,10 +3004,10 @@
                         }
                         else {tempRes = recRes + event.results[i][0].transcript}
                     }
-                    textarea.value = preRes + (isFinal ? recRes : tempRes) + affRes;
+                    inputAreaEle.value = preRes + (isFinal ? recRes : tempRes) + affRes;
                     textInputEvent();
-                    textarea.focus();
-                    textarea.selectionEnd = textarea.value.length - affRes.length;
+                    inputAreaEle.focus();
+                    inputAreaEle.selectionEnd = inputAreaEle.value.length - affRes.length;
                     if (autoFlag) {
                         if (autoFlag === 1) {
                             genFunc();
@@ -2919,8 +3018,8 @@
                     }
                 };
                 const resetRecRes = () => {
-                    preRes = textarea.value.slice(0, textarea.selectionStart);
-                    affRes = textarea.value.slice(textarea.selectionEnd);
+                    preRes = inputAreaEle.value.slice(0, inputAreaEle.selectionStart);
+                    affRes = inputAreaEle.value.slice(inputAreaEle.selectionEnd);
                     recRes = tempRes = "";
                 }
                 const stopAction = () => {
@@ -2936,11 +3035,12 @@
                             recIns.stop();
                             stopAction();
                         }
-                    } else if (event && (event.type === "end" || event.error === "no-speech")) {
-                        if (keepListenMic) {
+                    } else if (event) {
+                        if (keepListenMic && (event.type === "end" || event.error === "no-speech")) {
                             recIns.start();
                             resetRecRes();
                         } else {
+                            if (event.type === "error") recIns.stop();
                             stopAction();
                         }
                     }
@@ -2953,7 +3053,7 @@
                         notyf.error("未找到麦克风，请确保已安装麦克风！")
                     }
                     if (event.error === "not-allowed") {
-                        notyf.error("未允许使用麦克风的权限！")
+                        notyf.error("未允许麦克风权限！")
                     }
                     endEvent(ev);
                 }
@@ -3698,7 +3798,7 @@
         });
         md.use(texmath, {engine: katex, delimiters: "dollars", katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}})
             .use(markdownitLinkAttributes, {attrs: {target: "_blank", rel: "noopener"}});
-        const x = {
+        const codeUtils = {
             getCodeLang(str = "") {
                 const res = str.match(/ class="language-(.*?)"/);
                 return (res && res[1]) || "";
@@ -3708,7 +3808,7 @@
             },
         };
         const getCodeLangFragment = (oriStr = "") => {
-            return x.getFragment(x.getCodeLang(oriStr));
+            return codeUtils.getFragment(codeUtils.getCodeLang(oriStr));
         };
         const copyClickCode = (ele) => {
             const input = document.createElement("textarea");
@@ -3778,7 +3878,7 @@
                 chatlog.children[systemRole ? editingIdx - 1 : editingIdx].classList.remove("showEditReq");
             }
             sendBtnEle.children[0].textContent = "发送";
-            textarea.value = originText;
+            inputAreaEle.value = originText;
             clearEle.title = "清空会话";
             clearEle.classList.remove("closeConv");
             originText = void 0;
@@ -3827,10 +3927,10 @@
                     }
                     reqEle.classList.add("showEditReq");
                     editingIdx = idx;
-                    originText = textarea.value;
-                    textarea.value = data[idx].content;
-                    textarea.dispatchEvent(new Event("input"));
-                    textarea.focus();
+                    originText = inputAreaEle.value;
+                    inputAreaEle.value = data[idx].content;
+                    inputAreaEle.dispatchEvent(new Event("input"));
+                    inputAreaEle.focus();
                     sendBtnEle.children[0].textContent = "更新";
                     clearEle.title = "取消";
                     clearEle.classList.add("closeConv");
@@ -3915,9 +4015,9 @@
             </div>` : "") + `</div>`;
             if (existVoice) {
                 mdOption.innerHTML += `<div class="voiceCls readyVoice" data-id="voiceMd">
-                <svg width="21" height="21" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
-                <svg width="21" height="21" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
-                <svg width="21" height="21" role="img"><title>恢复</title><use xlink:href="#resumeVoiceIcon" /></svg>
+                <svg width="20" height="20" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
+                <svg width="20" height="20" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
+                <svg width="20" height="20" role="img"><title>恢复</title><use xlink:href="#resumeVoiceIcon" /></svg>
                 </div>`
             }
             mdOption.onclick = mdOptionEvent;
@@ -4392,9 +4492,7 @@
             let div = document.createElement("div");
             div.className = className;
             formatMdEle(div, model);
-            if (append) {
-                chatlog.appendChild(div);
-            }
+            if (append) chatlog.appendChild(div);
             return div;
         }
         const getChatEle = (idx) => {
@@ -4679,7 +4777,7 @@
                 activeChat(chatListEle.firstElementChild);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -4708,6 +4806,7 @@
                     initVoiceVal();
                     speechServiceEle.dispatchEvent(new Event("change"));
                     initRecSetting();
+                    initHotKey();
                     checkStorage();
                 } catch (e) {
                     notyf.error("导入失败，请检查文件格式！");
@@ -4728,6 +4827,7 @@
                 initVoiceVal();
                 speechServiceEle.dispatchEvent(new Event("change"));
                 initRecSetting();
+                initHotKey();
                 checkStorage();
             }
         }
@@ -4741,6 +4841,99 @@
             if (editingIdx !== void 0) editingIdx += plus;
         }
         const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
+        const hotKeyVals = {};
+        const ctrlHotKeyEv = (ev) => {
+            if (ev.ctrlKey || ev.metaKey) {
+                switch (ev.key.toLowerCase()) {
+                    case hotKeyVals["Nav"]:
+                        ev.preventDefault();
+                        toggleNavEv();
+                        break;
+                    case hotKeyVals["Search"]:
+                        ev.preventDefault();
+                        searchChatEle.focus();
+                        break;
+                    case hotKeyVals["Input"]:
+                        ev.preventDefault();
+                        inputAreaEle.focus();
+                        break;
+                    case hotKeyVals["NewChat"]:
+                        ev.preventDefault();
+                        newChatEle.dispatchEvent(new MouseEvent("click"));
+                        break;
+                    case hotKeyVals["ClearChat"]:
+                        ev.preventDefault();
+                        clearEle.dispatchEvent(new MouseEvent("click"));
+                        break;
+                    case hotKeyVals["VoiceRec"]:
+                        if (supportRec) {
+                            ev.preventDefault();
+                            toggleRecEv();
+                        }
+                        break;
+                    case hotKeyVals["VoiceSpeak"]:
+                        ev.preventDefault();
+                        speechEvent(systemRole ? 1 : 0);
+                        break;
+                }
+            }
+        }
+        const ctrlAltHotKeyEv = (ev) => {
+            if ((ev.ctrlKey || ev.metaKey) && ev.altKey) {
+                switch (ev.key.toLowerCase()) {
+                    case hotKeyVals["Window"]:
+                        ev.preventDefault();
+                        toggleFull.dispatchEvent(new Event("click"));
+                        break;
+                    case hotKeyVals["Theme"]:
+                        ev.preventDefault();
+                        lightEle.dispatchEvent(new Event("click"));
+                        break;
+                }
+            }
+        }
+        const listKey = ['Nav', 'Search', 'Input', 'NewChat', 'ClearChat', 'VoiceRec', 'VoiceSpeak', 'Window', 'Theme'];
+        const ctrlKeyIdx = 7;
+        const defKeyVal = ['b', 'k', 'i', 'e', 'r', 'q', 's', 'u', 't'];
+        const initHotKey = () => {
+            let localKeysObj = {};
+            let localKeys = localStorage.getItem("hotKeys");
+            if (localKeys) {
+                try {
+                    localKeysObj = JSON.parse(localKeys);
+                } catch (e) { }
+            }
+            let pre1 = isApple ? "⌘ + " : "Ctrl + ";
+            let pre2 = isApple ? "⌘ + ⌥ + " : "Ctrl + Alt + ";
+            for (let i = 0; i < listKey.length; i++) {
+                let key = listKey[i];
+                if (key === "VoiceRec" && !supportRec) continue;
+                let ele = window["hotKey" + key];
+                for (let j = 0; j < 26; j++) {
+                    // top-level hotkey, can't overwrite
+                    if (i < ctrlKeyIdx && (j === 13 || j === 19 || j === 22)) continue;
+                    let val = String.fromCharCode(j + 97);
+                    ele.options.add(new Option((i < ctrlKeyIdx ? pre1 : pre2) + val.toUpperCase(), val));
+                }
+                hotKeyVals[key] = ele.value = localKeysObj[key] || defKeyVal[i];
+                ele.onchange = () => {
+                    if (hotKeyVals[key] === ele.value) return;
+                    let exist = listKey.find((item, idx) => {
+                        return (i < ctrlKeyIdx ? idx < ctrlKeyIdx : idx >= ctrlKeyIdx) && hotKeyVals[item] === ele.value;
+                    })
+                    if (exist) {
+                        ele.value = hotKeyVals[key];
+                        notyf.error("快捷键冲突，请选择其他键位！")
+                        return;
+                    }
+                    hotKeyVals[key] = ele.value;
+                    localStorage.setItem("hotKeys", JSON.stringify(hotKeyVals));
+                }
+            }
+        };
+        initHotKey();
+        document.addEventListener("keydown", ctrlHotKeyEv);
+        document.addEventListener("keydown", ctrlAltHotKeyEv);
         const initSetting = (force = false) => {
             const modelEle = document.getElementById("preSetModel");
             let localModel = localStorage.getItem("modelVersion");
@@ -4929,7 +5122,7 @@
                 toggleFull.title = isFull ? "窗口" : "全屏";
                 toggleFull.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", isFull ? "#collapseFullIcon" : "#expandFullIcon");
             }
-            toggleFull.onclick = function () {
+            toggleFull.onclick = () => {
                 windowEle.classList.toggle("full_window");
                 fullFunc();
             }
@@ -5932,7 +6125,7 @@
             scrollToBottom();
             streamGen();
         };
-        textarea.onkeydown = (e) => {
+        inputAreaEle.onkeydown = (e) => {
             if (e.keyCode === 13 && !e.shiftKey) {
                 e.preventDefault();
                 genFunc();
@@ -5942,10 +6135,10 @@
             if (!keepListenMic && recing) {
                 toggleRecEv();
             }
-            let message = textarea.value.trim();
+            let message = inputAreaEle.value.trim();
             if (message.length !== 0 && noLoading()) {
-                textarea.value = "";
-                textarea.style.height = "47px";
+                inputAreaEle.value = "";
+                inputAreaEle.style.height = "47px";
                 generateText(message);
             }
         };
