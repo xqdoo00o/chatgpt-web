@@ -155,17 +155,17 @@ ___
 
 ## 加密HTML文件
 
-使用[encrypt.html](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/encrypt.html)可加密index.html文件。
+使用[加密网页](https://xqdoo00o.github.io/chatgpt-web/encrypt.html)可加密index.html文件。
 
 - 密码，打开加密HTML的密码。
 
-- 是否压缩，较大HTML可减少加密后文件体积。
+- 是否压缩，默认允许，较大HTML可减少加密后文件体积。
 
-- 允许记住密码，是否允许前端记住密码。
+- 允许记住密码，默认允许，是否允许前端记住密码。
 
-- 记住密码有效期，过期后需重新输入密码。
+- 记住密码有效期，默认永不过期，过期后需重新输入密码。
 
-- 拷贝index.html到需加密的HTML文本框，点击生成按钮后，即可下载加密HTML，并替换index.html使用。
+- 拷贝index.html到要加密的HTML文本框，点击生成按钮后，即可下载加密HTML，并替换index.html使用。
 
 **注意：该方式仅加密前端HTML，不加密OpenAI接口。**
 
