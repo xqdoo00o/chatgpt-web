@@ -2448,6 +2448,14 @@
                                 <input class="inputTextClass" id="autoStopText" placeholder="停止" />
                             </div>
                             <div>
+                                <span>自动发送延迟时间</span>
+                                <input type="range" id="autoSendTimeout" min="0" max="10" value="0" step="1" />
+                                <div class="selectDef">
+                                    <span>0秒</span>
+                                    <span>10秒</span>
+                                </div>
+                            </div>
+                            <div>
                                 <span class="inlineTitle">保持监听</span>
                                 <label class="switch-slide">
                                     <input type="checkbox" id="keepListenMic" checked="false" hidden />
@@ -2772,6 +2780,11 @@
                     duration: 2000,
                 },
                 {
+                    type: "warning",
+                    background: "#f8b26a",
+                    duration: 3000
+                },
+                {
                     type: "error",
                     background: "#e15b64",
                     duration: 3000,
@@ -2819,7 +2832,10 @@
         let recing = false;
         let autoSendWord; // 自动发送关键词
         let autoStopWord; // 自动停止关键词
+        let autoSendTime; // 自动发送延迟时间
         let keepListenMic; // 保持监听麦克风
+        let autoSendTimer;
+        let resetRecRes;
         let toggleRecEv;
         const isAndroid = /\bAndroid\b/i.test(navigator.userAgent);
         const isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent);
@@ -2879,6 +2895,12 @@
             checkStorage();
             document.body.addEventListener("click", endSetEvent, true);
         };
+        const clearAutoSendTimer = () => {
+            if (autoSendTimer !== void 0) {
+                clearTimeout(autoSendTimer);
+                autoSendTimer = void 0;
+            }
+        }
         const initRecSetting = () => {
             if (supportRec) {
                 noRecTip.style.display = "none";
@@ -2959,6 +2981,20 @@
                     localStorage.setItem("autoVoiceStopWord", autoStopWord);
                 }
                 autoStopText.dispatchEvent(new Event("change"));
+                let outEle = document.getElementById("autoSendTimeout");
+                let localTimeout = localStorage.getItem("autoVoiceSendOut");
+                outEle.value = autoSendTime = parseInt(localTimeout || outEle.getAttribute("value"));
+                outEle.oninput = () => {
+                    outEle.style.backgroundSize = (outEle.value - outEle.min) * 100 / (outEle.max - outEle.min) + "% 100%";
+                    autoSendTime = parseInt(outEle.value);
+                    localStorage.setItem("autoVoiceSendOut", outEle.value);
+                }
+                outEle.dispatchEvent(new Event("input"));
+                outEle.onchange = () => {
+                    let hasAutoTimer = !!autoSendTimer;
+                    clearAutoSendTimer();
+                    if (hasAutoTimer) setAutoTimer();
+                }
                 const keepMicEle = document.getElementById("keepListenMic");
                 let localKeepMic = localStorage.getItem("keepListenMic");
                 keepMicEle.checked = keepListenMic = (localKeepMic || keepMicEle.getAttribute("checked")) === "true";
@@ -2974,6 +3010,14 @@
                 recIns.maxAlternatives = 1;
                 let recRes = tempRes = "";
                 let preRes, affRes;
+                const setAutoTimer = () => {
+                    if (autoSendTime) {
+                        autoSendTimer = setTimeout(() => {
+                            genFunc();
+                            autoSendTimer = void 0;
+                        }, autoSendTime * 1000);
+                    }
+                }
                 const resEvent = (event) => {
                     if (typeof (event.results) === "undefined") {
                         toggleRecEvent();
@@ -3009,20 +3053,19 @@
                     inputAreaEle.focus();
                     inputAreaEle.selectionEnd = inputAreaEle.value.length - affRes.length;
                     if (autoFlag) {
-                        if (autoFlag === 1) {
-                            genFunc();
-                            if (keepListenMic) resetRecRes();
-                        } else {
-                            endEvent(false, false);
-                        }
+                        if (autoFlag === 1) genFunc();
+                        else endEvent(false, false);
                     }
+                    clearAutoSendTimer();
+                    if (autoFlag !== 1) setAutoTimer();
                 };
-                const resetRecRes = () => {
+                resetRecRes = () => {
                     preRes = inputAreaEle.value.slice(0, inputAreaEle.selectionStart);
                     affRes = inputAreaEle.value.slice(inputAreaEle.selectionEnd);
                     recRes = tempRes = "";
                 }
                 const stopAction = () => {
+                    clearAutoSendTimer();
                     recIns.onresult = null;
                     recIns.onerror = null;
                     recIns.onend = null;
@@ -3036,7 +3079,7 @@
                             stopAction();
                         }
                     } else if (event) {
-                        if (keepListenMic && (event.type === "end" || event.error === "no-speech")) {
+                        if (keepListenMic && event.type === "end") {
                             recIns.start();
                             resetRecRes();
                         } else {
@@ -3047,15 +3090,19 @@
                 };
                 const errorEvent = (ev) => {
                     if (event.error === "no-speech") {
-                        notyf.error("未识别到语音，请调整麦克风后重试！")
+                        notyf.open({
+                            type: "warning",
+                            message: "未识别到语音，请调整麦克风后重试！"
+                        });
                     }
                     if (event.error === "audio-capture") {
-                        notyf.error("未找到麦克风，请确保已安装麦克风！")
+                        notyf.error("未识别到麦克风，请确保已安装麦克风！")
+                        endEvent(ev);
                     }
                     if (event.error === "not-allowed") {
                         notyf.error("未允许麦克风权限！")
+                        endEvent(ev);
                     }
-                    endEvent(ev);
                 }
                 const closeEvent = (ev) => {
                     if (voiceRecSetEle.contains(ev.target)) return;
@@ -4777,7 +4824,7 @@
                 activeChat(chatListEle.firstElementChild);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -6129,9 +6176,12 @@
             if (e.keyCode === 13 && !e.shiftKey) {
                 e.preventDefault();
                 genFunc();
+            } else if (keepListenMic && recing) {
+                resetRecRes();
             }
         };
         const genFunc = function () {
+            clearAutoSendTimer();
             if (!keepListenMic && recing) {
                 toggleRecEv();
             }
@@ -6139,6 +6189,7 @@
             if (message.length !== 0 && noLoading()) {
                 inputAreaEle.value = "";
                 inputAreaEle.style.height = "47px";
+                if (keepListenMic && recing) resetRecRes();
                 generateText(message);
             }
         };
