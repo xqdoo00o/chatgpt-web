@@ -2155,7 +2155,7 @@
                 </div>
             </div>
             <div class="extraChat">
-                <input type="text" id="searchChat" placeholder="搜索" />
+                <input type="text" id="searchChat" autocomplete="off" placeholder="搜索" />
                 <div id="clearSearch">
                     <svg width="24" height="24">
                         <use xlink:href="#closeIcon" />
@@ -2239,7 +2239,7 @@
                             <div>用户头像</div>
                             <div class="avatarDetail">
                                 <img id="setAvatarPre" src="" />
-                                <input class="inputTextClass" type="text" id="setAvatar" />
+                                <input class="inputTextClass" autocomplete="off" type="text" id="setAvatar" />
                             </div>
                         </div>
                         <div>
@@ -2256,8 +2256,8 @@
                                     </select>
                                 </div>
                             </div>
-                            <textarea class="inputTextClass areaTextClass" placeholder="你是一个乐于助人的助手，尽量简明扼要地回答"
-                                id="systemInput"></textarea>
+                            <textarea class="inputTextClass areaTextClass" autocomplete="off"
+                                placeholder="你是一个乐于助人的助手，尽量简明扼要地回答" id="systemInput"></textarea>
                         </div>
                         <div>
                             <span>角色性格</span>
@@ -2441,11 +2441,11 @@
                             </div>
                             <div>
                                 <div>自动发送关键词</div>
-                                <input class="inputTextClass" id="autoSendText" placeholder="发送" />
+                                <input class="inputTextClass" id="autoSendText" autocomplete="off" placeholder="发送" />
                             </div>
                             <div>
                                 <div>自动停止关键词</div>
-                                <input class="inputTextClass" id="autoStopText" placeholder="停止" />
+                                <input class="inputTextClass" id="autoStopText" autocomplete="off" placeholder="停止" />
                             </div>
                             <div>
                                 <span>自动发送延迟时间</span>
@@ -2474,7 +2474,7 @@
             </div>
             <div class="bottom_wrapper clearfix">
                 <div class="message_input_wrapper">
-                    <textarea class="message_input_text" spellcheck="false" placeholder="来问点什么吧"
+                    <textarea class="message_input_text" autocomplete="off" spellcheck="false" placeholder="来问点什么吧"
                         id="chatinput"></textarea>
                     <div id="voiceRec" style="display:none;">
                         <div id="voiceRecIcon">
@@ -5008,6 +5008,7 @@
                 apiSelects.splice(index, 1);
                 this.parentElement.remove();
                 localStorage.setItem("APISelect", JSON.stringify(apiSelects));
+                if (!apiSelects.length) apiSelectEle.style.display = "none";
             }
             const appendApiOption = () => {
                 apiSelects.push(apiHost);
