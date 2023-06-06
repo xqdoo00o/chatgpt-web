@@ -309,7 +309,7 @@
         }
 
         .messages::-webkit-scrollbar,
-        #chatlog .markdown-body>pre::-webkit-scrollbar,
+        #chatlog .markdown-body>pre>code::-webkit-scrollbar,
         #setDialog::-webkit-scrollbar,
         .allList::-webkit-scrollbar,
         .sysDetail::-webkit-scrollbar,
@@ -319,7 +319,7 @@
         }
 
         .messages::-webkit-scrollbar-track,
-        #chatlog .markdown-body>pre::-webkit-scrollbar-track,
+        #chatlog .markdown-body>pre>code::-webkit-scrollbar-track,
         #setDialog::-webkit-scrollbar-track,
         .allList::-webkit-scrollbar-track,
         .sysDetail::-webkit-scrollbar-track,
@@ -330,7 +330,7 @@
         }
 
         .messages::-webkit-scrollbar-corner,
-        #chatlog .markdown-body>pre::-webkit-scrollbar-corner,
+        #chatlog .markdown-body>pre>code::-webkit-scrollbar-corner,
         #setDialog::-webkit-scrollbar-corner,
         .allList::-webkit-scrollbar-corner,
         .sysDetail::-webkit-scrollbar-corner,
@@ -339,7 +339,7 @@
         }
 
         .messages::-webkit-scrollbar-thumb,
-        #chatlog .markdown-body>pre::-webkit-scrollbar-thumb,
+        #chatlog .markdown-body>pre>code::-webkit-scrollbar-thumb,
         #setDialog::-webkit-scrollbar-thumb,
         .allList::-webkit-scrollbar-thumb,
         .sysDetail::-webkit-scrollbar-thumb,
@@ -351,7 +351,7 @@
         }
 
         .messages::-webkit-scrollbar-thumb:hover,
-        #chatlog .markdown-body>pre::-webkit-scrollbar-thumb:hover,
+        #chatlog .markdown-body>pre>code::-webkit-scrollbar-thumb:hover,
         #setDialog::-webkit-scrollbar-thumb:hover,
         .allList::-webkit-scrollbar-thumb:hover,
         .sysDetail::-webkit-scrollbar-thumb:hover,
@@ -424,10 +424,14 @@
         }
 
         #chatlog .markdown-body>pre {
-            overflow-x: auto;
             padding: 10px;
             position: relative;
             background: var(--code-color);
+        }
+
+        #chatlog .markdown-body>pre>code {
+            overflow-x: auto;
+            display: block;
         }
 
         .m-mdic-copy-wrapper {
@@ -756,7 +760,7 @@
 
         #setDialog .inlineTitle {
             display: inline-block;
-            width: 80px;
+            width: 88px;
             line-height: 16px;
             vertical-align: middle;
         }
@@ -977,7 +981,6 @@
             display: block;
             margin-left: 5px;
             position: relative;
-            pointer-events: none;
         }
 
         .voiceCls:hover>svg {
@@ -1718,7 +1721,7 @@
 
         .hotKeyDetail select {
             position: absolute;
-            left: 100px;
+            left: 110px;
             outline: none;
             border-radius: 3px;
             width: 120px;
@@ -1818,6 +1821,18 @@
         }
 
         .autoTheme>div:nth-child(3) {
+            background: var(--sel-btn);
+        }
+
+        .langDetail {
+            width: 110px;
+        }
+
+        .enLang>div:first-child {
+            background: var(--sel-btn);
+        }
+
+        .zhLang>div:nth-child(2) {
             background: var(--sel-btn);
         }
 
@@ -1943,6 +1958,53 @@
             display: block;
         }
     </style>
+    <script>
+        let themeMode; // 2: 自动， 1: 浅色，0: 深色
+        let autoThemeMode; // 1: 跟随系统，0:自定义时间
+        let customDarkTime; // 开始，结束时间
+        let isFull = false; // 是否全屏
+        const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
+        const justDarkTheme = (is) => {
+            if (is) document.documentElement.setAttribute("data-theme", "dark");
+            else document.documentElement.removeAttribute("data-theme");
+            document.head.children[4].content = document.head.children[5].content = document.head.children[6].content = getComputedStyle(document.documentElement).getPropertyValue("--background");
+        }
+        const checkDark = () => {
+            const checkCustomTheme = () => {
+                let date = new Date();
+                let nowTime = date.getTime();
+                let start = customDarkTime[0].split(":");
+                let startTime = new Date().setHours(start[0], start[1], 0, 0);
+                let end = customDarkTime[1].split(":");
+                let endTime = new Date().setHours(end[0], end[1], 0, 0);
+                let order = endTime > startTime;
+                let isDark = order ? (nowTime > startTime && endTime > nowTime) : !(nowTime > endTime && startTime > nowTime);
+                justDarkTheme(isDark);
+            }
+            const setDarkMode = () => {
+                if (themeMode === 2) {
+                    if (autoThemeMode) {
+                        justDarkTheme(darkMedia.matches);
+                    } else {
+                        checkCustomTheme();
+                    }
+                } else if (themeMode === 1) {
+                    justDarkTheme(false);
+                } else {
+                    justDarkTheme(true);
+                }
+                localStorage.setItem("themeMode", themeMode);
+            }
+            let localTheme = localStorage.getItem("themeMode");
+            themeMode = parseInt(localTheme || "1");
+            let localAutoTheme = localStorage.getItem("autoThemeMode");
+            autoThemeMode = parseInt(localAutoTheme || "1");
+            let localCustomDark = localStorage.getItem("customDarkTime");
+            customDarkTime = JSON.parse(localCustomDark || '["21:00", "07:00"]');
+            setDarkMode();
+        }
+        checkDark();
+    </script>
 </head>
 
 <body>
@@ -2128,6 +2190,16 @@
                         d="M18 3a3 3 0 0 1 2.995 2.824L21 6v12a3 3 0 0 1-2.824 2.995L18 21H6a3 3 0 0 1-2.995-2.824L3 18V6a3 3 0 0 1 2.824-2.995L6 3h12Zm-2.707 13.708A2.99 2.99 0 0 1 14 17H5v1a1 1 0 0 0 1 1h11.586l-2.293-2.292ZM18 5h-1v9c0 .386-.073.755-.206 1.094l-.086.2L19 17.585V6a1 1 0 0 0-.883-.993L18 5Zm-3 0H6a1 1 0 0 0-.993.883L5 6v9h9a1 1 0 0 0 .993-.883L15 14V5ZM9 7a1 1 0 0 1 .993.883L10 8v.631l1.445-.963a1 1 0 0 1 1.203 1.594l-.093.07l-1.377.918l1.377.918a1 1 0 0 1-1.009 1.723l-.1-.059L10 11.868V12a1 1 0 0 1-1.993.117L8 12V8a1 1 0 0 1 1-1Z" />
                 </g>
             </symbol>
+            <symbol viewBox="0 0 24 24" id="zhIcon">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
+                    <path stroke-linejoin="round" d="M5 8h14v7H5z" />
+                    <path d="M12 4v17" />
+                </g>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="enIcon">
+                <path fill="currentColor"
+                    d="M14 10h2v.757a4.5 4.5 0 0 1 7 3.743V20h-2v-5.5c0-1.43-1.174-2.5-2.5-2.5S16 13.07 16 14.5V20h-2V10Zm-2-6v2H4v5h8v2H4v5h8v2H2V4h10Z" />
+            </symbol>
         </svg>
     </div>
     <div id="loadMask">
@@ -2146,16 +2218,16 @@
                     <svg width="24" height="24">
                         <use xlink:href="#addIcon" />
                     </svg>
-                    <span>新建会话</span>
+                    <span data-i18n-key="newChat"></span>
                 </div>
-                <div id="newFolder" title="新建文件夹">
+                <div id="newFolder" data-i18n-title="newFolder" title>
                     <svg width="24" height="24">
                         <use xlink:href="#newFolderIcon" />
                     </svg>
                 </div>
             </div>
             <div class="extraChat">
-                <input type="text" id="searchChat" autocomplete="off" placeholder="搜索" />
+                <input type="text" id="searchChat" autocomplete="off" data-i18n-place="search" placeholder />
                 <div id="clearSearch">
                     <svg width="24" height="24">
                         <use xlink:href="#closeIcon" />
@@ -2168,22 +2240,22 @@
             </div>
             <div class="navFooter">
                 <div class="navFunc">
-                    <div id="refreshPage" title="强制刷新页面">
+                    <div id="refreshPage" data-i18n-title="forceRe" title>
                         <svg width="24" height="24">
                             <use xlink:href="#forceRefreshIcon" />
                         </svg>
                     </div>
-                    <div id="clearChat" title="清空">
+                    <div id="clearChat" data-i18n-title="clearAll" title>
                         <svg width="24" height="24">
                             <use xlink:href="#clearAllIcon" />
                         </svg>
                     </div>
-                    <div id="toggleLight" title="浅色">
+                    <div id="toggleLight" data-i18n-theme title>
                         <svg width="24" height="24">
                             <use xlink:href="#lightThemeIcon" />
                         </svg>
                     </div>
-                    <div id="sysSetting" title="设置">
+                    <div id="sysSetting" data-i18n-title="setting" title>
                         <svg width="24" height="24">
                             <use xlink:href="#settingIcon" />
                         </svg>
@@ -2198,21 +2270,21 @@
         </nav>
         <div class="mainContent">
             <div class="top_menu">
-                <div class="toggler" title="导航">
+                <div class="toggler" data-i18n-title="nav" title>
                     <div class="button close"></div>
                     <div class="button minimize"></div>
                     <div class="button maximize"></div>
                 </div>
                 <div class="title"><span>ChatGPT</span></div>
                 <div class="settings">
-                    <button class="setBtn" id="toggleFull" title="全屏">
+                    <button class="setBtn" id="toggleFull" data-i18n-window title>
                         <svg width="30" height="30">
                             <use xlink:href="#expandFullIcon" />
                         </svg>
                     </button>
                     <button class="setBtn" id="setting">
                         <svg viewBox="0 0 100 100" width="30" height="30">
-                            <title>设置</title>
+                            <title data-i18n-key="quickSet"></title>
                             <circle cx="50" cy="20" r="10" fill="#e15b64" />
                             <circle cx="50" cy="50" r="10" fill="#f8b26a" />
                             <circle cx="50" cy="80" r="10" fill="#99c959" />
@@ -2221,22 +2293,22 @@
                 </div>
                 <div id="setDialog" style="display:none;">
                     <div class="setSwitch">
-                        <div data-id="convOption" class="activeSwitch">对话</div>
-                        <div data-id="speechOption">语音合成</div>
-                        <div data-id="recOption">语音识别</div>
+                        <div data-id="convOption" data-i18n-key="chat" class="activeSwitch"></div>
+                        <div data-id="speechOption" data-i18n-key="tts"></div>
+                        <div data-id="recOption" data-i18n-key="stt"></div>
                     </div>
                     <div id="convOption">
                         <div class="presetSelect presetModelCls">
-                            <label for="preSetModel">GPT模型</label>
+                            <label for="preSetModel" data-i18n-key="gptModel"></label>
                             <select id="preSetModel">
-                                <option value="gpt-3.5-turbo">gpt-3.5</option>
-                                <option value="gpt-4">gpt-4</option>
-                                <option value="gpt-4-browsing">gpt-4-联网</option>
-                                <option value="gpt-4-32k">gpt-4-32k</option>
+                                <option value="gpt-3.5-turbo">GPT-3.5</option>
+                                <option value="gpt-4">GPT-4</option>
+                                <option value="gpt-4-browsing" data-i18n-key="gptBrowsing"></option>
+                                <option value="gpt-4-32k">GPT-4-32k</option>
                             </select>
                         </div>
                         <div>
-                            <div>用户头像</div>
+                            <div data-i18n-key="avatar"></div>
                             <div class="avatarDetail">
                                 <img id="setAvatarPre" src="" />
                                 <input class="inputTextClass" autocomplete="off" type="text" id="setAvatar" />
@@ -2244,39 +2316,39 @@
                         </div>
                         <div>
                             <div class="justSetLine presetSelect">
-                                <div>系统角色</div>
+                                <div data-i18n-key="systemRole"></div>
                                 <div>
-                                    <label for="preSetSystem">预设角色</label>
+                                    <label for="preSetSystem" data-i18n-key="presetRole"></label>
                                     <select id="preSetSystem">
-                                        <option value="">默认</option>
-                                        <option value="normal">助手</option>
-                                        <option value="cat">猫娘</option>
-                                        <option value="emoji">表情</option>
-                                        <option value="image">有图</option>
+                                        <option value="" data-i18n-key="default"></option>
+                                        <option value="normal" data-i18n-key="assistant"></option>
+                                        <option value="cat" data-i18n-key="cat"></option>
+                                        <option value="emoji" data-i18n-key="emoji"></option>
+                                        <option value="image" data-i18n-key="withImg"></option>
                                     </select>
                                 </div>
                             </div>
                             <textarea class="inputTextClass areaTextClass" autocomplete="off"
-                                placeholder="你是一个乐于助人的助手，尽量简明扼要地回答" id="systemInput"></textarea>
+                                data-i18n-place="assistantText" placeholder id="systemInput"></textarea>
                         </div>
                         <div>
-                            <span>角色性格</span>
+                            <span data-i18n-key="nature"></span>
                             <input type="range" id="top_p" min="0" max="1" value="0.7" step="0.05" />
                             <div class="selectDef">
-                                <span>准确严谨</span>
-                                <span>灵活创新</span>
+                                <span data-i18n-key="natureNeg"></span>
+                                <span data-i18n-key="naturePos"></span>
                             </div>
                         </div>
                         <div>
-                            <span>回答质量</span>
+                            <span data-i18n-key="quality"></span>
                             <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
                             <div class="selectDef">
-                                <span>重复保守</span>
-                                <span>胡言乱语</span>
+                                <span data-i18n-key="qualityNeg"></span>
+                                <span data-i18n-key="qualityPos"></span>
                             </div>
                         </div>
                         <div>
-                            <span>会话宽度</span>
+                            <span data-i18n-key="chatsWidth"></span>
                             <input type="range" id="convWidth" min="30" max="100" value="100" step="1" />
                             <div class="selectDef">
                                 <span>30%</span>
@@ -2284,22 +2356,22 @@
                             </div>
                         </div>
                         <div>
-                            <span>打字机速度</span>
+                            <span data-i18n-key="typeSpeed"></span>
                             <input type="range" id="textSpeed" min="0" max="100" value="88" step="1" />
                             <div class="selectDef">
-                                <span>慢</span>
-                                <span>快</span>
+                                <span data-i18n-key="slow"></span>
+                                <span data-i18n-key="fast"></span>
                             </div>
                         </div>
                         <div>
-                            <span class="inlineTitle">连续对话</span>
+                            <span class="inlineTitle" data-i18n-key="contChat"></span>
                             <label class="switch-slide">
                                 <input type="checkbox" id="enableCont" checked="true" hidden />
                                 <label for="enableCont" class="switch-slide-label"></label>
                             </label>
                         </div>
                         <div>
-                            <span class="inlineTitle">长回复</span>
+                            <span class="inlineTitle" data-i18n-key="longReply"></span>
                             <label class="switch-slide">
                                 <input type="checkbox" id="enableLongReply" hidden />
                                 <label for="enableLongReply" class="switch-slide-label"></label>
@@ -2308,15 +2380,15 @@
                     </div>
                     <div id="speechOption" style="display: none;">
                         <div class="presetSelect presetModelCls">
-                            <label for="preSetService">语音合成服务</label>
+                            <label for="preSetService" data-i18n-key="ttsService"></label>
                             <select id="preSetService">
-                                <option value="3">Azure语音</option>
-                                <option selected value="2">Edge语音</option>
-                                <option value="1">系统语音</option>
+                                <option value="3" data-i18n-key="azureTTS"></option>
+                                <option selected value="2" data-i18n-key="edgeTTS"></option>
+                                <option value="1" data-i18n-key="systemTTS"></option>
                             </select>
                         </div>
                         <div class="presetSelect presetModelCls">
-                            <label for="preSetAzureRegion">Azure 区域</label>
+                            <label for="preSetAzureRegion" data-i18n-key="azureRegion"></label>
                             <select id="preSetAzureRegion">
                             </select>
                         </div>
@@ -2329,15 +2401,15 @@
                             <svg>
                                 <use xlink:href="#loadingIcon" />
                             </svg>
-                            <span>加载语音</span>
+                            <span data-i18n-key="loadVoice"></span>
                         </div>
                         <div id="speechDetail">
                             <div>
                                 <div class="justSetLine">
-                                    <div>选择语音</div>
+                                    <div data-i18n-key="voiceName"></div>
                                     <div id="voiceTypes">
-                                        <span data-type="0">提问语音</span>
-                                        <span data-type="1" class="selVoiceType">回答语音</span>
+                                        <span data-type="0" data-i18n-key="userVoice"></span>
+                                        <span data-type="1" class="selVoiceType" data-i18n-key="replyVoice"></span>
                                     </div>
                                 </div>
                                 <select id="preSetSpeech">
@@ -2345,80 +2417,80 @@
                             </div>
                             <div>
                                 <div class="justSetLine">
-                                    <input class="inputTextClass" id="testVoiceText" value="你好，很高兴认识你。" />
+                                    <input class="inputTextClass" id="testVoiceText" data-i18n-value="TTSTest" value />
                                 </div>
                                 <div class="justSetLine readyTestVoice" id="testVoiceBtn" style="margin-top: 6px;">
                                     <div class="justSetBtn" onclick="startTestVoice()">
                                         <svg width="18" height="18">
                                             <use xlink:href="#readyVoiceIcon" />
                                         </svg>
-                                        <span>播放</span>
+                                        <span data-i18n-key="play"></span>
                                     </div>
                                     <div class="justSetBtn" onclick="pauseTestVoice()">
                                         <svg width="18" height="18">
                                             <use xlink:href="#pauseVoiceIcon" />
                                         </svg>
-                                        <span>暂停</span>
+                                        <span data-i18n-key="pause"></span>
                                     </div>
                                     <div class="justSetBtn" onclick="resumeTestVoice()">
                                         <svg width="18" height="18">
                                             <use xlink:href="#resumeVoiceIcon" />
                                         </svg>
-                                        <span>恢复</span>
+                                        <span data-i18n-key="resume"></span>
                                     </div>
                                     <div class="justSetBtn" style="margin-right: 130px" onclick="stopTestVoice()">
                                         <svg width="18" height="18">
                                             <use xlink:href="#stopIcon" />
                                         </svg>
-                                        <span>停止</span>
+                                        <span data-i18n-key="stop"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="justSetLine presetSelect" id="azureExtra" style="display:none;">
                                 <div class="presetModelCls">
-                                    <label for="preSetVoiceStyle">风格</label>
+                                    <label for="preSetVoiceStyle" data-i18n-key="style"></label>
                                     <select id="preSetVoiceStyle">
                                     </select>
                                 </div>
                                 <div class="presetModelCls">
-                                    <label for="preSetVoiceRole">角色</label>
+                                    <label for="preSetVoiceRole" data-i18n-key="role"></label>
                                     <select id="preSetVoiceRole">
                                     </select>
                                 </div>
                             </div>
                             <div>
-                                <span>音量</span>
+                                <span data-i18n-key="volume"></span>
                                 <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
                                 <div class="selectDef">
-                                    <span>低</span>
-                                    <span>高</span>
+                                    <span data-i18n-key="low"></span>
+                                    <span data-i18n-key="high"></span>
                                 </div>
                             </div>
                             <div>
-                                <span>语速</span>
+                                <span data-i18n-key="rate"></span>
                                 <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
                                 <div class="selectDef">
-                                    <span>慢</span>
-                                    <span>快</span>
+                                    <span data-i18n-key="slow"></span>
+                                    <span data-i18n-key="fast"></span>
                                 </div>
                             </div>
                             <div>
-                                <span>音调</span>
+                                <span data-i18n-key="pitch"></span>
                                 <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
                                 <div class="selectDef">
-                                    <span>平淡</span>
-                                    <span>起伏</span>
+                                    <span data-i18n-key="neutral"></span>
+                                    <span data-i18n-key="intense"></span>
                                 </div>
                             </div>
                             <div>
-                                <span class="inlineTitle">连续朗读</span>
+                                <span class="inlineTitle" data-i18n-key="contSpeech"></span>
                                 <label class="switch-slide">
                                     <input type="checkbox" id="enableContVoice" checked="true" hidden />
                                     <label for="enableContVoice" class="switch-slide-label"></label>
                                 </label>
                             </div>
                             <div>
-                                <span class="inlineTitle">自动朗读</span>
+                                <span class="inlineTitle" data-i18n-key="autoSpeech"></span>
                                 <label class="switch-slide">
                                     <input type="checkbox" id="enableAutoVoice" hidden />
                                     <label for="enableAutoVoice" class="switch-slide-label"></label>
@@ -2427,36 +2499,38 @@
                         </div>
                     </div>
                     <div id="recOption" style="display: none;">
-                        <div id="noRecTip" style="display: block;">当前环境不支持语音识别，请尝试使用chrome内核浏览器或重新部署https页面。</div>
+                        <div id="noRecTip" style="display: block;" data-i18n-key="unsupportRecTip"></div>
                         <div id="yesRec" style="display: none;">
                             <div class="presetSelect presetModelCls">
-                                <label for="selectLangOption">语言</label>
+                                <label for="selectLangOption" data-i18n-key="lang"></label>
                                 <select id="selectLangOption">
                                 </select>
                             </div>
                             <div class="presetSelect presetModelCls">
-                                <label for="selectDiaOption">方言</label>
+                                <label for="selectDiaOption" data-i18n-key="dialect"></label>
                                 <select id="selectDiaOption">
                                 </select>
                             </div>
                             <div>
-                                <div>自动发送关键词</div>
-                                <input class="inputTextClass" id="autoSendText" autocomplete="off" placeholder="发送" />
+                                <div data-i18n-key="autoSendKey"></div>
+                                <input class="inputTextClass" id="autoSendText" autocomplete="off"
+                                    data-i18n-place="send" placeholder />
                             </div>
                             <div>
-                                <div>自动停止关键词</div>
-                                <input class="inputTextClass" id="autoStopText" autocomplete="off" placeholder="停止" />
+                                <div data-i18n-key="autoStopKey"></div>
+                                <input class="inputTextClass" id="autoStopText" autocomplete="off"
+                                    data-i18n-place="stop" placeholder />
                             </div>
                             <div>
-                                <span>自动发送延迟时间</span>
+                                <span data-i18n-key="autoSendDelay"></span>
                                 <input type="range" id="autoSendTimeout" min="0" max="10" value="0" step="1" />
                                 <div class="selectDef">
-                                    <span>0秒</span>
-                                    <span>10秒</span>
+                                    <span>0<span data-i18n-key="second"></span></span>
+                                    <span>10<span data-i18n-key="second"></span></span>
                                 </div>
                             </div>
                             <div>
-                                <span class="inlineTitle">保持监听</span>
+                                <span class="inlineTitle" data-i18n-key="keepListenMic"></span>
                                 <label class="switch-slide">
                                     <input type="checkbox" id="keepListenMic" checked="false" hidden />
                                     <label for="keepListenMic" class="switch-slide-label"></label>
@@ -2470,12 +2544,12 @@
                 <div id="chatlog"></div>
                 <div id="stopChat"><svg width="24" height="24">
                         <use xlink:href="#stopResIcon" />
-                    </svg>停止</div>
+                    </svg><span data-i18n-key="stop"></span></div>
             </div>
             <div class="bottom_wrapper clearfix">
                 <div class="message_input_wrapper">
-                    <textarea class="message_input_text" autocomplete="off" spellcheck="false" placeholder="来问点什么吧"
-                        id="chatinput"></textarea>
+                    <textarea class="message_input_text" autocomplete="off" spellcheck="false" data-i18n-place="askTip"
+                        placeholder id="chatinput"></textarea>
                     <div id="voiceRec" style="display:none;">
                         <div id="voiceRecIcon">
                             <svg viewBox="0 0 48 48" id="voiceInputIcon">
@@ -2495,12 +2569,12 @@
                     </div>
                 </div>
                 <button class="loaded" id="sendbutton">
-                    <span>发送</span>
+                    <span data-i18n-key="send"></span>
                     <svg style="margin:0 auto;height:40px;width:100%;">
                         <use xlink:href="#loadingIcon" />
                     </svg>
                 </button>
-                <button class="clearConv" title="清空会话">
+                <button class="clearConv" data-i18n-title="clearChat" title>
                     <svg style="color: #e15b64;" width="29" height="29">
                         <use xlink:href="#closeIcon" />
                     </svg>
@@ -2518,41 +2592,41 @@
                     <use xlink:href="#closeIcon" />
                 </svg>
             </div>
-            <div class="sysTitle">设置</div>
+            <div class="sysTitle" data-i18n-key="setting"></div>
             <div class="sysContent">
                 <div class="sysSwitch">
                     <div data-id="generalOption" class="activeSwitch">
                         <svg width="24" height="24">
                             <use xlink:href="#settingIcon" />
-                        </svg>通用
+                        </svg><span data-i18n-key="general"></span>
                     </div>
                     <div data-id="hotkeyOption">
                         <svg width="24" height="24">
                             <use xlink:href="#hotkeyIcon" />
-                        </svg>快捷键
+                        </svg><span data-i18n-key="hotkey"></span>
                     </div>
                     <div data-id="dataOption">
                         <svg width="24" height="24">
                             <use xlink:href="#databaseIcon" />
-                        </svg>数据
+                        </svg><span data-i18n-key="data"></span>
                     </div>
                 </div>
                 <div class="sysDetail">
                     <div id="generalOption">
                         <div class="setContent">
-                            <div class="setTitle">主题</div>
+                            <div class="setTitle" data-i18n-key="theme"></div>
                             <div class="setDetail themeDetail lightTheme" id="setLight">
-                                <div title="深色">
+                                <div data-i18n-title="darkTheme" title>
                                     <svg width="24" height="24">
                                         <use xlink:href="#darkThemeIcon"></use>
                                     </svg>
                                 </div>
-                                <div title="浅色">
+                                <div data-i18n-title="lightTheme" title>
                                     <svg width="24" height="24">
                                         <use xlink:href="#lightThemeIcon"></use>
                                     </svg>
                                 </div>
-                                <div title="自动">
+                                <div data-i18n-title="autoTheme" title>
                                     <svg width="24" height="24">
                                         <use xlink:href="#autoThemeIcon"></use>
                                     </svg>
@@ -2563,26 +2637,41 @@
                             <div class="setDetail">
                                 <div>
                                     <input type="radio" id="autoTheme1" name="autoLight" value="1" checked />
-                                    <label for="autoTheme1">跟随系统</label>
+                                    <label for="autoTheme1" data-i18n-key="systemTheme"></label>
                                 </div>
                                 <div style="margin-top: 8px;">
                                     <input type="radio" id="autoTheme0" name="autoLight" value="0" />
-                                    <label for="autoTheme0">自定义深色主题时间</label>
+                                    <label for="autoTheme0" data-i18n-key="customDarkTheme"></label>
                                 </div>
                                 <div id="customAutoSet" style="display: none; margin-top: 10px;">
                                     <div>
-                                        <label for="customStart">开始时间</label>
+                                        <label for="customStart" data-i18n-key="startDark"></label>
                                         <input type="time" id="customStart" required>
                                     </div>
                                     <div style="margin-top: 10px;">
-                                        <label for="customEnd">结束时间</label>
+                                        <label for="customEnd" data-i18n-key="endDark"></label>
                                         <input type="time" id="customEnd" required>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="setContent">
+                            <div class="setTitle" data-i18n-key="lang"></div>
+                            <div class="setDetail themeDetail langDetail" id="setLang">
+                                <div title="English">
+                                    <svg width="24" height="24">
+                                        <use xlink:href="#enIcon"></use>
+                                    </svg>
+                                </div>
+                                <div title="中文">
+                                    <svg width="24" height="24">
+                                        <use xlink:href="#zhIcon"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                         <div class="setContent setNotNormalFlow">
-                            <div class="setTitle">OpenAI接口</div>
+                            <div class="setTitle" data-i18n-key="aiEndpoint"></div>
                             <div class="setDetail inputDetail" style="position: relative;">
                                 <input class="inputTextClass" placeholder="https://api.openai.com/" autocomplete="off"
                                     id="apiHostInput" />
@@ -2590,12 +2679,12 @@
                             </div>
                         </div>
                         <div class="setContent" style="margin-top: 83px;">
-                            <div class="setTitle">API密钥</div>
+                            <div class="setTitle" data-i18n-key="aiKey"></div>
                             <div class="setDetail inputDetail apiDetail">
                                 <input class="inputTextClass" type="text" placeholder="sk-xxxxxx" id="keyInput"
                                     autocomplete="off" style="-webkit-text-security: disc;" />
                                 <div id="checkBillBtn" class="loaded">
-                                    <span>检查API额度</span>
+                                    <span data-i18n-key="checkBill"></span>
                                     <svg style="margin:0 auto;height:34px;width:100%;">
                                         <use xlink:href="#loadingIcon"></use>
                                     </svg>
@@ -2603,14 +2692,14 @@
                             </div>
                         </div>
                         <div class="setContent" id="quotaContent" style="display: none;">
-                            <div class="setTitle" id="quotaTitle">免费额度</div>
+                            <div class="setTitle" id="quotaTitle" data-i18n-quota></div>
                             <div class="setDetail">
                                 <div class="progressBar">
                                     <div class="nowProgress" id="usedQuotaBar"></div>
                                 </div>
                                 <div class="progressDetail">
-                                    <div><span>已用 </span><span id="usedQuota"></span></div>
-                                    <div><span>可用 </span><span id="availableQuota"></span></div>
+                                    <div><span data-i18n-key="used"></span><span id="usedQuota"></span></div>
+                                    <div><span data-i18n-key="available"></span><span id="availableQuota"></span></div>
                                 </div>
                             </div>
                         </div>
@@ -2620,53 +2709,58 @@
                             <div class="setTitle">UI</div>
                             <div class="setDetail hotKeyDetail">
                                 <div>
-                                    <label for="hotKeyNav">切换导航</label>
+                                    <label for="hotKeyNav" data-i18n-key="navKey"></label>
                                     <select id="hotKeyNav">
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="hotKeyWindow">全屏/窗口</label>
+                                    <label for="hotKeyWindow" data-i18n-key="fullKey"></label>
                                     <select id="hotKeyWindow">
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="hotKeyTheme">切换主题</label>
+                                    <label for="hotKeyTheme" data-i18n-key="themeKey"></label>
                                     <select id="hotKeyTheme">
                                     </select>
                                 </div>
+                                <div>
+                                    <label for="hotKeyLang" data-i18n-key="langKey"></label>
+                                    <select id="hotKeyLang">
+                                    </select>
+                                </div>
                             </div>
-                            <div class="setTitle">会话</div>
+                            <div class="setTitle" data-i18n-key="chat"></div>
                             <div class="setDetail hotKeyDetail">
                                 <div>
-                                    <label for="hotKeySearch">搜索</label>
+                                    <label for="hotKeySearch" data-i18n-key="search"></label>
                                     <select id="hotKeySearch">
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="hotKeyInput">输入框</label>
+                                    <label for="hotKeyInput" data-i18n-key="inputKey"></label>
                                     <select id="hotKeyInput">
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="hotKeyNewChat">新建会话</label>
+                                    <label for="hotKeyNewChat" data-i18n-key="newChat"></label>
                                     <select id="hotKeyNewChat">
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="hotKeyClearChat">清空会话</label>
+                                    <label for="hotKeyClearChat" data-i18n-key="clearChat"></label>
                                     <select id="hotKeyClearChat">
                                     </select>
                                 </div>
                             </div>
-                            <div class="setTitle">语音</div>
+                            <div class="setTitle" data-i18n-key="voiceKey"></div>
                             <div class="setDetail hotKeyDetail">
                                 <div style="display: none;">
-                                    <label for="hotKeyVoiceRec">语音输入</label>
+                                    <label for="hotKeyVoiceRec" data-i18n-key="recKey"></label>
                                     <select id="hotKeyVoiceRec">
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="hotKeyVoiceSpeak">朗读会话</label>
+                                    <label for="hotKeyVoiceSpeak" data-i18n-key="speechKey"></label>
                                     <select id="hotKeyVoiceSpeak">
                                     </select>
                                 </div>
@@ -2675,19 +2769,19 @@
                     </div>
                     <div id="dataOption" style="display: none;">
                         <div class="setContent">
-                            <div class="setTitle">会话</div>
+                            <div class="setTitle" data-i18n-key="chat"></div>
                             <div class="setDetail dataDetail">
                                 <div id="exportChat">
                                     <svg width="24" height="24">
                                         <use xlink:href="#exportIcon" />
                                     </svg>
-                                    <span>导出</span>
+                                    <span data-i18n-key="export"></span>
                                 </div>
                                 <label id="importChat" for="importChatInput">
                                     <svg width="24" height="24">
                                         <use xlink:href="#importIcon" />
                                     </svg>
-                                    <span>导入</span>
+                                    <span data-i18n-key="import"></span>
                                 </label>
                                 <input type="file" style="display: none;" id="importChatInput"
                                     accept="application/json" />
@@ -2695,24 +2789,24 @@
                                     <svg width="24" height="24">
                                         <use xlink:href="#clearAllIcon" />
                                     </svg>
-                                    <span>清空</span>
+                                    <span data-i18n-key="clear"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="setContent">
-                            <div class="setTitle">设置</div>
+                            <div class="setTitle" data-i18n-key="setting"></div>
                             <div class="setDetail dataDetail">
                                 <div id="exportSet">
                                     <svg width="24" height="24">
                                         <use xlink:href="#exportSetIcon" />
                                     </svg>
-                                    <span>导出</span>
+                                    <span data-i18n-key="export"></span>
                                 </div>
                                 <label id="importSet" for="importSetInput">
                                     <svg width="24" height="24">
                                         <use xlink:href="#importSetIcon" />
                                     </svg>
-                                    <span>导入</span>
+                                    <span data-i18n-key="import"></span>
                                 </label>
                                 <input type="file" style="display: none;" id="importSetInput"
                                     accept="application/json" />
@@ -2720,19 +2814,20 @@
                                     <svg width="22" height="22" style="transform: scaleX(-1)">
                                         <use xlink:href="#refreshIcon" />
                                     </svg>
-                                    <span>重置</span>
+                                    <span data-i18n-key="reset"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="setContent">
-                            <div class="setTitle">本地存储</div>
+                            <div class="setTitle" data-i18n-key="localStore"></div>
                             <div class="setDetail">
                                 <div class="progressBar">
                                     <div class="nowProgress" id="usedStorageBar"></div>
                                 </div>
                                 <div class="progressDetail">
-                                    <div><span>已用 </span><span id="usedStorage"></span></div>
-                                    <div><span>可用 </span><span id="availableStorage"></span></div>
+                                    <div><span data-i18n-key="used"></span><span id="usedStorage"></span></div>
+                                    <div><span data-i18n-key="available"></span><span id="availableStorage"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2768,6 +2863,409 @@
             link.rel = "stylesheet";
             link.href = "https://cdn.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
             document.body.appendChild(link);
+        }
+    </script>
+    <script>
+        const localeList = ["en", "zh"];
+        let locale; // UI语言
+        const setLangEle = document.getElementById("setLang");
+        const setLang = () => {
+            let langClass = locale + "Lang";
+            localStorage.setItem("UILang", locale)
+            setLangEle.classList = "setDetail themeDetail langDetail " + langClass;
+        }
+        setLangEle.onclick = (ev) => {
+            let idx = Array.prototype.indexOf.call(setLangEle.children, ev.target);
+            if (locale !== localeList[idx]) {
+                locale = localeList[idx];
+                setLang();
+                changeLocale();
+            }
+        }
+        const initLang = () => {
+            let localLang = localStorage.getItem("UILang") || "zh";
+            let isInit = locale === void 0;
+            if (locale !== localLang) {
+                locale = localLang;
+                if (!isInit) changeLocale();
+            };
+            setLang();
+        }
+        initLang();
+        const translations = {
+            "en": {
+                "description": "Simple and powerful ChatGPT application",
+                "newChat": "New chat",
+                "newChatName": "New chat",
+                "newFolder": "New folder",
+                "newFolderName": "new folder",
+                "search": "Search",
+                "forceRe": "Force refresh",
+                "clearAll": "Clear all chats",
+                "setting": "Setting",
+                "nav": "Navigate",
+                "winedWin": "Window",
+                "fullWin": "Full screen",
+                "quickSet": "Quick setting",
+                "chat": "Chat",
+                "tts": "TTS",
+                "stt": "STT",
+                "gptModel": "GPT model",
+                "gptBrowsing": "GPT-4-browsing",
+                "avatar": "Avatar",
+                "systemRole": "System role",
+                "presetRole": "Preset",
+                "default": "Default",
+                "assistant": "Assistant",
+                "cat": "Cat girl",
+                "emoji": "Emoji",
+                "withImg": "Image",
+                "assistantText": "You are a helpful assistant, answer as concisely as possible.",
+                "catText": "You are a cute cat girl, you must end every sentence with 'meow'",
+                "emojiText": "Your personality is very lively, there must be at least one emoji icon in every sentence",
+                "imageText": "When you need to send pictures, please generate them in markdown language, without backslashes or code boxes. When you need to use the unsplash API, follow the format, https://source.unsplash.com/960x640/?<English keywords>",
+                "nature": "Nature",
+                "natureNeg": "Accurate",
+                "naturePos": "Creativity",
+                "quality": "Quality",
+                "qualityNeg": "Repetitive",
+                "qualityPos": "Nonsense",
+                "chatsWidth": "Chats width",
+                "typeSpeed": "Typing speed",
+                "slow": "Slow",
+                "fast": "Fast",
+                "contChat": "Continuous",
+                "longReply": "Long reply",
+                "ttsService": "TTS API",
+                "azureTTS": "Azure",
+                "edgeTTS": "Edge",
+                "systemTTS": "System",
+                "azureRegion": "Azure region",
+                "loadVoice": "Load voice",
+                "voiceName": "Choose voice",
+                "userVoice": "User voice",
+                "replyVoice": "Reply voice",
+                "TTSTest": "Hello, nice to meet you.",
+                "play": "Play",
+                "pause": "Pause",
+                "resume": "Resume",
+                "stop": "Stop",
+                "style": "Style",
+                "role": "Role",
+                "volume": "Volume",
+                "low": "Low",
+                "high": "High",
+                "rate": "Rate",
+                "slow": "Slow",
+                "fast": "Fast",
+                "pitch": "Pitch",
+                "neutral": "Neutral",
+                "intense": "Intense",
+                "contSpeech": "Continuous speech",
+                "autoSpeech": "Auto speech",
+                "unsupportRecTip": "Voice recognition is not supported in the current environment. Please refer to the documentation.",
+                "lang": "Language",
+                "dialect": "Dialect",
+                "autoSendKey": "Auto send keyword",
+                "autoStopKey": "Auto stop keyword",
+                "autoSendDelay": "Auto send delay time",
+                "second": "s",
+                "keepListenMic": "Keep listen",
+                "send": "Send",
+                "askTip": "Type message here",
+                "clearChat": "Clear chat",
+                "general": "General",
+                "hotkey": "Hotkey",
+                "data": "Data",
+                "theme": "Theme",
+                "darkTheme": "Dark",
+                "lightTheme": "Light",
+                "autoTheme": "Auto",
+                "systemTheme": "System",
+                "customDarkTheme": "Custom dark theme",
+                "startDark": "Start",
+                "endDark": "End",
+                "aiEndpoint": "OpenAI endpoint",
+                "aiKey": "OpenAI API key",
+                "checkBill": "Check bill",
+                "used": "Used ",
+                "available": "Avail ",
+                "navKey": "Toggle nav",
+                "fullKey": "Window size",
+                "themeKey": "Toggle theme",
+                "themeKey": "Toggle lang",
+                "inputKey": "Message",
+                "voiceKey": "Voice",
+                "recKey": "Recognition",
+                "speechKey": "Start speech",
+                "export": "Export",
+                "import": "Import",
+                "clear": "Clear",
+                "reset": "Reset",
+                "localStore": "Local storage",
+                "forceReTip": "Force refresh page?",
+                "noSpeechTip": "No speech was detected. You may need to adjust your microphone settings.",
+                "noMicTip": "No microphone was found. Ensure that a microphone is installed and microphone settings are configured correctly.",
+                "noMicPerTip": "Permission to use microphone is blocked.",
+                "azureInvalidTip": "Access is denied due to invalid access key or API endpoint!",
+                "thisQuota": "This month's quota",
+                "freeTierTip": "Free tier - valid until: ",
+                "errorAiKeyTip": "Invalid or incorrect API key, please check API key!",
+                "copyCode": "Copy code",
+                "copySuccess": "Success",
+                "update": "Update",
+                "cancel": "Cancel",
+                "delMsgTip": "Delete this message?",
+                "edit": "Edit",
+                "refresh": "Refresh",
+                "continue": "Continue",
+                "copy": "Copy",
+                "del": "Delete",
+                "downAudio": "Download audio",
+                "speech": "Speech",
+                "chats": " chats",
+                "delFolderTip": "Delete this folder?",
+                "delChatTip": "Delete this chat?",
+                "importFailTip": "Import failed, please check the file format!",
+                "clearAllTip": "Delete all chats and folders?",
+                "resetSetTip": "Restore all settings to default?",
+                "hotkeyConflict": "Hotkey conflict, please choose another key!",
+                "customDarkTip": "Start time and end time cannot be the same!",
+                "timeoutTip": "Request timeout, please try again later!",
+                "largeReqTip": "Request is too large, please delete part of the chat or cancel continuous chat!",
+                "noModelPerTip": "Not permission to use this model, please choose another GPT model!",
+                "apiRateTip": "Trigger API call rate limit, please try again later!",
+                "exceedLimitTip": "API usage exceeded limit, please check your bill!",
+                "badGateTip": "Gateway error or timeout, please try again later!",
+                "badEndpointTip": "Failed to access the endpoint, please check the endpoint!",
+                "clearChatTip": "Clear this chat?",
+                "cantSpeechTip": "Current voice cannot synthesize this message, please choose another voice or message!",
+            },
+            "zh": {
+                "description": "简洁而强大的ChatGPT应用",
+                "newChat": "新建会话",
+                "newChatName": "新的会话",
+                "newFolder": "新建文件夹",
+                "newFolderName": "新文件夹",
+                "search": "搜索",
+                "forceRe": "强制刷新",
+                "clearAll": "清空全部",
+                "setting": "设置",
+                "nav": "导航",
+                "winedWin": "窗口",
+                "fullWin": "全屏",
+                "quickSet": "快速设置",
+                "chat": "会话",
+                "tts": "语音合成",
+                "stt": "语音识别",
+                "gptModel": "GPT模型",
+                "gptBrowsing": "GPT-4-联网",
+                "avatar": "用户头像",
+                "systemRole": "系统角色",
+                "presetRole": "预设角色",
+                "default": "默认",
+                "assistant": "助手",
+                "cat": "猫娘",
+                "emoji": "表情",
+                "withImg": "有图",
+                "assistantText": "你是一个乐于助人的助手，尽量简明扼要地回答",
+                "catText": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
+                "emojiText": "你的性格很活泼，每句话中都要有至少一个emoji图标",
+                "imageText": "当你需要发送图片的时候，请用 markdown 语言生成，不要反斜线，不要代码框，需要使用 unsplash API时，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞",
+                "nature": "角色性格",
+                "natureNeg": "准确严谨",
+                "naturePos": "灵活创新",
+                "quality": "回答质量",
+                "qualityNeg": "重复保守",
+                "qualityPos": "胡言乱语",
+                "chatsWidth": "会话宽度",
+                "typeSpeed": "打字机速度",
+                "slow": "慢",
+                "fast": "快",
+                "contChat": "连续会话",
+                "longReply": "长回复",
+                "ttsService": "语音合成服务",
+                "azureTTS": "Azure语音",
+                "edgeTTS": "Edge语音",
+                "systemTTS": "系统语音",
+                "azureRegion": "Azure区域",
+                "loadVoice": "加载语音",
+                "voiceName": "选择语音",
+                "userVoice": "用户语音",
+                "replyVoice": "回答语音",
+                "TTSTest": "你好，很高兴认识你。",
+                "play": "播放",
+                "pause": "暂停",
+                "resume": "恢复",
+                "stop": "停止",
+                "style": "风格",
+                "role": "角色",
+                "volume": "音量",
+                "low": "低",
+                "high": "高",
+                "rate": "语速",
+                "slow": "慢",
+                "fast": "快",
+                "pitch": "音调",
+                "neutral": "平淡",
+                "intense": "起伏",
+                "contSpeech": "连续朗读",
+                "autoSpeech": "自动朗读",
+                "unsupportRecTip": "当前环境不支持语音识别，请查阅文档。",
+                "lang": "语言",
+                "dialect": "方言",
+                "autoSendKey": "自动发送关键词",
+                "autoStopKey": "自动停止关键词",
+                "autoSendDelay": "自动发送延迟时间",
+                "second": "秒",
+                "keepListenMic": "保持监听",
+                "send": "发送",
+                "askTip": "来问点什么吧",
+                "clearChat": "清空会话",
+                "general": "通用",
+                "hotkey": "快捷键",
+                "data": "数据",
+                "theme": "主题",
+                "darkTheme": "深色",
+                "lightTheme": "浅色",
+                "autoTheme": "自动",
+                "systemTheme": "跟随系统",
+                "customDarkTheme": "自定义深色主题时间",
+                "startDark": "开始时间",
+                "endDark": "结束时间",
+                "aiEndpoint": "OpenAI接口",
+                "aiKey": "API密钥",
+                "checkBill": "检查API额度",
+                "used": "已用 ",
+                "available": "可用 ",
+                "navKey": "切换导航",
+                "fullKey": "全屏/窗口",
+                "themeKey": "切换主题",
+                "langKey": "切换语言",
+                "inputKey": "输入框",
+                "voiceKey": "语音",
+                "recKey": "语音输入",
+                "speechKey": "朗读会话",
+                "export": "导出",
+                "import": "导入",
+                "clear": "清空",
+                "reset": "充值",
+                "localStore": "本地存储",
+                "forceReTip": "是否强制刷新页面？",
+                "noSpeechTip": "未识别到语音，请调整麦克风后重试！",
+                "noMicTip": "未识别到麦克风，请确保已安装麦克风！",
+                "noMicPerTip": "未允许麦克风权限！",
+                "azureInvalidTip": "由于订阅密钥无效或 API 端点错误，访问被拒绝！",
+                "thisQuota": "本月额度",
+                "freeTierTip": "免费额度-有效期至: ",
+                "errorAiKeyTip": "API密钥错误或失效，请检查API密钥！",
+                "copyCode": "复制代码",
+                "copySuccess": "复制成功",
+                "update": "更新",
+                "cancel": "取消",
+                "delMsgTip": "是否删除此消息？",
+                "edit": "编辑",
+                "refresh": "刷新",
+                "continue": "继续",
+                "copy": "复制",
+                "del": "删除",
+                "downAudio": "下载语音",
+                "speech": "朗读",
+                "chats": "个会话",
+                "delFolderTip": "是否删除此文件夹？",
+                "delChatTip": "是否删除此会话？",
+                "importFailTip": "导入失败，请检查文件格式！",
+                "clearAllTip": "是否删除所有会话和文件夹？",
+                "resetSetTip": "是否还原所有设置为默认值？",
+                "hotkeyConflict": "快捷键冲突，请选择其他键位！",
+                "customDarkTip": "开始时间和结束时间不能相同！",
+                "timeoutTip": "请求超时，请稍后重试！",
+                "largeReqTip": "请求内容过大，请删除部分对话或打开设置关闭连续对话！",
+                "noModelPerTip": "无权使用此模型，请打开设置选择其他GPT模型！",
+                "apiRateTip": "触发API调用频率限制，请稍后重试！",
+                "exceedLimitTip": "API使用超出限额，请检查您的账单！",
+                "badGateTip": "网关错误或超时，请稍后重试！",
+                "badEndpointTip": "访问接口失败，请检查接口！",
+                "clearChatTip": "是否清空此会话？",
+                "cantSpeechTip": "当前语音无法合成此消息，请选择其他语音或消息！",
+            },
+        };
+        const translateElement = (ele, type) => {
+            const key = ele.getAttribute("data-i18n-" + type);
+            const translation = translations[locale][key];
+            if (type === "title") {
+                ele.setAttribute("title", translation);
+            } else if (type === "place") {
+                ele.setAttribute("placeholder", translation);
+            } else if (type === "value") {
+                ele.setAttribute("value", translation);
+            } else {
+                ele.textContent = translation;
+            }
+        }
+        const initLocale = () => {
+            document.querySelectorAll("[data-i18n-title]").forEach(ele => {translateElement(ele, "title")});
+            document.querySelectorAll("[data-i18n-place]").forEach(ele => {translateElement(ele, "place")});
+            document.querySelectorAll("[data-i18n-value]").forEach(ele => {translateElement(ele, "value")});
+            document.querySelectorAll("[data-i18n-key]").forEach(ele => {translateElement(ele, "key")});
+            document.querySelectorAll("[data-i18n-theme]").forEach(ele => {
+                let key = themeMode === 2 ? "autoTheme" : themeMode === 1 ? "lightTheme" : "darkTheme";
+                ele.setAttribute("title", translations[locale][key])
+            })
+            document.querySelectorAll("[data-i18n-window]").forEach(ele => {
+                let key = isFull ? "winedWin" : "fullWin";
+                ele.setAttribute("title", translations[locale][key])
+            })
+            document.querySelectorAll("[data-i18n-quota]").forEach(ele => {
+                let splitIdx = ele.innerHTML.indexOf(":");
+                if (splitIdx === -1) {
+                    ele.textContent = translations[locale]["thisQuota"];
+                } else {
+                    let validHtml = ele.innerHTML.slice(splitIdx + 2);
+                    ele.innerHTML = translations[locale]["freeTierTip"] + validHtml;
+                }
+            })
+            document.head.children[3].setAttribute("content", translations[locale]["description"])
+        };
+        initLocale();
+        const changeLocale = () => {
+            initLocale();
+            document.querySelectorAll("[data-type='chatEdit'],[data-type='folderEdit']").forEach(ele => {
+                ele.children[0].textContent = translations[locale]["edit"];
+            });
+            document.querySelectorAll("[data-type='chatDel'],[data-type='folderDel']").forEach(ele => {
+                ele.children[0].textContent = translations[locale]["del"];
+            });
+            document.querySelectorAll("[data-type='folderAddChat']").forEach(ele => {
+                ele.children[0].textContent = translations[locale]["newChat"];
+            });
+            document.querySelectorAll("[data-id]").forEach(ele => {
+                let key = ele.getAttribute("data-id");
+                if (key.endsWith("Md")) {
+                    if (key === "speechMd" || key === "pauseMd" || key === "resumeMd") {
+                        ele.children[0].textContent = translations[locale][key.slice(0, -2)];
+                    } else if (key === "refreshMd") {
+                        ele.setAttribute("title", translations[locale][ele.classList.contains("refreshReq") ? "refresh" : "continue"]);
+                    } else {
+                        ele.setAttribute("title", translations[locale][key.slice(0, -2)]);
+                    }
+                }
+            });
+            document.querySelectorAll(".folderNum").forEach(ele => {
+                let num = ele.textContent.match(/\d+/)[0];
+                ele.textContent = num + translations[locale]["chats"];
+            });
+            document.querySelectorAll(".u-mdic-copy-btn").forEach(ele => {
+                ele.textContent = translations[locale]["copyCode"];
+            })
+            document.querySelectorAll(".u-mdic-copy-notify").forEach(ele => {
+                ele.textContent = translations[locale]["copySuccess"];
+            })
+            if (editingIdx !== void 0) {
+                document.querySelector("[data-i18n-key='send']").textContent = translations[locale]["update"];
+                document.querySelector("[data-i18n-title='clearChat']").setAttribute("title", translations[locale]["cancel"]);
+            }
+            loadPrompt();
         }
     </script>
     <script>
@@ -2841,7 +3339,7 @@
         const isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent);
         const dayMs = 8.64e7;
         refreshPage.onclick = () => {
-            if (confirmAction("是否强制刷新页面?")) {
+            if (confirmAction(translations[locale]["forceReTip"])) {
                 location.href = location.origin + location.pathname + "?" + new Date().getTime()
             }
         };
@@ -2867,7 +3365,7 @@
                 localStorage.setItem("pinNav", document.body.classList.contains("show-nav"))
             }
         }
-        document.body.addEventListener("click", event => {
+        document.body.addEventListener("mousedown", event => {
             if (event.target.className === "toggler") {
                 toggleNavEv();
             } else if (event.target.className === "overlay") {
@@ -2893,7 +3391,7 @@
         document.getElementById("sysSetting").onclick = () => {
             document.getElementById("sysMask").style.display = "flex";
             checkStorage();
-            document.body.addEventListener("click", endSetEvent, true);
+            document.getElementById("sysMask").onmousedown = endSetEvent;
         };
         const clearAutoSendTimer = () => {
             if (autoSendTimer !== void 0) {
@@ -2926,6 +3424,7 @@
                         ['en-ZA', 'South Africa'],
                         ['en-PH', 'Philippines']]
                 ];
+                if (locale !== "zh") langs = langs.reverse();
                 langs.forEach((lang, i) => {
                     select_language.options.add(new Option(lang[0], i));
                     selectLangOption.options.add(new Option(lang[0], i))
@@ -3092,15 +3591,15 @@
                     if (event.error === "no-speech") {
                         notyf.open({
                             type: "warning",
-                            message: "未识别到语音，请调整麦克风后重试！"
+                            message: translations[locale]["noSpeechTip"]
                         });
                     }
                     if (event.error === "audio-capture") {
-                        notyf.error("未识别到麦克风，请确保已安装麦克风！")
+                        notyf.error(translations[locale]["noMicTip"])
                         endEvent(ev);
                     }
                     if (event.error === "not-allowed") {
-                        notyf.error("未允许麦克风权限！")
+                        notyf.error(translations[locale]["noMicPerTip"])
                         endEvent(ev);
                     }
                 }
@@ -3267,7 +3766,7 @@
                         response.text().then(text => {
                             try {
                                 let json = JSON.parse(text);
-                                notyf.error("由于订阅密钥无效或 API 端点错误，访问被拒绝！");
+                                notyf.error(translations[locale]["azureInvalidTip"]);
                                 rej();
                             } catch (e) {
                                 azureToken = text;
@@ -3303,7 +3802,7 @@
                                     initVoiceSetting(json);
                                     res();
                                 }).catch(e => {
-                                    notyf.error("由于订阅密钥无效或 API 端点错误，访问被拒绝！");
+                                    notyf.error(translations[locale]["azureInvalidTip"]);
                                     rej();
                                 })
                             }).catch(e => {
@@ -3449,7 +3948,7 @@
                         return 0
                     }
                 }
-                return (a.lang < b.lang) ? 1 : -1; // 中文"z"在前
+                return (locale === "zh" ? (a.lang < b.lang) : (a.lang > b.lang)) ? 1 : -1; // 中文UI，则中文"z"在前
             });
             voices.map(item => {
                 if (item.name.match(/^(Google |Microsoft )/)) {
@@ -3658,10 +4157,10 @@
         const API_URL = "v1/chat/completions";
         let loading = false;
         let presetRoleData = {
-            "normal": "你是一个乐于助人的助手，尽量简明扼要地回答",
-            "cat": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
-            "emoji": "你的性格很活泼，每句话中都要有至少一个emoji图标",
-            "image": "当你需要发送图片的时候，请用 markdown 语言生成，不要反斜线，不要代码框，需要使用 unsplash API时，遵循一下格式， https://source.unsplash.com/960x640/? ＜英文关键词＞"
+            "normal": translations[locale]["assistantText"],
+            "cat": translations[locale]["catText"],
+            "emoji": translations[locale]["emojiText"],
+            "image": translations[locale]["imageText"]
         };
         let modelVersion; // 模型版本
         let apiHost; // api反代地址
@@ -3679,9 +4178,6 @@
         const supportMSE = !!window.MediaSource; // 是否支持MSE（除了ios应该都支持）
         let voiceMIME = "audio/mpeg";
         let userAvatar; // 用户头像
-        let themeMode; // 2: 自动， 1: 浅色，0: 深色
-        let autoThemeMode; // 1: 跟随系统，0:自定义时间
-        let customDarkTime; // 开始，结束时间
         let customDarkOut;
         const scrollToBottom = () => {
             if (messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < 128) {
@@ -3809,16 +4305,16 @@
                 let remain = total - used;
                 availableQuota.textContent = "$" + Math.floor(remain * 100) / 100;
                 if (isSub) {
-                    quotaTitle.textContent = "本月额度";
+                    quotaTitle.textContent = translations[locale]["thisQuota"];
                 } else {
                     let isExpired = new Date() > exp;
                     if (isExpired) usedQuotaBar.parentElement.classList.add("expiredBar");
                     let accessDate = formatDate(exp);
-                    quotaTitle.innerHTML = "免费额度-有效期至：" + `<span style="color: ${isExpired ? "#e15b64" : "#99c959"} ">${accessDate}</span>`;
+                    quotaTitle.innerHTML = translations[locale]["freeTierTip"] + `<span style="color: ${isExpired ? "#e15b64" : "#99c959"} ">${accessDate}</span>`;
                 }
                 quotaContent.style.display = "block";
             } catch (e) {
-                notyf.error("API密钥错误或失效，请检查API密钥！");
+                notyf.error(translations[locale]["errorAiKeyTip"]);
             }
             checkingBill = false;
             checkBillBtn.className = "loaded";
@@ -3889,8 +4385,8 @@
         const enhanceCode = (render, options = {}) => (...args) => {
             /* args = [tokens, idx, options, env, slf] */
             const {
-                btnText = "复制代码", // button text
-                successText = "复制成功", // copy-success text
+                btnText = translations[locale]["copyCode"], // button text
+                successText = translations[locale]["copySuccess"], // copy-success text
                 successTextDelay = 2000, // successText show time [ms]
                 showCodeLanguage = true, // false | show code language
             } = options;
@@ -3924,9 +4420,9 @@
             if (editingIdx !== void 0) {
                 chatlog.children[systemRole ? editingIdx - 1 : editingIdx].classList.remove("showEditReq");
             }
-            sendBtnEle.children[0].textContent = "发送";
+            sendBtnEle.children[0].textContent = translations[locale]["send"];
             inputAreaEle.value = originText;
-            clearEle.title = "清空会话";
+            clearEle.title = translations[locale]["clearChat"];
             clearEle.classList.remove("closeConv");
             originText = void 0;
             editingIdx = void 0;
@@ -3937,8 +4433,8 @@
                 let parent = ev.target.parentElement;
                 let idxEle = parent.parentElement;
                 let idx = Array.prototype.indexOf.call(chatlog.children, this.parentElement);
-                if (id === "voiceMd") {
-                    let classList = ev.target.classList;
+                if (id === "voiceBtn" || id === "speechMd" || id === "pauseMd" || id === "resumeMd") {
+                    let classList = parent.dataset.id === "voiceBtn" ? parent.classList : ev.target.classList;
                     if (classList.contains("readyVoice")) {
                         if (chatlog.children[idx].dataset.loading !== "true") {
                             idx = systemRole ? idx + 1 : idx;
@@ -3978,8 +4474,8 @@
                     inputAreaEle.value = data[idx].content;
                     inputAreaEle.dispatchEvent(new Event("input"));
                     inputAreaEle.focus();
-                    sendBtnEle.children[0].textContent = "更新";
-                    clearEle.title = "取消";
+                    sendBtnEle.children[0].textContent = translations[locale]["update"];
+                    clearEle.title = translations[locale]["cancel"];
                     clearEle.classList.add("closeConv");
                 } else if (id === "refreshMd") {
                     if (noLoading()) {
@@ -4004,10 +4500,10 @@
                 } else if (id === "copyMd") {
                     idx = systemRole ? idx + 1 : idx;
                     copyClickMd(idx);
-                    notyf.success("复制成功");
+                    notyf.success(translations[locale]["copySuccess"]);
                 } else if (id === "delMd") {
                     if (noLoading()) {
-                        if (confirmAction("是否删除此消息?")) {
+                        if (confirmAction(translations[locale]["delMsgTip"])) {
                             chatlog.removeChild(chatlog.children[idx]);
                             idx = systemRole ? idx + 1 : idx;
                             let firstIdx = data.findIndex(item => {return item.role === "assistant"});
@@ -4024,7 +4520,7 @@
                             updateChats();
                         }
                     }
-                } else if (id === "downAudio") {
+                } else if (id === "downAudioMd") {
                     if (chatlog.children[idx].dataset.loading !== "true") {
                         idx = systemRole ? idx + 1 : idx;
                         downloadAudio(idx);
@@ -4046,25 +4542,25 @@
             ele.appendChild(mdOption);
             let optionWidth = existVoice >= 2 ? 140 : 105;
             mdOption.innerHTML += `<div class="optionItems" style="width:${optionWidth}px;left:-${optionWidth - 10}px">`
-                + (ele.className === "request" ? `<div data-id="editMd" class="optionItem" title="编辑">
+                + (ele.className === "request" ? `<div data-id="editMd" class="optionItem" title="${translations[locale]["edit"]}">
                 <svg width="18" height="18"><use xlink:href="#chatEditIcon" /></svg>
-                </div>` : `<div data-id="refreshMd" class="refreshReq optionItem" title="刷新">
+                </div>` : `<div data-id="refreshMd" class="refreshReq optionItem" title="${translations[locale]["refresh"]}">
                 <svg width="16" height="16" ><use xlink:href="#refreshIcon" /></svg>
                 <svg width="16" height="16" ><use xlink:href="#halfRefIcon" /></svg>
                 </div>`) +
-                `<div data-id="copyMd" class="optionItem" title="复制">
+                `<div data-id="copyMd" class="optionItem" title="${translations[locale]["copy"]}">
                 <svg width="20" height="20"><use xlink:href="#copyIcon" /></svg>
             </div>
-            <div data-id="delMd" class="optionItem" title="删除">
+            <div data-id="delMd" class="optionItem" title="${translations[locale]["del"]}">
                 <svg width="20" height="20"><use xlink:href="#delIcon" /></svg>
-            </div>` + (existVoice >= 2 ? `<div data-id="downAudio" class="optionItem" title="下载语音">
+            </div>` + (existVoice >= 2 ? `<div data-id="downAudioMd" class="optionItem" title="${translations[locale]["downAudio"]}">
                 <svg width="20" height="20"><use xlink:href="#downAudioIcon" /></svg>
             </div>` : "") + `</div>`;
             if (existVoice) {
-                mdOption.innerHTML += `<div class="voiceCls readyVoice" data-id="voiceMd">
-                <svg width="20" height="20" role="img"><title>朗读</title><use xlink:href="#readyVoiceIcon" /></svg>
-                <svg width="20" height="20" role="img"><title>暂停</title><use xlink:href="#pauseVoiceIcon" /></svg>
-                <svg width="20" height="20" role="img"><title>恢复</title><use xlink:href="#resumeVoiceIcon" /></svg>
+                mdOption.innerHTML += `<div class="voiceCls readyVoice" data-id="voiceBtn">
+                <svg width="20" height="20" role="img" data-id="speechMd"><title>${translations[locale]["speech"]}</title><use xlink:href="#readyVoiceIcon" /></svg>
+                <svg width="20" height="20" role="img" data-id="pauseMd"><title>${translations[locale]["pause"]}</title><use xlink:href="#pauseVoiceIcon" /></svg>
+                <svg width="20" height="20" role="img" data-id="resumeMd"><title>${translations[locale]["resume"]}</title><use xlink:href="#resumeVoiceIcon" /></svg>
                 </div>`
             }
             mdOption.onclick = mdOptionEvent;
@@ -4123,7 +4619,7 @@
         const updateFolder = (idx) => {
             let folderEle = folderListEle.children[idx];
             let childLen = folderData[idx].idxs.length;
-            folderEle.children[0].children[1].children[1].textContent = childLen + "个会话";
+            folderEle.children[0].children[1].children[1].textContent = childLen + translations[locale]["chats"];
             if (childLen) {folderEle.classList.add("expandFolder")}
             else {folderEle.classList.remove("expandFolder")}
         }
@@ -4245,7 +4741,7 @@
             }
         }
         const delFolder = (folderIdx, ele) => {
-            if (confirmAction("是否删除文件夹?")) {
+            if (confirmAction(translations[locale]["delFolderTip"])) {
                 let delData = folderData[folderIdx];
                 let idxs = delData.idxs.sort();
                 ele.parentElement.remove();
@@ -4284,7 +4780,7 @@
         }
         const folderAddChat = (folderIdx, headEle) => {
             endAll();
-            let chat = {name: "新的会话", data: []};
+            let chat = {name: translations[locale]["newChatName"], data: []};
             chatsData.push(chat);
             activeChatIdx = chatsData.length - 1;
             folderData[folderIdx].idxs.push(activeChatIdx);
@@ -4336,12 +4832,12 @@
                     <div class="folderNum"></div>
                 </div>
                 <div class="folderOption">
-                    <svg data-type="folderAddChat" width="24" height="24" role="img"><title>新建会话</title><use xlink:href="#addIcon" /></svg>
-                    <svg data-type="folderEdit" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
-                    <svg data-type="folderDel" width="24" height="24" role="img"><title>删除</title><use xlink:href="#delIcon" /></svg>
+                    <svg data-type="folderAddChat" width="24" height="24" role="img"><title>${translations[locale]["newChat"]}</title><use xlink:href="#addIcon" /></svg>
+                    <svg data-type="folderEdit" width="24" height="24" role="img"><title>${translations[locale]["edit"]}</title><use xlink:href="#chatEditIcon" /></svg>
+                    <svg data-type="folderDel" width="24" height="24" role="img"><title>${translations[locale]["del"]}</title><use xlink:href="#delIcon" /></svg>
                 </div>`
             headEle.children[1].children[0].textContent = folder.name;
-            headEle.children[1].children[1].textContent = folder.idxs.length + "个会话";
+            headEle.children[1].children[1].textContent = folder.idxs.length + translations[locale]["chats"];
             folderEle.appendChild(headEle);
             folderEle.ondragstart = folderDragStartEv;
             headEle.onclick = folderEleEvent;
@@ -4355,7 +4851,7 @@
             else {folderListEle.insertBefore(folderEle, folderListEle.firstChild)}
         }
         document.getElementById("newFolder").onclick = function () {
-            folderData.unshift({name: "新文件夹", idxs: []});
+            folderData.unshift({name: translations[locale]["newFolderName"], idxs: []});
             folderEleAdd(0, false);
             updateChatIdxs();
             folderListEle.parentElement.scrollTop = 0;
@@ -4381,21 +4877,21 @@
                     <div class="chatName"></div>
                     <div class="chatPre"></div>
                 </div>
-                <div class="chatOption"><svg data-type="chatEdit" width="24" height="24" role="img"><title>编辑</title><use xlink:href="#chatEditIcon" /></svg>
-                <svg data-type="chatDel" width="24" height="24" role="img"><title>删除</title><use xlink:href="#delIcon" /></svg></div>`
+                <div class="chatOption"><svg data-type="chatEdit" width="24" height="24" role="img"><title>${translations[locale]["edit"]}</title><use xlink:href="#chatEditIcon" /></svg>
+                <svg data-type="chatDel" width="24" height="24" role="img"><title>${translations[locale]["del"]}</title><use xlink:href="#delIcon" /></svg></div>`
             if (appendChat) chatListEle.appendChild(chatEle);
             initChatEle(idx, chatEle);
             chatEle.onclick = chatEleEvent;
             return chatEle;
         };
         const addNewChat = () => {
-            let chat = {name: "新的会话", data: []};
+            let chat = {name: translations[locale]["newChatName"], data: []};
             chatsData.push(chat);
             chatIdxs.push(chatsData.length - 1);
             updateChats();
         };
         const delChat = (idx, ele, folderIdx, inFolderIdx) => {
-            if (confirmAction("是否删除会话?")) {
+            if (confirmAction(translations[locale]["delChatTip"])) {
                 if (idx === activeChatIdx) endAll();
                 if (folderIdx !== void 0) {
                     let folder = folderData[folderIdx];
@@ -4803,13 +5299,13 @@
                         throw new Error("fmt error");
                     }
                 } catch (e) {
-                    notyf.error("导入失败，请检查文件格式！");
+                    notyf.error(translations[locale]["importFailTip"]);
                 }
                 this.value = "";
             })
         };
         clearChatSet.onclick = clearChat.onclick = () => {
-            if (confirmAction("是否清空所有会话和文件夹?")) {
+            if (confirmAction(translations[locale]["clearAllTip"])) {
                 chatsData.length = 0;
                 chatIdxs.length = 0;
                 folderData.length = 0;
@@ -4824,7 +5320,7 @@
                 activeChat(chatListEle.firstElementChild);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -4854,15 +5350,16 @@
                     speechServiceEle.dispatchEvent(new Event("change"));
                     initRecSetting();
                     initHotKey();
+                    initLang();
                     checkStorage();
                 } catch (e) {
-                    notyf.error("导入失败，请检查文件格式！");
+                    notyf.error(translations[locale]["importFailTip"]);
                 }
                 this.value = "";
             })
         };
         document.getElementById("resetSet").onclick = () => {
-            if (confirmAction("是否还原所有设置为默认值?")) {
+            if (confirmAction(translations[locale]["resetSetTip"])) {
                 endAll();
                 if (existVoice === 3) localStorage.removeItem(azureRegion + "voiceData");
                 let data = {};
@@ -4875,6 +5372,7 @@
                 speechServiceEle.dispatchEvent(new Event("change"));
                 initRecSetting();
                 initHotKey();
+                initLang();
                 checkStorage();
             }
         }
@@ -4887,7 +5385,7 @@
             if (currentVoiceIdx !== void 0) currentVoiceIdx += plus;
             if (editingIdx !== void 0) editingIdx += plus;
         }
-        const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
+
         const hotKeyVals = {};
         const ctrlHotKeyEv = (ev) => {
             if (ev.ctrlKey || ev.metaKey) {
@@ -4936,12 +5434,20 @@
                         ev.preventDefault();
                         lightEle.dispatchEvent(new Event("click"));
                         break;
+                    case hotKeyVals["Lang"]:
+                        ev.preventDefault();
+                        let idx = localeList.indexOf(locale) + 1;
+                        if (idx === localeList.length) idx = 0;
+                        locale = localeList[idx];
+                        setLang();
+                        changeLocale();
+                        break;
                 }
             }
         }
-        const listKey = ['Nav', 'Search', 'Input', 'NewChat', 'ClearChat', 'VoiceRec', 'VoiceSpeak', 'Window', 'Theme'];
+        const listKey = ['Nav', 'Search', 'Input', 'NewChat', 'ClearChat', 'VoiceRec', 'VoiceSpeak', 'Window', 'Theme', 'Lang'];
         const ctrlKeyIdx = 7;
-        const defKeyVal = ['b', 'k', 'i', 'e', 'r', 'q', 's', 'u', 't'];
+        const defKeyVal = ['b', 'k', 'i', 'e', 'r', 'q', 's', 'u', 't', 'l'];
         const initHotKey = () => {
             let localKeysObj = {};
             let localKeys = localStorage.getItem("hotKeys");
@@ -4970,7 +5476,7 @@
                     })
                     if (exist) {
                         ele.value = hotKeyVals[key];
-                        notyf.error("快捷键冲突，请选择其他键位！")
+                        notyf.error(translations[locale]["hotkeyConflict"])
                         return;
                     }
                     hotKeyVals[key] = ele.value;
@@ -5144,7 +5650,6 @@
                 localStorage.setItem("temp", tempEle.value);
             }
             tempEle.dispatchEvent(new Event("input"));
-            let isFull = false;
             const convWEle = document.getElementById("convWidth");
             const styleSheet = document.styleSheets[0];
             convWEle.oninput = () => {
@@ -5167,7 +5672,7 @@
                 isFull = windowEle.classList.contains("full_window");
                 localStorage.setItem("fullWindow", isFull);
                 setConvValue();
-                toggleFull.title = isFull ? "窗口" : "全屏";
+                toggleFull.title = isFull ? translations[locale]["winedWin"] : translations[locale]["fullWin"];
                 toggleFull.children[0].children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", isFull ? "#collapseFullIcon" : "#expandFullIcon");
             }
             toggleFull.onclick = () => {
@@ -5218,10 +5723,8 @@
             };
             const setDarkTheme = (is) => {
                 let cssEle = document.body.getElementsByTagName("link")[0];
-                if (is) document.documentElement.setAttribute("data-theme", "dark");
-                else document.documentElement.removeAttribute("data-theme");
                 cssEle.href = cssEle.href.replace(is ? "light" : "dark", is ? "dark" : "light");
-                document.head.children[4].content = document.head.children[5].content = document.head.children[6].content = getComputedStyle(document.documentElement).getPropertyValue("--background");
+                justDarkTheme(is);
             }
             const handleAutoMode = (ele) => {
                 if (ele.checked) {
@@ -5248,7 +5751,7 @@
                     checkCustomTheme();
                 } else {
                     ele.value = customDarkTime[idx];
-                    notyf.error("开始时间和结束时间不能相同！");
+                    notyf.error(translations[locale]["customDarkTip"]);
                 }
             }
             customStart.onchange = function () {handleAutoTime(this, 0)};
@@ -5297,15 +5800,15 @@
                         initAutoThemeEle();
                     }
                     themeClass = "autoTheme";
-                    title = "自动";
+                    title = translations[locale]["autoTheme"];
                 } else if (themeMode === 1) {
                     setDarkTheme(false);
                     themeClass = "lightTheme";
-                    title = "浅色";
+                    title = translations[locale]["lightTheme"];
                 } else {
                     setDarkTheme(true);
                     themeClass = "darkTheme";
-                    title = "深色";
+                    title = translations[locale]["darkTheme"];
                 }
                 localStorage.setItem("themeMode", themeMode);
                 setLightEle.className = "setDetail themeDetail " + themeClass;
@@ -5519,6 +6022,13 @@
                             let blob = new Blob(downQuene[uuid]["blob"], {type: voiceMIME});
                             let key = downQuene[uuid]["key"];
                             let name = downQuene[uuid]["name"];
+                            if (blob.size === 0) {
+                                notyf.open({
+                                    type: "warning",
+                                    message: translations[locale]["cantSpeechTip"]
+                                });
+                                return;
+                            }
                             voiceData[key] = blob;
                             if (downQuene[uuid]["isTest"]) {
                                 testVoiceBlob = blob;
@@ -5671,8 +6181,12 @@
                         bufArray.push(e.data.slice(130));
                     } else if (e.data.indexOf("Path:turn.end") !== -1) {
                         voiceSocket["pending"] = false;
-                        voiceData[key] = new Blob(bufArray, {type: voiceMIME});
-                        res(voiceData[key]);
+                        if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) {
+                            voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                            res(voiceData[key]);
+                        } else {
+                            res(new Blob());
+                        }
                     }
                 }
             })
@@ -5736,6 +6250,7 @@
                             if (speechQuene.length) {
                                 let buf = speechQuene.shift();
                                 if (buf["end"]) {
+                                    if (!sourceBuffer.buffered.length) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
                                     mediaSource.endOfStream();
                                 } else {
                                     speechPushing = true;
@@ -5751,7 +6266,7 @@
                                 speechQuene.push(buf);
                             } else if (e.data.indexOf("Path:turn.end") !== -1) {
                                 voiceSocket["pending"] = false;
-                                voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                                if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) voiceData[key] = new Blob(bufArray, {type: voiceMIME});
                                 if (!speechQuene.length && !speechPushing) {
                                     mediaSource.endOfStream();
                                 } else {
@@ -5775,6 +6290,7 @@
                     voiceSocket["pending"] = true;
                     if (!supportMSE) {
                         let blob = await NoMSEPending(key);
+                        if (blob.size === 0) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
                         voiceIns.src = URL.createObjectURL(blob);
                     }
                 }
@@ -5856,6 +6372,8 @@
                                     } else {
                                         voiceBlobURLQuene.push(blobURL);
                                     }
+                                } else {
+                                    notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
                                 }
                                 autoAddQuene();
                             }
@@ -5896,6 +6414,7 @@
                                     if (speechQuene.length) {
                                         let buf = speechQuene.shift();
                                         if (buf["end"]) {
+                                            if (!sourceBuffer.buffered.length) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
                                             autoMediaSource.endOfStream();
                                         } else {
                                             speechPushing = true;
@@ -5953,7 +6472,7 @@
         const streamGen = async (long) => {
             controller = new AbortController();
             controllerId = setTimeout(() => {
-                notyf.error("请求超时，请稍后重试！");
+                notyf.error(translations[locale]["timeoutTip"]);
                 stopLoading();
             }, 120000);
             let isRefresh = refreshIdx !== void 0;
@@ -6009,15 +6528,15 @@
                 controllerId = void 0;
                 if (res.status !== 200) {
                     if (res.status === 401) {
-                        notyf.error("API密钥错误或失效，请检查API密钥！")
+                        notyf.error(translations[locale]["errorAiKeyTip"])
                     } else if (res.status === 400 || res.status === 413) {
-                        notyf.error("请求内容过大，请删除部分对话或打开设置关闭连续对话！");
+                        notyf.error(translations[locale]["largeReqTip"]);
                     } else if (res.status === 404) {
-                        notyf.error("无权使用此模型，请打开设置选择其他GPT模型！");
+                        notyf.error(translations[locale]["noModelPerTip"]);
                     } else if (res.status === 429) {
-                        notyf.error(res.statusText ? "触发API调用频率限制，请稍后重试！" : "API使用超出限额，请检查您的账单！");
+                        notyf.error(res.statusText ? translations[locale]["apiRateTip"] : translations[locale]["exceedLimitTip"]);
                     } else {
-                        notyf.error("网关错误或超时，请稍后重试！");
+                        notyf.error(translations[locale]["badGateTip"]);
                     }
                     stopLoading();
                     return;
@@ -6043,8 +6562,8 @@
                                         let lenStop = payload.choices[0].finish_reason === "length";
                                         let longReplyFlag = enableLongReply && lenStop;
                                         let ele = currentResEle.lastChild.children[0].children[0];
-                                        if (!enableLongReply && lenStop) {ele.className = "halfRefReq optionItem"; ele.title = "继续"}
-                                        else {ele.className = "refreshReq optionItem"; ele.title = "刷新"};
+                                        if (!enableLongReply && lenStop) {ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"]}
+                                        else {ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"]};
                                         if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                                             let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
                                             autoSpeechEvent(voiceText, currentResEle, false, stop);
@@ -6089,7 +6608,7 @@
                 await readChunk();
             } catch (e) {
                 if (e.message.indexOf("aborted") === -1) {
-                    notyf.error("访问接口失败，请检查接口！")
+                    notyf.error(translations[locale]["badEndpointTip"])
                     stopLoading();
                 }
             }
@@ -6164,7 +6683,7 @@
                 data.push({role: "user", content: message});
             }
             requestEle.children[1].textContent = message;
-            if (chatsData[activeChatIdx].name === "新的会话") {
+            if (chatsData[activeChatIdx].name === translations[locale]["newChatName"]) {
                 if (message.length > 20) message = message.slice(0, 17) + "...";
                 chatsData[activeChatIdx].name = message;
                 activeChatEle.children[1].children[0].textContent = message;
@@ -6198,7 +6717,7 @@
         stopEle.onclick = stopLoading;
         clearEle.onclick = () => {
             if (editingIdx === void 0) {
-                if (noLoading() && confirmAction("是否清空会话?")) {
+                if (noLoading() && confirmAction(translations[locale]["clearChatTip"])) {
                     endSpeak();
                     if (systemRole) {data.length = 1}
                     else {data.length = 0}
@@ -6216,24 +6735,48 @@
     <link crossorigin="anonymous" href="//cdn.staticfile.org/KaTeX/0.16.7/katex.min.css" rel="stylesheet">
     <link crossorigin="anonymous" href="//npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css" rel="stylesheet">
     <script defer>
-        const downRoleController = new AbortController();
-        setTimeout(() => {
-            downRoleController.abort();
-        }, 10000);
         const preEle = document.getElementById("preSetSystem");
-        fetch("https://cdn.jsdelivr.net/gh/PlexPt/awesome-chatgpt-prompts-zh/prompts-zh.json", {
-            signal: downRoleController.signal
-        }).then(async (response) => {
-            let res = await response.json();
-            for (let i = 0; i < res.length; i++) {
-                let key = "act" + i;
-                presetRoleData[key] = res[i].prompt.trim();
-                let optionEle = document.createElement("option");
-                optionEle.text = res[i].act;
-                optionEle.value = key;
-                preEle.options.add(optionEle);
+        let downRoleController = new AbortController();
+        const loadPrompt = () => {
+            downRoleController.abort();
+            downRoleController = new AbortController();
+            setTimeout(() => {
+                downRoleController.abort();
+            }, 10000);
+            preEle.options.length = 5;
+            if (locale === "zh") {
+                fetch("https://cdn.jsdelivr.net/gh/PlexPt/awesome-chatgpt-prompts-zh/prompts-zh.json", {
+                    signal: downRoleController.signal
+                }).then(async (response) => {
+                    let res = await response.json();
+                    for (let i = 0; i < res.length; i++) {
+                        let key = "act" + i;
+                        presetRoleData[key] = res[i].prompt.trim();
+                        let optionEle = document.createElement("option");
+                        optionEle.text = res[i].act;
+                        optionEle.value = key;
+                        preEle.options.add(optionEle);
+                    }
+                }).catch(e => { })
+            } else {
+                fetch("https://cdn.jsdelivr.net/gh/f/awesome-chatgpt-prompts/prompts.csv", {
+                    signal: downRoleController.signal
+                }).then(async (response) => {
+                    let res = await response.text();
+                    let arr = res.split("\n");
+                    for (let i = 1; i < arr.length - 1; i++) {
+                        let key = "act" + i;
+                        let index = arr[i].indexOf(",");
+                        presetRoleData[key] = arr[i].slice(index + 2, -1);
+                        let optionEle = document.createElement("option");
+                        optionEle.text = arr[i].slice(1, index - 1);
+                        optionEle.value = key;
+                        preEle.options.add(optionEle);
+                    }
+                }).catch(e => { })
             }
-        }).catch(e => { })
+        }
+        loadPrompt();
     </script>
 </body>
 
