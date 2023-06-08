@@ -1,4 +1,4 @@
-const cacheName = "caches-v0.9.2";
+const cacheName = "caches-v0.9.3";
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
@@ -13,7 +13,7 @@ self.addEventListener("fetch", (e) => {
       if (r) return r;
       return fetch(e.request).then(response => {
         // only cache css & js
-        if (/(\.css|\.js)$/.test(e.request.url)) {
+        if (/^http.+(\.css|\.js)$/.test(e.request.url)) {
           const cloned = response.clone();
           caches.open(cacheName).then(cache => {
             cache.put(e.request, cloned);
