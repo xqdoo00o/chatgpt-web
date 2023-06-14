@@ -5395,33 +5395,33 @@
                     case hotKeyVals["Nav"]:
                         ev.preventDefault();
                         toggleNavEv();
-                        break;
+                        return false;
                     case hotKeyVals["Search"]:
                         ev.preventDefault();
                         searchChatEle.focus();
-                        break;
+                        return false;
                     case hotKeyVals["Input"]:
                         ev.preventDefault();
                         inputAreaEle.focus();
-                        break;
+                        return false;
                     case hotKeyVals["NewChat"]:
                         ev.preventDefault();
                         newChatEle.dispatchEvent(new MouseEvent("click"));
-                        break;
+                        return false;
                     case hotKeyVals["ClearChat"]:
                         ev.preventDefault();
                         clearEle.dispatchEvent(new MouseEvent("click"));
-                        break;
+                        return false;
                     case hotKeyVals["VoiceRec"]:
                         if (supportRec) {
                             ev.preventDefault();
                             toggleRecEv();
                         }
-                        break;
+                        return false;
                     case hotKeyVals["VoiceSpeak"]:
                         ev.preventDefault();
                         speechEvent(systemRole ? 1 : 0);
-                        break;
+                        return false;
                 }
             }
         }
@@ -5431,11 +5431,11 @@
                     case hotKeyVals["Window"]:
                         ev.preventDefault();
                         toggleFull.dispatchEvent(new Event("click"));
-                        break;
+                        return false;
                     case hotKeyVals["Theme"]:
                         ev.preventDefault();
                         lightEle.dispatchEvent(new Event("click"));
-                        break;
+                        return false;
                     case hotKeyVals["Lang"]:
                         ev.preventDefault();
                         let idx = localeList.indexOf(locale) + 1;
@@ -5443,7 +5443,7 @@
                         locale = localeList[idx];
                         setLang();
                         changeLocale();
-                        break;
+                        return false;
                 }
             }
         }
