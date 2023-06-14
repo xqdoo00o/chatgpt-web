@@ -43,15 +43,15 @@ ___
 
         ```
         map $http_authorization $gptauth {
-            default  $http_authorization;
+            default $http_authorization;
             #配置默认API密钥，在Bearer 后填写。如只允许在网页端设置API密钥使用，请删除下一行。
-            ""       "Bearer sk-your-token";
+            ""      "Bearer sk-your-token";
         }
         server {
-            listen       80;
-            server_name  example.com;
+            listen      80;
+            server_name example.com;
             #开启openai接口的gzip压缩，大量重复文本的压缩率高，节省服务端流量
-            gzip  on;
+            gzip on;
             gzip_min_length 1k;
             gzip_types text/event-stream;
 
@@ -120,7 +120,8 @@ ___
 
 - 可选用户头像，可修改为任意图片地址。
 
-- 可选系统角色，默认不开启，有四个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)中的角色。
+- 可选系统角色，默认不开启，有四个预设角色，并动态加载[awesome-chatgpt-prompts-zh](https://github.com/PlexPt/awesome-chatgpt-prompts-zh)或[awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)中的角色。
+
 - 可选角色性格，默认灵活创新，对应接口文档的top_p参数。
 
 - 可选回答质量，默认平衡，对应接口文档的temperature参数。
@@ -169,4 +170,4 @@ ___
 
 **注意：该方式仅加密前端HTML，不加密OpenAI接口。**
 
-**可取消OpenAI接口的默认API密钥，打开[index.html代码](https://github.com/xqdoo00o/chatgpt-web/blob/main/index.html#L2595)，此行结尾添加代码`value="sk-xxx"`，则默认使用该密钥**
+**可取消OpenAI接口的默认API密钥，打开[index.html代码](https://github.com/xqdoo00o/chatgpt-web/blob/main/index.html#L2685)，此行结尾添加代码`value="sk-xxx"`，则默认使用该密钥**
