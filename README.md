@@ -168,6 +168,6 @@ ___
 
 - 拷贝index.html内容到要加密的HTML文本框，点击生成按钮后，即可下载加密HTML，并替换index.html使用。
 
-**注意：该方式仅加密前端HTML，不加密OpenAI接口。**
+**注意：该方式仅加密前端HTML，不加密OpenAI反代接口。**
 
-**可取消OpenAI接口的默认API密钥，打开[index.html代码](https://github.com/xqdoo00o/chatgpt-web/blob/main/index.html#L2685)，此行结尾添加代码`value="sk-xxx"`，则默认使用该密钥**
+**可取消OpenAI反代接口的默认API密钥，打开[index.html代码](https://github.com/xqdoo00o/chatgpt-web/blob/main/index.html#L2685)，此行结尾添加代码`value="sk-xxx"`，则默认使用该密钥**
