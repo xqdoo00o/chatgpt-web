@@ -3027,7 +3027,11 @@
                 "chats": " chats",
                 "delFolderTip": "Delete this folder?",
                 "delChatTip": "Delete this chat?",
+                "exportSuccTip": "Export successful!",
+                "importSuccTip": "Import successful!",
                 "importFailTip": "Import failed, please check the file format!",
+                "clearChatSuccTip": "Clear chats data successful!",
+                "resetSetSuccTip": "Reset settings successful!",
                 "clearAllTip": "Delete all chats and folders?",
                 "resetSetTip": "Restore all settings to default?",
                 "hotkeyConflict": "Hotkey conflict, please choose another key!",
@@ -3150,7 +3154,7 @@
                 "export": "导出",
                 "import": "导入",
                 "clear": "清空",
-                "reset": "充值",
+                "reset": "重置",
                 "localStore": "本地存储",
                 "forceReTip": "是否强制刷新页面？",
                 "noSpeechTip": "未识别到语音，请调整麦克风后重试！",
@@ -3175,7 +3179,11 @@
                 "chats": "个会话",
                 "delFolderTip": "是否删除此文件夹？",
                 "delChatTip": "是否删除此会话？",
+                "exportSuccTip": "导出成功！",
+                "importSuccTip": "导入成功！",
                 "importFailTip": "导入失败，请检查文件格式！",
+                "clearChatSuccTip": "清空会话成功！",
+                "resetSetSuccTip": "重置设置成功！",
                 "clearAllTip": "是否删除所有会话和文件夹？",
                 "resetSetTip": "是否还原所有设置为默认值？",
                 "hotkeyConflict": "快捷键冲突，请选择其他键位！",
@@ -5264,6 +5272,7 @@
             let date = new Date();
             let fileName = "chats-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
             downBlob(blob, fileName);
+            notyf.success(translations[locale]["exportSuccTip"]);
         };
         document.getElementById("importChatInput").onchange = function () {
             let file = this.files[0];
@@ -5297,6 +5306,7 @@
                         }
                         updateChats();
                         checkStorage();
+                        notyf.success(translations[locale]["importSuccTip"]);
                     } else {
                         throw new Error("fmt error");
                     }
@@ -5320,6 +5330,7 @@
                 updateChats();
                 checkStorage();
                 activeChat(chatListEle.firstElementChild);
+                notyf.success(translations[locale]["clearChatSuccTip"]);
             }
         };
         let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
@@ -5334,6 +5345,7 @@
             let date = new Date();
             let fileName = "settings-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
             downBlob(blob, fileName);
+            notyf.success(translations[locale]["exportSuccTip"]);
         };
         document.getElementById("importSetInput").onchange = function () {
             let file = this.files[0];
@@ -5354,6 +5366,7 @@
                     initHotKey();
                     initLang();
                     checkStorage();
+                    notyf.success(translations[locale]["importSuccTip"]);
                 } catch (e) {
                     notyf.error(translations[locale]["importFailTip"]);
                 }
@@ -5376,6 +5389,7 @@
                 initHotKey();
                 initLang();
                 checkStorage();
+                notyf.success(translations[locale]["resetSetSuccTip"]);
             }
         }
         const endAll = () => {
