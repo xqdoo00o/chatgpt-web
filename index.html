@@ -3320,6 +3320,7 @@
         const searchChatEle = document.getElementById("searchChat");
         const voiceRecEle = document.getElementById("voiceRecIcon");
         const voiceRecSetEle = document.getElementById("voiceRecSetting");
+        const preEle = document.getElementById("preSetSystem");
         let voiceType = 1; // 设置 0: 提问语音，1：回答语音
         let voiceRole = []; // 语音
         let voiceTestText; // 测试语音文本
@@ -5634,7 +5635,6 @@
                     updateChats();
                 }
             }
-            const preEle = document.getElementById("preSetSystem");
             preEle.onchange = () => {
                 let val = preEle.value;
                 if (val && presetRoleData[val]) {
@@ -6748,7 +6748,6 @@
     <link crossorigin="anonymous" href="//cdn.staticfile.org/KaTeX/0.16.7/katex.min.css" rel="stylesheet">
     <link crossorigin="anonymous" href="//npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css" rel="stylesheet">
     <script defer>
-        const preEle = document.getElementById("preSetSystem");
         let downRoleController = new AbortController();
         const loadPrompt = () => {
             downRoleController.abort();
