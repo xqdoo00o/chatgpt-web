@@ -2321,7 +2321,7 @@
                                 <div>
                                     <label for="preSetSystem" data-i18n-key="presetRole"></label>
                                     <select id="preSetSystem">
-                                        <option value="" data-i18n-key="default"></option>
+                                        <option value="default" data-i18n-key="default"></option>
                                         <option value="normal" data-i18n-key="assistant"></option>
                                         <option value="cat" data-i18n-key="cat"></option>
                                         <option value="emoji" data-i18n-key="emoji"></option>
@@ -2921,6 +2921,7 @@
                 "cat": "Cat girl",
                 "emoji": "Emoji",
                 "withImg": "Image",
+                "defaultText": "",
                 "assistantText": "You are a helpful assistant, answer as concisely as possible.",
                 "catText": "You are a cute cat girl, you must end every sentence with 'meow'",
                 "emojiText": "Your personality is very lively, there must be at least one emoji icon in every sentence",
@@ -3073,6 +3074,7 @@
                 "cat": "猫娘",
                 "emoji": "表情",
                 "withImg": "有图",
+                "defaultText": "",
                 "assistantText": "你是一个乐于助人的助手，尽量简明扼要地回答",
                 "catText": "你是一个可爱的猫娘，每句话结尾都要带个'喵'",
                 "emojiText": "你的性格很活泼，每句话中都要有至少一个emoji图标",
@@ -4166,6 +4168,7 @@
         const API_URL = "v1/chat/completions";
         let loading = false;
         let presetRoleData = {
+            "default": translations[locale]["defaultText"],
             "normal": translations[locale]["assistantText"],
             "cat": translations[locale]["catText"],
             "emoji": translations[locale]["emojiText"],
@@ -4897,7 +4900,8 @@
         };
         const addNewChat = () => {
             let chat = {name: translations[locale]["newChatName"], data: []};
-            if (systemEle.textContent) chat.data.unshift({role: "system", content: systemEle.textContent});
+            if (presetRoleData.default) chat.data.unshift({role: "system", content: presetRoleData.default});
+            preEle.selectedIndex = 0;
             chatsData.push(chat);
             chatIdxs.push(chatsData.length - 1);
             updateChats();
@@ -5623,7 +5627,7 @@
                 updateChats();
             }
             if (systemRole === void 0) {
-                systemRole = systemEle.value = localSystem || systemEle.textContent;
+                systemRole = systemEle.value = localSystem || presetRoleData.default || "";
                 if (systemRole) {
                     data.unshift({role: "system", content: systemRole});
                     processIdx(1);
