@@ -1904,7 +1904,7 @@
 
         #apiSelect {
             position: absolute;
-            top: 36px;
+            top: 37px;
             padding: 4px 0;
             background: var(--chat-back);
             width: 100%;
@@ -4424,6 +4424,7 @@
             token.attrSet("onerror", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
             return slf.renderToken(tokens, idx, options)
         }
+        let currentVoiceIdx;
         let editingIdx;
         let originText;
         const resumeSend = () => {
@@ -4896,6 +4897,7 @@
         };
         const addNewChat = () => {
             let chat = {name: translations[locale]["newChatName"], data: []};
+            if (systemEle.textContent) chat.data.unshift({role: "system", content: systemEle.textContent});
             chatsData.push(chat);
             chatIdxs.push(chatsData.length - 1);
             updateChats();
@@ -5082,11 +5084,9 @@
             if (data[0] && data[0].role === "system") {
                 systemRole = data[0].content;
                 systemEle.value = systemRole;
-                localStorage.setItem("system", systemRole);
             } else {
-                systemRole = "";
+                systemRole = void 0;
                 systemEle.value = "";
-                localStorage.setItem("system", systemRole);
             }
             chatlog.innerHTML = "";
             if (systemRole ? data.length - 1 : data.length) {
@@ -5359,7 +5359,7 @@
                         if (val !== void 0) localStorage.setItem(key, val);
                         else localStorage.removeItem(key);
                     }
-                    initSetting(true);
+                    initSetting();
                     initVoiceVal();
                     speechServiceEle.dispatchEvent(new Event("change"));
                     initRecSetting();
@@ -5382,7 +5382,7 @@
                     let key = localSetKeys[i];
                     let val = localStorage.removeItem(key);
                 }
-                initSetting(true);
+                initSetting();
                 initVoiceVal();
                 speechServiceEle.dispatchEvent(new Event("change"));
                 initRecSetting();
@@ -5401,7 +5401,6 @@
             if (currentVoiceIdx !== void 0) currentVoiceIdx += plus;
             if (editingIdx !== void 0) editingIdx += plus;
         }
-
         const hotKeyVals = {};
         const ctrlHotKeyEv = (ev) => {
             if (ev.ctrlKey || ev.metaKey) {
@@ -5503,7 +5502,7 @@
         initHotKey();
         document.addEventListener("keydown", ctrlHotKeyEv);
         document.addEventListener("keydown", ctrlAltHotKeyEv);
-        const initSetting = (force = false) => {
+        const initSetting = () => {
             const modelEle = document.getElementById("preSetModel");
             let localModel = localStorage.getItem("modelVersion");
             modelVersion = modelEle.value = localModel || "gpt-3.5-turbo";
@@ -5624,18 +5623,12 @@
                 updateChats();
             }
             if (systemRole === void 0) {
-                if (localSystem) {
-                    systemRole = localSystem;
-                    systemEle.value = localSystem;
+                systemRole = systemEle.value = localSystem || systemEle.textContent;
+                if (systemRole) {
                     data.unshift({role: "system", content: systemRole});
                     processIdx(1);
                     updateChats();
-                } else {
-                    systemRole = systemEle.value;
                 }
-            } else if (force) {
-                systemRole = systemEle.value = localSystem || systemEle.getAttribute("value") || "";
-                systemEle.dispatchEvent(new Event("change"));
             }
             const preEle = document.getElementById("preSetSystem");
             preEle.onchange = () => {
@@ -5917,7 +5910,6 @@
             return `wss://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/websocket/v1?Authorization=bearer%20${azureToken}`
         }
         const edgeTTSURL = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4";
-        let currentVoiceIdx;
         const resetSpeakIcon = () => {
             if (currentVoiceIdx !== void 0) {
                 chatlog.children[systemRole ? currentVoiceIdx - 1 : currentVoiceIdx].classList.remove("showVoiceCls");
