@@ -776,7 +776,7 @@
         #speechOption>div,
         #speechDetail>div,
         #recOption div {
-            margin-top: 8px;
+            margin-top: 7px;
         }
 
         #voiceRecSetting select,
@@ -2365,11 +2365,13 @@
                             </div>
                         </div>
                         <div>
-                            <span class="inlineTitle" data-i18n-key="contChat"></span>
-                            <label class="switch-slide">
-                                <input type="checkbox" id="enableCont" checked="true" hidden />
-                                <label for="enableCont" class="switch-slide-label"></label>
-                            </label>
+                            <span><span data-i18n-key="continuousLen"></span> = <span id="contLenWrap"></span><span
+                                    data-i18n-key="msgAbbr"></span></span>
+                            <input type="range" id="contLength" min="0" max="50" value="25" step="1" />
+                            <div class="selectDef">
+                                <span>0</span>
+                                <span>50</span>
+                            </div>
                         </div>
                         <div>
                             <span class="inlineTitle" data-i18n-key="longReply"></span>
@@ -2934,9 +2936,10 @@
                 "qualityPos": "Nonsense",
                 "chatsWidth": "Chats width",
                 "typeSpeed": "Typing speed",
+                "continuousLen": "Continuous context",
+                "msgAbbr": " msgs.",
                 "slow": "Slow",
                 "fast": "Fast",
-                "contChat": "Continuous",
                 "longReply": "Long reply",
                 "ttsService": "TTS API",
                 "azureTTS": "Azure",
@@ -3087,9 +3090,10 @@
                 "qualityPos": "胡言乱语",
                 "chatsWidth": "会话宽度",
                 "typeSpeed": "打字机速度",
+                "continuousLen": "连续会话上下文",
+                "msgAbbr": "条",
                 "slow": "慢",
                 "fast": "快",
-                "contChat": "连续会话",
                 "longReply": "长回复",
                 "ttsService": "语音合成服务",
                 "azureTTS": "Azure语音",
@@ -4184,7 +4188,7 @@
         let roleTemp; // 回答质量
         let convWidth = []; // 会话宽度，0:窗口宽度，1:全屏宽度
         let textSpeed; // 打字机速度，越小越快
-        let enableCont; // 是否开启连续对话，默认开启，对话包含上下文信息。
+        let contLen; // 连续会话长度，默认25，对话包含25条上下文信息。设置为0即关闭连续会话
         let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
         let longReplyFlag;
         let voiceIns; // Audio or SpeechSynthesisUtterance
@@ -4289,7 +4293,10 @@
                                 headers,
                                 signal: useCtrl.signal
                             }).then(response => {
-                                response.json().then(json => res(json.total_usage));
+                                response.json().then(json => {
+                                    if (json.total_usage !== void 0) res(json.total_usage);
+                                    else rej();
+                                });
                             }).catch(() => {
                                 rej();
                             })
@@ -5338,7 +5345,7 @@
                 notyf.success(translations[locale]["clearChatSuccTip"]);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'enableCont', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -5714,14 +5721,20 @@
                 localStorage.setItem("textSpeed", speedEle.value);
             }
             speedEle.dispatchEvent(new Event("input"));
-            const contEle = document.getElementById("enableCont");
-            let localCont = localStorage.getItem("enableCont");
-            contEle.checked = enableCont = (localCont || contEle.getAttribute("checked")) === "true";
-            contEle.onchange = () => {
-                enableCont = contEle.checked;
-                localStorage.setItem("enableCont", enableCont);
+            if (localStorage.getItem("enableCont") != null) { // fallback old cont
+                if (localStorage.getItem("enableCont") === "false") localStorage.setItem("contLength", 0);
+                localStorage.removeItem("enableCont");
             }
-            contEle.dispatchEvent(new Event("change"));
+            const contLenEle = document.getElementById("contLength");
+            let localContLen = localStorage.getItem("contLength");
+            contLenEle.value = contLen = parseInt(localContLen || contLenEle.getAttribute("value"));
+            contLenEle.oninput = () => {
+                contLenEle.style.backgroundSize = (contLenEle.value - contLenEle.min) * 100 / (contLenEle.max - contLenEle.min) + "% 100%";
+                contLen = parseInt(contLenEle.value);
+                contLenWrap.textContent = contLen;
+                localStorage.setItem("contLength", contLenEle.value);
+            }
+            contLenEle.dispatchEvent(new Event("input"));
             const longEle = document.getElementById("enableLongReply");
             let localLong = localStorage.getItem("enableLongReply");
             longEle.checked = enableLongReply = (localLong || longEle.getAttribute("checked")) === "true";
@@ -6511,12 +6524,11 @@
                 if (long) {
                     idx = isRefresh ? refreshIdx : data.length - 1;
                     dataSlice = [data[idx - 1], data[idx]];
-                    if (systemRole) {dataSlice.unshift(data[0]);}
-                } else if (enableCont) {
-                    dataSlice = data.slice(0, idx);
+                    if (systemRole) dataSlice.unshift(data[0]);
                 } else {
-                    dataSlice = [data[idx - 1]];
-                    if (systemRole) {dataSlice.unshift(data[0]);}
+                    let startIdx = idx > contLen ? idx - contLen - 1 : 0;
+                    dataSlice = data.slice(startIdx, idx);
+                    if (systemRole && startIdx > 0) dataSlice.unshift(data[0]);
                 }
                 dataSlice = dataSlice.map(item => {
                     if (item.role === "assistant") return {role: item.role, content: item.content};
