@@ -2867,7 +2867,9 @@
             link.href = "https://cdn.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
             document.body.appendChild(link);
         }
+        let envAPIEndpoint, envAPIKey;
     </script>
+    <script src="env.js"></script>
     <script>
         const localeList = ["en", "zh"];
         let locale; // UI语言
@@ -5583,7 +5585,7 @@
                 if (!(ev.relatedTarget && apiSelectEle.contains(ev.relatedTarget))) apiSelectEle.style.display = "none";
             }
             let localApiHost = localStorage.getItem("APIHost");
-            apiHost = apiHostEle.value = localApiHost || apiHostEle.getAttribute("value") || "";
+            apiHost = apiHostEle.value = envAPIEndpoint || localApiHost || apiHostEle.getAttribute("value") || "";
             apiHostEle.onchange = () => {
                 apiHost = apiHostEle.value;
                 if (apiHost.length && !apiHost.endsWith("/")) {
@@ -5596,7 +5598,7 @@
             apiHostEle.dispatchEvent(new Event("change"));
             const keyEle = document.getElementById("keyInput");
             let localKey = localStorage.getItem("APIKey");
-            customAPIKey = keyEle.value = localKey || keyEle.getAttribute("value") || "";
+            customAPIKey = keyEle.value = envAPIKey || localKey || keyEle.getAttribute("value") || "";
             keyEle.onchange = () => {
                 quotaContent.style.display = "none";
                 customAPIKey = keyEle.value;

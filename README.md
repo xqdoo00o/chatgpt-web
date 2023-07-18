@@ -7,7 +7,7 @@ Pure Javascript ChatGPT demo based on OpenAI API
 
 支持复制/更新/刷新会话，语音输入，朗读等功能，以及众多[自定义选项](#自定义选项)。
 
-支持搜索会话，深色模式，自定义头像，快捷键，多语言，[PWA应用](#pwa应用)，API额度显示等。
+支持搜索会话，深色模式，自定义头像，快捷键，多语言，[环境变量](#环境变量)，[PWA应用](#pwa应用)，API额度显示等。
 
 支持[加密HTML文件](#加密html文件)。
 
@@ -36,9 +36,11 @@ ___
     - 可正常访问`api.openai.com`，填写`https://api.openai.com/`
 
     - 不可正常访问`api.openai.com`，填写其反代地址（可使用[Cloudflare Worker](https://github.com/xqdoo00o/openai-proxy)等反代），注意：反代接口响应需添加跨域Header `Access-Control-Allow-Origin`
+
+    - OpenAI接口也可以在[环境变量](#环境变量)中单独配置。
 - **同时部署HTML和OpenAI反代接口**
 
-    **注意：服务器需正常访问`api.openai.com`，网页不用设置OpenAI接口了**
+    **注意：服务器需正常访问`api.openai.com`，不用设置OpenAI接口了**
     - 使用nginx，示例配置如下
 
         ```
@@ -100,6 +102,15 @@ ___
         }
         ```
         **Caddy 2.6.5及之后版本支持https_proxy和http_proxy环境变量，如服务器无法正常访问`api.openai.com`，可先设置代理环境变量**
+
+## 环境变量
+OpenAI接口和密钥可以单独在环境变量文件中配置。
+
+新建环境变量文件`env.js`到index.html同目录下，示例如下。
+```
+envAPIEndpoint="https://api.openai.com/"
+envAPIKey="sk-your-token"
+```
 
 ## PWA应用
 部署文件[icon.png](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/icon.png)，[manifest.json](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/manifest.json)，[sw.js](https://raw.githubusercontent.com/xqdoo00o/chatgpt-web/main/sw.js)到index.html同目录下，即可支持PWA应用。
