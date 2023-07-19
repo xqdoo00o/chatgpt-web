@@ -1,2 +1,2 @@
-envAPIEndpoint="https://chatgpt-proxy.railway.internal/"
+envAPIEndpoint="https://chatgpt-proxy-zhangyuejun.up.railway.app/"
 envAPIKey="sk-your-token"
