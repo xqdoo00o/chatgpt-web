@@ -181,4 +181,4 @@ envAPIKey="sk-your-token"
 
 **注意：该方式仅加密前端HTML，不加密OpenAI反代接口。**
 
-**可取消OpenAI反代接口的默认API密钥，打开[index.html代码](https://github.com/xqdoo00o/chatgpt-web/blob/main/index.html#L2687)，此行结尾添加代码`value="sk-xxx"`，则默认使用该密钥**
+**可取消OpenAI反代接口的默认API密钥，打开[index.html代码](https://github.com/xqdoo00o/chatgpt-web/blob/main/index.html#L2742)，此行结尾添加代码`value="sk-xxx"`，则默认使用该密钥**

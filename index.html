@@ -1093,7 +1093,7 @@
             width: 100%;
             height: 36px;
             padding-left: 10px;
-            padding-right: 16px;
+            padding-right: 45px;
             font-size: 16px;
             outline: none;
             border: none;
@@ -1112,7 +1112,7 @@
 
         #clearSearch {
             position: absolute;
-            right: 12px;
+            right: 34px;
             top: 8px;
             cursor: pointer;
             color: var(--btn-color);
@@ -1123,6 +1123,27 @@
         }
 
         #clearSearch>svg {
+            display: block;
+        }
+
+        .seledSearch {
+            background: var(--lighter-svg-color) !important;
+        }
+
+        #matchCaseSearch {
+            position: absolute;
+            right: 12px;
+            top: 8px;
+            cursor: pointer;
+            border-radius: 3px;
+            color: var(--btn-color);
+        }
+
+        #matchCaseSearch:hover {
+            background: var(--sel-btn);
+        }
+
+        #matchCaseSearch>svg {
             display: block;
         }
 
@@ -1709,6 +1730,31 @@
             background: var(--lighter-active-color);
         }
 
+        .keyOptionDetail {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #resetHotKey {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--btn-color);
+            border-radius: 3px;
+            padding: 6px 8px;
+            margin-left: 90px;
+        }
+
+        #resetHotKey>svg {
+            margin-right: 4px;
+        }
+
+        #resetHotKey:hover {
+            background: var(--lighter-active-color);
+        }
+
         .hotKeyDetail>div {
             position: relative;
             height: 30px;
@@ -2200,6 +2246,10 @@
                 <path fill="currentColor"
                     d="M14 10h2v.757a4.5 4.5 0 0 1 7 3.743V20h-2v-5.5c0-1.43-1.174-2.5-2.5-2.5S16 13.07 16 14.5V20h-2V10Zm-2-6v2H4v5h8v2H4v5h8v2H2V4h10Z" />
             </symbol>
+            <symbol viewBox="0 0 24 24" id="caseIcon">
+                <path fill="currentColor"
+                    d="m3.975 17l3.75-10h1.8l3.75 10H11.55l-.9-2.55H6.6L5.7 17H3.975Zm3.15-4h3l-1.45-4.15h-.1L7.125 13Zm9.225 4.275q-1.225 0-1.925-.638t-.7-1.737q0-1.05.813-1.713t2.087-.662q.575 0 1.063.088t.837.287v-.35q0-.675-.462-1.075t-1.263-.4q-.525 0-.988.225t-.787.65l-1.075-.8q.475-.675 1.2-1.025t1.675-.35q1.55 0 2.375.738t.825 2.137v4.4H18.55v-.85h-.075q-.325.5-.875.788t-1.25.287Zm.25-1.25q.8 0 1.363-.563t.562-1.362q-.35-.2-.8-.3t-.825-.1q-.8 0-1.225.313t-.425.887q0 .5.375.813t.975.312Z" />
+            </symbol>
         </svg>
     </div>
     <div id="loadMask">
@@ -2231,6 +2281,11 @@
                 <div id="clearSearch">
                     <svg width="24" height="24">
                         <use xlink:href="#closeIcon" />
+                    </svg>
+                </div>
+                <div id="matchCaseSearch" data-i18n-title="matchCaseTip" title>
+                    <svg width="24" height="24">
+                        <use xlink:href="#caseIcon" />
                     </svg>
                 </div>
             </div>
@@ -2768,6 +2823,14 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="setDetail keyOptionDetail">
+                                <div id="resetHotKey">
+                                    <svg width="22" height="22" style="transform: scaleX(-1)">
+                                        <use xlink:href="#refreshIcon" />
+                                    </svg>
+                                    <span data-i18n-key="resetHotKeyTip"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="dataOption" style="display: none;">
@@ -2905,6 +2968,7 @@
                 "newFolder": "New folder",
                 "newFolderName": "New folder",
                 "search": "Search",
+                "matchCaseTip": "Match case",
                 "forceRe": "Force refresh",
                 "clearAll": "Clear all chats",
                 "setting": "Setting",
@@ -3003,6 +3067,7 @@
                 "themeKey": "Toggle lang",
                 "inputKey": "Message",
                 "voiceKey": "Voice",
+                "resetHotKeyTip": "Restore default",
                 "recKey": "Recognition",
                 "speechKey": "Start speech",
                 "export": "Export",
@@ -3059,6 +3124,7 @@
                 "newFolder": "新建文件夹",
                 "newFolderName": "新文件夹",
                 "search": "搜索",
+                "matchCaseTip": "区分大小写",
                 "forceRe": "强制刷新",
                 "clearAll": "清空全部",
                 "setting": "设置",
@@ -3157,6 +3223,7 @@
                 "langKey": "切换语言",
                 "inputKey": "输入框",
                 "voiceKey": "语音",
+                "resetHotKeyTip": "恢复默认设值",
                 "recKey": "语音输入",
                 "speechKey": "朗读会话",
                 "export": "导出",
@@ -3366,21 +3433,15 @@
         };
         inputAreaEle.focus();
         const textInputEvent = () => {
-            if (noLoading()) {
-                if (inputAreaEle.value.trim().length) {
-                    sendBtnEle.classList.add("activeSendBtn");
-                } else {
-                    sendBtnEle.classList.remove("activeSendBtn");
-                }
-            }
+            if (noLoading()) sendBtnEle.classList.toggle("activeSendBtn", inputAreaEle.value.trim().length);
             inputAreaEle.style.height = "47px";
             inputAreaEle.style.height = inputAreaEle.scrollHeight + "px";
         };
         inputAreaEle.oninput = textInputEvent;
         const toggleNavEv = () => {
-            document.body.classList.toggle("show-nav");
+            let isShowNav = document.body.classList.toggle("show-nav");
             if (window.innerWidth > 800) {
-                localStorage.setItem("pinNav", document.body.classList.contains("show-nav"))
+                localStorage.setItem("pinNav", isShowNav)
             }
         }
         document.body.addEventListener("mousedown", event => {
@@ -3634,8 +3695,7 @@
                     document.addEventListener("mousedown", closeEvent, true);
                 }
                 const toggleRecEvent = () => {
-                    voiceRecEle.classList.toggle("voiceRecing");
-                    if (voiceRecEle.classList.contains("voiceRecing")) {
+                    if (voiceRecEle.classList.toggle("voiceRecing")) {
                         try {
                             resetRecRes();
                             recIns.lang = select_dialect.value;
@@ -4198,6 +4258,7 @@
         let voiceMIME = "audio/mpeg";
         let userAvatar; // 用户头像
         let customDarkOut;
+        let isCaseSearch; // 搜索是否区分大小写
         const isContentBottom = () => messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < 128;
         const scrollToBottom = () => {
             if (isContentBottom()) {
@@ -4222,6 +4283,9 @@
         const getUnescape = html => {
             escapeTextarea.innerHTML = html;
             return escapeTextarea.textContent;
+        }
+        const escapeRegExp = (str) => {
+            return str.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
         }
         const formatDate = date => {
             const year = date.getFullYear();
@@ -4644,8 +4708,7 @@
             let folderEle = folderListEle.children[idx];
             let childLen = folderData[idx].idxs.length;
             folderEle.children[0].children[1].children[1].textContent = childLen + translations[locale]["chats"];
-            if (childLen) {folderEle.classList.add("expandFolder")}
-            else {folderEle.classList.remove("expandFolder")}
+            folderEle.classList.toggle("expandFolder", childLen);
         }
         folderListEle.ondragenter = chatListEle.ondragenter = function (ev) {
             ev.preventDefault();
@@ -4820,13 +4883,9 @@
             let parent = this.parentElement;
             let idx = Array.prototype.indexOf.call(folderListEle.children, parent);
             if (ev.target.className === "headLi") {
-                parent.classList.toggle("expandFolder");
+                let isExpanded = parent.classList.toggle("expandFolder");
                 if (folderData[idx].idxs.indexOf(activeChatIdx) !== -1) {
-                    if (parent.classList.contains("expandFolder")) {
-                        parent.classList.remove("activeFolder");
-                    } else {
-                        parent.classList.add("activeFolder");
-                    }
+                    parent.classList.toggle("activeFolder", !isExpanded);
                 }
             } else if (ev.target.dataset.type === "folderAddChat") {
                 folderAddChat(idx, this);
@@ -5119,14 +5178,17 @@
             if (searchIdxs[activeChatIdx] !== void 0) {
                 let dataIdx = searchIdxs[activeChatIdx];
                 if (dataIdx !== -1) {
-                    let childs = chatlog.children[systemRole ? dataIdx - 1 : dataIdx].children[1].getElementsByTagName("*");
-                    for (let i = childs.length - 1; i >= 0; i--) {
-                        if (childs[i].textContent && childs[i].textContent.indexOf(searchChatEle.value) !== -1) {
-                            let offTop = findOffsetTop(childs[i], messagesEle);
-                            messagesEle.scrollTop = offTop + childs[i].offsetHeight - messagesEle.clientHeight * 0.15;
-                            break;
+                    let currChatEle = chatlog.children[systemRole ? dataIdx - 1 : dataIdx];
+                    let childs = currChatEle.children[1].getElementsByTagName("*");
+                    if (childs.length) {
+                        for (let i = childs.length - 1; i >= 0; i--) {
+                            if (childs[i].textContent && childs[i].textContent.indexOf(searchChatEle.value) !== -1) {
+                                let offTop = findOffsetTop(childs[i], messagesEle);
+                                messagesEle.scrollTop = offTop + childs[i].offsetHeight - messagesEle.clientHeight * 0.15;
+                                break;
+                            }
                         }
-                    }
+                    } else messagesEle.scrollTop = currChatEle.offsetTop;
                 } else messagesEle.scrollTop = 0;
             }
         };
@@ -5192,65 +5254,60 @@
             searchChatEle.dispatchEvent(new Event("input"));
             searchChatEle.focus();
         }
-        let compositionFlag;
-        let lastCompositon;
-        searchChatEle.addEventListener("compositionstart", () => {
-            compositionFlag = true;
-        });
-        searchChatEle.addEventListener("compositionend", (ev) => {
-            compositionFlag = false;
-            if (ev.data.length && ev.data === lastCompositon) {
-                searchChatEle.dispatchEvent(new Event("input"));
-            }
-            lastCompositon = void 0;
-        });
-        searchChatEle.oninput = (ev) => {
-            if (ev.isComposing) lastCompositon = ev.data;
-            if (compositionFlag) return;
-            let value = searchChatEle.value;
-            if (value.length) {
-                searchIdxs.length = 0;
-                for (let i = 0; i < chatsData.length; i++) {
-                    let chatEle = getChatEle(i);
-                    chatEle.style.display = null;
-                    let nameIdx = chatsData[i].name.indexOf(value);
-                    let dataIdx = chatsData[i].data.findIndex(item => {
-                        return item.role !== "system" && item.content.indexOf(value) !== -1
-                    })
-                    if (nameIdx !== -1 || dataIdx !== -1) {
-                        let ele = chatEle.children[1];
-                        if (dataIdx !== -1) {
-                            let data = chatsData[i].data[dataIdx];
-                            let idx = data.content.indexOf(value);
-                            ele.children[1].textContent = (idx > 8 ? "..." : "") + data.content.slice(idx > 8 ? idx - 5 : 0, idx);
-                            ele.children[1].appendChild(document.createElement("span"));
-                            ele.children[1].lastChild.textContent = value;
-                            ele.children[1].appendChild(document.createTextNode(data.content.slice(idx + value.length)))
-                        } else {
-                            initChatEle(i, chatEle);
-                        }
-                        if (nameIdx !== -1) {
-                            ele.children[0].textContent = (nameIdx > 5 ? "..." : "") + chatsData[i].name.slice(nameIdx > 5 ? nameIdx - 3 : 0, nameIdx);
-                            ele.children[0].appendChild(document.createElement("span"));
-                            ele.children[0].lastChild.textContent = value;
-                            ele.children[0].appendChild(document.createTextNode(chatsData[i].name.slice(nameIdx + value.length)))
-                        } else {
-                            ele.children[0].textContent = chatsData[i].name;
-                        }
-                        searchIdxs[i] = dataIdx;
+        const toSearchChats = () => {
+            searchIdxs.length = 0;
+            for (let i = 0; i < chatsData.length; i++) {
+                let chatEle = getChatEle(i);
+                chatEle.style.display = null;
+                let flags = isCaseSearch ? "" : "i";
+                let pattern = escapeRegExp(searchChatEle.value);
+                let regex = new RegExp(pattern, flags);
+                let nameData = chatsData[i].name.match(regex);
+                let nameIdx = nameData ? nameData.index : -1;
+                let matchContent;
+                let dataIdx = chatsData[i].data.findIndex(item => {
+                    return item.role !== "system" && (matchContent = item.content.match(regex))
+                })
+                if (nameIdx !== -1 || dataIdx !== -1) {
+                    let ele = chatEle.children[1];
+                    if (dataIdx !== -1) {
+                        let data = chatsData[i].data[dataIdx];
+                        let idx = matchContent.index;
+                        let endIdx = idx + matchContent[0].length;
+                        ele.children[1].textContent = (idx > 8 ? "..." : "") + data.content.slice(idx > 8 ? idx - 5 : 0, idx);
+                        ele.children[1].appendChild(document.createElement("span"));
+                        ele.children[1].lastChild.textContent = data.content.slice(idx, endIdx);
+                        ele.children[1].appendChild(document.createTextNode(data.content.slice(endIdx)))
                     } else {
-                        chatEle.style.display = "none";
                         initChatEle(i, chatEle);
                     }
-                }
-                for (let i = 0; i < folderListEle.children.length; i++) {
-                    let folderChatEle = folderListEle.children[i].children[1];
-                    if (!folderChatEle.children.length || Array.prototype.filter.call(folderChatEle.children, (ele) => {
-                        return ele.style.display !== "none"
-                    }).length === 0) {
-                        folderListEle.children[i].style.display = "none";
+                    if (nameIdx !== -1) {
+                        let endIdx = nameIdx + nameData[0].length;
+                        ele.children[0].textContent = (nameIdx > 5 ? "..." : "") + chatsData[i].name.slice(nameIdx > 5 ? nameIdx - 3 : 0, nameIdx);
+                        ele.children[0].appendChild(document.createElement("span"));
+                        ele.children[0].lastChild.textContent = chatsData[i].name.slice(nameIdx, endIdx);
+                        ele.children[0].appendChild(document.createTextNode(chatsData[i].name.slice(endIdx)))
+                    } else {
+                        ele.children[0].textContent = chatsData[i].name;
                     }
+                    searchIdxs[i] = dataIdx;
+                } else {
+                    chatEle.style.display = "none";
+                    initChatEle(i, chatEle);
                 }
+            }
+            for (let i = 0; i < folderListEle.children.length; i++) {
+                let folderChatEle = folderListEle.children[i].children[1];
+                if (!folderChatEle.children.length || Array.prototype.filter.call(folderChatEle.children, (ele) => {
+                    return ele.style.display !== "none"
+                }).length === 0) {
+                    folderListEle.children[i].style.display = "none";
+                }
+            }
+        }
+        searchChatEle.oninput = (ev) => {
+            if (searchChatEle.value.length) {
+                toSearchChats();
             } else {
                 searchIdxs.length = 0;
                 for (let i = 0; i < chatsData.length; i++) {
@@ -5262,6 +5319,10 @@
                     folderListEle.children[i].style.display = null;
                 }
             }
+        };
+        document.getElementById("resetHotKey").onclick = () => {
+            localStorage.removeItem("hotKeys");
+            initHotKey();
         };
         const blobToText = (blob) => {
             return new Promise((res, rej) => {
@@ -5347,7 +5408,7 @@
                 notyf.success(translations[locale]["clearChatSuccTip"]);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -5865,6 +5926,15 @@
             darkMedia.onchange = e => {
                 if (themeMode === 2 && autoThemeMode) setDarkTheme(e.matches);
             };
+            const caseSearchEle = document.getElementById("matchCaseSearch");
+            let localSearchFlag = localStorage.getItem("searchFlag") || "0";
+            isCaseSearch = Boolean(localSearchFlag & 1);
+            caseSearchEle.classList.toggle("seledSearch", isCaseSearch);
+            caseSearchEle.onclick = () => {
+                isCaseSearch = caseSearchEle.classList.toggle("seledSearch");
+                localStorage.setItem("searchFlag", ~~isCaseSearch);
+                if (searchChatEle.value.length) toSearchChats();
+            }
         };
         initSetting();
         document.getElementById("loadMask").style.display = "none";
