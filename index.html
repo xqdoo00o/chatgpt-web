@@ -2337,11 +2337,11 @@
                                 <div>
                                     <label for="preSetSystem" data-i18n-key="presetRole"></label>
                                     <select id="preSetSystem">
-                                        <option "default" data-i18n-key="default"></option>
-                                        <option "normal" data-i18n-key="assistant"></option>
-                                        <option "cat" data-i18n-key="cat"></option>
-                                        <option "emoji" data-i18n-key="emoji"></option>
-                                        <option "image" data-i18n-key="withImg"></option>
+                                        <option value="default" data-i18n-key="default"></option>
+                                        <option value="normal" data-i18n-key="assistant"></option>
+                                        <option value="cat" data-i18n-key="cat"></option>
+                                        <option value="emoji" data-i18n-key="emoji"></option>
+                                        <option value="image" data-i18n-key="withImg"></option>
                                     </select>
                                 </div>
                             </div>
@@ -2350,7 +2350,7 @@
                         </div>
                         <div>
                             <span data-i18n-key="nature"></span>
-                            <input type="range" id="top_p" min="0" max="1" "0.7" step="0.05" />
+                            <input type="range" id="top_p" min="0" max="1" value="0.7" step="0.05" />
                             <div class="selectDef">
                                 <span data-i18n-key="natureNeg"></span>
                                 <span data-i18n-key="naturePos"></span>
@@ -2358,7 +2358,7 @@
                         </div>
                         <div>
                             <span data-i18n-key="quality"></span>
-                            <input type="range" id="temp" min="0" max="2" "1" step="0.05" />
+                            <input type="range" id="temp" min="0" max="2" value="1" step="0.05" />
                             <div class="selectDef">
                                 <span data-i18n-key="qualityNeg"></span>
                                 <span data-i18n-key="qualityPos"></span>
@@ -2366,7 +2366,7 @@
                         </div>
                         <div>
                             <span data-i18n-key="chatsWidth"></span>
-                            <input type="range" id="convWidth" min="30" max="100" "100" step="1" />
+                            <input type="range" id="convWidth" min="30" max="100" value="100" step="1" />
                             <div class="selectDef">
                                 <span>30%</span>
                                 <span>100%</span>
@@ -2374,7 +2374,7 @@
                         </div>
                         <div>
                             <span data-i18n-key="typeSpeed"></span>
-                            <input type="range" id="textSpeed" min="0" max="100" "88" step="1" />
+                            <input type="range" id="textSpeed" min="0" max="100" value="88" step="1" />
                             <div class="selectDef">
                                 <span data-i18n-key="slow"></span>
                                 <span data-i18n-key="fast"></span>
@@ -2383,7 +2383,7 @@
                         <div>
                             <span><span data-i18n-key="continuousLen"></span>: <span id="contLenWrap"></span><span
                                     data-i18n-key="msgAbbr"></span></span>
-                            <input type="range" id="contLength" min="0" max="50" "25" step="1" />
+                            <input type="range" id="contLength" min="0" max="50" value="25" step="1" />
                             <div class="selectDef">
                                 <span>0</span>
                                 <span>50</span>
@@ -2401,9 +2401,9 @@
                         <div class="presetSelect presetModelCls">
                             <label for="preSetService" data-i18n-key="ttsService"></label>
                             <select id="preSetService">
-                                <option "3" data-i18n-key="azureTTS"></option>
-                                <option selected "2" data-i18n-key="edgeTTS"></option>
-                                <option "1" data-i18n-key="systemTTS"></option>
+                                <option value="3" data-i18n-key="azureTTS"></option>
+                                <option selected value="2" data-i18n-key="edgeTTS"></option>
+                                <option value="1" data-i18n-key="systemTTS"></option>
                             </select>
                         </div>
                         <div class="presetSelect presetModelCls">
@@ -2436,7 +2436,7 @@
                             </div>
                             <div>
                                 <div class="justSetLine">
-                                    <input class="inputTextClass" id="testVoiceText" data-i18n-"TTSTest" value />
+                                    <input class="inputTextClass" id="testVoiceText" data-i18n-value="TTSTest" value />
                                 </div>
                                 <div class="justSetLine readyTestVoice" id="testVoiceBtn" style="margin-top: 6px;">
                                     <div class="justSetBtn" onclick="startTestVoice()">
@@ -2479,7 +2479,7 @@
                             </div>
                             <div>
                                 <span data-i18n-key="volume"></span>
-                                <input type="range" id="voiceVolume" min="0" max="1" "1" step="0.1" />
+                                <input type="range" id="voiceVolume" min="0" max="1" value="1" step="0.1" />
                                 <div class="selectDef">
                                     <span data-i18n-key="low"></span>
                                     <span data-i18n-key="high"></span>
@@ -2487,7 +2487,7 @@
                             </div>
                             <div>
                                 <span data-i18n-key="rate"></span>
-                                <input type="range" id="voiceRate" min="0.1" max="2" "1" step="0.1" />
+                                <input type="range" id="voiceRate" min="0.1" max="2" value="1" step="0.1" />
                                 <div class="selectDef">
                                     <span data-i18n-key="slow"></span>
                                     <span data-i18n-key="fast"></span>
@@ -2495,7 +2495,7 @@
                             </div>
                             <div>
                                 <span data-i18n-key="pitch"></span>
-                                <input type="range" id="voicePitch" min="0" max="2" "1" step="0.1" />
+                                <input type="range" id="voicePitch" min="0" max="2" value="1" step="0.1" />
                                 <div class="selectDef">
                                     <span data-i18n-key="neutral"></span>
                                     <span data-i18n-key="intense"></span>
@@ -2542,7 +2542,7 @@
                             </div>
                             <div>
                                 <span data-i18n-key="autoSendDelay"></span>
-                                <input type="range" id="autoSendTimeout" min="0" max="10" "0" step="1" />
+                                <input type="range" id="autoSendTimeout" min="0" max="10" value="0" step="1" />
                                 <div class="selectDef">
                                     <span>0<span data-i18n-key="second"></span></span>
                                     <span>10<span data-i18n-key="second"></span></span>
@@ -2655,11 +2655,11 @@
                         <div class="setContent" id="autoDetail" style="display: none;font-size: 15px;">
                             <div class="setDetail">
                                 <div>
-                                    <input type="radio" id="autoTheme1" name="autoLight" "1" checked />
+                                    <input type="radio" id="autoTheme1" name="autoLight" value="1" checked />
                                     <label for="autoTheme1" data-i18n-key="systemTheme"></label>
                                 </div>
                                 <div style="margin-top: 8px;">
-                                    <input type="radio" id="autoTheme0" name="autoLight" "0" />
+                                    <input type="radio" id="autoTheme0" name="autoLight" value="0" />
                                     <label for="autoTheme0" data-i18n-key="customDarkTheme"></label>
                                 </div>
                                 <div id="customAutoSet" style="display: none; margin-top: 10px;">
@@ -2694,7 +2694,7 @@
                             <div class="setTitle" data-i18n-key="aiEndpoint"></div>
                             <div class="setDetail inputDetail" style="position: relative;">
                                 <input class="inputTextClass" placeholder="https://c.gpt2d.com/api/openai/" autocomplete="off"
-                                    id="apiHostInput" "https://c.gpt2d.com/api/openai/" />
+                                    id="apiHostInput" value="https://c.gpt2d.com/api/openai/" />
                                 <div id="apiSelect" tabindex="-1" style="display: none;"></div>
                             </div>
                         </div>
