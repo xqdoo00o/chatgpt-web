@@ -2907,6 +2907,26 @@
     <link crossorigin="anonymous" href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css" rel="stylesheet">
     <script crossorigin="anonymous" src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
     <script>
+        const notyf = new Notyf({
+            position: {x: "center", y: "top"},
+            types: [
+                {
+                    type: "success",
+                    background: "#99c959",
+                    duration: 2000,
+                },
+                {
+                    type: "warning",
+                    background: "#f8b26a",
+                    duration: 3000
+                },
+                {
+                    type: "error",
+                    background: "#e15b64",
+                    duration: 3000,
+                }
+            ]
+        });
         const registerSW = () => {
             if ("serviceWorker" in navigator) {
                 navigator.serviceWorker.register("sw.js" + location.search).then(reg => console.log("Service worker register succeeded"),
@@ -2933,6 +2953,44 @@
         let envAPIEndpoint, envAPIKey;
     </script>
     <script src="env.js"></script>
+    <script>
+        {const t=Uint8Array,e=Uint16Array,n=Int32Array,r=new t([0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0,0]),o=new t([0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,0,0]),l=new t([16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15]),s=(t,r)=>{const o=new e(31);for(let e=0;e<31;++e)o[e]=r+=1<<t[e-1];const l=new n(o[30]);for(let t=1;t<30;++t)for(let e=o[t];e<o[t+1];++e)l[e]=e-o[t]<<5|t;return{b:o,r:l}},{b:f,r:c}=s(r,2);f[28]=258,c[258]=28;const{b:i,r:a}=s(o,0),h=new e(32768);for(let t=0;t<32768;++t){let e=(43690&t)>>1|(21845&t)<<1;e=(52428&e)>>2|(13107&e)<<2,e=(61680&e)>>4|(3855&e)<<4,h[t]=((65280&e)>>8|(255&e)<<8)>>1}const u=(t,n,r)=>{const o=t.length;let l=0;const s=new e(n);for(;l<o;++l)t[l]&&++s[t[l]-1];const f=new e(n);for(l=1;l<n;++l)f[l]=f[l-1]+s[l-1]<<1;let c;if(r){c=new e(1<<n);const r=15-n;for(l=0;l<o;++l)if(t[l]){const e=l<<4|t[l],o=n-t[l];let s=f[t[l]-1]++<<o;for(const t=s|(1<<o)-1;s<=t;++s)c[h[s]>>r]=e}}else for(c=new e(o),l=0;l<o;++l)t[l]&&(c[l]=h[f[t[l]-1]++]>>15-t[l]);return c},w=new t(288);for(let t=0;t<144;++t)w[t]=8;for(let t=144;t<256;++t)w[t]=9;for(let t=256;t<280;++t)w[t]=7;for(let t=280;t<288;++t)w[t]=8;const g=new t(32);for(let t=0;t<32;++t)g[t]=5;const b=u(w,9,0),d=u(w,9,1),m=u(g,5,0),y=u(g,5,1),M=t=>{let e=t[0];for(let n=1;n<t.length;++n)t[n]>e&&(e=t[n]);return e},p=(t,e,n)=>{const r=e/8|0;return(t[r]|t[r+1]<<8)>>(7&e)&n},k=(t,e)=>{const n=e/8|0;return(t[n]|t[n+1]<<8|t[n+2]<<16)>>(7&e)},v=t=>(t+7)/8|0,x=(e,n,r)=>{(null==n||n<0)&&(n=0),(null==r||r>e.length)&&(r=e.length);const o=new t(r-n);return o.set(e.subarray(n,r)),o},E=["unexpected EOF","invalid block type","invalid length/literal","invalid distance","stream finished","no stream handler",,"no callback","invalid UTF-8 data","extra field too long","date not in range 1980-2099","filename too long","stream finishing","invalid zip data"],A=(t,e,n)=>{const r=new Error(e||E[t]);if(r.code=t,Error.captureStackTrace&&Error.captureStackTrace(r,A),!n)throw r;return r},T=(e,n,s,c)=>{const a=e.length,h=c?c.length:0;if(!a||n.f&&!n.l)return s||new t(0);const w=!s||2!=n.i,g=n.i;s||(s=new t(3*a));const b=e=>{let n=s.length;if(e>n){const r=new t(Math.max(2*n,e));r.set(s),s=r}};let m=n.f||0,E=n.p||0,T=n.b||0,U=n.l,z=n.d,F=n.m,S=n.n;const I=8*a;do{if(!U){m=p(e,E,1);const r=p(e,E+1,3);if(E+=3,!r){const t=v(E)+4,r=e[t-4]|e[t-3]<<8,o=t+r;if(o>a){g&&A(0);break}w&&b(T+r),s.set(e.subarray(t,o),T),n.b=T+=r,n.p=E=8*o,n.f=m;continue}if(1==r)U=d,z=y,F=9,S=5;else if(2==r){const n=p(e,E,31)+257,r=p(e,E+10,15)+4,o=n+p(e,E+5,31)+1;E+=14;const s=new t(o),f=new t(19);for(let t=0;t<r;++t)f[l[t]]=p(e,E+3*t,7);E+=3*r;const c=M(f),i=(1<<c)-1,a=u(f,c,1);for(let t=0;t<o;){const n=a[p(e,E,i)];E+=15&n;const r=n>>4;if(r<16)s[t++]=r;else{let n=0,o=0;for(16==r?(o=3+p(e,E,3),E+=2,n=s[t-1]):17==r?(o=3+p(e,E,7),E+=3):18==r&&(o=11+p(e,E,127),E+=7);o--;)s[t++]=n}}const h=s.subarray(0,n),w=s.subarray(n);F=M(h),S=M(w),U=u(h,F,1),z=u(w,S,1)}else A(1);if(E>I){g&&A(0);break}}w&&b(T+131072);const x=(1<<F)-1,O=(1<<S)-1;let j=E;for(;;j=E){const t=U[k(e,E)&x],n=t>>4;if(E+=15&t,E>I){g&&A(0);break}if(t||A(2),n<256)s[T++]=n;else{if(256==n){j=E,U=null;break}{let t=n-254;if(n>264){const o=n-257,l=r[o];t=p(e,E,(1<<l)-1)+f[o],E+=l}const l=z[k(e,E)&O],a=l>>4;l||A(3),E+=15&l;let u=i[a];if(a>3){const t=o[a];u+=k(e,E)&(1<<t)-1,E+=t}if(E>I){g&&A(0);break}w&&b(T+131072);const d=T+t;if(T<u){const t=h-u,e=Math.min(u,d);for(t+T<0&&A(3);T<e;++T)s[T]=c[t+T]}for(;T<d;T+=4)s[T]=s[T-u],s[T+1]=s[T+1-u],s[T+2]=s[T+2-u],s[T+3]=s[T+3-u];T=d}}}n.l=U,n.p=j,n.b=T,n.f=m,U&&(m=1,n.m=F,n.d=z,n.n=S)}while(!m);return T==s.length?s:x(s,0,T)},U=(t,e,n)=>{n<<=7&e;const r=e/8|0;t[r]|=n,t[r+1]|=n>>8},z=(t,e,n)=>{n<<=7&e;const r=e/8|0;t[r]|=n,t[r+1]|=n>>8,t[r+2]|=n>>16},F=(n,r)=>{const o=[];for(let t=0;t<n.length;++t)n[t]&&o.push({s:t,f:n[t]});const l=o.length,s=o.slice();if(!l)return{t:C,l:0};if(1==l){const e=new t(o[0].s+1);return e[o[0].s]=1,{t:e,l:1}}o.sort(((t,e)=>t.f-e.f)),o.push({s:-1,f:25001});let f=o[0],c=o[1],i=0,a=1,h=2;for(o[0]={s:-1,f:f.f+c.f,l:f,r:c};a!=l-1;)f=o[o[i].f<o[h].f?i++:h++],c=o[i!=a&&o[i].f<o[h].f?i++:h++],o[a++]={s:-1,f:f.f+c.f,l:f,r:c};let u=s[0].s;for(let t=1;t<l;++t)s[t].s>u&&(u=s[t].s);const w=new e(u+1);let g=S(o[a-1],w,0);if(g>r){let t=0,e=0;const n=g-r,o=1<<n;for(s.sort(((t,e)=>w[e.s]-w[t.s]||t.f-e.f));t<l;++t){const n=s[t].s;if(!(w[n]>r))break;e+=o-(1<<g-w[n]),w[n]=r}for(e>>=n;e>0;){const n=s[t].s;w[n]<r?e-=1<<r-w[n]++-1:++t}for(;t>=0&&e;--t){const n=s[t].s;w[n]==r&&(--w[n],++e)}g=r}return{t:new t(w),l:g}},S=(t,e,n)=>-1==t.s?Math.max(S(t.l,e,n+1),S(t.r,e,n+1)):e[t.s]=n,I=t=>{let n=t.length;for(;n&&!t[--n];);const r=new e(++n);let o=0,l=t[0],s=1;const f=t=>{r[o++]=t};for(let e=1;e<=n;++e)if(t[e]==l&&e!=n)++s;else{if(!l&&s>2){for(;s>138;s-=138)f(32754);s>2&&(f(s>10?s-11<<5|28690:s-3<<5|12305),s=0)}else if(s>3){for(f(l),--s;s>6;s-=6)f(8304);s>2&&(f(s-3<<5|8208),s=0)}for(;s--;)f(l);s=1,l=t[e]}return{c:r.subarray(0,o),n:n}},O=(t,e)=>{let n=0;for(let r=0;r<e.length;++r)n+=t[r]*e[r];return n},j=(t,e,n)=>{const r=n.length,o=v(e+2);t[o]=255&r,t[o+1]=r>>8,t[o+2]=255^t[o],t[o+3]=255^t[o+1];for(let e=0;e<r;++e)t[o+e+4]=n[e];return 8*(o+4+r)},q=(t,n,s,f,c,i,a,h,d,y,M)=>{U(n,M++,s),++c[256];const{t:p,l:k}=F(c,15),{t:v,l:x}=F(i,15),{c:E,n:A}=I(p),{c:T,n:S}=I(v),q=new e(19);for(let t=0;t<E.length;++t)++q[31&E[t]];for(let t=0;t<T.length;++t)++q[31&T[t]];const{t:B,l:C}=F(q,7);let D=19;for(;D>4&&!B[l[D-1]];--D);const G=y+5<<3,H=O(c,w)+O(i,g)+a,J=O(c,p)+O(i,v)+a+14+3*D+O(q,B)+2*q[16]+3*q[17]+7*q[18];if(d>=0&&G<=H&&G<=J)return j(n,M,t.subarray(d,d+y));let K,L,N,P;if(U(n,M,1+(J<H)),M+=2,J<H){K=u(p,k,0),L=p,N=u(v,x,0),P=v;const t=u(B,C,0);U(n,M,A-257),U(n,M+5,S-1),U(n,M+10,D-4),M+=14;for(let t=0;t<D;++t)U(n,M+3*t,B[l[t]]);M+=3*D;const e=[E,T];for(let r=0;r<2;++r){const o=e[r];for(let e=0;e<o.length;++e){const r=31&o[e];U(n,M,t[r]),M+=B[r],r>15&&(U(n,M,o[e]>>5&127),M+=o[e]>>12)}}}else K=b,L=w,N=m,P=g;for(let t=0;t<h;++t){const e=f[t];if(e>255){const t=e>>18&31;z(n,M,K[t+257]),M+=L[t+257],t>7&&(U(n,M,e>>23&31),M+=r[t]);const l=31&e;z(n,M,N[l]),M+=P[l],l>3&&(z(n,M,e>>5&8191),M+=o[l])}else z(n,M,K[e]),M+=L[e]}return z(n,M,K[256]),M+L[256]},B=new n([65540,131080,131088,131104,262176,1048704,1048832,2114560,2117632]),C=new t(0),D=(l,s,f,i,h,u)=>{const w=u.z||l.length,g=new t(i+w+5*(1+Math.ceil(w/7e3))+h),b=g.subarray(i,g.length-h),d=u.l;let m=7&(u.r||0);if(s){m&&(b[0]=u.r>>3);const t=B[s-1],i=t>>13,h=8191&t,g=(1<<f)-1,y=u.p||new e(32768),M=u.h||new e(g+1),p=Math.ceil(f/3),k=2*p,v=t=>(l[t]^l[t+1]<<p^l[t+2]<<k)&g,x=new n(25e3),E=new e(288),A=new e(32);let T=0,U=0,z=u.i||0,F=0,S=u.w||0,I=0;for(;z+2<w;++z){const t=v(z);let e=32767&z,n=M[t];if(y[e]=n,M[t]=e,S<=z){const s=w-z;if((T>7e3||F>24576)&&(s>423||!d)){m=q(l,b,0,x,E,A,U,F,I,z-I,m),F=T=U=0,I=z;for(let t=0;t<286;++t)E[t]=0;for(let t=0;t<30;++t)A[t]=0}let f=2,u=0,g=h,M=e-n&32767;if(s>2&&t==v(z-M)){const t=Math.min(i,s)-1,r=Math.min(32767,z),o=Math.min(258,s);for(;M<=r&&--g&&e!=n;){if(l[z+f]==l[z+f-M]){let e=0;for(;e<o&&l[z+e]==l[z+e-M];++e);if(e>f){if(f=e,u=M,e>t)break;const r=Math.min(M,e-2);let o=0;for(let t=0;t<r;++t){const e=z-M+t&32767,r=e-y[e]&32767;r>o&&(o=r,n=e)}}}e=n,n=y[e],M+=e-n&32767}}if(u){x[F++]=268435456|c[f]<<18|a[u];const t=31&c[f],e=31&a[u];U+=r[t]+o[e],++E[257+t],++A[e],S=z+f,++T}else x[F++]=l[z],++E[l[z]]}}for(z=Math.max(z,S);z<w;++z)x[F++]=l[z],++E[l[z]];m=q(l,b,d,x,E,A,U,F,I,z-I,m),d||(u.r=7&m|b[m/8|0]<<3,m-=7,u.h=M,u.p=y,u.i=z,u.w=S)}else{for(let t=u.w||0;t<w+d;t+=65535){let e=t+65535;e>=w&&(b[m/8|0]=d,e=w),m=j(b,m+1,l.subarray(t,e))}u.i=w}return x(g,0,i+v(m)+h)},G=(e,n,r,o,l)=>{if(!l&&(l={l:1},n.dictionary)){const r=n.dictionary.subarray(-32768),o=new t(r.length+e.length);o.set(r),o.set(e,r.length),e=o,l.w=r.length}return D(e,null==n.level?6:n.level,null==n.mem?Math.ceil(1.5*Math.max(8,Math.min(13,Math.log(e.length)))):12+n.mem,r,o,l)};function H(t,e){return G(t,e||{},0,0)}function J(t,e){return T(t,{i:2},e&&e.out,e&&e.dictionary)}self.deflateSync=H;self.inflateSync=J;}
+    </script>
+    <script>
+        const stringToUint = string => {
+            let charList = string.split(''), uintArray = [];
+            for (let i = 0; i < charList.length; i++) {
+                uintArray.push(charList[i].charCodeAt(0));
+            }
+            return new Uint8Array(uintArray);
+        }
+        const uintToString = uintArray => {
+            let str = "";
+            for (let i = 0; i < uintArray.byteLength; i++) {
+                str += String.fromCharCode(uintArray[i]);
+            }
+            return str;
+        }
+        let isCompressedChats = localStorage.getItem("compressedChats") === "true";
+        const originSetItem = localStorage.setItem;
+        localStorage.setItem = (key, value) => {
+            try {
+                if (isCompressedChats && key === "chats") value = uintToString(deflateSync(new TextEncoder().encode(value), {level: 1}));
+                originSetItem.call(localStorage, key, value)
+            } catch (e) {
+                if (isCompressedChats) {
+                    notyf.error(translations[locale]["localQuotaExceedTip"])
+                    return;
+                }
+                let isKeyChats = key === "chats";
+                let compressed = uintToString(deflateSync(new TextEncoder().encode(isKeyChats ? value : localStorage.getItem("chats")), {level: 1}));
+                originSetItem.call(localStorage, "chats", compressed);
+                originSetItem.call(localStorage, "compressedChats", true);
+                isCompressedChats = true;
+                if (!isKeyChats) originSetItem.call(localStorage, key, value);
+            }
+        }
+    </script>
     <script>
         const localeList = ["en", "zh"];
         let locale; // UI语言
@@ -3002,7 +3060,7 @@
                 "qualityPos": "Nonsense",
                 "chatsWidth": "Chats width",
                 "typeSpeed": "Typing speed",
-                "continuousLen": "Continuous context",
+                "continuousLen": "Context messages",
                 "msgAbbr": " msgs.",
                 "slow": "Slow",
                 "fast": "Fast",
@@ -3116,6 +3174,7 @@
                 "badEndpointTip": "Failed to access the endpoint, please check the endpoint!",
                 "clearChatTip": "Clear this chat?",
                 "cantSpeechTip": "Current voice cannot synthesize this message, please choose another voice or message!",
+                "localQuotaExceedTip": "Local storage exceeded limit, please export chats data and clear or delete some chats!",
             },
             "zh": {
                 "description": "简洁而强大的ChatGPT应用",
@@ -3158,7 +3217,7 @@
                 "qualityPos": "胡言乱语",
                 "chatsWidth": "会话宽度",
                 "typeSpeed": "打字机速度",
-                "continuousLen": "连续会话上下文信息",
+                "continuousLen": "上下文消息数",
                 "msgAbbr": "条",
                 "slow": "慢",
                 "fast": "快",
@@ -3272,6 +3331,7 @@
                 "badEndpointTip": "访问接口失败，请检查接口！",
                 "clearChatTip": "是否清空此会话？",
                 "cantSpeechTip": "当前语音无法合成此消息，请选择其他语音或消息！",
+                "localQuotaExceedTip": "本地存储超出限额，请导出会话并清空或删除部分会话！",
             },
         };
         const translateElement = (ele, type) => {
@@ -3353,26 +3413,6 @@
         }
     </script>
     <script>
-        const notyf = new Notyf({
-            position: {x: "center", y: "top"},
-            types: [
-                {
-                    type: "success",
-                    background: "#99c959",
-                    duration: 2000,
-                },
-                {
-                    type: "warning",
-                    background: "#f8b26a",
-                    duration: 3000
-                },
-                {
-                    type: "error",
-                    background: "#e15b64",
-                    duration: 3000,
-                }
-            ]
-        });
         const windowEle = document.getElementsByClassName("chat_window")[0];
         const messagesEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
@@ -5195,7 +5235,7 @@
         const findOffsetTop = (ele, target) => { // target is positioned ancestor element
             if (ele.offsetParent !== target) return ele.offsetTop + findOffsetTop(ele.offsetParent, target)
             else return ele.offsetTop
-        }
+        };
         newChatEle.onclick = () => {
             endAll();
             addNewChat();
@@ -5210,6 +5250,7 @@
             let localChatIdx = localStorage.getItem("activeChatIdx");
             activeChatIdx = (localChatIdx && parseInt(localChatIdx)) || 0;
             if (localChats) {
+                if (isCompressedChats) localChats = new TextDecoder().decode(inflateSync(stringToUint(localChats)));
                 chatsData = JSON.parse(localChats);
                 let folderIdxs = [];
                 if (localFolders) {
@@ -5402,6 +5443,8 @@
                 addNewChat();
                 activeChatIdx = 0;
                 chatEleAdd(activeChatIdx);
+                localStorage.removeItem("compressedChats");
+                isCompressedChats = false;
                 updateChats();
                 checkStorage();
                 activeChat(chatListEle.firstElementChild);
