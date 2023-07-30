@@ -2958,16 +2958,17 @@
     </script>
     <script>
         const stringToUint = string => {
-            let charList = string.split(''), uintArray = [];
-            for (let i = 0; i < charList.length; i++) {
-                uintArray.push(charList[i].charCodeAt(0));
+            let uintArray = new Uint8Array(string.length);
+            for (let i = 0; i < string.length; i++) {
+                uintArray[i] = string[i].charCodeAt(0);
             }
-            return new Uint8Array(uintArray);
+            return uintArray;
         }
         const uintToString = uintArray => {
             let str = "";
-            for (let i = 0; i < uintArray.byteLength; i++) {
-                str += String.fromCharCode(uintArray[i]);
+            let len = Math.ceil(uintArray.byteLength / 32767);
+            for (let i = 0; i < len; i++) {
+                str += String.fromCharCode.apply(null, uintArray.subarray(i * 32767, Math.min((i + 1) * 32767, uintArray.byteLength)));
             }
             return str;
         }
