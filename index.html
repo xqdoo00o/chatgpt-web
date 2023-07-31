@@ -2960,7 +2960,7 @@
         const stringToUint = string => {
             let uintArray = new Uint8Array(string.length);
             for (let i = 0; i < string.length; i++) {
-                uintArray[i] = string[i].charCodeAt(0);
+                uintArray[i] = string.charCodeAt(i);
             }
             return uintArray;
         }
