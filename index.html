@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="简洁而强大的ChatGPT应用">
     <meta name="theme-color" content="#edeff2">
@@ -6869,6 +6869,28 @@
             } else {
                 resumeSend();
             }
+        }
+
+        if(/iPhone|iPad/i.test(navigator.platform) && navigator.standalone) {// 判断是否在iphone/ipad设备WPA应用中运行
+            let bottom_wrapper = document.querySelector('.bottom_wrapper');
+            let navFooter = document.querySelector('.navFooter');
+            inputAreaEle.addEventListener('focus', (e) => {//输入框弹出
+                setTimeout(() => {
+                    bottom_wrapper.style.marginBottom = '0';
+                    navFooter.style.marginBottom = '0';
+                }, 100);
+                setTimeout(() => {
+                    e.target.scrollIntoView(true);//防止输入法弹出时输入框不跟随上移
+                }, 200);
+            });
+            inputAreaEle.addEventListener('blur', (e) => {//输入框收起
+                setTimeout(() => {//增加延时，防止输入法收起瞬间因为bottom_wrapper位置的变化导致无法点击到发送按钮
+                    bottom_wrapper.style.marginBottom = `calc(env(safe-area-inset-bottom) - ${getComputedStyle(bottom_wrapper).paddingBottom})`;
+                    navFooter.style.marginBottom = `calc(env(safe-area-inset-bottom) - ${getComputedStyle(navFooter).paddingBottom})`;
+                }, 100);
+            });
+        
+            inputAreaEle.blur();
         }
     </script>
     <link crossorigin="anonymous" href="//cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
