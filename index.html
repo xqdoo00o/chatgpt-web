@@ -4613,7 +4613,8 @@
                             chatlog.children[idx].dataset.loading = true;
                             idx = systemRole ? idx + 1 : idx;
                             data[idx].content = "";
-                            if (idx === currentVoiceIdx) {endSpeak()};
+                            if (idx === data.findIndex(item => {return item.role === "assistant"})) activeChatEle.children[1].children[1].textContent = "";
+                            if (idx === currentVoiceIdx) endSpeak();
                             loadAction(true);
                             refreshIdx = idx;
                             streamGen();
@@ -6698,6 +6699,7 @@
                                     } catch (e) {
                                         break;
                                     }
+                                    if (!payload.choices.length) continue;
                                     if (payload.choices[0].finish_reason) {
                                         let lenStop = payload.choices[0].finish_reason === "length";
                                         let longReplyFlag = enableLongReply && lenStop;
