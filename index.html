@@ -4300,15 +4300,43 @@
         let userAvatar; // 用户头像
         let customDarkOut;
         let isCaseSearch; // 搜索是否区分大小写
-        const isContentBottom = () => messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < 128;
+        let controller;
+        let controllerId;
+        const findOffsetTop = (ele, target) => { // target is positioned ancestor element
+            if (ele.offsetParent !== target) return ele.offsetTop + findOffsetTop(ele.offsetParent, target);
+            else return ele.offsetTop;
+        }
+        const findResEle = (ele) => {
+            if (!ele.classList.contains("response")) return findResEle(ele.parentElement);
+            else return ele;
+        }
+        const isContentBottom = (ele) => {
+            if (refreshIdx !== void 0) {
+                return currentResEle.clientHeight + currentResEle.offsetTop > messagesEle.scrollTop + messagesEle.clientHeight
+            } else {
+                return messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < 128;
+            }
+        }
+        const isEleBottom = (ele) => {
+            return ele.clientHeight + findOffsetTop(ele, messagesEle) > messagesEle.scrollTop + messagesEle.clientHeight;
+        }
+        const outOfMsgWindow = (ele) => {
+            return ele.offsetTop > messagesEle.scrollTop + messagesEle.clientHeight || ele.offsetTop + ele.clientHeight < messagesEle.scrollTop
+        }
         const scrollToBottom = () => {
             if (isContentBottom()) {
-                messagesEle.scrollTo(0, messagesEle.scrollHeight)
+                if (refreshIdx !== void 0) {
+                    messagesEle.scrollTo(0, currentResEle.clientHeight + currentResEle.offsetTop - messagesEle.clientHeight + 10)
+                } else {
+                    messagesEle.scrollTo(0, messagesEle.scrollHeight)
+                }
             }
         }
         const scrollToBottomLoad = (ele) => {
-            if (messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < ele.clientHeight + 128) {
-                messagesEle.scrollTo(0, messagesEle.scrollHeight)
+            if (!controller || !ele.offsetParent) return;
+            if (isEleBottom(ele)) {
+                let resEle = findResEle(ele)
+                messagesEle.scrollTo(0, resEle.clientHeight + resEle.offsetTop - messagesEle.clientHeight + 10)
             }
         }
         const forceRepaint = (ele) => {
@@ -5233,10 +5261,6 @@
                     } else messagesEle.scrollTop = currChatEle.offsetTop;
                 } else messagesEle.scrollTop = 0;
             }
-        };
-        const findOffsetTop = (ele, target) => { // target is positioned ancestor element
-            if (ele.offsetParent !== target) return ele.offsetTop + findOffsetTop(ele.offsetParent, target)
-            else return ele.offsetTop
         };
         newChatEle.onclick = () => {
             endAll();
@@ -6606,8 +6630,6 @@
         };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
-        let controller;
-        let controllerId;
         let refreshIdx;
         let currentResEle;
         let progressData = "";
@@ -6620,6 +6642,7 @@
             let isRefresh = refreshIdx !== void 0;
             if (isRefresh) {
                 currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
+                if (outOfMsgWindow(currentResEle)) messagesEle.scrollTo(0, currentResEle.offsetTop)
             } else if (!currentResEle) {
                 currentResEle = createConvEle("response", true, modelVersion);
                 currentResEle.children[1].innerHTML = "<p class='cursorCls'><br /></p>";
@@ -6726,9 +6749,7 @@
                                             if (progressData) await delay();
                                             progressData += content;
                                             currentResEle.children[1].innerHTML = md.render(progressData);
-                                            if (!isRefresh) {
-                                                scrollToBottom();
-                                            }
+                                            scrollToBottom();
                                         }
                                     }
                                 }
