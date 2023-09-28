@@ -2908,7 +2908,7 @@
     <script crossorigin="anonymous" src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
     <script>
         const notyf = new Notyf({
-            position: {x: "center", y: "top"},
+            position: { x: "center", y: "top" },
             types: [
                 {
                     type: "success",
@@ -2976,7 +2976,7 @@
         const originSetItem = localStorage.setItem;
         localStorage.setItem = (key, value) => {
             try {
-                if (isCompressedChats && key === "chats") value = uintToString(deflateSync(new TextEncoder().encode(value), {level: 1}));
+                if (isCompressedChats && key === "chats") value = uintToString(deflateSync(new TextEncoder().encode(value), { level: 1 }));
                 originSetItem.call(localStorage, key, value)
             } catch (e) {
                 if (isCompressedChats) {
@@ -2984,7 +2984,7 @@
                     return;
                 }
                 let isKeyChats = key === "chats";
-                let compressed = uintToString(deflateSync(new TextEncoder().encode(isKeyChats ? value : localStorage.getItem("chats")), {level: 1}));
+                let compressed = uintToString(deflateSync(new TextEncoder().encode(isKeyChats ? value : localStorage.getItem("chats")), { level: 1 }));
                 originSetItem.call(localStorage, "chats", compressed);
                 originSetItem.call(localStorage, "compressedChats", true);
                 isCompressedChats = true;
@@ -3349,10 +3349,10 @@
             }
         }
         const initLocale = () => {
-            document.querySelectorAll("[data-i18n-title]").forEach(ele => {translateElement(ele, "title")});
-            document.querySelectorAll("[data-i18n-place]").forEach(ele => {translateElement(ele, "place")});
-            document.querySelectorAll("[data-i18n-value]").forEach(ele => {translateElement(ele, "value")});
-            document.querySelectorAll("[data-i18n-key]").forEach(ele => {translateElement(ele, "key")});
+            document.querySelectorAll("[data-i18n-title]").forEach(ele => { translateElement(ele, "title") });
+            document.querySelectorAll("[data-i18n-place]").forEach(ele => { translateElement(ele, "place") });
+            document.querySelectorAll("[data-i18n-value]").forEach(ele => { translateElement(ele, "value") });
+            document.querySelectorAll("[data-i18n-key]").forEach(ele => { translateElement(ele, "key") });
             document.querySelectorAll("[data-i18n-theme]").forEach(ele => {
                 let key = themeMode === 2 ? "autoTheme" : themeMode === 1 ? "lightTheme" : "darkTheme";
                 ele.setAttribute("title", translations[locale][key])
@@ -3567,7 +3567,7 @@
                 let localRecLang = localStorage.getItem("voiceRecLang") || "cmn-Hans-CN";
                 if (localRecLang) {
                     let localIndex = langs.findIndex(item => {
-                        let diaIdx = item.findIndex(lang => {return lang instanceof Array && lang[0] === localRecLang});
+                        let diaIdx = item.findIndex(lang => { return lang instanceof Array && lang[0] === localRecLang });
                         if (diaIdx !== -1) {
                             localDiaIdx = diaIdx - 1;
                             return true;
@@ -3665,7 +3665,7 @@
                                 }
                             }
                         }
-                        else {tempRes = recRes + event.results[i][0].transcript}
+                        else { tempRes = recRes + event.results[i][0].transcript }
                     }
                     inputAreaEle.value = preRes + (isFinal ? recRes : tempRes) + affRes;
                     textInputEvent();
@@ -3990,7 +3990,7 @@
                             checkEdgeAbort = void 0;
                         }
                     }, 10000);
-                    fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", {signal: checkEdgeAbort.signal}).then(response => {
+                    fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", { signal: checkEdgeAbort.signal }).then(response => {
                         response.json().then(json => {
                             edgeVoiceData = json;
                             toggleVoiceCheck(false);
@@ -4156,7 +4156,7 @@
                 type = type ^ 1;
                 let localVoice = localStorage.getItem("voice" + type);
                 if (localVoice) {
-                    let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                    let localIndex = voices.findIndex(item => { return item.name === localVoice });
                     if (localIndex === -1) localIndex = 0;
                     voiceRole[type] = voices[localIndex];
                 } else {
@@ -4172,7 +4172,7 @@
             const voiceChange = () => {
                 let localVoice = localStorage.getItem("voice" + voiceType);
                 if (localVoice) {
-                    let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                    let localIndex = voices.findIndex(item => { return item.name === localVoice });
                     if (localIndex === -1) localIndex = 0;
                     voiceRole[voiceType] = voices[localIndex];
                     voicesEle.value = localIndex;
@@ -4363,7 +4363,7 @@
             return `${year}-${month}-${day}`;
         }
         const checkBill = async () => {
-            let headers = {"Content-Type": "application/json"};
+            let headers = { "Content-Type": "application/json" };
             if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
             let subCtrl = new AbortController();
             setTimeout(() => {
@@ -4486,6 +4486,89 @@
             usedStorage.textContent = (usedMBs < 1 ? usedMBs.toPrecision(2) : usedMBs.toFixed(2)) + "MB";
             availableStorage.textContent = Math.floor(remain / 1048576 * 100) / 100 + "MB";
         };
+        const UNESCAPE_RE = /\\([ \\!"#$%&'()*+,.\/:;<=>?@[\]^_`{|}~-])/g;
+        const superscript = (state, silent) => {
+            let found,
+                content,
+                token,
+                max = state.posMax,
+                start = state.pos;
+            if (state.src.charCodeAt(start) !== 0x5E/* ^ */) { return false; }
+            if (silent) { return false; } // don't run any pairs in validation mode
+            if (start + 2 >= max) { return false; }
+            state.pos = start + 1;
+            while (state.pos < max) {
+                if (state.src.charCodeAt(state.pos) === 0x5E/* ^ */) {
+                    found = true;
+                    break;
+                }
+                state.md.inline.skipToken(state);
+            }
+            if (!found || start + 1 === state.pos) {
+                state.pos = start;
+                return false;
+            }
+            content = state.src.slice(start + 1, state.pos);
+            // don't allow unescaped spaces/newlines inside
+            if (content.match(/(^|[^\\])(\\\\)*\s/)) {
+                state.pos = start;
+                return false;
+            }
+            // found!
+            state.posMax = state.pos;
+            state.pos = start + 1;
+            // Earlier we checked !silent, but this implementation does not need it
+            token = state.push('sup_open', 'sup', 1);
+            token.markup = '^';
+            token = state.push('text', '', 0);
+            token.content = content.replace(UNESCAPE_RE, '$1');
+            token = state.push('sup_close', 'sup', -1);
+            token.markup = '^';
+            state.pos = state.posMax + 1;
+            state.posMax = max;
+            return true;
+        }
+        const subscript = (state, silent) => {
+            let found,
+                content,
+                token,
+                max = state.posMax,
+                start = state.pos;
+            if (state.src.charCodeAt(start) !== 0x7E/* ~ */) { return false; }
+            if (silent) { return false; } // don't run any pairs in validation mode
+            if (start + 2 >= max) { return false; }
+            state.pos = start + 1;
+            while (state.pos < max) {
+                if (state.src.charCodeAt(state.pos) === 0x7E/* ~ */) {
+                    found = true;
+                    break;
+                }
+                state.md.inline.skipToken(state);
+            }
+            if (!found || start + 1 === state.pos) {
+                state.pos = start;
+                return false;
+            }
+            content = state.src.slice(start + 1, state.pos);
+            // don't allow unescaped spaces/newlines inside
+            if (content.match(/(^|[^\\])(\\\\)*\s/)) {
+                state.pos = start;
+                return false;
+            }
+            // found!
+            state.posMax = state.pos;
+            state.pos = start + 1;
+            // Earlier we checked !silent, but this implementation does not need it
+            token = state.push('sub_open', 'sub', 1);
+            token.markup = '~';
+            token = state.push('text', '', 0);
+            token.content = content.replace(UNESCAPE_RE, '$1');
+            token = state.push('sub_close', 'sub', -1);
+            token.markup = '~';
+            state.pos = state.posMax + 1;
+            state.posMax = max;
+            return true;
+        }
         const md = markdownit({
             linkify: true, // 识别链接
             highlight: function (str, lang) { // markdown高亮
@@ -4495,8 +4578,10 @@
                 return ""; // use external default escaping
             }
         });
-        md.use(texmath, {engine: katex, delimiters: "dollars", katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}})
-            .use(markdownitLinkAttributes, {attrs: {target: "_blank", rel: "noopener"}});
+        md.inline.ruler.after("emphasis", "sup", superscript);
+        md.inline.ruler.after("emphasis", "sub", subscript);
+        md.use(texmath, { engine: katex, delimiters: "dollars", katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } })
+            .use(markdownitLinkAttributes, { attrs: { target: "_blank", rel: "noopener" } });
         const codeUtils = {
             getCodeLang(str = "") {
                 const res = str.match(/ class="language-(.*?)"/);
@@ -4641,7 +4726,7 @@
                             chatlog.children[idx].dataset.loading = true;
                             idx = systemRole ? idx + 1 : idx;
                             data[idx].content = "";
-                            if (idx === data.findIndex(item => {return item.role === "assistant"})) activeChatEle.children[1].children[1].textContent = "";
+                            if (idx === data.findIndex(item => { return item.role === "assistant" })) activeChatEle.children[1].children[1].textContent = "";
                             if (idx === currentVoiceIdx) endSpeak();
                             loadAction(true);
                             refreshIdx = idx;
@@ -4664,14 +4749,14 @@
                         if (confirmAction(translations[locale]["delMsgTip"])) {
                             chatlog.removeChild(chatlog.children[idx]);
                             idx = systemRole ? idx + 1 : idx;
-                            let firstIdx = data.findIndex(item => {return item.role === "assistant"});
+                            let firstIdx = data.findIndex(item => { return item.role === "assistant" });
                             if (currentVoiceIdx !== void 0) {
-                                if (currentVoiceIdx === idx) {endSpeak()}
-                                else if (currentVoiceIdx > idx) {currentVoiceIdx--}
+                                if (currentVoiceIdx === idx) { endSpeak() }
+                                else if (currentVoiceIdx > idx) { currentVoiceIdx-- }
                             }
                             if (editingIdx !== void 0) {
-                                if (editingIdx === idx) {resumeSend()}
-                                else if (editingIdx > idx) {editingIdx--}
+                                if (editingIdx === idx) { resumeSend() }
+                                else if (editingIdx > idx) { editingIdx-- }
                             }
                             data.splice(idx, 1);
                             if (firstIdx === idx) updateChatPre();
@@ -4913,7 +4998,7 @@
                 folderData.forEach(item => {
                     if (item.idxs.length) {
                         item.idxs.forEach((i, ix) => {
-                            let len = idxs.filter(j => {return i > j}).length;
+                            let len = idxs.filter(j => { return i > j }).length;
                             if (len) {
                                 item.idxs[ix] = i - len;
                             }
@@ -4921,10 +5006,10 @@
                     }
                 })
                 chatIdxs.forEach((item, ix) => {
-                    let len = idxs.filter(j => {return item > j}).length;
+                    let len = idxs.filter(j => { return item > j }).length;
                     if (len) chatIdxs[ix] = item - len;
                 })
-                let len = idxs.filter(j => {return activeChatIdx > j}).length;
+                let len = idxs.filter(j => { return activeChatIdx > j }).length;
                 if (len) activeChatIdx -= len;
                 if (activeChatIdx === -1) {
                     addNewChat();
@@ -4937,7 +5022,7 @@
         }
         const folderAddChat = (folderIdx, headEle) => {
             endAll();
-            let chat = {name: translations[locale]["newChatName"], data: []};
+            let chat = { name: translations[locale]["newChatName"], data: [] };
             chatsData.push(chat);
             activeChatIdx = chatsData.length - 1;
             folderData[folderIdx].idxs.push(activeChatIdx);
@@ -5000,11 +5085,11 @@
                 chatsEle.appendChild(chatEleAdd(folder.idxs[i], false));
             }
             folderEle.appendChild(chatsEle);
-            if (push) {folderListEle.appendChild(folderEle)}
-            else {folderListEle.insertBefore(folderEle, folderListEle.firstChild)}
+            if (push) { folderListEle.appendChild(folderEle) }
+            else { folderListEle.insertBefore(folderEle, folderListEle.firstChild) }
         }
         document.getElementById("newFolder").onclick = function () {
-            folderData.unshift({name: translations[locale]["newFolderName"], idxs: []});
+            folderData.unshift({ name: translations[locale]["newFolderName"], idxs: [] });
             folderEleAdd(0, false);
             updateChatIdxs();
             folderListEle.parentElement.scrollTop = 0;
@@ -5013,8 +5098,8 @@
             chatEle.children[1].children[0].textContent = chatsData[index].name;
             let chatPreview = "";
             if (chatsData[index].data && chatsData[index].data.length) {
-                let first = chatsData[index].data.find(item => {return item.role === "assistant"});
-                if (first) {chatPreview = first.content.slice(0, 30)}
+                let first = chatsData[index].data.find(item => { return item.role === "assistant" });
+                if (first) { chatPreview = first.content.slice(0, 30) }
             }
             chatEle.children[1].children[1].textContent = chatPreview;
         };
@@ -5038,8 +5123,8 @@
             return chatEle;
         };
         const addNewChat = () => {
-            let chat = {name: translations[locale]["newChatName"], data: []};
-            if (presetRoleData.default) chat.data.unshift({role: "system", content: presetRoleData.default});
+            let chat = { name: translations[locale]["newChatName"], data: [] };
+            if (presetRoleData.default) chat.data.unshift({ role: "system", content: presetRoleData.default });
             preEle.selectedIndex = 0;
             chatsData.push(chat);
             chatIdxs.push(chatsData.length - 1);
@@ -5410,7 +5495,7 @@
                 folderData: folderData,
                 chatIdxs: chatIdxs
             }
-            let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            let blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             let date = new Date();
             let fileName = "chats-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
             downBlob(blob, fileName);
@@ -5485,7 +5570,7 @@
                 let val = localStorage.getItem(key);
                 if (val != void 0) data[key] = val;
             }
-            let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            let blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             let date = new Date();
             let fileName = "settings-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
             downBlob(blob, fileName);
@@ -5757,7 +5842,7 @@
                     if (data[0] && data[0].role === "system") {
                         data[0].content = systemRole;
                     } else {
-                        data.unshift({role: "system", content: systemRole});
+                        data.unshift({ role: "system", content: systemRole });
                         processIdx(1);
                     }
                 } else if (data[0] && data[0].role === "system") {
@@ -5769,7 +5854,7 @@
             if (systemRole === void 0) {
                 systemRole = systemEle.value = localSystem || presetRoleData.default || "";
                 if (systemRole) {
-                    data.unshift({role: "system", content: systemRole});
+                    data.unshift({ role: "system", content: systemRole });
                     processIdx(1);
                     updateChats();
                 }
@@ -5900,7 +5985,7 @@
                     }
                 }
             }
-            autoTheme0.onchange = autoTheme1.onchange = function () {handleAutoMode(this)};
+            autoTheme0.onchange = autoTheme1.onchange = function () { handleAutoMode(this) };
             const handleAutoTime = (ele, idx) => {
                 let otherIdx = 1 - idx;
                 if (ele.value !== customDarkTime[otherIdx]) {
@@ -5912,8 +5997,8 @@
                     notyf.error(translations[locale]["customDarkTip"]);
                 }
             }
-            customStart.onchange = function () {handleAutoTime(this, 0)};
-            customEnd.onchange = function () {handleAutoTime(this, 1)};
+            customStart.onchange = function () { handleAutoTime(this, 0) };
+            customEnd.onchange = function () { handleAutoTime(this, 1) };
             const initAutoTime = () => {
                 customAutoSet.style.display = autoThemeMode === 0 ? "block" : "none";
                 if (autoThemeMode === 0) {
@@ -6185,7 +6270,7 @@
                         } else if (e.data.indexOf("Path:turn.end") !== -1) {
                             let reqIdx = e.data.indexOf(":");
                             let uuid = e.data.slice(reqIdx + 1, reqIdx + 33);
-                            let blob = new Blob(downQuene[uuid]["blob"], {type: voiceMIME});
+                            let blob = new Blob(downQuene[uuid]["blob"], { type: voiceMIME });
                             let key = downQuene[uuid]["key"];
                             let name = downQuene[uuid]["name"];
                             if (blob.size === 0) {
@@ -6348,7 +6433,7 @@
                     } else if (e.data.indexOf("Path:turn.end") !== -1) {
                         voiceSocket["pending"] = false;
                         if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) {
-                            voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                            voiceData[key] = new Blob(bufArray, { type: voiceMIME });
                             res(voiceData[key]);
                         } else {
                             res(new Blob());
@@ -6378,8 +6463,8 @@
             endSpeak();
             currentVoiceIdx = idx;
             if (!data[idx].content && enableContVoice) {
-                if (currentVoiceIdx !== data.length - 1) {return speechEvent(currentVoiceIdx + 1)}
-                else {return endSpeak()}
+                if (currentVoiceIdx !== data.length - 1) { return speechEvent(currentVoiceIdx + 1) }
+                else { return endSpeak() }
             };
             let type = data[idx].role === "user" ? 0 : 1;
             chatlog.children[systemRole ? idx - 1 : idx].classList.add("showVoiceCls");
@@ -6416,7 +6501,7 @@
                             if (speechQuene.length) {
                                 let buf = speechQuene.shift();
                                 if (buf["end"]) {
-                                    if (!sourceBuffer.buffered.length) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                                    if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                                     mediaSource.endOfStream();
                                 } else {
                                     speechPushing = true;
@@ -6432,7 +6517,7 @@
                                 speechQuene.push(buf);
                             } else if (e.data.indexOf("Path:turn.end") !== -1) {
                                 voiceSocket["pending"] = false;
-                                if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                                if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) voiceData[key] = new Blob(bufArray, { type: voiceMIME });
                                 if (!speechQuene.length && !speechPushing) {
                                     mediaSource.endOfStream();
                                 } else {
@@ -6456,7 +6541,7 @@
                     voiceSocket["pending"] = true;
                     if (!supportMSE) {
                         let blob = await NoMSEPending(key);
-                        if (blob.size === 0) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                        if (blob.size === 0) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                         voiceIns.src = URL.createObjectURL(blob);
                     }
                 }
@@ -6470,8 +6555,8 @@
             }
             await speakEvent(voiceIns);
             if (enableContVoice) {
-                if (currentVoiceIdx !== data.length - 1) {return speechEvent(currentVoiceIdx + 1)}
-                else {endSpeak()}
+                if (currentVoiceIdx !== data.length - 1) { return speechEvent(currentVoiceIdx + 1) }
+                else { endSpeak() }
             }
         };
         let autoVoiceSocket;
@@ -6528,7 +6613,7 @@
                             autoVoiceSocket["pending"] = false;
                             autoOnlineVoiceFlag = false;
                             if (!supportMSE) {
-                                let blob = new Blob(bufArray, {type: voiceMIME});
+                                let blob = new Blob(bufArray, { type: voiceMIME });
                                 bufArray = [];
                                 if (blob.size) {
                                     let blobURL = URL.createObjectURL(blob);
@@ -6539,7 +6624,7 @@
                                         voiceBlobURLQuene.push(blobURL);
                                     }
                                 } else {
-                                    notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                                    notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                                 }
                                 autoAddQuene();
                             }
@@ -6580,7 +6665,7 @@
                                     if (speechQuene.length) {
                                         let buf = speechQuene.shift();
                                         if (buf["end"]) {
-                                            if (!sourceBuffer.buffered.length) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                                            if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                                             autoMediaSource.endOfStream();
                                         } else {
                                             speechPushing = true;
@@ -6625,8 +6710,8 @@
             }
         };
         const confirmAction = (prompt) => {
-            if (window.confirm(prompt)) {return true}
-            else {return false}
+            if (window.confirm(prompt)) { return true }
+            else { return false }
         };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
@@ -6671,10 +6756,10 @@
                     if (systemRole && startIdx > 0) dataSlice.unshift(data[0]);
                 }
                 dataSlice = dataSlice.map(item => {
-                    if (item.role === "assistant") return {role: item.role, content: item.content};
+                    if (item.role === "assistant") return { role: item.role, content: item.content };
                     else return item;
                 })
-                let headers = {"Content-Type": "application/json"};
+                let headers = { "Content-Type": "application/json" };
                 if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
                 const res = await fetch(apiHost + API_URL, {
                     method: "POST",
@@ -6708,7 +6793,7 @@
                 const decoder = new TextDecoder();
                 const reader = res.body.getReader();
                 const readChunk = async () => {
-                    return reader.read().then(async ({value, done}) => {
+                    return reader.read().then(async ({ value, done }) => {
                         if (!done) {
                             value = decoder.decode(value);
                             let chunks = value.match(/[^\n]+/g);
@@ -6727,8 +6812,8 @@
                                         let lenStop = payload.choices[0].finish_reason === "length";
                                         let longReplyFlag = enableLongReply && lenStop;
                                         let ele = currentResEle.lastChild.children[0].children[0];
-                                        if (!enableLongReply && lenStop) {ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"]}
-                                        else {ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"]};
+                                        if (!enableLongReply && lenStop) { ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"] }
+                                        else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
                                         if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                                             let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
                                             autoSpeechEvent(voiceText, currentResEle, false, stop);
@@ -6760,8 +6845,8 @@
                                 data[refreshIdx].content = progressData;
                                 if (longReplyFlag) return streamGen(true);
                             } else {
-                                if (long) {data[data.length - 1].content = progressData}
-                                else {data.push({role: "assistant", content: progressData, model: modelVersion})}
+                                if (long) { data[data.length - 1].content = progressData }
+                                else { data.push({ role: "assistant", content: progressData, model: modelVersion }) }
                                 if (longReplyFlag) return streamGen(true);
                             }
                             stopLoading(false);
@@ -6785,7 +6870,7 @@
         };
         const updateChatPre = () => {
             let ele = activeChatEle.children[1].children[1];
-            let first = data.find(item => {return item.role === "assistant"});
+            let first = data.find(item => { return item.role === "assistant" });
             ele.textContent = first ? first.content.slice(0, 30) : "";
             forceRepaint(ele.parentElement)
         }
@@ -6796,9 +6881,9 @@
                 controller.abort();
                 if (controllerId) clearTimeout(controllerId);
                 if (delayId) clearTimeout(delayId);
-                if (refreshIdx !== void 0) {data[refreshIdx].content = progressData}
-                else if (data[data.length - 1].role === "assistant") {data[data.length - 1].content = progressData}
-                else {data.push({role: "assistant", content: progressData, model: modelVersion})}
+                if (refreshIdx !== void 0) { data[refreshIdx].content = progressData }
+                else if (data[data.length - 1].role === "assistant") { data[data.length - 1].content = progressData }
+                else { data.push({ role: "assistant", content: progressData, model: modelVersion }) }
                 if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx && progressData.length) {
                     let voiceText = progressData.slice(autoVoiceIdx);
                     autoSpeechEvent(voiceText, currentResEle, false, true);
@@ -6827,16 +6912,16 @@
                     requestEle.children[1].textContent = message;
                     if (data[idx + 1].role !== "assistant") {
                         if (currentVoiceIdx !== void 0) {
-                            if (currentVoiceIdx > idx) {currentVoiceIdx++}
+                            if (currentVoiceIdx > idx) { currentVoiceIdx++ }
                         }
-                        data.splice(idx + 1, 0, {role: "assistant", content: "", model: modelVersion});
+                        data.splice(idx + 1, 0, { role: "assistant", content: "", model: modelVersion });
                         chatlog.insertBefore(createConvEle("response", false, modelVersion), chatlog.children[eleIdx + 1]);
                     }
                     chatlog.children[eleIdx + 1].children[1].innerHTML = "<p class='cursorCls'><br /></p>";
                     chatlog.children[eleIdx + 1].dataset.loading = true;
                     idx = idx + 1;
                     data[idx].content = "";
-                    if (idx === currentVoiceIdx) {endSpeak()};
+                    if (idx === currentVoiceIdx) { endSpeak() };
                     refreshIdx = idx;
                     updateChats();
                     streamGen();
@@ -6844,7 +6929,7 @@
                 }
             } else {
                 requestEle = createConvEle("request");
-                data.push({role: "user", content: message});
+                data.push({ role: "user", content: message });
             }
             requestEle.children[1].textContent = message;
             if (chatsData[activeChatIdx].name === translations[locale]["newChatName"]) {
@@ -6883,8 +6968,8 @@
             if (editingIdx === void 0) {
                 if (noLoading() && confirmAction(translations[locale]["clearChatTip"])) {
                     endSpeak();
-                    if (systemRole) {data.length = 1}
-                    else {data.length = 0}
+                    if (systemRole) { data.length = 1 }
+                    else { data.length = 0 }
                     chatlog.innerHTML = "";
                     updateChatPre();
                     updateChats();
