@@ -2563,7 +2563,7 @@
                             <div>
                                 <span class="inlineTitle" data-i18n-key="contSpeech"></span>
                                 <label class="switch-slide">
-                                    <input type="checkbox" id="enableContVoice" checked="true" hidden />
+                                    <input type="checkbox" id="enableContVoice" checked hidden />
                                     <label for="enableContVoice" class="switch-slide-label"></label>
                                 </label>
                             </div>
@@ -6838,7 +6838,7 @@
                                         else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
                                         if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                                             let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
-                                            autoSpeechEvent(voiceText, currentResEle, true, stop);
+                                            autoSpeechEvent(voiceText, currentResEle, false, stop);
                                         }
                                         break;
                                     } else {
