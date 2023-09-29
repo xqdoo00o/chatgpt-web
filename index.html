@@ -2601,7 +2601,7 @@
                             </div>
                             <div>
                                 <span data-i18n-key="autoSendDelay"></span>
-                                <input type="range" id="autoSendTimeout" min="0" max="10" value="0" step="1" />
+                                <input type="range" id="autoSendTimeout" min="0" max="10" value="2" step="1" />
                                 <div class="selectDef">
                                     <span>0<span data-i18n-key="second"></span></span>
                                     <span>10<span data-i18n-key="second"></span></span>
@@ -2610,7 +2610,7 @@
                             <div>
                                 <span class="inlineTitle" data-i18n-key="keepListenMic"></span>
                                 <label class="switch-slide">
-                                    <input type="checkbox" id="keepListenMic" checked="false" hidden />
+                                    <input type="checkbox" id="keepListenMic" checked="true" hidden />
                                     <label for="keepListenMic" class="switch-slide-label"></label>
                                 </label>
                             </div>
@@ -6838,7 +6838,7 @@
                                         else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
                                         if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                                             let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
-                                            autoSpeechEvent(voiceText, currentResEle, false, stop);
+                                            autoSpeechEvent(voiceText, currentResEle, true, stop);
                                         }
                                         break;
                                     } else {
@@ -6980,7 +6980,7 @@
             if (message.length !== 0 && noLoading()) {
                 inputAreaEle.value = "";
                 inputAreaEle.style.height = "47px";
-                if (keepListenMic && recing) resetRecRes();
+                if (&& recing) resetRecRes();
                 generateText(message);
             }
         };
