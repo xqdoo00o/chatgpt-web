@@ -6980,7 +6980,7 @@
             if (message.length !== 0 && noLoading()) {
                 inputAreaEle.value = "";
                 inputAreaEle.style.height = "47px";
-                if (&& recing) resetRecRes();
+                if (keepListenMic && recing) resetRecRes();
                 generateText(message);
             }
         };
