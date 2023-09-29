@@ -423,6 +423,10 @@
             background: var(--response-color) !important;
         }
 
+        #chatlog .markdown-body a {
+            padding: 0 2px;
+        }
+
         #chatlog .markdown-body>pre {
             padding: 10px;
             position: relative;
@@ -1093,7 +1097,7 @@
             width: 100%;
             height: 36px;
             padding-left: 10px;
-            padding-right: 16px;
+            padding-right: 45px;
             font-size: 16px;
             outline: none;
             border: none;
@@ -1112,7 +1116,7 @@
 
         #clearSearch {
             position: absolute;
-            right: 12px;
+            right: 34px;
             top: 8px;
             cursor: pointer;
             color: var(--btn-color);
@@ -1123,6 +1127,27 @@
         }
 
         #clearSearch>svg {
+            display: block;
+        }
+
+        .seledSearch {
+            background: var(--lighter-svg-color) !important;
+        }
+
+        #matchCaseSearch {
+            position: absolute;
+            right: 12px;
+            top: 8px;
+            cursor: pointer;
+            border-radius: 3px;
+            color: var(--btn-color);
+        }
+
+        #matchCaseSearch:hover {
+            background: var(--sel-btn);
+        }
+
+        #matchCaseSearch>svg {
             display: block;
         }
 
@@ -1712,6 +1737,31 @@
             background: var(--lighter-active-color);
         }
 
+        .keyOptionDetail {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #resetHotKey {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--btn-color);
+            border-radius: 3px;
+            padding: 6px 8px;
+            margin-left: 90px;
+        }
+
+        #resetHotKey>svg {
+            margin-right: 4px;
+        }
+
+        #resetHotKey:hover {
+            background: var(--lighter-active-color);
+        }
+
         .hotKeyDetail>div {
             position: relative;
             height: 30px;
@@ -2203,6 +2253,10 @@
                 <path fill="currentColor"
                     d="M14 10h2v.757a4.5 4.5 0 0 1 7 3.743V20h-2v-5.5c0-1.43-1.174-2.5-2.5-2.5S16 13.07 16 14.5V20h-2V10Zm-2-6v2H4v5h8v2H4v5h8v2H2V4h10Z" />
             </symbol>
+            <symbol viewBox="0 0 24 24" id="caseIcon">
+                <path fill="currentColor"
+                    d="m3.975 17l3.75-10h1.8l3.75 10H11.55l-.9-2.55H6.6L5.7 17H3.975Zm3.15-4h3l-1.45-4.15h-.1L7.125 13Zm9.225 4.275q-1.225 0-1.925-.638t-.7-1.737q0-1.05.813-1.713t2.087-.662q.575 0 1.063.088t.837.287v-.35q0-.675-.462-1.075t-1.263-.4q-.525 0-.988.225t-.787.65l-1.075-.8q.475-.675 1.2-1.025t1.675-.35q1.55 0 2.375.738t.825 2.137v4.4H18.55v-.85h-.075q-.325.5-.875.788t-1.25.287Zm.25-1.25q.8 0 1.363-.563t.562-1.362q-.35-.2-.8-.3t-.825-.1q-.8 0-1.225.313t-.425.887q0 .5.375.813t.975.312Z" />
+            </symbol>
         </svg>
     </div>
     <div id="loadMask">
@@ -2234,6 +2288,11 @@
                 <div id="clearSearch">
                     <svg width="24" height="24">
                         <use xlink:href="#closeIcon" />
+                    </svg>
+                </div>
+                <div id="matchCaseSearch" data-i18n-title="matchCaseTip" title>
+                    <svg width="24" height="24">
+                        <use xlink:href="#caseIcon" />
                     </svg>
                 </div>
             </div>
@@ -2786,6 +2845,14 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="setDetail keyOptionDetail">
+                                <div id="resetHotKey">
+                                    <svg width="22" height="22" style="transform: scaleX(-1)">
+                                        <use xlink:href="#refreshIcon" />
+                                    </svg>
+                                    <span data-i18n-key="resetHotKeyTip"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="dataOption" style="display: none;">
@@ -2862,6 +2929,26 @@
     <link crossorigin="anonymous" href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css" rel="stylesheet">
     <script crossorigin="anonymous" src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
     <script>
+        const notyf = new Notyf({
+            position: { x: "center", y: "top" },
+            types: [
+                {
+                    type: "success",
+                    background: "#99c959",
+                    duration: 2000,
+                },
+                {
+                    type: "warning",
+                    background: "#f8b26a",
+                    duration: 3000
+                },
+                {
+                    type: "error",
+                    background: "#e15b64",
+                    duration: 3000,
+                }
+            ]
+        });
         const registerSW = () => {
             if ("serviceWorker" in navigator) {
                 navigator.serviceWorker.register("sw.js" + location.search).then(reg => console.log("Service worker register succeeded"),
@@ -2884,6 +2971,47 @@
             link.rel = "stylesheet";
             link.href = "https://cdn.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
             document.body.appendChild(link);
+        }
+        let envAPIEndpoint, envAPIKey;
+    </script>
+    <script src="env.js"></script>
+    <script>
+        {const t=Uint8Array,e=Uint16Array,n=Int32Array,r=new t([0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0,0]),o=new t([0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,0,0]),l=new t([16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15]),s=(t,r)=>{const o=new e(31);for(let e=0;e<31;++e)o[e]=r+=1<<t[e-1];const l=new n(o[30]);for(let t=1;t<30;++t)for(let e=o[t];e<o[t+1];++e)l[e]=e-o[t]<<5|t;return{b:o,r:l}},{b:f,r:c}=s(r,2);f[28]=258,c[258]=28;const{b:i,r:a}=s(o,0),h=new e(32768);for(let t=0;t<32768;++t){let e=(43690&t)>>1|(21845&t)<<1;e=(52428&e)>>2|(13107&e)<<2,e=(61680&e)>>4|(3855&e)<<4,h[t]=((65280&e)>>8|(255&e)<<8)>>1}const u=(t,n,r)=>{const o=t.length;let l=0;const s=new e(n);for(;l<o;++l)t[l]&&++s[t[l]-1];const f=new e(n);for(l=1;l<n;++l)f[l]=f[l-1]+s[l-1]<<1;let c;if(r){c=new e(1<<n);const r=15-n;for(l=0;l<o;++l)if(t[l]){const e=l<<4|t[l],o=n-t[l];let s=f[t[l]-1]++<<o;for(const t=s|(1<<o)-1;s<=t;++s)c[h[s]>>r]=e}}else for(c=new e(o),l=0;l<o;++l)t[l]&&(c[l]=h[f[t[l]-1]++]>>15-t[l]);return c},w=new t(288);for(let t=0;t<144;++t)w[t]=8;for(let t=144;t<256;++t)w[t]=9;for(let t=256;t<280;++t)w[t]=7;for(let t=280;t<288;++t)w[t]=8;const g=new t(32);for(let t=0;t<32;++t)g[t]=5;const b=u(w,9,0),d=u(w,9,1),m=u(g,5,0),y=u(g,5,1),M=t=>{let e=t[0];for(let n=1;n<t.length;++n)t[n]>e&&(e=t[n]);return e},p=(t,e,n)=>{const r=e/8|0;return(t[r]|t[r+1]<<8)>>(7&e)&n},k=(t,e)=>{const n=e/8|0;return(t[n]|t[n+1]<<8|t[n+2]<<16)>>(7&e)},v=t=>(t+7)/8|0,x=(e,n,r)=>{(null==n||n<0)&&(n=0),(null==r||r>e.length)&&(r=e.length);const o=new t(r-n);return o.set(e.subarray(n,r)),o},E=["unexpected EOF","invalid block type","invalid length/literal","invalid distance","stream finished","no stream handler",,"no callback","invalid UTF-8 data","extra field too long","date not in range 1980-2099","filename too long","stream finishing","invalid zip data"],A=(t,e,n)=>{const r=new Error(e||E[t]);if(r.code=t,Error.captureStackTrace&&Error.captureStackTrace(r,A),!n)throw r;return r},T=(e,n,s,c)=>{const a=e.length,h=c?c.length:0;if(!a||n.f&&!n.l)return s||new t(0);const w=!s||2!=n.i,g=n.i;s||(s=new t(3*a));const b=e=>{let n=s.length;if(e>n){const r=new t(Math.max(2*n,e));r.set(s),s=r}};let m=n.f||0,E=n.p||0,T=n.b||0,U=n.l,z=n.d,F=n.m,S=n.n;const I=8*a;do{if(!U){m=p(e,E,1);const r=p(e,E+1,3);if(E+=3,!r){const t=v(E)+4,r=e[t-4]|e[t-3]<<8,o=t+r;if(o>a){g&&A(0);break}w&&b(T+r),s.set(e.subarray(t,o),T),n.b=T+=r,n.p=E=8*o,n.f=m;continue}if(1==r)U=d,z=y,F=9,S=5;else if(2==r){const n=p(e,E,31)+257,r=p(e,E+10,15)+4,o=n+p(e,E+5,31)+1;E+=14;const s=new t(o),f=new t(19);for(let t=0;t<r;++t)f[l[t]]=p(e,E+3*t,7);E+=3*r;const c=M(f),i=(1<<c)-1,a=u(f,c,1);for(let t=0;t<o;){const n=a[p(e,E,i)];E+=15&n;const r=n>>4;if(r<16)s[t++]=r;else{let n=0,o=0;for(16==r?(o=3+p(e,E,3),E+=2,n=s[t-1]):17==r?(o=3+p(e,E,7),E+=3):18==r&&(o=11+p(e,E,127),E+=7);o--;)s[t++]=n}}const h=s.subarray(0,n),w=s.subarray(n);F=M(h),S=M(w),U=u(h,F,1),z=u(w,S,1)}else A(1);if(E>I){g&&A(0);break}}w&&b(T+131072);const x=(1<<F)-1,O=(1<<S)-1;let j=E;for(;;j=E){const t=U[k(e,E)&x],n=t>>4;if(E+=15&t,E>I){g&&A(0);break}if(t||A(2),n<256)s[T++]=n;else{if(256==n){j=E,U=null;break}{let t=n-254;if(n>264){const o=n-257,l=r[o];t=p(e,E,(1<<l)-1)+f[o],E+=l}const l=z[k(e,E)&O],a=l>>4;l||A(3),E+=15&l;let u=i[a];if(a>3){const t=o[a];u+=k(e,E)&(1<<t)-1,E+=t}if(E>I){g&&A(0);break}w&&b(T+131072);const d=T+t;if(T<u){const t=h-u,e=Math.min(u,d);for(t+T<0&&A(3);T<e;++T)s[T]=c[t+T]}for(;T<d;T+=4)s[T]=s[T-u],s[T+1]=s[T+1-u],s[T+2]=s[T+2-u],s[T+3]=s[T+3-u];T=d}}}n.l=U,n.p=j,n.b=T,n.f=m,U&&(m=1,n.m=F,n.d=z,n.n=S)}while(!m);return T==s.length?s:x(s,0,T)},U=(t,e,n)=>{n<<=7&e;const r=e/8|0;t[r]|=n,t[r+1]|=n>>8},z=(t,e,n)=>{n<<=7&e;const r=e/8|0;t[r]|=n,t[r+1]|=n>>8,t[r+2]|=n>>16},F=(n,r)=>{const o=[];for(let t=0;t<n.length;++t)n[t]&&o.push({s:t,f:n[t]});const l=o.length,s=o.slice();if(!l)return{t:C,l:0};if(1==l){const e=new t(o[0].s+1);return e[o[0].s]=1,{t:e,l:1}}o.sort(((t,e)=>t.f-e.f)),o.push({s:-1,f:25001});let f=o[0],c=o[1],i=0,a=1,h=2;for(o[0]={s:-1,f:f.f+c.f,l:f,r:c};a!=l-1;)f=o[o[i].f<o[h].f?i++:h++],c=o[i!=a&&o[i].f<o[h].f?i++:h++],o[a++]={s:-1,f:f.f+c.f,l:f,r:c};let u=s[0].s;for(let t=1;t<l;++t)s[t].s>u&&(u=s[t].s);const w=new e(u+1);let g=S(o[a-1],w,0);if(g>r){let t=0,e=0;const n=g-r,o=1<<n;for(s.sort(((t,e)=>w[e.s]-w[t.s]||t.f-e.f));t<l;++t){const n=s[t].s;if(!(w[n]>r))break;e+=o-(1<<g-w[n]),w[n]=r}for(e>>=n;e>0;){const n=s[t].s;w[n]<r?e-=1<<r-w[n]++-1:++t}for(;t>=0&&e;--t){const n=s[t].s;w[n]==r&&(--w[n],++e)}g=r}return{t:new t(w),l:g}},S=(t,e,n)=>-1==t.s?Math.max(S(t.l,e,n+1),S(t.r,e,n+1)):e[t.s]=n,I=t=>{let n=t.length;for(;n&&!t[--n];);const r=new e(++n);let o=0,l=t[0],s=1;const f=t=>{r[o++]=t};for(let e=1;e<=n;++e)if(t[e]==l&&e!=n)++s;else{if(!l&&s>2){for(;s>138;s-=138)f(32754);s>2&&(f(s>10?s-11<<5|28690:s-3<<5|12305),s=0)}else if(s>3){for(f(l),--s;s>6;s-=6)f(8304);s>2&&(f(s-3<<5|8208),s=0)}for(;s--;)f(l);s=1,l=t[e]}return{c:r.subarray(0,o),n:n}},O=(t,e)=>{let n=0;for(let r=0;r<e.length;++r)n+=t[r]*e[r];return n},j=(t,e,n)=>{const r=n.length,o=v(e+2);t[o]=255&r,t[o+1]=r>>8,t[o+2]=255^t[o],t[o+3]=255^t[o+1];for(let e=0;e<r;++e)t[o+e+4]=n[e];return 8*(o+4+r)},q=(t,n,s,f,c,i,a,h,d,y,M)=>{U(n,M++,s),++c[256];const{t:p,l:k}=F(c,15),{t:v,l:x}=F(i,15),{c:E,n:A}=I(p),{c:T,n:S}=I(v),q=new e(19);for(let t=0;t<E.length;++t)++q[31&E[t]];for(let t=0;t<T.length;++t)++q[31&T[t]];const{t:B,l:C}=F(q,7);let D=19;for(;D>4&&!B[l[D-1]];--D);const G=y+5<<3,H=O(c,w)+O(i,g)+a,J=O(c,p)+O(i,v)+a+14+3*D+O(q,B)+2*q[16]+3*q[17]+7*q[18];if(d>=0&&G<=H&&G<=J)return j(n,M,t.subarray(d,d+y));let K,L,N,P;if(U(n,M,1+(J<H)),M+=2,J<H){K=u(p,k,0),L=p,N=u(v,x,0),P=v;const t=u(B,C,0);U(n,M,A-257),U(n,M+5,S-1),U(n,M+10,D-4),M+=14;for(let t=0;t<D;++t)U(n,M+3*t,B[l[t]]);M+=3*D;const e=[E,T];for(let r=0;r<2;++r){const o=e[r];for(let e=0;e<o.length;++e){const r=31&o[e];U(n,M,t[r]),M+=B[r],r>15&&(U(n,M,o[e]>>5&127),M+=o[e]>>12)}}}else K=b,L=w,N=m,P=g;for(let t=0;t<h;++t){const e=f[t];if(e>255){const t=e>>18&31;z(n,M,K[t+257]),M+=L[t+257],t>7&&(U(n,M,e>>23&31),M+=r[t]);const l=31&e;z(n,M,N[l]),M+=P[l],l>3&&(z(n,M,e>>5&8191),M+=o[l])}else z(n,M,K[e]),M+=L[e]}return z(n,M,K[256]),M+L[256]},B=new n([65540,131080,131088,131104,262176,1048704,1048832,2114560,2117632]),C=new t(0),D=(l,s,f,i,h,u)=>{const w=u.z||l.length,g=new t(i+w+5*(1+Math.ceil(w/7e3))+h),b=g.subarray(i,g.length-h),d=u.l;let m=7&(u.r||0);if(s){m&&(b[0]=u.r>>3);const t=B[s-1],i=t>>13,h=8191&t,g=(1<<f)-1,y=u.p||new e(32768),M=u.h||new e(g+1),p=Math.ceil(f/3),k=2*p,v=t=>(l[t]^l[t+1]<<p^l[t+2]<<k)&g,x=new n(25e3),E=new e(288),A=new e(32);let T=0,U=0,z=u.i||0,F=0,S=u.w||0,I=0;for(;z+2<w;++z){const t=v(z);let e=32767&z,n=M[t];if(y[e]=n,M[t]=e,S<=z){const s=w-z;if((T>7e3||F>24576)&&(s>423||!d)){m=q(l,b,0,x,E,A,U,F,I,z-I,m),F=T=U=0,I=z;for(let t=0;t<286;++t)E[t]=0;for(let t=0;t<30;++t)A[t]=0}let f=2,u=0,g=h,M=e-n&32767;if(s>2&&t==v(z-M)){const t=Math.min(i,s)-1,r=Math.min(32767,z),o=Math.min(258,s);for(;M<=r&&--g&&e!=n;){if(l[z+f]==l[z+f-M]){let e=0;for(;e<o&&l[z+e]==l[z+e-M];++e);if(e>f){if(f=e,u=M,e>t)break;const r=Math.min(M,e-2);let o=0;for(let t=0;t<r;++t){const e=z-M+t&32767,r=e-y[e]&32767;r>o&&(o=r,n=e)}}}e=n,n=y[e],M+=e-n&32767}}if(u){x[F++]=268435456|c[f]<<18|a[u];const t=31&c[f],e=31&a[u];U+=r[t]+o[e],++E[257+t],++A[e],S=z+f,++T}else x[F++]=l[z],++E[l[z]]}}for(z=Math.max(z,S);z<w;++z)x[F++]=l[z],++E[l[z]];m=q(l,b,d,x,E,A,U,F,I,z-I,m),d||(u.r=7&m|b[m/8|0]<<3,m-=7,u.h=M,u.p=y,u.i=z,u.w=S)}else{for(let t=u.w||0;t<w+d;t+=65535){let e=t+65535;e>=w&&(b[m/8|0]=d,e=w),m=j(b,m+1,l.subarray(t,e))}u.i=w}return x(g,0,i+v(m)+h)},G=(e,n,r,o,l)=>{if(!l&&(l={l:1},n.dictionary)){const r=n.dictionary.subarray(-32768),o=new t(r.length+e.length);o.set(r),o.set(e,r.length),e=o,l.w=r.length}return D(e,null==n.level?6:n.level,null==n.mem?Math.ceil(1.5*Math.max(8,Math.min(13,Math.log(e.length)))):12+n.mem,r,o,l)};function H(t,e){return G(t,e||{},0,0)}function J(t,e){return T(t,{i:2},e&&e.out,e&&e.dictionary)}self.deflateSync=H;self.inflateSync=J;}
+    </script>
+    <script>
+        const stringToUint = string => {
+            let uintArray = new Uint8Array(string.length);
+            for (let i = 0; i < string.length; i++) {
+                uintArray[i] = string.charCodeAt(i);
+            }
+            return uintArray;
+        }
+        const uintToString = uintArray => {
+            let str = "";
+            let len = Math.ceil(uintArray.byteLength / 32767);
+            for (let i = 0; i < len; i++) {
+                str += String.fromCharCode.apply(null, uintArray.subarray(i * 32767, Math.min((i + 1) * 32767, uintArray.byteLength)));
+            }
+            return str;
+        }
+        let isCompressedChats = localStorage.getItem("compressedChats") === "true";
+        const originSetItem = localStorage.setItem;
+        localStorage.setItem = (key, value) => {
+            try {
+                if (isCompressedChats && key === "chats") value = uintToString(deflateSync(new TextEncoder().encode(value), { level: 1 }));
+                originSetItem.call(localStorage, key, value)
+            } catch (e) {
+                if (isCompressedChats) {
+                    notyf.error(translations[locale]["localQuotaExceedTip"])
+                    return;
+                }
+                let isKeyChats = key === "chats";
+                let compressed = uintToString(deflateSync(new TextEncoder().encode(isKeyChats ? value : localStorage.getItem("chats")), { level: 1 }));
+                originSetItem.call(localStorage, "chats", compressed);
+                originSetItem.call(localStorage, "compressedChats", true);
+                isCompressedChats = true;
+                if (!isKeyChats) originSetItem.call(localStorage, key, value);
+            }
         }
     </script>
     <script>
@@ -2921,6 +3049,7 @@
                 "newFolder": "New folder",
                 "newFolderName": "New folder",
                 "search": "Search",
+                "matchCaseTip": "Match case",
                 "forceRe": "Force refresh",
                 "clearAll": "Clear all chats",
                 "setting": "Setting",
@@ -2954,7 +3083,7 @@
                 "qualityPos": "Nonsense",
                 "chatsWidth": "Chats width",
                 "typeSpeed": "Typing speed",
-                "continuousLen": "Continuous context",
+                "continuousLen": "Context messages",
                 "msgAbbr": " msgs.",
                 "slow": "Slow",
                 "fast": "Fast",
@@ -3019,6 +3148,7 @@
                 "themeKey": "Toggle lang",
                 "inputKey": "Message",
                 "voiceKey": "Voice",
+                "resetHotKeyTip": "Restore default",
                 "recKey": "Recognition",
                 "speechKey": "Start speech",
                 "export": "Export",
@@ -3067,6 +3197,7 @@
                 "badEndpointTip": "Failed to access the endpoint, please check the endpoint!",
                 "clearChatTip": "Clear this chat?",
                 "cantSpeechTip": "Current voice cannot synthesize this message, please choose another voice or message!",
+                "localQuotaExceedTip": "Local storage exceeded limit, please export chats data and clear or delete some chats!",
             },
             "zh": {
                 "description": "简洁而强大的ChatGPT应用",
@@ -3075,6 +3206,7 @@
                 "newFolder": "新建文件夹",
                 "newFolderName": "新文件夹",
                 "search": "搜索",
+                "matchCaseTip": "区分大小写",
                 "forceRe": "强制刷新",
                 "clearAll": "清空全部",
                 "setting": "设置",
@@ -3108,7 +3240,7 @@
                 "qualityPos": "胡言乱语",
                 "chatsWidth": "会话宽度",
                 "typeSpeed": "打字机速度",
-                "continuousLen": "连续会话上下文信息",
+                "continuousLen": "上下文消息数",
                 "msgAbbr": "条",
                 "slow": "慢",
                 "fast": "快",
@@ -3173,6 +3305,7 @@
                 "langKey": "切换语言",
                 "inputKey": "输入框",
                 "voiceKey": "语音",
+                "resetHotKeyTip": "恢复默认设值",
                 "recKey": "语音输入",
                 "speechKey": "朗读会话",
                 "export": "导出",
@@ -3221,6 +3354,7 @@
                 "badEndpointTip": "访问接口失败，请检查接口！",
                 "clearChatTip": "是否清空此会话？",
                 "cantSpeechTip": "当前语音无法合成此消息，请选择其他语音或消息！",
+                "localQuotaExceedTip": "本地存储超出限额，请导出会话并清空或删除部分会话！",
             },
         };
         const translateElement = (ele, type) => {
@@ -3237,10 +3371,10 @@
             }
         }
         const initLocale = () => {
-            document.querySelectorAll("[data-i18n-title]").forEach(ele => {translateElement(ele, "title")});
-            document.querySelectorAll("[data-i18n-place]").forEach(ele => {translateElement(ele, "place")});
-            document.querySelectorAll("[data-i18n-value]").forEach(ele => {translateElement(ele, "value")});
-            document.querySelectorAll("[data-i18n-key]").forEach(ele => {translateElement(ele, "key")});
+            document.querySelectorAll("[data-i18n-title]").forEach(ele => { translateElement(ele, "title") });
+            document.querySelectorAll("[data-i18n-place]").forEach(ele => { translateElement(ele, "place") });
+            document.querySelectorAll("[data-i18n-value]").forEach(ele => { translateElement(ele, "value") });
+            document.querySelectorAll("[data-i18n-key]").forEach(ele => { translateElement(ele, "key") });
             document.querySelectorAll("[data-i18n-theme]").forEach(ele => {
                 let key = themeMode === 2 ? "autoTheme" : themeMode === 1 ? "lightTheme" : "darkTheme";
                 ele.setAttribute("title", translations[locale][key])
@@ -3302,26 +3436,6 @@
         }
     </script>
     <script>
-        const notyf = new Notyf({
-            position: {x: "center", y: "top"},
-            types: [
-                {
-                    type: "success",
-                    background: "#99c959",
-                    duration: 2000,
-                },
-                {
-                    type: "warning",
-                    background: "#f8b26a",
-                    duration: 3000
-                },
-                {
-                    type: "error",
-                    background: "#e15b64",
-                    duration: 3000,
-                }
-            ]
-        });
         const windowEle = document.getElementsByClassName("chat_window")[0];
         const messagesEle = document.getElementsByClassName("messages")[0];
         const chatlog = document.getElementById("chatlog");
@@ -3382,21 +3496,15 @@
         };
         inputAreaEle.focus();
         const textInputEvent = () => {
-            if (noLoading()) {
-                if (inputAreaEle.value.trim().length) {
-                    sendBtnEle.classList.add("activeSendBtn");
-                } else {
-                    sendBtnEle.classList.remove("activeSendBtn");
-                }
-            }
+            if (noLoading()) sendBtnEle.classList.toggle("activeSendBtn", inputAreaEle.value.trim().length);
             inputAreaEle.style.height = "47px";
             inputAreaEle.style.height = inputAreaEle.scrollHeight + "px";
         };
         inputAreaEle.oninput = textInputEvent;
         const toggleNavEv = () => {
-            document.body.classList.toggle("show-nav");
+            let isShowNav = document.body.classList.toggle("show-nav");
             if (window.innerWidth > 800) {
-                localStorage.setItem("pinNav", document.body.classList.contains("show-nav"))
+                localStorage.setItem("pinNav", isShowNav)
             }
         }
         document.body.addEventListener("mousedown", event => {
@@ -3481,7 +3589,7 @@
                 let localRecLang = localStorage.getItem("voiceRecLang") || "cmn-Hans-CN";
                 if (localRecLang) {
                     let localIndex = langs.findIndex(item => {
-                        let diaIdx = item.findIndex(lang => {return lang instanceof Array && lang[0] === localRecLang});
+                        let diaIdx = item.findIndex(lang => { return lang instanceof Array && lang[0] === localRecLang });
                         if (diaIdx !== -1) {
                             localDiaIdx = diaIdx - 1;
                             return true;
@@ -3579,7 +3687,7 @@
                                 }
                             }
                         }
-                        else {tempRes = recRes + event.results[i][0].transcript}
+                        else { tempRes = recRes + event.results[i][0].transcript }
                     }
                     inputAreaEle.value = preRes + (isFinal ? recRes : tempRes) + affRes;
                     textInputEvent();
@@ -3650,8 +3758,7 @@
                     document.addEventListener("mousedown", closeEvent, true);
                 }
                 const toggleRecEvent = () => {
-                    voiceRecEle.classList.toggle("voiceRecing");
-                    if (voiceRecEle.classList.contains("voiceRecing")) {
+                    if (voiceRecEle.classList.toggle("voiceRecing")) {
                         try {
                             resetRecRes();
                             recIns.lang = select_dialect.value;
@@ -3905,7 +4012,7 @@
                             checkEdgeAbort = void 0;
                         }
                     }, 10000);
-                    fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", {signal: checkEdgeAbort.signal}).then(response => {
+                    fetch("https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=6A5AA1D4EAFF4E9FB37E23D68491D6F4", { signal: checkEdgeAbort.signal }).then(response => {
                         response.json().then(json => {
                             edgeVoiceData = json;
                             toggleVoiceCheck(false);
@@ -4071,7 +4178,7 @@
                 type = type ^ 1;
                 let localVoice = localStorage.getItem("voice" + type);
                 if (localVoice) {
-                    let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                    let localIndex = voices.findIndex(item => { return item.name === localVoice });
                     if (localIndex === -1) localIndex = 0;
                     voiceRole[type] = voices[localIndex];
                 } else {
@@ -4087,7 +4194,7 @@
             const voiceChange = () => {
                 let localVoice = localStorage.getItem("voice" + voiceType);
                 if (localVoice) {
-                    let localIndex = voices.findIndex(item => {return item.name === localVoice});
+                    let localIndex = voices.findIndex(item => { return item.name === localVoice });
                     if (localIndex === -1) localIndex = 0;
                     voiceRole[voiceType] = voices[localIndex];
                     voicesEle.value = localIndex;
@@ -4214,15 +4321,44 @@
         let voiceMIME = "audio/mpeg";
         let userAvatar; // 用户头像
         let customDarkOut;
-        const isContentBottom = () => messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < 128;
+        let isCaseSearch; // 搜索是否区分大小写
+        let controller;
+        let controllerId;
+        const findOffsetTop = (ele, target) => { // target is positioned ancestor element
+            if (ele.offsetParent !== target) return ele.offsetTop + findOffsetTop(ele.offsetParent, target);
+            else return ele.offsetTop;
+        }
+        const findResEle = (ele) => {
+            if (!ele.classList.contains("response")) return findResEle(ele.parentElement);
+            else return ele;
+        }
+        const isContentBottom = (ele) => {
+            if (refreshIdx !== void 0) {
+                return currentResEle.clientHeight + currentResEle.offsetTop > messagesEle.scrollTop + messagesEle.clientHeight
+            } else {
+                return messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < 128;
+            }
+        }
+        const isEleBottom = (ele) => {
+            return ele.clientHeight + findOffsetTop(ele, messagesEle) > messagesEle.scrollTop + messagesEle.clientHeight;
+        }
+        const outOfMsgWindow = (ele) => {
+            return ele.offsetTop > messagesEle.scrollTop + messagesEle.clientHeight || ele.offsetTop + ele.clientHeight < messagesEle.scrollTop
+        }
         const scrollToBottom = () => {
             if (isContentBottom()) {
-                messagesEle.scrollTo(0, messagesEle.scrollHeight)
+                if (refreshIdx !== void 0) {
+                    messagesEle.scrollTo(0, currentResEle.clientHeight + currentResEle.offsetTop - messagesEle.clientHeight + 10)
+                } else {
+                    messagesEle.scrollTo(0, messagesEle.scrollHeight)
+                }
             }
         }
         const scrollToBottomLoad = (ele) => {
-            if (messagesEle.scrollHeight - messagesEle.scrollTop - messagesEle.clientHeight < ele.clientHeight + 128) {
-                messagesEle.scrollTo(0, messagesEle.scrollHeight)
+            if (!controller || !ele.offsetParent) return;
+            if (isEleBottom(ele)) {
+                let resEle = findResEle(ele)
+                messagesEle.scrollTo(0, resEle.clientHeight + resEle.offsetTop - messagesEle.clientHeight + 10)
             }
         }
         const forceRepaint = (ele) => {
@@ -4239,6 +4375,9 @@
             escapeTextarea.innerHTML = html;
             return escapeTextarea.textContent;
         }
+        const escapeRegExp = (str) => {
+            return str.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
+        }
         const formatDate = date => {
             const year = date.getFullYear();
             const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -4246,7 +4385,7 @@
             return `${year}-${month}-${day}`;
         }
         const checkBill = async () => {
-            let headers = {"Content-Type": "application/json"};
+            let headers = { "Content-Type": "application/json" };
             if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
             let subCtrl = new AbortController();
             setTimeout(() => {
@@ -4369,6 +4508,89 @@
             usedStorage.textContent = (usedMBs < 1 ? usedMBs.toPrecision(2) : usedMBs.toFixed(2)) + "MB";
             availableStorage.textContent = Math.floor(remain / 1048576 * 100) / 100 + "MB";
         };
+        const UNESCAPE_RE = /\\([ \\!"#$%&'()*+,.\/:;<=>?@[\]^_`{|}~-])/g;
+        const superscript = (state, silent) => {
+            let found,
+                content,
+                token,
+                max = state.posMax,
+                start = state.pos;
+            if (state.src.charCodeAt(start) !== 0x5E/* ^ */) { return false; }
+            if (silent) { return false; } // don't run any pairs in validation mode
+            if (start + 2 >= max) { return false; }
+            state.pos = start + 1;
+            while (state.pos < max) {
+                if (state.src.charCodeAt(state.pos) === 0x5E/* ^ */) {
+                    found = true;
+                    break;
+                }
+                state.md.inline.skipToken(state);
+            }
+            if (!found || start + 1 === state.pos) {
+                state.pos = start;
+                return false;
+            }
+            content = state.src.slice(start + 1, state.pos);
+            // don't allow unescaped spaces/newlines inside
+            if (content.match(/(^|[^\\])(\\\\)*\s/)) {
+                state.pos = start;
+                return false;
+            }
+            // found!
+            state.posMax = state.pos;
+            state.pos = start + 1;
+            // Earlier we checked !silent, but this implementation does not need it
+            token = state.push('sup_open', 'sup', 1);
+            token.markup = '^';
+            token = state.push('text', '', 0);
+            token.content = content.replace(UNESCAPE_RE, '$1');
+            token = state.push('sup_close', 'sup', -1);
+            token.markup = '^';
+            state.pos = state.posMax + 1;
+            state.posMax = max;
+            return true;
+        }
+        const subscript = (state, silent) => {
+            let found,
+                content,
+                token,
+                max = state.posMax,
+                start = state.pos;
+            if (state.src.charCodeAt(start) !== 0x7E/* ~ */) { return false; }
+            if (silent) { return false; } // don't run any pairs in validation mode
+            if (start + 2 >= max) { return false; }
+            state.pos = start + 1;
+            while (state.pos < max) {
+                if (state.src.charCodeAt(state.pos) === 0x7E/* ~ */) {
+                    found = true;
+                    break;
+                }
+                state.md.inline.skipToken(state);
+            }
+            if (!found || start + 1 === state.pos) {
+                state.pos = start;
+                return false;
+            }
+            content = state.src.slice(start + 1, state.pos);
+            // don't allow unescaped spaces/newlines inside
+            if (content.match(/(^|[^\\])(\\\\)*\s/)) {
+                state.pos = start;
+                return false;
+            }
+            // found!
+            state.posMax = state.pos;
+            state.pos = start + 1;
+            // Earlier we checked !silent, but this implementation does not need it
+            token = state.push('sub_open', 'sub', 1);
+            token.markup = '~';
+            token = state.push('text', '', 0);
+            token.content = content.replace(UNESCAPE_RE, '$1');
+            token = state.push('sub_close', 'sub', -1);
+            token.markup = '~';
+            state.pos = state.posMax + 1;
+            state.posMax = max;
+            return true;
+        }
         const md = markdownit({
             linkify: true, // 识别链接
             highlight: function (str, lang) { // markdown高亮
@@ -4378,8 +4600,10 @@
                 return ""; // use external default escaping
             }
         });
-        md.use(texmath, {engine: katex, delimiters: "dollars", katexOptions: {macros: {"\\RR": "\\mathbb{R}"}}})
-            .use(markdownitLinkAttributes, {attrs: {target: "_blank", rel: "noopener"}});
+        md.inline.ruler.after("emphasis", "sup", superscript);
+        md.inline.ruler.after("emphasis", "sub", subscript);
+        md.use(texmath, { engine: katex, delimiters: "dollars", katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } })
+            .use(markdownitLinkAttributes, { attrs: { target: "_blank", rel: "noopener" } });
         const codeUtils = {
             getCodeLang(str = "") {
                 const res = str.match(/ class="language-(.*?)"/);
@@ -4524,7 +4748,8 @@
                             chatlog.children[idx].dataset.loading = true;
                             idx = systemRole ? idx + 1 : idx;
                             data[idx].content = "";
-                            if (idx === currentVoiceIdx) {endSpeak()};
+                            if (idx === data.findIndex(item => { return item.role === "assistant" })) activeChatEle.children[1].children[1].textContent = "";
+                            if (idx === currentVoiceIdx) endSpeak();
                             loadAction(true);
                             refreshIdx = idx;
                             streamGen();
@@ -4546,14 +4771,14 @@
                         if (confirmAction(translations[locale]["delMsgTip"])) {
                             chatlog.removeChild(chatlog.children[idx]);
                             idx = systemRole ? idx + 1 : idx;
-                            let firstIdx = data.findIndex(item => {return item.role === "assistant"});
+                            let firstIdx = data.findIndex(item => { return item.role === "assistant" });
                             if (currentVoiceIdx !== void 0) {
-                                if (currentVoiceIdx === idx) {endSpeak()}
-                                else if (currentVoiceIdx > idx) {currentVoiceIdx--}
+                                if (currentVoiceIdx === idx) { endSpeak() }
+                                else if (currentVoiceIdx > idx) { currentVoiceIdx-- }
                             }
                             if (editingIdx !== void 0) {
-                                if (editingIdx === idx) {resumeSend()}
-                                else if (editingIdx > idx) {editingIdx--}
+                                if (editingIdx === idx) { resumeSend() }
+                                else if (editingIdx > idx) { editingIdx-- }
                             }
                             data.splice(idx, 1);
                             if (firstIdx === idx) updateChatPre();
@@ -4660,8 +4885,7 @@
             let folderEle = folderListEle.children[idx];
             let childLen = folderData[idx].idxs.length;
             folderEle.children[0].children[1].children[1].textContent = childLen + translations[locale]["chats"];
-            if (childLen) {folderEle.classList.add("expandFolder")}
-            else {folderEle.classList.remove("expandFolder")}
+            folderEle.classList.toggle("expandFolder", childLen);
         }
         folderListEle.ondragenter = chatListEle.ondragenter = function (ev) {
             ev.preventDefault();
@@ -4796,7 +5020,7 @@
                 folderData.forEach(item => {
                     if (item.idxs.length) {
                         item.idxs.forEach((i, ix) => {
-                            let len = idxs.filter(j => {return i > j}).length;
+                            let len = idxs.filter(j => { return i > j }).length;
                             if (len) {
                                 item.idxs[ix] = i - len;
                             }
@@ -4804,10 +5028,10 @@
                     }
                 })
                 chatIdxs.forEach((item, ix) => {
-                    let len = idxs.filter(j => {return item > j}).length;
+                    let len = idxs.filter(j => { return item > j }).length;
                     if (len) chatIdxs[ix] = item - len;
                 })
-                let len = idxs.filter(j => {return activeChatIdx > j}).length;
+                let len = idxs.filter(j => { return activeChatIdx > j }).length;
                 if (len) activeChatIdx -= len;
                 if (activeChatIdx === -1) {
                     addNewChat();
@@ -4820,7 +5044,7 @@
         }
         const folderAddChat = (folderIdx, headEle) => {
             endAll();
-            let chat = {name: translations[locale]["newChatName"], data: []};
+            let chat = { name: translations[locale]["newChatName"], data: [] };
             chatsData.push(chat);
             activeChatIdx = chatsData.length - 1;
             folderData[folderIdx].idxs.push(activeChatIdx);
@@ -4836,13 +5060,9 @@
             let parent = this.parentElement;
             let idx = Array.prototype.indexOf.call(folderListEle.children, parent);
             if (ev.target.className === "headLi") {
-                parent.classList.toggle("expandFolder");
+                let isExpanded = parent.classList.toggle("expandFolder");
                 if (folderData[idx].idxs.indexOf(activeChatIdx) !== -1) {
-                    if (parent.classList.contains("expandFolder")) {
-                        parent.classList.remove("activeFolder");
-                    } else {
-                        parent.classList.add("activeFolder");
-                    }
+                    parent.classList.toggle("activeFolder", !isExpanded);
                 }
             } else if (ev.target.dataset.type === "folderAddChat") {
                 folderAddChat(idx, this);
@@ -4887,11 +5107,11 @@
                 chatsEle.appendChild(chatEleAdd(folder.idxs[i], false));
             }
             folderEle.appendChild(chatsEle);
-            if (push) {folderListEle.appendChild(folderEle)}
-            else {folderListEle.insertBefore(folderEle, folderListEle.firstChild)}
+            if (push) { folderListEle.appendChild(folderEle) }
+            else { folderListEle.insertBefore(folderEle, folderListEle.firstChild) }
         }
         document.getElementById("newFolder").onclick = function () {
-            folderData.unshift({name: translations[locale]["newFolderName"], idxs: []});
+            folderData.unshift({ name: translations[locale]["newFolderName"], idxs: [] });
             folderEleAdd(0, false);
             updateChatIdxs();
             folderListEle.parentElement.scrollTop = 0;
@@ -4900,8 +5120,8 @@
             chatEle.children[1].children[0].textContent = chatsData[index].name;
             let chatPreview = "";
             if (chatsData[index].data && chatsData[index].data.length) {
-                let first = chatsData[index].data.find(item => {return item.role === "assistant"});
-                if (first) {chatPreview = first.content.slice(0, 30)}
+                let first = chatsData[index].data.find(item => { return item.role === "assistant" });
+                if (first) { chatPreview = first.content.slice(0, 30) }
             }
             chatEle.children[1].children[1].textContent = chatPreview;
         };
@@ -4925,8 +5145,8 @@
             return chatEle;
         };
         const addNewChat = () => {
-            let chat = {name: translations[locale]["newChatName"], data: []};
-            if (presetRoleData.default) chat.data.unshift({role: "system", content: presetRoleData.default});
+            let chat = { name: translations[locale]["newChatName"], data: [] };
+            if (presetRoleData.default) chat.data.unshift({ role: "system", content: presetRoleData.default });
             preEle.selectedIndex = 0;
             chatsData.push(chat);
             chatIdxs.push(chatsData.length - 1);
@@ -5135,21 +5355,20 @@
             if (searchIdxs[activeChatIdx] !== void 0) {
                 let dataIdx = searchIdxs[activeChatIdx];
                 if (dataIdx !== -1) {
-                    let childs = chatlog.children[systemRole ? dataIdx - 1 : dataIdx].children[1].getElementsByTagName("*");
-                    for (let i = childs.length - 1; i >= 0; i--) {
-                        if (childs[i].textContent && childs[i].textContent.indexOf(searchChatEle.value) !== -1) {
-                            let offTop = findOffsetTop(childs[i], messagesEle);
-                            messagesEle.scrollTop = offTop + childs[i].offsetHeight - messagesEle.clientHeight * 0.15;
-                            break;
+                    let currChatEle = chatlog.children[systemRole ? dataIdx - 1 : dataIdx];
+                    let childs = currChatEle.children[1].getElementsByTagName("*");
+                    if (childs.length) {
+                        for (let i = childs.length - 1; i >= 0; i--) {
+                            if (childs[i].textContent && childs[i].textContent.indexOf(searchChatEle.value) !== -1) {
+                                let offTop = findOffsetTop(childs[i], messagesEle);
+                                messagesEle.scrollTop = offTop + childs[i].offsetHeight - messagesEle.clientHeight * 0.15;
+                                break;
+                            }
                         }
-                    }
+                    } else messagesEle.scrollTop = currChatEle.offsetTop;
                 } else messagesEle.scrollTop = 0;
             }
         };
-        const findOffsetTop = (ele, target) => { // target is positioned ancestor element
-            if (ele.offsetParent !== target) return ele.offsetTop + findOffsetTop(ele.offsetParent, target)
-            else return ele.offsetTop
-        }
         newChatEle.onclick = () => {
             endAll();
             addNewChat();
@@ -5164,6 +5383,7 @@
             let localChatIdx = localStorage.getItem("activeChatIdx");
             activeChatIdx = (localChatIdx && parseInt(localChatIdx)) || 0;
             if (localChats) {
+                if (isCompressedChats) localChats = new TextDecoder().decode(inflateSync(stringToUint(localChats)));
                 chatsData = JSON.parse(localChats);
                 let folderIdxs = [];
                 if (localFolders) {
@@ -5208,65 +5428,60 @@
             searchChatEle.dispatchEvent(new Event("input"));
             searchChatEle.focus();
         }
-        let compositionFlag;
-        let lastCompositon;
-        searchChatEle.addEventListener("compositionstart", () => {
-            compositionFlag = true;
-        });
-        searchChatEle.addEventListener("compositionend", (ev) => {
-            compositionFlag = false;
-            if (ev.data.length && ev.data === lastCompositon) {
-                searchChatEle.dispatchEvent(new Event("input"));
-            }
-            lastCompositon = void 0;
-        });
-        searchChatEle.oninput = (ev) => {
-            if (ev.isComposing) lastCompositon = ev.data;
-            if (compositionFlag) return;
-            let value = searchChatEle.value;
-            if (value.length) {
-                searchIdxs.length = 0;
-                for (let i = 0; i < chatsData.length; i++) {
-                    let chatEle = getChatEle(i);
-                    chatEle.style.display = null;
-                    let nameIdx = chatsData[i].name.indexOf(value);
-                    let dataIdx = chatsData[i].data.findIndex(item => {
-                        return item.role !== "system" && item.content.indexOf(value) !== -1
-                    })
-                    if (nameIdx !== -1 || dataIdx !== -1) {
-                        let ele = chatEle.children[1];
-                        if (dataIdx !== -1) {
-                            let data = chatsData[i].data[dataIdx];
-                            let idx = data.content.indexOf(value);
-                            ele.children[1].textContent = (idx > 8 ? "..." : "") + data.content.slice(idx > 8 ? idx - 5 : 0, idx);
-                            ele.children[1].appendChild(document.createElement("span"));
-                            ele.children[1].lastChild.textContent = value;
-                            ele.children[1].appendChild(document.createTextNode(data.content.slice(idx + value.length)))
-                        } else {
-                            initChatEle(i, chatEle);
-                        }
-                        if (nameIdx !== -1) {
-                            ele.children[0].textContent = (nameIdx > 5 ? "..." : "") + chatsData[i].name.slice(nameIdx > 5 ? nameIdx - 3 : 0, nameIdx);
-                            ele.children[0].appendChild(document.createElement("span"));
-                            ele.children[0].lastChild.textContent = value;
-                            ele.children[0].appendChild(document.createTextNode(chatsData[i].name.slice(nameIdx + value.length)))
-                        } else {
-                            ele.children[0].textContent = chatsData[i].name;
-                        }
-                        searchIdxs[i] = dataIdx;
+        const toSearchChats = () => {
+            searchIdxs.length = 0;
+            for (let i = 0; i < chatsData.length; i++) {
+                let chatEle = getChatEle(i);
+                chatEle.style.display = null;
+                let flags = isCaseSearch ? "" : "i";
+                let pattern = escapeRegExp(searchChatEle.value);
+                let regex = new RegExp(pattern, flags);
+                let nameData = chatsData[i].name.match(regex);
+                let nameIdx = nameData ? nameData.index : -1;
+                let matchContent;
+                let dataIdx = chatsData[i].data.findIndex(item => {
+                    return item.role !== "system" && (matchContent = item.content.match(regex))
+                })
+                if (nameIdx !== -1 || dataIdx !== -1) {
+                    let ele = chatEle.children[1];
+                    if (dataIdx !== -1) {
+                        let data = chatsData[i].data[dataIdx];
+                        let idx = matchContent.index;
+                        let endIdx = idx + matchContent[0].length;
+                        ele.children[1].textContent = (idx > 8 ? "..." : "") + data.content.slice(idx > 8 ? idx - 5 : 0, idx);
+                        ele.children[1].appendChild(document.createElement("span"));
+                        ele.children[1].lastChild.textContent = data.content.slice(idx, endIdx);
+                        ele.children[1].appendChild(document.createTextNode(data.content.slice(endIdx)))
                     } else {
-                        chatEle.style.display = "none";
                         initChatEle(i, chatEle);
                     }
-                }
-                for (let i = 0; i < folderListEle.children.length; i++) {
-                    let folderChatEle = folderListEle.children[i].children[1];
-                    if (!folderChatEle.children.length || Array.prototype.filter.call(folderChatEle.children, (ele) => {
-                        return ele.style.display !== "none"
-                    }).length === 0) {
-                        folderListEle.children[i].style.display = "none";
+                    if (nameIdx !== -1) {
+                        let endIdx = nameIdx + nameData[0].length;
+                        ele.children[0].textContent = (nameIdx > 5 ? "..." : "") + chatsData[i].name.slice(nameIdx > 5 ? nameIdx - 3 : 0, nameIdx);
+                        ele.children[0].appendChild(document.createElement("span"));
+                        ele.children[0].lastChild.textContent = chatsData[i].name.slice(nameIdx, endIdx);
+                        ele.children[0].appendChild(document.createTextNode(chatsData[i].name.slice(endIdx)))
+                    } else {
+                        ele.children[0].textContent = chatsData[i].name;
                     }
+                    searchIdxs[i] = dataIdx;
+                } else {
+                    chatEle.style.display = "none";
+                    initChatEle(i, chatEle);
                 }
+            }
+            for (let i = 0; i < folderListEle.children.length; i++) {
+                let folderChatEle = folderListEle.children[i].children[1];
+                if (!folderChatEle.children.length || Array.prototype.filter.call(folderChatEle.children, (ele) => {
+                    return ele.style.display !== "none"
+                }).length === 0) {
+                    folderListEle.children[i].style.display = "none";
+                }
+            }
+        }
+        searchChatEle.oninput = (ev) => {
+            if (searchChatEle.value.length) {
+                toSearchChats();
             } else {
                 searchIdxs.length = 0;
                 for (let i = 0; i < chatsData.length; i++) {
@@ -5278,6 +5493,10 @@
                     folderListEle.children[i].style.display = null;
                 }
             }
+        };
+        document.getElementById("resetHotKey").onclick = () => {
+            localStorage.removeItem("hotKeys");
+            initHotKey();
         };
         const blobToText = (blob) => {
             return new Promise((res, rej) => {
@@ -5298,7 +5517,7 @@
                 folderData: folderData,
                 chatIdxs: chatIdxs
             }
-            let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            let blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             let date = new Date();
             let fileName = "chats-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
             downBlob(blob, fileName);
@@ -5357,13 +5576,15 @@
                 addNewChat();
                 activeChatIdx = 0;
                 chatEleAdd(activeChatIdx);
+                localStorage.removeItem("compressedChats");
+                isCompressedChats = false;
                 updateChats();
                 checkStorage();
                 activeChat(chatListEle.firstElementChild);
                 notyf.success(translations[locale]["clearChatSuccTip"]);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -5371,7 +5592,7 @@
                 let val = localStorage.getItem(key);
                 if (val != void 0) data[key] = val;
             }
-            let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
+            let blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
             let date = new Date();
             let fileName = "settings-" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".json";
             downBlob(blob, fileName);
@@ -5601,7 +5822,7 @@
                 if (!(ev.relatedTarget && apiSelectEle.contains(ev.relatedTarget))) apiSelectEle.style.display = "none";
             }
             let localApiHost = localStorage.getItem("APIHost");
-            apiHost = apiHostEle.value = localApiHost || apiHostEle.getAttribute("value") || "";
+            apiHost = apiHostEle.value = envAPIEndpoint || localApiHost || apiHostEle.getAttribute("value") || "";
             apiHostEle.onchange = () => {
                 apiHost = apiHostEle.value;
                 if (apiHost.length && !apiHost.endsWith("/")) {
@@ -5614,7 +5835,7 @@
             apiHostEle.dispatchEvent(new Event("change"));
             const keyEle = document.getElementById("keyInput");
             let localKey = localStorage.getItem("APIKey");
-            customAPIKey = keyEle.value = localKey || keyEle.getAttribute("value") || "";
+            customAPIKey = keyEle.value = envAPIKey || localKey || keyEle.getAttribute("value") || "";
             keyEle.onchange = () => {
                 quotaContent.style.display = "none";
                 customAPIKey = keyEle.value;
@@ -5643,7 +5864,7 @@
                     if (data[0] && data[0].role === "system") {
                         data[0].content = systemRole;
                     } else {
-                        data.unshift({role: "system", content: systemRole});
+                        data.unshift({ role: "system", content: systemRole });
                         processIdx(1);
                     }
                 } else if (data[0] && data[0].role === "system") {
@@ -5655,7 +5876,7 @@
             if (systemRole === void 0) {
                 systemRole = systemEle.value = localSystem || presetRoleData.default || "";
                 if (systemRole) {
-                    data.unshift({role: "system", content: systemRole});
+                    data.unshift({ role: "system", content: systemRole });
                     processIdx(1);
                     updateChats();
                 }
@@ -5786,7 +6007,7 @@
                     }
                 }
             }
-            autoTheme0.onchange = autoTheme1.onchange = function () {handleAutoMode(this)};
+            autoTheme0.onchange = autoTheme1.onchange = function () { handleAutoMode(this) };
             const handleAutoTime = (ele, idx) => {
                 let otherIdx = 1 - idx;
                 if (ele.value !== customDarkTime[otherIdx]) {
@@ -5798,8 +6019,8 @@
                     notyf.error(translations[locale]["customDarkTip"]);
                 }
             }
-            customStart.onchange = function () {handleAutoTime(this, 0)};
-            customEnd.onchange = function () {handleAutoTime(this, 1)};
+            customStart.onchange = function () { handleAutoTime(this, 0) };
+            customEnd.onchange = function () { handleAutoTime(this, 1) };
             const initAutoTime = () => {
                 customAutoSet.style.display = autoThemeMode === 0 ? "block" : "none";
                 if (autoThemeMode === 0) {
@@ -5881,6 +6102,15 @@
             darkMedia.onchange = e => {
                 if (themeMode === 2 && autoThemeMode) setDarkTheme(e.matches);
             };
+            const caseSearchEle = document.getElementById("matchCaseSearch");
+            let localSearchFlag = localStorage.getItem("searchFlag") || "0";
+            isCaseSearch = Boolean(localSearchFlag & 1);
+            caseSearchEle.classList.toggle("seledSearch", isCaseSearch);
+            caseSearchEle.onclick = () => {
+                isCaseSearch = caseSearchEle.classList.toggle("seledSearch");
+                localStorage.setItem("searchFlag", ~~isCaseSearch);
+                if (searchChatEle.value.length) toSearchChats();
+            }
         };
         initSetting();
         document.getElementById("loadMask").style.display = "none";
@@ -6062,7 +6292,7 @@
                         } else if (e.data.indexOf("Path:turn.end") !== -1) {
                             let reqIdx = e.data.indexOf(":");
                             let uuid = e.data.slice(reqIdx + 1, reqIdx + 33);
-                            let blob = new Blob(downQuene[uuid]["blob"], {type: voiceMIME});
+                            let blob = new Blob(downQuene[uuid]["blob"], { type: voiceMIME });
                             let key = downQuene[uuid]["key"];
                             let name = downQuene[uuid]["name"];
                             if (blob.size === 0) {
@@ -6225,7 +6455,7 @@
                     } else if (e.data.indexOf("Path:turn.end") !== -1) {
                         voiceSocket["pending"] = false;
                         if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) {
-                            voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                            voiceData[key] = new Blob(bufArray, { type: voiceMIME });
                             res(voiceData[key]);
                         } else {
                             res(new Blob());
@@ -6255,8 +6485,8 @@
             endSpeak();
             currentVoiceIdx = idx;
             if (!data[idx].content && enableContVoice) {
-                if (currentVoiceIdx !== data.length - 1) {return speechEvent(currentVoiceIdx + 1)}
-                else {return endSpeak()}
+                if (currentVoiceIdx !== data.length - 1) { return speechEvent(currentVoiceIdx + 1) }
+                else { return endSpeak() }
             };
             let type = data[idx].role === "user" ? 0 : 1;
             chatlog.children[systemRole ? idx - 1 : idx].classList.add("showVoiceCls");
@@ -6293,7 +6523,7 @@
                             if (speechQuene.length) {
                                 let buf = speechQuene.shift();
                                 if (buf["end"]) {
-                                    if (!sourceBuffer.buffered.length) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                                    if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                                     mediaSource.endOfStream();
                                 } else {
                                     speechPushing = true;
@@ -6309,7 +6539,7 @@
                                 speechQuene.push(buf);
                             } else if (e.data.indexOf("Path:turn.end") !== -1) {
                                 voiceSocket["pending"] = false;
-                                if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) voiceData[key] = new Blob(bufArray, {type: voiceMIME});
+                                if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) voiceData[key] = new Blob(bufArray, { type: voiceMIME });
                                 if (!speechQuene.length && !speechPushing) {
                                     mediaSource.endOfStream();
                                 } else {
@@ -6333,7 +6563,7 @@
                     voiceSocket["pending"] = true;
                     if (!supportMSE) {
                         let blob = await NoMSEPending(key);
-                        if (blob.size === 0) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                        if (blob.size === 0) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                         voiceIns.src = URL.createObjectURL(blob);
                     }
                 }
@@ -6347,8 +6577,8 @@
             }
             await speakEvent(voiceIns);
             if (enableContVoice) {
-                if (currentVoiceIdx !== data.length - 1) {return speechEvent(currentVoiceIdx + 1)}
-                else {endSpeak()}
+                if (currentVoiceIdx !== data.length - 1) { return speechEvent(currentVoiceIdx + 1) }
+                else { endSpeak() }
             }
         };
         let autoVoiceSocket;
@@ -6405,7 +6635,7 @@
                             autoVoiceSocket["pending"] = false;
                             autoOnlineVoiceFlag = false;
                             if (!supportMSE) {
-                                let blob = new Blob(bufArray, {type: voiceMIME});
+                                let blob = new Blob(bufArray, { type: voiceMIME });
                                 bufArray = [];
                                 if (blob.size) {
                                     let blobURL = URL.createObjectURL(blob);
@@ -6416,7 +6646,7 @@
                                         voiceBlobURLQuene.push(blobURL);
                                     }
                                 } else {
-                                    notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                                    notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                                 }
                                 autoAddQuene();
                             }
@@ -6457,7 +6687,7 @@
                                     if (speechQuene.length) {
                                         let buf = speechQuene.shift();
                                         if (buf["end"]) {
-                                            if (!sourceBuffer.buffered.length) notyf.open({type: "warning", message: translations[locale]["cantSpeechTip"]});
+                                            if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                                             autoMediaSource.endOfStream();
                                         } else {
                                             speechPushing = true;
@@ -6502,13 +6732,11 @@
             }
         };
         const confirmAction = (prompt) => {
-            if (window.confirm(prompt)) {return true}
-            else {return false}
+            if (window.confirm(prompt)) { return true }
+            else { return false }
         };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
-        let controller;
-        let controllerId;
         let refreshIdx;
         let currentResEle;
         let progressData = "";
@@ -6521,6 +6749,7 @@
             let isRefresh = refreshIdx !== void 0;
             if (isRefresh) {
                 currentResEle = chatlog.children[systemRole ? refreshIdx - 1 : refreshIdx];
+                if (outOfMsgWindow(currentResEle)) messagesEle.scrollTo(0, currentResEle.offsetTop)
             } else if (!currentResEle) {
                 currentResEle = createConvEle("response", true, modelVersion);
                 currentResEle.children[1].innerHTML = "<p class='cursorCls'><br /></p>";
@@ -6549,10 +6778,10 @@
                     if (systemRole && startIdx > 0) dataSlice.unshift(data[0]);
                 }
                 dataSlice = dataSlice.map(item => {
-                    if (item.role === "assistant") return {role: item.role, content: item.content};
+                    if (item.role === "assistant") return { role: item.role, content: item.content };
                     else return item;
                 })
-                let headers = {"Content-Type": "application/json"};
+                let headers = { "Content-Type": "application/json" };
                 if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
                 const res = await fetch(apiHost + API_URL, {
                     method: "POST",
@@ -6586,7 +6815,7 @@
                 const decoder = new TextDecoder();
                 const reader = res.body.getReader();
                 const readChunk = async () => {
-                    return reader.read().then(async ({value, done}) => {
+                    return reader.read().then(async ({ value, done }) => {
                         if (!done) {
                             value = decoder.decode(value);
                             let chunks = value.match(/[^\n]+/g);
@@ -6596,16 +6825,17 @@
                                 if (chunk) {
                                     let payload;
                                     try {
-                                        payload = JSON.parse(chunk.slice(6));
+                                        payload = JSON.parse(chunk.slice(5));
                                     } catch (e) {
                                         break;
                                     }
+                                    if (!payload.choices.length) continue;
                                     if (payload.choices[0].finish_reason) {
                                         let lenStop = payload.choices[0].finish_reason === "length";
                                         let longReplyFlag = enableLongReply && lenStop;
                                         let ele = currentResEle.lastChild.children[0].children[0];
-                                        if (!enableLongReply && lenStop) {ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"]}
-                                        else {ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"]};
+                                        if (!enableLongReply && lenStop) { ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"] }
+                                        else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
                                         if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
                                             let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
                                             autoSpeechEvent(voiceText, currentResEle, false, stop);
@@ -6626,9 +6856,7 @@
                                             if (progressData) await delay();
                                             progressData += content;
                                             currentResEle.children[1].innerHTML = md.render(progressData);
-                                            if (!isRefresh) {
-                                                scrollToBottom();
-                                            }
+                                            scrollToBottom();
                                         }
                                     }
                                 }
@@ -6639,8 +6867,8 @@
                                 data[refreshIdx].content = progressData;
                                 if (longReplyFlag) return streamGen(true);
                             } else {
-                                if (long) {data[data.length - 1].content = progressData}
-                                else {data.push({role: "assistant", content: progressData, model: modelVersion})}
+                                if (long) { data[data.length - 1].content = progressData }
+                                else { data.push({ role: "assistant", content: progressData, model: modelVersion }) }
                                 if (longReplyFlag) return streamGen(true);
                             }
                             stopLoading(false);
@@ -6664,7 +6892,7 @@
         };
         const updateChatPre = () => {
             let ele = activeChatEle.children[1].children[1];
-            let first = data.find(item => {return item.role === "assistant"});
+            let first = data.find(item => { return item.role === "assistant" });
             ele.textContent = first ? first.content.slice(0, 30) : "";
             forceRepaint(ele.parentElement)
         }
@@ -6675,9 +6903,9 @@
                 controller.abort();
                 if (controllerId) clearTimeout(controllerId);
                 if (delayId) clearTimeout(delayId);
-                if (refreshIdx !== void 0) {data[refreshIdx].content = progressData}
-                else if (data[data.length - 1].role === "assistant") {data[data.length - 1].content = progressData}
-                else {data.push({role: "assistant", content: progressData, model: modelVersion})}
+                if (refreshIdx !== void 0) { data[refreshIdx].content = progressData }
+                else if (data[data.length - 1].role === "assistant") { data[data.length - 1].content = progressData }
+                else { data.push({ role: "assistant", content: progressData, model: modelVersion }) }
                 if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx && progressData.length) {
                     let voiceText = progressData.slice(autoVoiceIdx);
                     autoSpeechEvent(voiceText, currentResEle, false, true);
@@ -6706,16 +6934,16 @@
                     requestEle.children[1].textContent = message;
                     if (data[idx + 1].role !== "assistant") {
                         if (currentVoiceIdx !== void 0) {
-                            if (currentVoiceIdx > idx) {currentVoiceIdx++}
+                            if (currentVoiceIdx > idx) { currentVoiceIdx++ }
                         }
-                        data.splice(idx + 1, 0, {role: "assistant", content: "", model: modelVersion});
+                        data.splice(idx + 1, 0, { role: "assistant", content: "", model: modelVersion });
                         chatlog.insertBefore(createConvEle("response", false, modelVersion), chatlog.children[eleIdx + 1]);
                     }
                     chatlog.children[eleIdx + 1].children[1].innerHTML = "<p class='cursorCls'><br /></p>";
                     chatlog.children[eleIdx + 1].dataset.loading = true;
                     idx = idx + 1;
                     data[idx].content = "";
-                    if (idx === currentVoiceIdx) {endSpeak()};
+                    if (idx === currentVoiceIdx) { endSpeak() };
                     refreshIdx = idx;
                     updateChats();
                     streamGen();
@@ -6723,7 +6951,7 @@
                 }
             } else {
                 requestEle = createConvEle("request");
-                data.push({role: "user", content: message});
+                data.push({ role: "user", content: message });
             }
             requestEle.children[1].textContent = message;
             if (chatsData[activeChatIdx].name === translations[locale]["newChatName"]) {
@@ -6762,8 +6990,8 @@
             if (editingIdx === void 0) {
                 if (noLoading() && confirmAction(translations[locale]["clearChatTip"])) {
                     endSpeak();
-                    if (systemRole) {data.length = 1}
-                    else {data.length = 0}
+                    if (systemRole) { data.length = 1 }
+                    else { data.length = 0 }
                     chatlog.innerHTML = "";
                     updateChatPre();
                     updateChats();
