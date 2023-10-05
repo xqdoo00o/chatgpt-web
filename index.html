@@ -3014,7 +3014,7 @@
             }
         }
         const initLang = () => {
-            let localLang = localStorage.getItem("UILang") || "zh";
+            let localLang = localStorage.getItem("UILang") || (navigator.language.startsWith("zh-") ? "zh" : "en");
             let isInit = locale === void 0;
             if (locale !== localLang) {
                 locale = localLang;
@@ -3568,7 +3568,7 @@
                 };
                 let localLangIdx = 0;
                 let localDiaIdx = 0;
-                let localRecLang = localStorage.getItem("voiceRecLang") || "cmn-Hans-CN";
+                let localRecLang = localStorage.getItem("voiceRecLang") || langs[0][1][0];
                 if (localRecLang) {
                     let localIndex = langs.findIndex(item => {
                         let diaIdx = item.findIndex(lang => { return lang instanceof Array && lang[0] === localRecLang });
