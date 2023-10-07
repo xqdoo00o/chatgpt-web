@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="简洁而强大的ChatGPT应用">
     <meta name="theme-color" content="#edeff2">
@@ -3467,6 +3467,12 @@
         let toggleRecEv;
         const isAndroid = /\bAndroid\b/i.test(navigator.userAgent);
         const isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent);
+        const isPWA = navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
+        if (isPWA) {
+            let bottomEle = document.querySelector(".bottom_wrapper");
+            let footerEle = document.querySelector(".navFooter");
+            footerEle.style.marginBottom = bottomEle.style.marginBottom = "8px";
+        };
         const dayMs = 8.64e7;
         refreshPage.onclick = () => {
             if (confirmAction(translations[locale]["forceReTip"])) {
