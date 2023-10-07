@@ -1400,14 +1400,57 @@
             text-align: center;
         }
 
-        #loadMask svg {
-            width: 160px;
-            height: 80px;
+        @keyframes loading {
+
+            0%,
+            100% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1);
+            }
         }
 
-        #loadMask>div>div {
+        .loadingCSSIcon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+
+        .loadingCSSIcon div {
+            width: 15%;
+            height: 0;
+            padding-bottom: 15%;
+            border-radius: 50%;
+            animation: loading 1s cubic-bezier(0.3, 0, 0.7, 1) infinite;
+        }
+
+        .loadingCSSIcon div:nth-child(1) {
+            background: #e15b64;
+            animation-delay: -0.4s
+        }
+
+        .loadingCSSIcon div:nth-child(2) {
+            background: #f8b26a;
+            animation-delay: -0.2s
+        }
+
+        .loadingCSSIcon div:nth-child(3) {
+            background: #99c959;
+            animation-delay: 0s;
+        }
+
+        #loadMask>div>:first-child {
             font-size: 40px;
             color: var(--text-color);
+        }
+
+        #loadMask>div>:last-child {
+            width: 140px;
+            height: 70px;
+            margin: 0 auto;
         }
 
         #voiceRec {
@@ -2137,16 +2180,16 @@
             <symbol viewBox="0 0 200 100" preserveAspectRatio="xMidYMid" id="loadingIcon">
                 <g transform="translate(50 50)">
                     <circle cx="0" cy="0" r="15" fill="#e15b64">
-                        <animateTransform attributeName="transform" type="scale" begin="-0.3333333333333333s"
-                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
-                            dur="1s" repeatCount="indefinite"></animateTransform>
+                        <animateTransform attributeName="transform" type="scale" begin="-0.4s" calcMode="spline"
+                            keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s"
+                            repeatCount="indefinite"></animateTransform>
                     </circle>
                 </g>
                 <g transform="translate(100 50)">
                     <circle cx="0" cy="0" r="15" fill="#f8b26a">
-                        <animateTransform attributeName="transform" type="scale" begin="-0.16666666666666666s"
-                            calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1"
-                            dur="1s" repeatCount="indefinite"></animateTransform>
+                        <animateTransform attributeName="transform" type="scale" begin="-0.2s" calcMode="spline"
+                            keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s"
+                            repeatCount="indefinite"></animateTransform>
                     </circle>
                 </g>
                 <g transform="translate(150 50)">
@@ -2266,9 +2309,11 @@
     <div id="loadMask">
         <div>
             <div>ChatGPT</div>
-            <svg>
-                <use xlink:href="#loadingIcon" />
-            </svg>
+            <div class="loadingCSSIcon">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
     </div>
     <div class="chat_window">
