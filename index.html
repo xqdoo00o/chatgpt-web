@@ -1644,6 +1644,8 @@
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 8px;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .sysSwitch,
@@ -1701,10 +1703,19 @@
         .setTitle {
             margin-bottom: 6px;
             font-weight: bold;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .setDetail {
             margin: 0 10px;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .autoSelect>label,
+        .autoSelect>input {
+            cursor: pointer;
         }
 
         .dataDetail {
@@ -1910,10 +1921,6 @@
             border-radius: 6px;
             background: var(--active-btn);
             overflow: hidden;
-        }
-
-        .expiredBar {
-            background: #e15b64;
         }
 
         .nowProgress {
@@ -2697,11 +2704,11 @@
                         </div>
                         <div class="setContent" id="autoDetail" style="display: none;font-size: 15px;">
                             <div class="setDetail">
-                                <div>
+                                <div class="autoSelect">
                                     <input type="radio" id="autoTheme1" name="autoLight" value="1" checked />
                                     <label for="autoTheme1" data-i18n-key="systemTheme"></label>
                                 </div>
-                                <div style="margin-top: 8px;">
+                                <div class="autoSelect" style="margin-top: 8px;">
                                     <input type="radio" id="autoTheme0" name="autoLight" value="0" />
                                     <label for="autoTheme0" data-i18n-key="customDarkTheme"></label>
                                 </div>
@@ -2745,24 +2752,6 @@
                             <div class="setDetail inputDetail apiDetail">
                                 <input class="inputTextClass" type="text" placeholder="sk-xxxxxx" id="keyInput"
                                     autocomplete="off" style="-webkit-text-security: disc;" />
-                                <div id="checkBillBtn" class="loaded">
-                                    <span data-i18n-key="checkBill"></span>
-                                    <svg style="margin:0 auto;height:34px;width:100%;">
-                                        <use xlink:href="#loadingIcon"></use>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setContent" id="quotaContent" style="display: none;">
-                            <div class="setTitle" id="quotaTitle" data-i18n-quota></div>
-                            <div class="setDetail">
-                                <div class="progressBar">
-                                    <div class="nowProgress" id="usedQuotaBar"></div>
-                                </div>
-                                <div class="progressDetail">
-                                    <div><span data-i18n-key="used"></span><span id="usedQuota"></span></div>
-                                    <div><span data-i18n-key="available"></span><span id="availableQuota"></span></div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -2832,7 +2821,7 @@
                                     <svg width="22" height="22" style="transform: scaleX(-1)">
                                         <use xlink:href="#refreshIcon" />
                                     </svg>
-                                    <span data-i18n-key="resetHotKeyTip"></span>
+                                    <span data-i18n-key="resetTip"></span>
                                 </div>
                             </div>
                         </div>
@@ -3121,7 +3110,6 @@
                 "endDark": "End",
                 "aiEndpoint": "OpenAI endpoint",
                 "aiKey": "OpenAI API key",
-                "checkBill": "Check bill",
                 "used": "Used ",
                 "available": "Avail ",
                 "navKey": "Toggle nav",
@@ -3130,7 +3118,7 @@
                 "themeKey": "Toggle lang",
                 "inputKey": "Message",
                 "voiceKey": "Voice",
-                "resetHotKeyTip": "Restore default",
+                "resetTip": "Restore default",
                 "recKey": "Recognition",
                 "speechKey": "Start speech",
                 "export": "Export",
@@ -3143,8 +3131,6 @@
                 "noMicTip": "No microphone was found. Ensure that a microphone is installed and microphone settings are configured correctly.",
                 "noMicPerTip": "Permission to use microphone is blocked.",
                 "azureInvalidTip": "Access is denied due to invalid access key or API endpoint!",
-                "thisQuota": "This month's quota",
-                "freeTierTip": "Free tier - valid until: ",
                 "errorAiKeyTip": "Invalid or incorrect API key, please check API key!",
                 "copyCode": "Copy code",
                 "copySuccess": "Success",
@@ -3278,7 +3264,6 @@
                 "endDark": "结束时间",
                 "aiEndpoint": "OpenAI接口",
                 "aiKey": "API密钥",
-                "checkBill": "检查API额度",
                 "used": "已用 ",
                 "available": "可用 ",
                 "navKey": "切换导航",
@@ -3287,7 +3272,7 @@
                 "langKey": "切换语言",
                 "inputKey": "输入框",
                 "voiceKey": "语音",
-                "resetHotKeyTip": "恢复默认设值",
+                "resetTip": "重置设置",
                 "recKey": "语音输入",
                 "speechKey": "朗读会话",
                 "export": "导出",
@@ -3300,8 +3285,6 @@
                 "noMicTip": "未识别到麦克风，请确保已安装麦克风！",
                 "noMicPerTip": "未允许麦克风权限！",
                 "azureInvalidTip": "由于订阅密钥无效或 API 端点错误，访问被拒绝！",
-                "thisQuota": "本月额度",
-                "freeTierTip": "免费额度-有效期至: ",
                 "errorAiKeyTip": "API密钥错误或失效，请检查API密钥！",
                 "copyCode": "复制代码",
                 "copySuccess": "复制成功",
@@ -3364,15 +3347,6 @@
             document.querySelectorAll("[data-i18n-window]").forEach(ele => {
                 let key = isFull ? "winedWin" : "fullWin";
                 ele.setAttribute("title", translations[locale][key])
-            })
-            document.querySelectorAll("[data-i18n-quota]").forEach(ele => {
-                let splitIdx = ele.innerHTML.indexOf(":");
-                if (splitIdx === -1) {
-                    ele.textContent = translations[locale]["thisQuota"];
-                } else {
-                    let validHtml = ele.innerHTML.slice(splitIdx + 2);
-                    ele.innerHTML = translations[locale]["freeTierTip"] + validHtml;
-                }
             })
             document.head.children[3].setAttribute("content", translations[locale]["description"])
         };
@@ -4365,125 +4339,6 @@
         }
         const escapeRegExp = (str) => {
             return str.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
-        }
-        const formatDate = date => {
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, "0");
-            const day = date.getDate().toString().padStart(2, "0");
-            return `${year}-${month}-${day}`;
-        }
-        const checkBill = async () => {
-            let headers = { "Content-Type": "application/json" };
-            if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
-            let subCtrl = new AbortController();
-            setTimeout(() => {
-                subCtrl.abort();
-            }, 20000);
-            let subRes;
-            try {
-                subRes = await fetch(apiHost + "v1/dashboard/billing/subscription", {
-                    headers,
-                    signal: subCtrl.signal
-                });
-                if (subRes.status !== 200) return;
-            } catch (e) {
-                return;
-            }
-            const subData = await subRes.json();
-            const totalQuota = subData.hard_limit_usd;
-            const isSubsrcibed = subData.has_payment_method;
-            const urlUsage = apiHost + "v1/dashboard/billing/usage?";
-            let useCtrl = new AbortController();
-            const nowDate = new Date(new Date().getTime() + dayMs);
-            let usedData;
-            let expired;
-            setTimeout(() => {
-                useCtrl.abort();
-            }, 20000);
-            if (isSubsrcibed) {
-                const subDate = new Date();
-                subDate.setDate(1);
-                try {
-                    const useRes = await fetch(urlUsage + `start_date=${formatDate(subDate)}&end_date=${formatDate(nowDate)}`, {
-                        headers,
-                        signal: useCtrl.signal
-                    });
-                    const useJson = await useRes.json();
-                    usedData = useJson.total_usage / 100;
-                } catch (e) {
-                    return;
-                }
-            } else {
-                let urls = [];
-                const expireTime = subData.access_until * 1000;
-                expired = new Date(expireTime);
-                const startDate = new Date(expireTime - 128 * dayMs);
-                const midDate = new Date(expireTime - 64 * dayMs);
-                const endDate = new Date(expireTime + dayMs);
-                if (nowDate < midDate) {
-                    urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(nowDate)}`);
-                } else if (nowDate < endDate) {
-                    urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(midDate)}`);
-                    if (formatDate(nowDate) !== formatDate(midDate)) {
-                        urls.push(`start_date=${formatDate(midDate)}&end_date=${formatDate(nowDate)}`);
-                    }
-                } else {
-                    urls.push(`start_date=${formatDate(startDate)}&end_date=${formatDate(midDate)}`);
-                    urls.push(`start_date=${formatDate(midDate)}&end_date=${formatDate(endDate)}`);
-                }
-                try {
-                    const uses = await Promise.all(urls.map(async url => {
-                        return new Promise((res, rej) => {
-                            fetch(urlUsage + url, {
-                                headers,
-                                signal: useCtrl.signal
-                            }).then(response => {
-                                response.json().then(json => {
-                                    if (json.total_usage !== void 0) res(json.total_usage);
-                                    else rej();
-                                });
-                            }).catch(() => {
-                                rej();
-                            })
-                        })
-                    }));
-                    usedData = uses.reduce((prev, curr) => prev + curr, 0) / 100;
-                } catch (e) {
-                    return;
-                }
-            }
-            if (usedData > totalQuota) usedData = totalQuota;
-            return [totalQuota, usedData, isSubsrcibed, expired];
-        }
-        let checkingBill = false;
-        checkBillBtn.onclick = async () => {
-            if (checkingBill) return;
-            checkingBill = true;
-            checkBillBtn.className = "loading";
-            quotaContent.style.display = "none";
-            try {
-                let res = await checkBill();
-                if (!res) throw new Error("API error");
-                let [total, used, isSub, exp] = res;
-                usedQuotaBar.style.width = (used / total * 100).toFixed(2) + "%";
-                usedQuotaBar.parentElement.classList.remove("expiredBar");
-                usedQuota.textContent = "$" + used.toFixed(2);
-                let remain = total - used;
-                availableQuota.textContent = "$" + Math.floor(remain * 100) / 100;
-                if (isSub) {
-                    quotaTitle.textContent = translations[locale]["thisQuota"];
-                } else {
-                    let isExpired = new Date() > exp;
-                    if (isExpired) usedQuotaBar.parentElement.classList.add("expiredBar");
-                    let accessDate = formatDate(exp);
-                    quotaTitle.innerHTML = translations[locale]["freeTierTip"] + `<span style="color: ${isExpired ? "#e15b64" : "#99c959"} ">${accessDate}</span>`;
-                }
-                quotaContent.style.display = "block";
-            } catch (e) {
-                notyf.error(translations[locale]["errorAiKeyTip"]);
-            }
-            checkingBill = false;
-            checkBillBtn.className = "loaded";
         }
         const checkStorage = () => {
             let used = 0;
@@ -5485,6 +5340,7 @@
         document.getElementById("resetHotKey").onclick = () => {
             localStorage.removeItem("hotKeys");
             initHotKey();
+            notyf.success(translations[locale]["resetSetSuccTip"]);
         };
         const blobToText = (blob) => {
             return new Promise((res, rej) => {
@@ -5825,7 +5681,6 @@
             let localKey = localStorage.getItem("APIKey");
             customAPIKey = keyEle.value = envAPIKey || localKey || keyEle.getAttribute("value") || "";
             keyEle.onchange = () => {
-                quotaContent.style.display = "none";
                 customAPIKey = keyEle.value;
                 localStorage.setItem("APIKey", customAPIKey);
             }
