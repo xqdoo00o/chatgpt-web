@@ -3502,6 +3502,9 @@
             return !loading && (!currentResEle || currentResEle.dataset.loading !== "true")
         };
         inputAreaEle.focus();
+        const mdProcess = (str) => {
+            return str.replace(/\[.*?\]\(((?:[^\(\)]|\([^\(\)]*\))*)\)/g, "")
+        }
         const textInputEvent = () => {
             if (noLoading()) sendBtnEle.classList.toggle("activeSendBtn", inputAreaEle.value.trim().length);
             inputAreaEle.style.height = "47px";
@@ -6312,7 +6315,7 @@
             let pitch = voicePitch[type];
             let style = azureStyle[type];
             let role = azureRole[type];
-            let content = data[idx].content;
+            let content = mdProcess(data[idx].content);
             let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
             let blob = voiceData[key];
             if (blob) {
@@ -6380,7 +6383,7 @@
             chatlog.children[systemRole ? idx - 1 : idx].classList.add("showVoiceCls");
             let voiceIconEle = chatlog.children[systemRole ? idx - 1 : idx].lastChild.lastChild;
             voiceIconEle.className = "voiceCls pauseVoice";
-            let content = data[idx].content;
+            let content = mdProcess(data[idx].content);
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
             let pitch = voicePitch[type];
@@ -6477,7 +6480,7 @@
         let autoOnlineVoiceFlag = false;
         const autoAddQuene = () => {
             if (voiceContentQuene.length) {
-                let content = voiceContentQuene.shift();
+                let content = mdProcess(voiceContentQuene.shift());
                 let currDate = getTime();
                 let uuid = uuidv4();
                 let voice = voiceRole[1].Name;
