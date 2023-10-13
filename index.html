@@ -2984,6 +2984,8 @@
     </div>
     <link crossorigin="anonymous" href="//cdn.staticfile.org/github-markdown-css/5.3.0/github-markdown-light.min.css"
         rel="stylesheet">
+    <link crossorigin="anonymous" href="//cdn.staticfile.org/highlight.js/11.9.0/styles/github.min.css"
+        rel="stylesheet">
     <link crossorigin="anonymous" href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css" rel="stylesheet">
     <script crossorigin="anonymous" src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
     <script>
@@ -5922,6 +5924,8 @@
             const setDarkTheme = (is) => {
                 let cssEle = document.body.getElementsByTagName("link")[0];
                 cssEle.href = cssEle.href.replace(is ? "light" : "dark", is ? "dark" : "light");
+                let hlCssEle = document.body.getElementsByTagName("link")[1];
+                hlCssEle.href = hlCssEle.href.replace(is ? "github" : "github-dark", is ? "github-dark" : "github");
                 justDarkTheme(is);
             }
             const handleAutoMode = (ele) => {
@@ -6934,8 +6938,6 @@
             }
         }
     </script>
-    <link crossorigin="anonymous" href="//cdn.staticfile.org/highlight.js/11.9.0/styles/github.min.css"
-        rel="stylesheet">
     <link crossorigin="anonymous" href="//cdn.staticfile.org/KaTeX/0.16.9/katex.min.css" rel="stylesheet">
     <script defer>
         let downRoleController = new AbortController();
