@@ -27,7 +27,7 @@
 
         * {
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji" !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
         }
 
         html {
@@ -95,7 +95,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .overlay {
+        .chat_window>.overlay {
             width: 100%;
             height: 100%;
             position: absolute;
@@ -126,7 +126,7 @@
                 width: calc(100% - 250px);
             }
 
-            .nav {
+            .chat_window>.nav {
                 position: relative;
                 margin-left: -250px;
                 transition: margin-left 250ms;
@@ -173,7 +173,7 @@
                 width: 100%;
             }
 
-            .nav {
+            .chat_window>.nav {
                 position: absolute !important;
                 left: -250px;
                 transition: left 250ms;
@@ -217,7 +217,7 @@
             max-height: none;
         }
 
-        .nav {
+        .chat_window>.nav {
             width: 250px;
             height: 100%;
             border-right: 1px solid var(--active-btn);
@@ -291,7 +291,7 @@
             pointer-events: none;
         }
 
-        .title>span {
+        .top_menu .title>span {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -1161,14 +1161,14 @@
             display: block;
         }
 
-        .divider {
+        .navFooter {
+            padding-bottom: 8px;
+        }
+
+        .navFooter .divider {
             width: 100%;
             border-top: 1px solid var(--active-btn);
             margin: 4px 0;
-        }
-
-        .navFooter {
-            padding-bottom: 8px;
         }
 
         .navFunc {
@@ -1196,20 +1196,20 @@
             background: var(--active-btn);
         }
 
-        .links {
+        .navFooter .links {
             text-align: center;
         }
 
-        .links a {
+        .navFooter .links a {
             color: var(--btn-color);
             text-decoration: none;
         }
 
-        .links a:hover {
+        .navFooter .links a:hover {
             color: var(--chat-text-color) !important;
         }
 
-        .links a:visited {
+        .navFooter .links a:visited {
             color: var(--btn-color);
         }
 
@@ -2068,6 +2068,37 @@
             display: block;
         }
     </style>
+    <style>
+        /* for katex */
+        .katex {
+            font-size: 1em !important;
+        }
+
+        eq {
+            display: inline-block;
+        }
+
+        eqn {
+            display: block
+        }
+
+        section.eqno {
+            display: flex;
+            flex-direction: row;
+            align-content: space-between;
+            align-items: center;
+        }
+
+        section.eqno>eqn {
+            width: 100%;
+            margin-left: 3em;
+        }
+
+        section.eqno>span {
+            width: 3em;
+            text-align: right;
+        }
+    </style>
     <script>
         let themeMode; // 2: 自动， 1: 浅色，0: 深色
         let autoThemeMode; // 1: 跟随系统，0:自定义时间
@@ -2426,6 +2457,7 @@
                                 <option value="gpt-3.5-turbo-16k">GPT-3.5-16K</option>
                                 <option value="gpt-4">GPT-4</option>
                                 <option value="gpt-4-browsing" data-i18n-key="gptBrowsing"></option>
+                                <option value="gpt-4-dalle">GPT-4-DALLE</option>
                                 <option value="gpt-4-32k">GPT-4-32k</option>
                             </select>
                         </div>
@@ -2950,7 +2982,7 @@
             </div>
         </div>
     </div>
-    <link crossorigin="anonymous" href="//cdn.staticfile.org/github-markdown-css/5.2.0/github-markdown-light.min.css"
+    <link crossorigin="anonymous" href="//cdn.staticfile.org/github-markdown-css/5.3.0/github-markdown-light.min.css"
         rel="stylesheet">
     <link crossorigin="anonymous" href="//cdn.staticfile.org/notyf/3.10.0/notyf.min.css" rel="stylesheet">
     <script crossorigin="anonymous" src="//cdn.staticfile.org/notyf/3.10.0/notyf.min.js"></script>
@@ -3512,9 +3544,6 @@
             return !loading && (!currentResEle || currentResEle.dataset.loading !== "true")
         };
         inputAreaEle.focus();
-        const mdProcess = (str) => {
-            return str.replace(/\[.*?\]\(((?:[^\(\)]|\([^\(\)]*\))*)\)/g, "")
-        }
         const textInputEvent = () => {
             if (noLoading()) sendBtnEle.classList.toggle("activeSendBtn", inputAreaEle.value.trim().length);
             inputAreaEle.style.height = "47px";
@@ -4308,12 +4337,13 @@
         };
         speechServiceEle.dispatchEvent(new Event("change"));
     </script>
-    <script crossorigin="anonymous" src="//cdn.staticfile.org/markdown-it/13.0.1/markdown-it.min.js"></script>
-    <script crossorigin="anonymous" src="//cdn.staticfile.org/highlight.js/11.8.0/highlight.min.js"></script>
-    <script crossorigin="anonymous" src="//cdn.staticfile.org/KaTeX/0.16.7/katex.min.js"></script>
-    <script crossorigin="anonymous" src="//npm.elemecdn.com/markdown-it-texmath@1.0.0/texmath.js"></script>
-    <script crossorigin="anonymous"
-        src="//npm.elemecdn.com/markdown-it-link-attributes@4.0.1/dist/markdown-it-link-attributes.min.js"></script>
+    <script crossorigin="anonymous" src="//cdn.staticfile.org/markdown-it/13.0.2/markdown-it.min.js"></script>
+    <script crossorigin="anonymous" src="//cdn.staticfile.org/highlight.js/11.9.0/highlight.min.js"></script>
+    <script crossorigin="anonymous" src="//cdn.staticfile.org/KaTeX/0.16.9/katex.min.js"></script>
+    <script>
+        // from markdown-it-texmath@1.0.0
+        function escapeHTML(e){return e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}function texmath(e,t){const n=texmath.mergeDelimiters(t&&t.delimiters),a=t&&t.outerSpace||!1,o=t&&t.katexOptions||{};o.throwOnError=o.throwOnError||!1,o.macros=o.macros||t&&t.macros,texmath.katex||(t&&"object"==typeof t.engine?texmath.katex=t.engine:"object"==typeof module?texmath.katex=require("katex"):texmath.katex={renderToString:()=>"No math renderer found."});for(const t of n.inline)a&&"outerSpace"in t&&(t.outerSpace=!0),e.inline.ruler.before("escape",t.name,texmath.inline(t)),e.renderer.rules[t.name]=(e,n)=>t.tmpl.replace(/\$1/,texmath.render(e[n].content,!!t.displayMode,o));for(const t of n.block)e.block.ruler.before("fence",t.name,texmath.block(t)),e.renderer.rules[t.name]=(e,n)=>t.tmpl.replace(/\$2/,escapeHTML(e[n].info)).replace(/\$1/,texmath.render(e[n].content,!0,o))}texmath.mergeDelimiters=function(e){const t=Array.isArray(e)?e:"string"==typeof e?[e]:["dollars"],n={inline:[],block:[]};for(const e of t)e in texmath.rules&&(n.inline.push(...texmath.rules[e].inline),n.block.push(...texmath.rules[e].block));return n},texmath.inline=e=>function(t,n){const a=t.pos,o=t.src,r=o.startsWith(e.tag,e.rex.lastIndex=a)&&(!e.pre||e.pre(o,e.outerSpace,a))&&e.rex.exec(o),s=!!r&&a<e.rex.lastIndex&&(!e.post||e.post(o,e.outerSpace,e.rex.lastIndex-1));if(s){if(!n){const n=t.push(e.name,"math",0);n.content=r[1],n.markup=e.tag}t.pos=e.rex.lastIndex}return s},texmath.block=e=>function(t,n,a,o){const r=t.bMarks[n]+t.tShift[n],s=t.src,m=s.startsWith(e.tag,e.rex.lastIndex=r)&&(!e.pre||e.pre(s,!1,r))&&e.rex.exec(s),l=!!m&&r<e.rex.lastIndex&&(!e.post||e.post(s,!1,e.rex.lastIndex-1));if(l&&!o){const o=e.rex.lastIndex-1;let r;for(r=n;r<a&&!(o>=t.bMarks[r]+t.tShift[r]&&o<=t.eMarks[r]);r++);const s=t.lineMax,l=t.parentType;t.lineMax=r,t.parentType="math","blockquote"===l&&(m[1]=m[1].replace(/(\n*?^(?:\s*>)+)/gm,""));let c=t.push(e.name,"math",0);c.block=!0,c.tag=e.tag,c.markup="",c.content=m[1],c.info=m[m.length-1],c.map=[n,r+1],t.parentType=l,t.lineMax=s,t.line=r+1}return l},texmath.render=function(e,t,n){let a;n.displayMode=t;try{a=texmath.katex.renderToString(e,n)}catch(t){a=escapeHTML(`${e}:${t.message}`)}return a},texmath.inlineRuleNames=["math_inline","math_inline_double"],texmath.blockRuleNames=["math_block","math_block_eqno"],texmath.$_pre=(e,t,n)=>{const a=n>0&&e[n-1].charCodeAt(0);return t?!a||32===a:!a||92!==a&&(a<48||a>57)},texmath.$_post=(e,t,n)=>{const a=e[n+1]&&e[n+1].charCodeAt(0);return t?!a||32===a||46===a||44===a||59===a:!a||a<48||a>57},texmath.rules={brackets:{inline:[{name:"math_inline",rex:/\\\((.+?)\\\)/gy,tmpl:"<eq>$1</eq>",tag:"\\("}],block:[{name:"math_block_eqno",rex:/\\\[(((?!\\\]|\\\[)[\s\S])+?)\\\]\s*?\(([^)$\r\n]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"\\["},{name:"math_block",rex:/\\\[([\s\S]+?)\\\]/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\["}]},doxygen:{inline:[{name:"math_inline",rex:/\\f\$(.+?)\\f\$/gy,tmpl:"<eq>$1</eq>",tag:"\\f$"}],block:[{name:"math_block_eqno",rex:/\\f\[([^]+?)\\f\]\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"\\f["},{name:"math_block",rex:/\\f\[([^]+?)\\f\]/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\f["}]},gitlab:{inline:[{name:"math_inline",rex:/\$`(.+?)`\$/gy,tmpl:"<eq>$1</eq>",tag:"$`"}],block:[{name:"math_block_eqno",rex:/`{3}math\s*([^`]+?)\s*?`{3}\s*\(([^)\r\n]+?)\)/gm,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"```math"},{name:"math_block",rex:/`{3}math\s*([^`]*?)\s*`{3}/gm,tmpl:"<section><eqn>$1</eqn></section>",tag:"```math"}]},julia:{inline:[{name:"math_inline",rex:/`{2}([^`]+?)`{2}/gy,tmpl:"<eq>$1</eq>",tag:"``"},{name:"math_inline",rex:/\$((?:\S?)|(?:\S.*?\S))\$/gy,tmpl:"<eq>$1</eq>",tag:"$",spaceEnclosed:!1,pre:texmath.$_pre,post:texmath.$_post}],block:[{name:"math_block_eqno",rex:/`{3}math\s+?([^`]+?)\s+?`{3}\s*?\(([^)$\r\n]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"```math"},{name:"math_block",rex:/`{3}math\s+?([^`]+?)\s+?`{3}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"```math"}]},kramdown:{inline:[{name:"math_inline",rex:/\${2}(.+?)\${2}/gy,tmpl:"<eq>$1</eq>",tag:"$$"}],block:[{name:"math_block_eqno",rex:/\${2}([^$]+?)\${2}\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"$$"},{name:"math_block",rex:/\${2}([^$]+?)\${2}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$"}]},beg_end:{inline:[],block:[{name:"math_block",rex:/(\\(?:begin)\{([a-z]+)\}[\s\S]+?\\(?:end)\{\2\})/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\"}]},dollars:{inline:[{name:"math_inline_double",rex:/\${2}([^$]*?[^\\])\${2}/gy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$",displayMode:!0,pre:texmath.$_pre,post:texmath.$_post},{name:"math_inline",rex:/\$((?:[^\s\\])|(?:\S.*?[^\s\\]))\$/gy,tmpl:"<eq>$1</eq>",tag:"$",outerSpace:!1,pre:texmath.$_pre,post:texmath.$_post}],block:[{name:"math_block_eqno",rex:/\${2}([^$]*?[^\\])\${2}\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"$$"},{name:"math_block",rex:/\${2}([^$]*?[^\\])\${2}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$"}]}};
+    </script>
     <script>
         const API_URL = "v1/chat/completions";
         let loading = false;
@@ -4391,11 +4421,11 @@
             escapeTextarea.textContent = str;
             return escapeTextarea.innerHTML;
         }
+        const parser = new DOMParser();
         const getUnescape = html => {
-            escapeTextarea.innerHTML = html;
-            return escapeTextarea.textContent;
+            return parser.parseFromString(html, 'text/html').body.textContent;
         }
-        const escapeRegExp = (str) => {
+        const escapeRegexExp = (str) => { // from vscode src/vs/base/common/strings.ts escapeRegExpCharacters
             return str.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
         }
         const checkStorage = () => {
@@ -4503,8 +4533,13 @@
         });
         md.inline.ruler.after("emphasis", "sup", superscript);
         md.inline.ruler.after("emphasis", "sub", subscript);
-        md.use(texmath, { engine: katex, delimiters: "dollars", katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } })
-            .use(markdownitLinkAttributes, { attrs: { target: "_blank", rel: "noopener" } });
+        md.use(texmath, { engine: katex, delimiters: "dollars", katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } });
+        md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+            let aIndex = tokens[idx].attrIndex('target');
+            if (aIndex < 0) tokens[idx].attrPush(['target', '_blank']);
+            else tokens[idx].attrs[aIndex][1] = '_blank';
+            return self.renderToken(tokens, idx, options);
+        };
         const codeUtils = {
             getCodeLang(str = "") {
                 const res = str.match(/ class="language-(.*?)"/);
@@ -4568,12 +4603,12 @@
         };
         md.renderer.rules.code_block = enhanceCode(md.renderer.rules.code_block);
         md.renderer.rules.fence = enhanceCode(md.renderer.rules.fence);
-        md.renderer.rules.image = function (tokens, idx, options, env, slf) {
+        md.renderer.rules.image = function (tokens, idx, options, env, self) {
             let token = tokens[idx];
-            token.attrs[token.attrIndex("alt")][1] = slf.renderInlineAsText(token.children, options, env);
+            token.attrs[token.attrIndex("alt")][1] = self.renderInlineAsText(token.children, options, env);
             token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
             token.attrSet("onerror", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
-            return slf.renderToken(tokens, idx, options)
+            return self.renderToken(tokens, idx, options)
         }
         let currentVoiceIdx;
         let editingIdx;
@@ -5332,7 +5367,7 @@
                 let chatEle = getChatEle(i);
                 chatEle.style.display = null;
                 let flags = isCaseSearch ? "" : "i";
-                let pattern = escapeRegExp(searchChatEle.value);
+                let pattern = escapeRegexExp(searchChatEle.value);
                 let regex = new RegExp(pattern, flags);
                 let nameData = chatsData[i].name.match(regex);
                 let nameIdx = nameData ? nameData.index : -1;
@@ -6322,7 +6357,7 @@
             let pitch = voicePitch[type];
             let style = azureStyle[type];
             let role = azureRole[type];
-            let content = mdProcess(data[idx].content);
+            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent;
             let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
             let blob = voiceData[key];
             if (blob) {
@@ -6390,7 +6425,7 @@
             chatlog.children[systemRole ? idx - 1 : idx].classList.add("showVoiceCls");
             let voiceIconEle = chatlog.children[systemRole ? idx - 1 : idx].lastChild.lastChild;
             voiceIconEle.className = "voiceCls pauseVoice";
-            let content = mdProcess(data[idx].content);
+            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent;
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
             let pitch = voicePitch[type];
@@ -6487,7 +6522,7 @@
         let autoOnlineVoiceFlag = false;
         const autoAddQuene = () => {
             if (voiceContentQuene.length) {
-                let content = mdProcess(voiceContentQuene.shift());
+                let content = getUnescape(md.render(voiceContentQuene.shift()));
                 let currDate = getTime();
                 let uuid = uuidv4();
                 let voice = voiceRole[1].Name;
@@ -6899,10 +6934,9 @@
             }
         }
     </script>
-    <link crossorigin="anonymous" href="//cdn.staticfile.org/highlight.js/11.8.0/styles/github.min.css"
+    <link crossorigin="anonymous" href="//cdn.staticfile.org/highlight.js/11.9.0/styles/github.min.css"
         rel="stylesheet">
-    <link crossorigin="anonymous" href="//cdn.staticfile.org/KaTeX/0.16.7/katex.min.css" rel="stylesheet">
-    <link crossorigin="anonymous" href="//npm.elemecdn.com/markdown-it-texmath@1.0.0/css/texmath.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="//cdn.staticfile.org/KaTeX/0.16.9/katex.min.css" rel="stylesheet">
     <script defer>
         let downRoleController = new AbortController();
         const loadPrompt = () => {
