@@ -4537,9 +4537,10 @@
         md.inline.ruler.after("emphasis", "sub", subscript);
         md.use(texmath, { engine: katex, delimiters: "dollars", katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } });
         md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
-            let aIndex = tokens[idx].attrIndex('target');
-            if (aIndex < 0) tokens[idx].attrPush(['target', '_blank']);
-            else tokens[idx].attrs[aIndex][1] = '_blank';
+            let aIndex = tokens[idx].attrIndex("target");
+            if (tokens[idx + 1] && tokens[idx + 1].type === "image") tokens[idx].attrPush(["download", ""]);
+            else if (aIndex < 0) tokens[idx].attrPush(["target", "_blank"]);
+            else tokens[idx].attrs[aIndex][1] = "_blank";
             return self.renderToken(tokens, idx, options);
         };
         const codeUtils = {
