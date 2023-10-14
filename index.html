@@ -4611,6 +4611,8 @@
             token.attrs[token.attrIndex("alt")][1] = self.renderInlineAsText(token.children, options, env);
             token.attrSet("onload", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
             token.attrSet("onerror", "scrollToBottomLoad(this);this.removeAttribute('onload');this.removeAttribute('onerror')");
+            token.attrPush(["decoding", "async"]);
+            token.attrPush(["loading", "lazy"]);
             return self.renderToken(tokens, idx, options)
         }
         let currentVoiceIdx;
