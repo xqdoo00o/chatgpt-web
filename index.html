@@ -4535,7 +4535,7 @@
         });
         md.inline.ruler.after("emphasis", "sup", superscript);
         md.inline.ruler.after("emphasis", "sub", subscript);
-        md.use(texmath, { engine: katex, delimiters: "brackets" });
+        md.use(texmath, { engine: katex, delimiters: ["brackets", "dollars"] });
         md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
             let aIndex = tokens[idx].attrIndex("target");
             if (tokens[idx + 1] && tokens[idx + 1].type === "image") tokens[idx].attrPush(["download", ""]);
