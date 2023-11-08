@@ -4370,7 +4370,11 @@
         let longReplyFlag;
         let voiceIns; // Audio or SpeechSynthesisUtterance
         const supportMSE = !!window.MediaSource; // 是否支持MSE（除了ios应该都支持）
-        let voiceMIME = "audio/mpeg";
+        const isFirefox = !!navigator.userAgent.match(/firefox/i);
+        const voiceMIME = isFirefox ? "audio/webm; codec=opus" : "audio/mpeg";
+        const voiceFormat = isFirefox ? "webm-24khz-16bit-mono-opus" : "audio-24khz-48kbitrate-mono-mp3";
+        const voicePreLen = isFirefox ? 142 : 130;
+        const voiceSuffix = isFirefox ? ".webm" : ".mp3";
         let userAvatar; // 用户头像
         let customDarkOut;
         let isCaseSearch; // 搜索是否区分大小写
@@ -5764,10 +5768,6 @@
             apiHost = apiHostEle.value = envAPIEndpoint || localApiHost || apiHostEle.getAttribute("value") || "";
             apiHostEle.onchange = () => {
                 apiHost = apiHostEle.value;
-                if (apiHost.length && !apiHost.endsWith("/")) {
-                    apiHost += "/";
-                    apiHostEle.value = apiHost;
-                }
                 if (apiHost && apiSelects.indexOf(apiHost) === -1) appendApiOption();
                 localStorage.setItem("APIHost", apiHost);
             }
@@ -6094,8 +6094,8 @@
             return `Path: speech.config\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/json\r\n\r\n{"context":{"system":{"name":"SpeechSDK","version":"1.26.0","build":"JavaScript","lang":"JavaScript","os":{"platform":"${osPlatform}","name":"${osName}","version":"${osVersion}"}}}}`
         }
         const getWSAudio = (date, requestId) => {
-            return existVoice === 3 ? `Path: synthesis.context\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/json\r\n\r\n{"synthesis":{"audio":{"metadataOptions":{"sentenceBoundaryEnabled":false,"wordBoundaryEnabled":false},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}`
-                : `X-Timestamp:${date}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"true"},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}`
+            return existVoice === 3 ? `Path: synthesis.context\r\nX-RequestId: ${requestId}\r\nX-Timestamp: ${date}\r\nContent-Type: application/json\r\n\r\n{"synthesis":{"audio":{"metadataOptions":{"sentenceBoundaryEnabled":false,"wordBoundaryEnabled":false},"outputFormat":"${voiceFormat}"}}}`
+                : `X-Timestamp:${date}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":"false","wordBoundaryEnabled":"true"},"outputFormat":"${voiceFormat}"}}}}`
         }
         const getWSText = (date, requestId, lang, voice, volume, rate, pitch, style, role, msg) => {
             let fmtVolume = volume === 1 ? "+0%" : volume * 100 - 100 + "%";
@@ -6225,10 +6225,10 @@
                     };
                     downSocket.onmessage = (e) => {
                         if (e.data instanceof ArrayBuffer) {
-                            let text = new TextDecoder().decode(e.data.slice(0, 130));
+                            let text = new TextDecoder().decode(e.data.slice(0, voicePreLen));
                             let reqIdx = text.indexOf(":");
                             let uuid = text.slice(reqIdx + 1, reqIdx + 33);
-                            downQuene[uuid]["blob"].push(e.data.slice(130));
+                            downQuene[uuid]["blob"].push(e.data.slice(voicePreLen));
                         } else if (e.data.indexOf("Path:turn.end") !== -1) {
                             let reqIdx = e.data.indexOf(":");
                             let uuid = e.data.slice(reqIdx + 1, reqIdx + 33);
@@ -6247,7 +6247,7 @@
                                 testVoiceBlob = blob;
                                 playTestAudio();
                             } else {
-                                downBlob(blob, name.slice(0, 16) + ".mp3");
+                                downBlob(blob, name.slice(0, 16) + voiceSuffix);
                             }
                         }
                     }
@@ -6368,7 +6368,7 @@
             let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
             let blob = voiceData[key];
             if (blob) {
-                downBlob(blob, content.slice(0, 16) + ".mp3");
+                downBlob(blob, content.slice(0, 16) + voiceSuffix);
             } else {
                 await initDownSocket();
                 let currDate = getTime();
@@ -6391,7 +6391,7 @@
                 let bufArray = [];
                 voiceSocket.onmessage = (e) => {
                     if (e.data instanceof ArrayBuffer) {
-                        bufArray.push(e.data.slice(130));
+                        bufArray.push(e.data.slice(voicePreLen));
                     } else if (e.data.indexOf("Path:turn.end") !== -1) {
                         voiceSocket["pending"] = false;
                         if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) {
@@ -6474,7 +6474,7 @@
                         let bufArray = [];
                         voiceSocket.onmessage = (e) => {
                             if (e.data instanceof ArrayBuffer) {
-                                let buf = e.data.slice(130);
+                                let buf = e.data.slice(voicePreLen);
                                 bufArray.push(buf);
                                 speechQuene.push(buf);
                             } else if (e.data.indexOf("Path:turn.end") !== -1) {
@@ -6569,7 +6569,7 @@
                 let bufArray = [];
                 autoVoiceSocket.onmessage = (e) => {
                     if (e.data instanceof ArrayBuffer) {
-                        (supportMSE ? speechQuene : bufArray).push(e.data.slice(130));
+                        (supportMSE ? speechQuene : bufArray).push(e.data.slice(voicePreLen));
                     } else {
                         if (e.data.indexOf("Path:turn.end") !== -1) {
                             autoVoiceSocket["pending"] = false;
@@ -6723,7 +6723,7 @@
                 })
                 let headers = { "Content-Type": "application/json" };
                 if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
-                const res = await fetch(apiHost + API_URL, {
+                const res = await fetch(apiHost + ((apiHost.length && !apiHost.endsWith("/")) ? "/" : "") + API_URL, {
                     method: "POST",
                     headers,
                     body: JSON.stringify({
