@@ -4369,12 +4369,12 @@
         let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
         let longReplyFlag;
         let voiceIns; // Audio or SpeechSynthesisUtterance
-        const supportMSE = !!window.MediaSource; // 是否支持MSE（除了ios应该都支持）
         const isFirefox = !!navigator.userAgent.match(/firefox/i);
-        const voiceMIME = isFirefox ? "audio/webm; codec=opus" : "audio/mpeg";
-        const voiceFormat = isFirefox ? "webm-24khz-16bit-mono-opus" : "audio-24khz-48kbitrate-mono-mp3";
-        const voicePreLen = isFirefox ? 142 : 130;
-        const voiceSuffix = isFirefox ? ".webm" : ".mp3";
+        const supportMSE = !!window.MediaSource && !isFirefox; // 是否支持MSE（除了ios应该都支持）
+        const voiceMIME = "audio/mpeg";
+        const voiceFormat = "audio-24khz-48kbitrate-mono-mp3";
+        const voicePreLen = 130;
+        const voiceSuffix = ".mp3";
         let userAvatar; // 用户头像
         let customDarkOut;
         let isCaseSearch; // 搜索是否区分大小写
