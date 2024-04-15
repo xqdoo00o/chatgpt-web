@@ -3661,6 +3661,8 @@
         initRecVal();
         const clearAzureRec = () => {
             azureRecKey = void 0;
+            localStorage.removeItem(azureRecRegion + "RecData");
+            azureRecData = void 0;
             azureRecRegion = void 0;
             azureRecKeyInput.parentElement.style.display = "none";
             preRecAzureRegion.parentElement.style.display = "none";
@@ -3744,6 +3746,8 @@
                             }
                         });
                     }).catch(e => {
+                        localStorage.removeItem(azureRecRegion + "RecData");
+                        azureRecData = void 0;
                         rej();
                     })
                 })
@@ -4515,6 +4519,8 @@
         initVoiceVal();
         const clearAzureVoice = () => {
             azureKey = void 0;
+            localStorage.removeItem(azureRegion + "VoiceData");
+            azureVoiceData = void 0;
             azureRegion = void 0;
             azureRole = [];
             azureStyle = [];
@@ -4604,6 +4610,8 @@
                                     rej();
                                 })
                             }).catch(e => {
+                                localStorage.removeItem(azureRegion + "VoiceData");
+                                azureVoiceData = void 0;
                                 rej();
                             })
                         }
@@ -6190,7 +6198,7 @@
             if (confirmAction(translations[locale]["resetSetTip"])) {
                 endAll();
                 if (existVoice === 3) localStorage.removeItem(azureRegion + "VoiceData");
-                if (existRec === 2) localStorage.removeItem(azureRegion + "RecData");
+                if (existRec === 2) localStorage.removeItem(azureRecRegion + "RecData");
                 let data = {};
                 for (let i = 0; i < localSetKeys.length; i++) {
                     let key = localSetKeys[i];
