@@ -4104,7 +4104,7 @@
                             };
                             if (isFirefox) { // tested firefox need volume gain
                                 this.gain = this.context.createGain();
-                                this.gain.gain.value = 4;
+                                this.gain.gain.value = 3;
                                 this.audioInput.connect(this.gain);
                                 this.gain.connect(this.recorder);
                             } else {
@@ -4142,7 +4142,14 @@
                     const inputFrame = event.inputBuffer.getChannelData(0);
                     if (inputFrame && this.ready) this.pushWSFrame(new Uint8Array(this.encoder.encode(inputFrame)));
                 };
-                this.audioInput.connect(this.recorder);
+                if (isFirefox) { // tested firefox need volume gain
+                    this.gain = this.context.createGain();
+                    this.gain.gain.value = 3;
+                    this.audioInput.connect(this.gain);
+                    this.gain.connect(this.recorder);
+                } else {
+                    this.audioInput.connect(this.recorder);
+                }
                 this.recorder.connect(this.context.destination);
                 res();
             }
