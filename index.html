@@ -4265,7 +4265,7 @@
                         clearAutoSendTimer();
                         if (autoFlag !== 1) setAutoTimer();
                     } else if (path === "turn.end") {
-                        if (!this.forceStop && keepListenMic) {
+                        if (!this.forceStop && keepListenMic || this.ready) {
                             this.startWSDetect();
                             this.ready = true;
                         }
