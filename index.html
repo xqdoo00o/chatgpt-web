@@ -428,7 +428,7 @@
         }
 
         #chatlog .markdown-body pre {
-            padding: 10px;
+            padding: 10px 10px 5px 10px;
             position: relative;
             background: var(--code-color);
         }
@@ -446,6 +446,7 @@
             position: absolute;
             top: 5px;
             right: 16px;
+            z-index: 1;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -1037,6 +1038,9 @@
         #voiceTypes>span {
             border-radius: 3px;
             margin-left: 4px;
+            height: 28px;
+            line-height: 26px;
+            display: inline-block;
             cursor: pointer;
             padding: 1px 5px;
         }
@@ -2067,6 +2071,17 @@
             margin: 6px;
             display: block;
         }
+        @keyframes textInOut {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .markdown-body>*:not(.cursorCls) {
+            animation: textInOut 0.36s ease-in-out forwards;
+        }
     </style>
     <style>
         /* for katex */
@@ -2561,7 +2576,7 @@
                         <div id="speechDetail">
                             <div>
                                 <div class="justSetLine">
-                                    <div data-i18n-key="voiceName"></div>
+                                    <div data-i18n-key="voiceName" style="line-height: 28px;"></div>
                                     <div id="voiceTypes">
                                         <span data-type="0" data-i18n-key="userVoice"></span>
                                         <span data-type="1" class="selVoiceType" data-i18n-key="replyVoice"></span>
@@ -3107,6 +3122,7 @@
         const setLang = () => {
             let langClass = locale + "Lang";
             localStorage.setItem("UILang", locale)
+            document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
             setLangEle.classList = "setDetail themeDetail langDetail " + langClass;
         }
         setLangEle.onclick = (ev) => {
@@ -3181,7 +3197,7 @@
                 "azureRegion": "Azure region",
                 "azureKey": "Azure key",
                 "loadVoice": "Load voice",
-                "voiceName": "Choose voice",
+                "voiceName": "Switch",
                 "userVoice": "User voice",
                 "replyVoice": "Reply voice",
                 "TTSTest": "Hello, nice to meet you.",
@@ -3337,7 +3353,7 @@
                 "azureRegion": "Azure区域",
                 "azureKey": "Azure密钥",
                 "loadVoice": "加载语音",
-                "voiceName": "选择语音",
+                "voiceName": "切换",
                 "userVoice": "用户语音",
                 "replyVoice": "回答语音",
                 "TTSTest": "你好，很高兴认识你。",
@@ -3566,6 +3582,7 @@
         let toggleRecEv;
         const isAndroid = /\bAndroid\b/i.test(navigator.userAgent);
         const isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent);
+        const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
         const isPWA = navigator.standalone || window.matchMedia("(display-mode: standalone)").matches;
         if (isPWA) {
             let bottomEle = document.querySelector(".bottom_wrapper");
@@ -3773,6 +3790,8 @@
                                     rej();
                                 })
                             }).catch(e => {
+                                localStorage.removeItem(azureRecRegion + "RecData");
+                                azureRecData = void 0;
                                 rej();
                             })
                         }
@@ -4527,7 +4546,6 @@
         const clearAzureVoice = () => {
             azureKey = void 0;
             localStorage.removeItem(azureRegion + "VoiceData");
-            azureVoiceData = void 0;
             azureRegion = void 0;
             azureRole = [];
             azureStyle = [];
@@ -4560,7 +4578,7 @@
                 loadLocalVoice();
             }
         }
-        let azureVoiceData, edgeVoiceData, systemVoiceData, checkAzureAbort, checkEdgeAbort;
+        let edgeVoiceData, systemVoiceData, checkAzureAbort, checkEdgeAbort;
         const toggleVoiceCheck = (bool) => {
             checkVoiceLoad.style.display = bool ? "flex" : "none";
             speechDetail.style.display = bool ? "none" : "block";
@@ -4579,8 +4597,14 @@
                             checkAzureAbort = void 0;
                         }
                     }, 15000);
-                    getVoiceList(checkAzureAbort.signal).then(() => {
-                        toggleVoiceCheck(false);
+                    getAzureToken(checkAzureAbort.signal).then(() => {
+                        getVoiceList(checkAzureAbort.signal).then(() => {
+                            toggleVoiceCheck(false);
+                        }).catch(e => {
+                        }).finally(() => {
+                            checkVoiceLoad.classList.remove("voiceChecking");
+                            checking = false;
+                        })
                     }).catch(e => {
                     }).finally(() => {
                         checkVoiceLoad.classList.remove("voiceChecking");
@@ -4589,39 +4613,55 @@
                 }
             };
             checkVoiceLoad.onclick = checkAzureFunc;
+            const getAzureToken = (signal) => {
+                return new Promise((res, rej) => {
+                    fetch("https://" + azureRegion + ".api.cognitive.microsoft.com/sts/v1.0/issueToken", {
+                        signal,
+                        method: "POST",
+                        headers: {
+                            "Ocp-Apim-Subscription-Key": azureKey
+                        }
+                    }).then(response => {
+                        response.text().then(text => {
+                            try {
+                                let json = JSON.parse(text);
+                                notyf.error(translations[locale]["azureInvalidTip"]);
+                                rej();
+                            } catch (e) {
+                                res();
+                            }
+                        });
+                    }).catch(e => {
+                        localStorage.removeItem(azureRegion + "VoiceData");
+                        rej();
+                    })
+                })
+            };
             const getVoiceList = (signal) => {
                 return new Promise((res, rej) => {
-                    if (azureVoiceData) {
-                        initVoiceSetting(azureVoiceData);
+                    let localAzureVoiceData = localStorage.getItem(azureRegion + "VoiceData");
+                    if (localAzureVoiceData) {
+                        initVoiceSetting(JSON.parse(localAzureVoiceData));
                         res();
                     } else {
-                        let localAzureVoiceData = localStorage.getItem(azureRegion + "VoiceData");
-                        if (localAzureVoiceData) {
-                            azureVoiceData = JSON.parse(localAzureVoiceData);
-                            initVoiceSetting(azureVoiceData);
-                            res();
-                        } else {
-                            fetch("https://" + azureRegion + ".tts.speech.microsoft.com/cognitiveservices/voices/list", {
-                                signal,
-                                headers: {
-                                    "Ocp-Apim-Subscription-Key": azureKey
-                                }
-                            }).then(response => {
-                                response.json().then(json => {
-                                    azureVoiceData = json;
-                                    localStorage.setItem(azureRegion + "VoiceData", JSON.stringify(json));
-                                    initVoiceSetting(json);
-                                    res();
-                                }).catch(e => {
-                                    notyf.error(translations[locale]["azureInvalidTip"]);
-                                    rej();
-                                })
+                        fetch("https://" + azureRegion + ".tts.speech.microsoft.com/cognitiveservices/voices/list", {
+                            signal,
+                            headers: {
+                                "Ocp-Apim-Subscription-Key": azureKey
+                            }
+                        }).then(response => {
+                            response.json().then(json => {
+                                localStorage.setItem(azureRegion + "VoiceData", JSON.stringify(json));
+                                initVoiceSetting(json);
+                                res();
                             }).catch(e => {
-                                localStorage.removeItem(azureRegion + "VoiceData");
-                                azureVoiceData = void 0;
+                                notyf.error(translations[locale]["azureInvalidTip"]);
                                 rej();
                             })
-                        }
+                        }).catch(e => {
+                            localStorage.removeItem(azureRegion + "VoiceData");
+                            rej();
+                        })
                     }
                 })
             };
@@ -4751,6 +4791,10 @@
                     item.name = item.FriendlyName || (`${item.DisplayName} Online (${item.VoiceType}) - ${item.LocaleName}`);
                     item.lang = item.Locale;
                 })
+            } else if (isSafari && voices[0].voiceURI.startsWith("com.apple")) {
+                voices = voices.filter(item => {
+                    return !item.voiceURI.startsWith("com.apple.voice.super-compact")
+                })
             }
             voices.sort((a, b) => {
                 if (a.lang.slice(0, 2) === b.lang.slice(0, 2)) {
@@ -4769,6 +4813,9 @@
                     item.displayName = item.name;
                 }
             });
+            if (isSafari && !isOnline) {
+                voices.map(item => {item.displayName = `${item.name} (${item.lang})`});
+            };
             voicesData = voices;
             voicesEle.innerHTML = "";
             voices.forEach((voice, i) => {
@@ -4978,6 +5025,10 @@
     <script>
         // from markdown-it-texmath@1.0.1
         function escapeHTML(e){return e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/\//g,"&sol;")}function texmath(e,t){const n=texmath.mergeDelimiters(t&&t.delimiters),a=t&&t.outerSpace||!1,o=t&&t.katexOptions||{};o.throwOnError=o.throwOnError||!1,o.macros=o.macros||t&&t.macros,texmath.katex||(t&&"object"==typeof t.engine?texmath.katex=t.engine:"object"==typeof module?texmath.katex=require("katex"):texmath.katex={renderToString:()=>"No math renderer found."});for(const t of n.inline)a&&"outerSpace"in t&&(t.outerSpace=!0),e.inline.ruler.before("escape",t.name,texmath.inline(t)),e.renderer.rules[t.name]=(e,n)=>t.tmpl.replace(/\$1/,texmath.render(e[n].content,!!t.displayMode,o));for(const t of n.block)e.block.ruler.before("fence",t.name,texmath.block(t)),e.renderer.rules[t.name]=(e,n)=>t.tmpl.replace(/\$2/,escapeHTML(e[n].info)).replace(/\$1/,texmath.render(e[n].content,!0,o))}texmath.mergeDelimiters=function(e){const t=Array.isArray(e)?e:"string"==typeof e?[e]:["dollars"],n={inline:[],block:[]};for(const e of t)e in texmath.rules&&(n.inline.push(...texmath.rules[e].inline),n.block.push(...texmath.rules[e].block));return n},texmath.inline=e=>function(t,n){const a=t.pos,o=t.src,r=o.startsWith(e.tag,e.rex.lastIndex=a)&&(!e.pre||e.pre(o,e.outerSpace,a))&&e.rex.exec(o),s=!!r&&a<e.rex.lastIndex&&(!e.post||e.post(o,e.outerSpace,e.rex.lastIndex-1));if(s){if(!n){const n=t.push(e.name,"math",0);n.content=r[1],n.markup=e.tag}t.pos=e.rex.lastIndex}return s},texmath.block=e=>function(t,n,a,o){const r=t.bMarks[n]+t.tShift[n],s=t.src,m=s.startsWith(e.tag,e.rex.lastIndex=r)&&(!e.pre||e.pre(s,!1,r))&&e.rex.exec(s),l=!!m&&r<e.rex.lastIndex&&(!e.post||e.post(s,!1,e.rex.lastIndex-1));if(l&&!o){const o=e.rex.lastIndex-1;let r;for(r=n;r<a&&!(o>=t.bMarks[r]+t.tShift[r]&&o<=t.eMarks[r]);r++);const s=t.lineMax,l=t.parentType;t.lineMax=r,t.parentType="math","blockquote"===l&&(m[1]=m[1].replace(/(\n*?^(?:\s*>)+)/gm,""));let c=t.push(e.name,"math",0);c.block=!0,c.tag=e.tag,c.markup="",c.content=m[1],c.info=m[m.length-1],c.map=[n,r+1],t.parentType=l,t.lineMax=s,t.line=r+1}return l},texmath.render=function(e,t,n){let a;n.displayMode=t;try{a=texmath.katex.renderToString(e,n)}catch(t){a=escapeHTML(`${e}:${t.message}`)}return a},texmath.inlineRuleNames=["math_inline","math_inline_double"],texmath.blockRuleNames=["math_block","math_block_eqno"],texmath.$_pre=(e,t,n)=>{const a=n>0&&e[n-1].charCodeAt(0);return t?!a||32===a:!a||92!==a&&(a<48||a>57)},texmath.$_post=(e,t,n)=>{const a=e[n+1]&&e[n+1].charCodeAt(0);return t?!a||32===a||46===a||44===a||59===a:!a||a<48||a>57},texmath.rules={brackets:{inline:[{name:"math_inline",rex:/\\\((.+?)\\\)/gy,tmpl:"<eq>$1</eq>",tag:"\\("}],block:[{name:"math_block_eqno",rex:/\\\[(((?!\\\]|\\\[)[\s\S])+?)\\\]\s*?\(([^)$\r\n]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"\\["},{name:"math_block",rex:/\\\[([\s\S]+?)\\\]/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\["}]},doxygen:{inline:[{name:"math_inline",rex:/\\f\$(.+?)\\f\$/gy,tmpl:"<eq>$1</eq>",tag:"\\f$"}],block:[{name:"math_block_eqno",rex:/\\f\[([^]+?)\\f\]\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"\\f["},{name:"math_block",rex:/\\f\[([^]+?)\\f\]/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\f["}]},gitlab:{inline:[{name:"math_inline",rex:/\$`(.+?)`\$/gy,tmpl:"<eq>$1</eq>",tag:"$`"}],block:[{name:"math_block_eqno",rex:/`{3}math\s*([^`]+?)\s*?`{3}\s*\(([^)\r\n]+?)\)/gm,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"```math"},{name:"math_block",rex:/`{3}math\s*([^`]*?)\s*`{3}/gm,tmpl:"<section><eqn>$1</eqn></section>",tag:"```math"}]},julia:{inline:[{name:"math_inline",rex:/`{2}([^`]+?)`{2}/gy,tmpl:"<eq>$1</eq>",tag:"``"},{name:"math_inline",rex:/\$((?:\S?)|(?:\S.*?\S))\$/gy,tmpl:"<eq>$1</eq>",tag:"$",spaceEnclosed:!1,pre:texmath.$_pre,post:texmath.$_post}],block:[{name:"math_block_eqno",rex:/`{3}math\s+?([^`]+?)\s+?`{3}\s*?\(([^)$\r\n]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"```math"},{name:"math_block",rex:/`{3}math\s+?([^`]+?)\s+?`{3}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"```math"}]},kramdown:{inline:[{name:"math_inline",rex:/\${2}(.+?)\${2}/gy,tmpl:"<eq>$1</eq>",tag:"$$"}],block:[{name:"math_block_eqno",rex:/\${2}([^$]+?)\${2}\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"$$"},{name:"math_block",rex:/\${2}([^$]+?)\${2}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$"}]},beg_end:{inline:[],block:[{name:"math_block",rex:/(\\(?:begin)\{([a-z]+)\}[\s\S]+?\\(?:end)\{\2\})/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\"}]},dollars:{inline:[{name:"math_inline_double",rex:/\${2}([^$]*?[^\\])\${2}/gy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$",displayMode:!0,pre:texmath.$_pre,post:texmath.$_post},{name:"math_inline",rex:/\$((?:[^\s\\])|(?:\S.*?[^\s\\]))\$/gy,tmpl:"<eq>$1</eq>",tag:"$",outerSpace:!1,pre:texmath.$_pre,post:texmath.$_post}],block:[{name:"math_block_eqno",rex:/\${2}([^$]*?[^\\])\${2}\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"$$"},{name:"math_block",rex:/\${2}([^$]*?[^\\])\${2}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$"}]}};
+    </script>
+    <script>
+        // from morphdom@2.7.2
+        {let e,t=11,l=(e,l)=>{let n,i,r,d,o,a=l.attributes;if(l.nodeType===t||e.nodeType===t)return;for(let t=a.length-1;t>=0;t--)n=a[t],i=n.name,r=n.namespaceURI,d=n.value,r?(i=n.localName||i,o=e.getAttributeNS(r,i),o!==d&&("xmlns"===n.prefix&&(i=n.name),e.setAttributeNS(r,i,d))):(o=e.getAttribute(i),o!==d&&e.setAttribute(i,d));let u=e.attributes;for(let t=u.length-1;t>=0;t--)n=u[t],i=n.name,r=n.namespaceURI,r?(i=n.localName||i,l.hasAttributeNS(r,i)||e.removeAttributeNS(r,i)):l.hasAttribute(i)||e.removeAttribute(i)},n="http://www.w3.org/1999/xhtml",i="undefined"==typeof document?void 0:document,r=!!i&&"content"in i.createElement("template"),d=!!i&&i.createRange&&"createContextualFragment"in i.createRange(),o=e=>{let t=i.createElement("template");return t.innerHTML=e,t.content.childNodes[0]},a=t=>(e||(e=i.createRange(),e.selectNode(i.body)),e.createContextualFragment(t).childNodes[0]),u=e=>{let t=i.createElement("body");return t.innerHTML=e,t.childNodes[0]},s=e=>(e=e.trim(),r?o(e):d?a(e):u(e)),f=(e,t)=>{let l,n,i=e.nodeName,r=t.nodeName;return i===r||(l=i.charCodeAt(0),n=r.charCodeAt(0),l<=90&&n>=97?i===r.toUpperCase():n<=90&&l>=97&&r===i.toUpperCase())},c=(e,t)=>t&&t!==n?i.createElementNS(t,e):i.createElement(e),m=(e,t)=>{let l=e.firstChild;for(;l;){let e=l.nextSibling;t.appendChild(l),l=e}return t},p=(e,t,l)=>{e[l]!==t[l]&&(e[l]=t[l],e[l]?e.setAttribute(l,""):e.removeAttribute(l))},h={OPTION:(e,t)=>{let l=e.parentNode;if(l){let n=l.nodeName.toUpperCase();"OPTGROUP"===n&&(l=l.parentNode,n=l&&l.nodeName.toUpperCase()),"SELECT"!==n||l.hasAttribute("multiple")||(e.hasAttribute("selected")&&!t.selected&&(e.setAttribute("selected","selected"),e.removeAttribute("selected")),l.selectedIndex=-1)}p(e,t,"selected")},INPUT:(e,t)=>{p(e,t,"checked"),p(e,t,"disabled"),e.value!==t.value&&(e.value=t.value),t.hasAttribute("value")||e.removeAttribute("value")},TEXTAREA:(e,t)=>{let l=t.value;e.value!==l&&(e.value=l);let n=e.firstChild;if(n){let t=n.nodeValue;if(t==l||!l&&t==e.placeholder)return;n.nodeValue=l}},SELECT:(e,t)=>{if(!t.hasAttribute("multiple")){let t,l,n=-1,i=0,r=e.firstChild;for(;r;)if(l=r.nodeName&&r.nodeName.toUpperCase(),"OPTGROUP"===l)t=r,r=t.firstChild;else{if("OPTION"===l){if(r.hasAttribute("selected")){n=i;break}i++}r=r.nextSibling,!r&&t&&(r=t.nextSibling,t=null)}e.selectedIndex=n}}},N=1,b=11,A=3,C=8,T=()=>{},g=e=>{if(e)return e.getAttribute&&e.getAttribute("id")||e.id},E=e=>function(t,l,n){if(n||(n={}),"string"==typeof l)if("#document"===t.nodeName||"HTML"===t.nodeName||"BODY"===t.nodeName){let e=l;(l=i.createElement("html")).innerHTML=e}else l=s(l);else l.nodeType===b&&(l=l.firstElementChild);let r=n.getNodeKey||g,d=n.onBeforeNodeAdded||T,o=n.onNodeAdded||T,a=n.onBeforeElUpdated||T,u=n.onElUpdated||T,p=n.onBeforeNodeDiscarded||T,E=n.onNodeDiscarded||T,v=n.onBeforeElChildrenUpdated||T,x=n.skipFromChildren||T,y=n.addChild||function(e,t){return e.appendChild(t)},S=!0===n.childrenOnly,U=Object.create(null),O=[],R=e=>{O.push(e)},V=(e,t)=>{if(e.nodeType===N){let l=e.firstChild;for(;l;){let e;t&&(e=r(l))?R(e):(E(l),l.firstChild&&V(l,t)),l=l.nextSibling}}},w=(e,t,l)=>{!1!==p(e)&&(t&&t.removeChild(e),E(e),V(e,l))},I=e=>{if(e.nodeType===N||e.nodeType===b){let t=e.firstChild;for(;t;){let e=r(t);e&&(U[e]=t),I(t),t=t.nextSibling}}};I(t);let P=e=>{o(e);let t=e.firstChild;for(;t;){let e=t.nextSibling,l=r(t);if(l){let e=U[l];e&&f(t,e)?(t.parentNode.replaceChild(e,t),B(e,t)):P(t)}else P(t);t=e}},B=(t,l,n)=>{let i=r(l);if(i&&delete U[i],!n){if(!1===a(t,l))return;if(e(t,l),u(t),!1===v(t,l))return}"TEXTAREA"!==t.nodeName?L(t,l):h.TEXTAREA(t,l)},L=(e,t)=>{let l,n,o,a,u,s=x(e,t),c=t.firstChild,m=e.firstChild;e:for(;c;){for(a=c.nextSibling,l=r(c);!s&&m;){if(o=m.nextSibling,c.isEqualNode&&c.isEqualNode(m)){c=a,m=o;continue e}n=r(m);let t,i=m.nodeType;if(i===c.nodeType&&(i===N?(l?l!==n&&((u=U[l])?o===u?t=!1:(e.insertBefore(u,m),n?R(n):w(m,e,!0),m=u,n=r(m)):t=!1):n&&(t=!1),t=!1!==t&&f(m,c),t&&B(m,c)):i!==A&&i!=C||(t=!0,m.nodeValue!==c.nodeValue&&(m.nodeValue=c.nodeValue))),t){c=a,m=o;continue e}n?R(n):w(m,e,!0),m=o}if(l&&(u=U[l])&&f(u,c))s||y(e,u),B(u,c);else{let t=d(c);!1!==t&&(t&&(c=t),c.actualize&&(c=c.actualize(e.ownerDocument||i)),y(e,c),P(c))}c=a,m=o}((e,t,l)=>{for(;t;){let n=t.nextSibling;(l=r(t))?R(l):w(t,e,!0),t=n}})(e,m,n);let p=h[e.nodeName];p&&p(e,t)},D=t,z=D.nodeType,H=l.nodeType;if(!S)if(z===N)H===N?f(t,l)||(E(t),D=m(t,c(l.nodeName,l.namespaceURI))):D=l;else if(z===A||z===C){if(H===z)return D.nodeValue!==l.nodeValue&&(D.nodeValue=l.nodeValue),D;D=l}if(B(D,l,S),O)for(let e=0,t=O.length;e<t;e++){let t=U[O[e]];t&&w(t,t.parentNode,!1)}return!S&&D!==t&&t.parentNode&&(D.actualize&&(D=D.actualize(t.ownerDocument||i)),t.parentNode.replaceChild(D,t)),D};window.morphdom=E(l)}
     </script>
     <script>
         const API_URL = "v1/chat/completions";
@@ -5195,7 +5246,7 @@
         };
         const copyClickCode = (ele) => {
             const input = document.createElement("textarea");
-            input.value = ele.parentElement.previousElementSibling.textContent;
+            input.value = ele.parentElement.nextElementSibling.textContent;
             const nDom = ele.previousElementSibling;
             const nDelay = ele.dataset.mdicNotifyDelay;
             const cDom = nDom.previousElementSibling;
@@ -5240,7 +5291,7 @@
                 `<button class="u-mdic-copy-btn j-mdic-copy-btn" text="${btnText}" data-mdic-notify-delay="${successTextDelay}" onclick="copyClickCode(this)"></button>`,
                 '</div>',
             ];
-            return originResult.replace("</pre>", `${tpls.join("")}</pre>`);
+            return originResult.replace("<pre>", `<pre>${tpls.join("")}`);
         };
         md.renderer.rules.code_block = enhanceCode(md.renderer.rules.code_block);
         md.renderer.rules.fence = enhanceCode(md.renderer.rules.fence);
@@ -6422,7 +6473,7 @@
                 })
             }
             let localAvatar = localStorage.getItem("userAvatar");
-            userAvatar = setAvatarPre.src = setAvatar.value = localAvatar || setAvatar.getAttribute("value") || "https://fastly.jsdelivr.net/gh/xqdoo00o/chatgpt-web@master/avatar.jpg";
+            userAvatar = setAvatarPre.src = setAvatar.value = localAvatar || setAvatar.getAttribute("value") || "https://cdn.jsdelivr.net/gh/xqdoo00o/chatgpt-web@main/avatar.jpg";
             setAvatar.onchange = () => {
                 userAvatar = setAvatar.value;
                 localStorage.setItem("userAvatar", userAvatar);
@@ -6710,7 +6761,6 @@
         }
         let delayId;
         const delay = () => {
-            if (textSpeed === 0) return Promise.resolve();
             return new Promise((resolve) => delayId = setTimeout(resolve, textSpeed)); //打字机时间间隔
         }
         const getTime = () => {
@@ -6731,7 +6781,7 @@
             let fmtVolume = (volume >= 1 ? "+" : "") + (volume * 100 - 100) + "%";
             let fmtRate = (rate >= 1 ? "+" : "") + (rate * 100 - 100) + "%";
             let fmtPitch = (pitch >= 1 ? "+" : "") + (pitch - 1) + "Hz";
-            msg = getEscape(msg).trim();
+            msg = getEscape(msg);
             if (existVoice === 3) {
                 let fmtStyle = style ? ` style="${style}"` : ` style="Default"`;
                 let fmtRole = role ? ` role="${role}"` : "";
@@ -6998,7 +7048,7 @@
             let pitch = voicePitch[type];
             let style = azureStyle[type];
             let role = azureRole[type];
-            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent;
+            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent.trim();
             let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
             let blob = voiceData[key];
             if (blob) {
@@ -7066,7 +7116,7 @@
             chatlog.children[systemRole ? idx - 1 : idx].classList.add("showVoiceCls");
             let voiceIconEle = chatlog.children[systemRole ? idx - 1 : idx].lastChild.lastChild;
             voiceIconEle.className = "voiceCls pauseVoice";
-            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent;
+            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent.trim();
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
             let pitch = voicePitch[type];
@@ -7388,6 +7438,7 @@
                     stopLoading();
                     return;
                 }
+                let container = document.createElement("div");
                 const decoder = new TextDecoder();
                 const reader = res.body.getReader();
                 const readChunk = async () => {
@@ -7429,9 +7480,14 @@
                                                     autoSpeechEvent(voiceText, currentResEle);
                                                 }
                                             }
-                                            if (progressData) await delay();
+                                            if (progressData && textSpeed) await delay();
                                             progressData += content;
-                                            currentResEle.children[1].innerHTML = md.render(progressData);
+                                            container.innerHTML = md.render(progressData);
+                                            if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
+                                                morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
+                                            } else {
+                                                morphdom(currentResEle.children[1], container, {childrenOnly: true});
+                                            }
                                             scrollToBottom();
                                         }
                                     }
@@ -7452,6 +7508,7 @@
                     });
                 };
                 await readChunk();
+                container = null;
             } catch (e) {
                 if (e.message.indexOf("aborted") === -1) {
                     notyf.error(translations[locale]["badEndpointTip"])
