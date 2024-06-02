@@ -18,7 +18,7 @@
     <style>
         .requestBody,
         .response .markdown-body {
-            max-width: calc(100% - 88px);
+            max-width: calc(100% - 84px);
         }
 
         .bottom_wrapper {
@@ -52,6 +52,7 @@
             --lighter-svg-color: #c0c0c0;
             --code-color: #f0f0f0;
             --black-color: #000;
+            --gpt-icon-color: #0d0d0d;
         }
 
         [data-theme="dark"] {
@@ -71,6 +72,7 @@
             --lighter-svg-color: #3f3f3f;
             --code-color: #101010;
             --black-color: #fff;
+            --gpt-icon-color: #ececec;
         }
 
         body {
@@ -158,10 +160,6 @@
                 margin-left: 12px;
                 margin-top: 5px;
             }
-
-            .setNotNormalFlow {
-                width: calc(100% - 212px);
-            }
         }
 
         @media screen and (max-width: 800px) {
@@ -206,10 +204,6 @@
             .sysDetail {
                 margin-top: 8px;
             }
-
-            .setNotNormalFlow {
-                width: calc(100% - 40px);
-            }
         }
 
         .full_window {
@@ -240,12 +234,12 @@
         .top_menu {
             background-color: var(--main-back);
             width: 100%;
-            height: 50px;
-            padding: 5px 0;
+            height: 46px;
+            padding: 3px 0;
         }
 
         .top_menu .toggler {
-            margin-left: 10px;
+            margin-left: 8px;
             width: 40px;
             height: 40px;
             float: left;
@@ -284,18 +278,35 @@
 
         .top_menu .title {
             color: var(--text-color);
-            font-size: 20px;
             height: 40px;
-            line-height: 40px;
             position: relative;
             pointer-events: none;
         }
 
-        .top_menu .title>span {
+        #selector {
             position: absolute;
             top: 50%;
             left: 50%;
+            padding: 0 4px 0 10px;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 40px;
             transform: translate(-50%, -50%);
+            pointer-events: auto;
+            border-radius: 4px;
+            -webkit-user-select: none;
+            user-select: none;
+            display: flex;
+            align-items: center;
+        }
+
+        #selector:hover {
+            background-color: var(--active-btn);
+        }
+
+        #modelVer {
+            margin-left: 4px;
+            margin-right: 2px;
         }
 
         .messages {
@@ -365,7 +376,7 @@
         }
 
         .chatAvatar {
-            margin: 14px 14px 13px 13px;
+            margin: 14px 12px 13px 12px;
             width: 30px;
             height: 30px;
             flex-shrink: 0;
@@ -377,12 +388,10 @@
             margin-bottom: 15px;
         }
 
-        .response .gpt3Avatar {
-            background: #19c37d;
-        }
-
-        .response .gpt4Avatar {
-            background: #ab68ff;
+        .gptAvatar>svg {
+            margin-top: 3px;
+            margin-left: 3px;
+            fill: var(--gpt-icon-color);
         }
 
         .chatAvatar>img {
@@ -392,10 +401,9 @@
             border-radius: 2px;
         }
 
+        .modelAvatar>svg,
         .chatAvatar>svg {
             display: block;
-            margin-top: 4px;
-            margin-left: 4px;
         }
 
         #chatlog .request {
@@ -431,6 +439,20 @@
             padding: 10px 10px 5px 10px;
             position: relative;
             background: var(--code-color);
+        }
+
+        #chatlog .markdown-body .mermaid {
+            margin-bottom: 8px;
+            padding: 0 10px 0 10px;
+            position: relative;
+            background: var(--code-color);
+            border-radius: 6px;
+        }
+
+        .mermaid>svg {
+            cursor: pointer;
+            max-height: 600px;
+            display: block;
         }
 
         #chatlog .markdown-body pre>code {
@@ -714,7 +736,7 @@
             display: flex;
             position: absolute;
             right: 0;
-            top: 5px;
+            top: 3px;
         }
 
         .setBtn {
@@ -750,6 +772,68 @@
 
         .showSetting {
             background: var(--lighter-svg-color) !important;
+        }
+
+        .showModels {
+            background: var(--active-btn) !important;
+        }
+
+        #modelDialog {
+            color: var(--btn-color);
+            position: absolute;
+            z-index: 2;
+            background: var(--main-back);
+            width: 240px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 46px;
+            overflow-y: auto;
+            max-height: calc(100% - 55px);
+            -webkit-user-select: none;
+            user-select: none;
+            border-radius: 4px;
+            padding: 8px 5px 8px 5px;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .modelSingle {
+            height: 40px;
+            border-radius: 3px;
+            cursor: pointer;
+            line-height: 40px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .modelSingle * {
+            pointer-events: none;
+        }
+
+        .modelSingle:hover {
+            background-color: var(--active-btn);
+        }
+
+        .activeModel::before {
+            content: "";
+            position: absolute;
+            right: 15px;
+            top: 7px;
+            width: 8px;
+            height: 16px;
+            border-color: #99c959;
+            border-style: solid;
+            border-width: 0 4px 4px 0;
+            transform: rotate(45deg);
+        }
+
+        .modelAvatar {
+            margin-left: 6px;
+            margin-right: 10px;
+            width: 30px;
+            flex-shrink: 0;
+            border-radius: 2px;
+            height: 30px;
         }
 
         #setDialog {
@@ -965,7 +1049,7 @@
         }
 
         .optionItem {
-            border-radius: 10px;
+            border-radius: 9px;
             height: 24px;
             width: 32px;
             border: 1px solid var(--active-btn);
@@ -1118,6 +1202,8 @@
             color: var(--chat-text-color);
             background: var(--lighter-active-color);
             border-radius: 3px;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         #searchChat:focus {
@@ -1202,6 +1288,8 @@
 
         .navFooter .links {
             text-align: center;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .navFooter .links a {
@@ -1612,10 +1700,18 @@
             font-size: 15px;
         }
 
+        .modelSwitch,
         .setSwitch {
             display: flex;
         }
 
+        .modelSwitch {
+            margin-bottom: 10px;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .modelSwitch>div,
         .setSwitch>div {
             border-radius: 3px;
             width: calc(100% / 3);
@@ -1625,6 +1721,7 @@
             cursor: pointer;
         }
 
+        .modelSwitch>div:hover,
         .setSwitch>div:hover {
             background-color: var(--active-btn);
         }
@@ -1733,7 +1830,6 @@
         }
 
         .sysDetail {
-            overflow-y: auto;
             flex: 1;
         }
 
@@ -1754,7 +1850,7 @@
         }
 
         .setNotNormalFlow {
-            position: absolute;
+            position: relative;
         }
 
         .setTitle {
@@ -1876,31 +1972,6 @@
             color: var(--chat-text-color);
         }
 
-        .apiDetail {
-            display: flex;
-        }
-
-        .apiDetail input {
-            flex: 1;
-        }
-
-        .apiDetail>div {
-            margin-left: 6px;
-            background: var(--lighter-active-color);
-            border-radius: 3px;
-            width: 108px;
-            text-align: center;
-            cursor: pointer;
-            margin-top: 2px;
-            height: 34px;
-            line-height: 34px;
-            font-size: 15px;
-        }
-
-        .apiDetail>div:hover {
-            background: var(--active-btn);
-        }
-
         .themeDetail {
             display: flex;
             width: 180px;
@@ -2016,12 +2087,18 @@
             }
         }
 
+        .apiSelsContainer {
+            position: relative;
+            z-index: 1;
+        }
+
         #apiSelect {
             position: absolute;
-            top: 37px;
+            top: 64px;
             padding: 4px 0;
             background: var(--chat-back);
-            width: 100%;
+            width: calc(100% - 20px);
+            left: 10px;
             box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
             max-height: 180px;
             overflow-y: auto;
@@ -2071,16 +2148,19 @@
             margin: 6px;
             display: block;
         }
+
         @keyframes textInOut {
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
         }
-        .markdown-body>*:not(.cursorCls) {
-            animation: textInOut 0.36s ease-in-out forwards;
+
+        .response[data-loading="true"]>.markdown-body>*:not(.cursorCls) {
+            animation: textInOut 0.48s ease-in-out forwards;
         }
     </style>
     <style>
@@ -2164,21 +2244,41 @@
 </head>
 
 <body>
+    <svg style="transform: translate(-1000px, -1000px);">
+        <defs>
+            <radialGradient id="paint0_radial_16771_53212" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                gradientTransform="translate(2.77876 11.3795) rotate(18.6832) scale(29.8025 238.737)">
+                <stop offset="0.0671246" stop-color="#9168C0" />
+                <stop offset="0.342551" stop-color="#5684D1" />
+                <stop offset="0.672076" stop-color="#1BA1E3" />
+            </radialGradient>
+        </defs>
+    </svg>
     <div style="display: none">
         <svg>
-            <symbol viewBox="0 0 24 24" id="optionIcon">
+            <symbol viewBox="0 0 28 28" id="geminiIcon">
+                <path
+                    d="M14 28C14 26.0633 13.6267 24.2433 12.88 22.54C12.1567 20.8367 11.165 19.355 9.905 18.095C8.645 16.835 7.16333 15.8433 5.46 15.12C3.75667 14.3733 1.93667 14 0 14C1.93667 14 3.75667 13.6383 5.46 12.915C7.16333 12.1683 8.645 11.165 9.905 9.905C11.165 8.645 12.1567 7.16333 12.88 5.46C13.6267 3.75667 14 1.93667 14 0C14 1.93667 14.3617 3.75667 15.085 5.46C15.8317 7.16333 16.835 8.645 18.095 9.905C19.355 11.165 20.8367 12.1683 22.54 12.915C24.2433 13.6383 26.0633 14 28 14C26.0633 14 24.2433 14.3733 22.54 15.12C20.8367 15.8433 19.355 16.835 18.095 18.095C16.835 19.355 15.8317 20.8367 15.085 22.54C14.3617 24.2433 14 26.0633 14 28Z"
+                    fill="url(#paint0_radial_16771_53212)" />
+            </symbol>
+            <symbol viewBox="0 0 40 40" id="claudeIcon">
+                <path shape-rendering="optimizeQuality" fill="#D97757"
+                    d="m7.75 26.27 7.77-4.36.13-.38-.13-.21h-.38l-1.3-.08-4.44-.12-3.85-.16-3.73-.2-.94-.2L0 19.4l.09-.58.79-.53 1.13.1 2.5.17 3.75.26 2.72.16 4.03.42h.64l.09-.26-.22-.16-.17-.16-3.88-2.63-4.2-2.78-2.2-1.6L3.88 11l-.6-.76-.26-1.66L4.1 7.39l1.45.1.37.1 1.47 1.13 3.14 2.43 4.1 3.02.6.5.24-.17.03-.12-.27-.45L13 9.9l-2.38-4.1-1.06-1.7-.28-1.02c-.1-.42-.17-.77-.17-1.2L10.34.21l.68-.22 1.64.22.69.6 1.02 2.33 1.65 3.67 2.56 4.99.75 1.48.4 1.37.15.42h.26v-.24l.21-2.81.39-3.45.38-4.44.13-1.25.62-1.5L23.1.57l.96.46.79 1.13-.11.73-.47 3.05-.92 4.78-.6 3.2h.35l.4-.4 1.62-2.15 2.72-3.4 1.2-1.35 1.4-1.49.9-.71h1.7l1.25 1.86-.56 1.92-1.75 2.22-1.45 1.88-2.08 2.8-1.3 2.24.12.18.31-.03 4.7-1 2.54-.46 3.03-.52 1.37.64.15.65-.54 1.33-3.24.8-3.8.76-5.66 1.34-.07.05.08.1 2.55.24 1.09.06h2.67l4.97.37 1.3.86.78 1.05-.13.8-2 1.02-2.7-.64-6.3-1.5-2.16-.54h-.3v.18l1.8 1.76 3.3 2.98 4.13 3.84.21.95-.53.75-.56-.08-3.63-2.73-1.4-1.23-3.17-2.67h-.21v.28l.73 1.07 3.86 5.8.2 1.78-.28.58-1 .35-1.1-.2L26 33.14l-2.33-3.57-1.88-3.2-.23.13-1.11 11.95-.52.61-1.2.46-1-.76-.53-1.23.53-2.43.64-3.17.52-2.52.47-3.13.28-1.04-.02-.07-.23.03-2.36 3.24-3.59 4.85-2.84 3.04-.68.27-1.18-.61.11-1.09.66-.97 3.93-5 2.37-3.1 1.53-1.79-.01-.26h-.09L6.8 30.56l-1.86.24-.8-.75.1-1.23.38-.4 3.14-2.16Z">
+                </path>
+            </symbol>
+            <symbol viewBox="0 0 16 16" id="expandIcon">
                 <path fill="currentColor"
-                    d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2s2-.9 2-2s-.9-2-2-2z">
+                    d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z">
                 </path>
             </symbol>
             <symbol viewBox="0 0 24 24" id="refreshIcon">
                 <path fill="currentColor"
-                    d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z">
+                    d="M3.07 10.876C3.623 6.436 7.41 3 12 3a9.15 9.15 0 0 1 6.012 2.254V4a1 1 0 1 1 2 0v4a1 1 0 0 1-1 1H15a1 1 0 1 1 0-2h1.957A7.15 7.15 0 0 0 12 5a7 7 0 0 0-6.946 6.124 1 1 0 1 1-1.984-.248m16.992 1.132a1 1 0 0 1 .868 1.116C20.377 17.564 16.59 21 12 21a9.15 9.15 0 0 1-6-2.244V20a1 1 0 1 1-2 0v-4a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H7.043A7.15 7.15 0 0 0 12 19a7 7 0 0 0 6.946-6.124 1 1 0 0 1 1.116-.868">
                 </path>
             </symbol>
             <symbol viewBox="0 0 24 24" id="halfRefIcon">
                 <path fill="currentColor"
-                    d="M 4.009 12.163 C 4.012 12.206 2.02 12.329 2 12.098 C 2 6.575 6.477 2 12 2 C 17.523 2 22 6.477 22 12 C 22 14.136 21.33 16.116 20.19 17.74 L 17 12 L 20 12 C 19.999 5.842 13.333 1.993 7.999 5.073 C 3.211 8.343 4.374 12.389 4.009 12.163 Z" />
+                    d="M3.07 10.876C3.623 6.436 7.41 3 12 3a9.15 9.15 0 0 1 6.012 2.254V4a1 1 0 1 1 2 0v4a1 1 0 0 1-1 1H15a1 1 0 1 1 0-2h1.957A7.15 7.15 0 0 0 12 5a7 7 0 0 0-6.946 6.124 1 1 0 1 1-1.984-.248" />
             </symbol>
             <symbol viewBox="-2 -2 20 20" id="copyIcon">
                 <path fill="currentColor"
@@ -2315,8 +2415,8 @@
                 </path>
                 <circle fill="currentColor" cx="12" cy="12" r="3.5"></circle>
             </symbol>
-            <symbol viewBox="298 299 1808 1808" id="aiIcon">
-                <path fill="white"
+            <symbol viewBox="299 299 1808 1808" id="aiIcon">
+                <path fill="currentColor"
                     d="M1107.3 299.1c-198 0-373.9 127.3-435.2 315.3C544.8 640.6 434.9 720.2 370.5 833c-99.3 171.4-76.6 386.9 56.4 533.8-41.1 123.1-27 257.7 38.6 369.2 98.7 172 297.3 260.2 491.6 219.2 86.1 97 209.8 152.3 339.6 151.8 198 0 373.9-127.3 435.3-315.3 127.5-26.3 237.2-105.9 301-218.5 99.9-171.4 77.2-386.9-55.8-533.9v-.6c41.1-123.1 27-257.8-38.6-369.8-98.7-171.4-297.3-259.6-491-218.6-86.6-96.8-210.5-151.8-340.3-151.2zm0 117.5-.6.6c79.7 0 156.3 27.5 217.6 78.4-2.5 1.2-7.4 4.3-11 6.1L952.8 709.3c-18.4 10.4-29.4 30-29.4 51.4V1248l-155.1-89.4V755.8c-.1-187.1 151.6-338.9 339-339.2zm434.2 141.9c121.6-.2 234 64.5 294.7 169.8 39.2 68.6 53.9 148.8 40.4 226.5-2.5-1.8-7.3-4.3-10.4-6.1l-360.4-208.2c-18.4-10.4-41-10.4-59.4 0L1024 984.2V805.4L1372.7 604c51.3-29.7 109.5-45.4 168.8-45.5zM650 743.5v427.9c0 21.4 11 40.4 29.4 51.4l421.7 243-155.7 90L597.2 1355c-162-93.8-217.4-300.9-123.8-462.8C513.1 823.6 575.5 771 650 743.5zm807.9 106 348.8 200.8c162.5 93.7 217.6 300.6 123.8 462.8l.6.6c-39.8 68.6-102.4 121.2-176.5 148.2v-428c0-21.4-11-41-29.4-51.4l-422.3-243.7 155-89.3zM1201.7 997l177.8 102.8v205.1l-177.8 102.8-177.8-102.8v-205.1L1201.7 997zm279.5 161.6 155.1 89.4v402.2c0 187.3-152 339.2-339 339.2v-.6c-79.1 0-156.3-27.6-217-78.4 2.5-1.2 8-4.3 11-6.1l360.4-207.5c18.4-10.4 30-30 29.4-51.4l.1-486.8zM1380 1421.9v178.8l-348.8 200.8c-162.5 93.1-369.6 38-463.4-123.7h.6c-39.8-68-54-148.8-40.5-226.5 2.5 1.8 7.4 4.3 10.4 6.1l360.4 208.2c18.4 10.4 41 10.4 59.4 0l421.9-243.7z" />
             </symbol>
             <symbol viewBox="0 0 24 24" id="importSetIcon">
@@ -2389,7 +2489,8 @@
                 </div>
             </div>
             <div class="extraChat">
-                <input type="text" id="searchChat" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" data-i18n-place="search" placeholder />
+                <input type="text" id="searchChat" autocomplete="off" readonly
+                    onfocus="this.removeAttribute('readonly')" data-i18n-place="search" placeholder />
                 <div id="clearSearch">
                     <svg width="24" height="24">
                         <use xlink:href="#closeIcon" />
@@ -2442,7 +2543,12 @@
                     <div class="button minimize"></div>
                     <div class="button maximize"></div>
                 </div>
-                <div class="title"><span>ChatGPT</span></div>
+                <div class="title">
+                    <div id="selector"><span id="modelName">ChatGPT</span><span id="modelVer">3.5</span><svg width="16"
+                            height="16" style="transform: translateY(1px);">
+                            <use xlink:href="#expandIcon" />
+                        </svg></div>
+                </div>
                 <div class="settings">
                     <button class="setBtn" id="toggleFull" data-i18n-window title>
                         <svg width="30" height="30">
@@ -2458,6 +2564,88 @@
                         </svg>
                     </button>
                 </div>
+                <div id="modelDialog" style="display:none;">
+                    <div class="modelSingle" data-value="gpt-3.5-turbo" data-ver="3.5">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>GPT-3.5</div>
+                    </div>
+                    <div class="modelSingle" data-value="gpt-4" data-ver="4">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>GPT-4</div>
+                    </div>
+                    <div class="modelSingle" data-value="gpt-4-turbo" data-ver="4 Turbo">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>GPT-4 Turbo</div>
+                    </div>
+                    <div class="modelSingle" data-value="gpt-4o" data-ver="4o">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>GPT-4o</div>
+                    </div>
+                    <div class="modelSingle" data-value="gemini-1.0-pro" data-ver="1.0">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
+                                <use xlink:href="#geminiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>Gemini 1.0 Pro</div>
+                    </div>
+                    <div class="modelSingle" data-value="gemini-1.5-pro" data-ver="1.5 Pro">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
+                                <use xlink:href="#geminiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>Gemini 1.5 Pro</div>
+                    </div>
+                    <div class="modelSingle" data-value="gemini-1.5-flash" data-ver="1.5 Flash">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
+                                <use xlink:href="#geminiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>Gemini 1.5 Flash</div>
+                    </div>
+                    <div class="modelSingle" data-value="claude-3-haiku-20240307" data-ver="3 Haiku">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
+                                <use xlink:href="#claudeIcon"></use>
+                            </svg>
+                        </div>
+                        <div>Claude 3 Haiku</div>
+                    </div>
+                    <div class="modelSingle" data-value="claude-3-sonnet-20240229" data-ver="3 Sonnet">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
+                                <use xlink:href="#claudeIcon"></use>
+                            </svg>
+                        </div>
+                        <div>Claude 3 Sonnet</div>
+                    </div>
+                    <div class="modelSingle" data-value="claude-3-opus-20240229" data-ver="3 Opus">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
+                                <use xlink:href="#claudeIcon"></use>
+                            </svg>
+                        </div>
+                        <div>Claude 3 Opus</div>
+                    </div>
+                </div>
                 <div id="setDialog" style="display:none;">
                     <div class="setSwitch">
                         <div data-id="convOption" data-i18n-key="chat" class="activeSwitch"></div>
@@ -2465,16 +2653,6 @@
                         <div data-id="recOption" data-i18n-key="stt"></div>
                     </div>
                     <div id="convOption">
-                        <div class="presetSelect presetModelCls">
-                            <label for="preSetModel" data-i18n-key="gptModel"></label>
-                            <select id="preSetModel">
-                                <option value="gpt-3.5-turbo">GPT-3.5</option>
-                                <option value="gpt-3.5-turbo-16k">GPT-3.5-16K</option>
-                                <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                                <option value="gpt-4">GPT-4</option>
-                                <option value="gpt-4-32k">GPT-4-32K</option>
-                            </select>
-                        </div>
                         <div>
                             <div data-i18n-key="avatar"></div>
                             <div class="avatarDetail">
@@ -2501,7 +2679,7 @@
                         </div>
                         <div>
                             <span data-i18n-key="nature"></span>
-                            <input type="range" id="top_p" min="0" max="1" value="0.7" step="0.05" />
+                            <input type="range" id="top_p" min="0" max="1" value="1" step="0.05" />
                             <div class="selectDef">
                                 <span data-i18n-key="natureNeg"></span>
                                 <span data-i18n-key="naturePos"></span>
@@ -2552,6 +2730,7 @@
                         <div class="presetSelect presetModelCls">
                             <label for="preSetService" data-i18n-key="ttsService"></label>
                             <select id="preSetService">
+                                <option value="4" data-i18n-key="openaiTTS"></option>
                                 <option value="3" data-i18n-key="azureTTS"></option>
                                 <option selected value="2" data-i18n-key="edgeTTS"></option>
                                 <option value="1" data-i18n-key="systemTTS"></option>
@@ -2864,19 +3043,82 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="setContent setNotNormalFlow">
-                            <div class="setTitle" data-i18n-key="aiEndpoint"></div>
-                            <div class="setDetail inputDetail" style="position: relative;">
-                                <input class="inputTextClass" placeholder="https://api.openai.com/" autocomplete="off"
-                                    id="apiHostInput" />
-                                <div id="apiSelect" tabindex="-1" style="display: none;"></div>
+                        <div class="modelSwitch">
+                            <div data-id="gptOption" class="activeSwitch">ChatGPT</div>
+                            <div data-id="geminiOption">Gemini</div>
+                            <div data-id="claudeOption">Claude</div>
+                        </div>
+                        <div class="apiSelsContainer">
+                            <div id="apiSelect" tabindex="-1" style="display: none;"></div>
+                        </div>
+                        <div id="gptOption">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>ChatGPT</span><span data-i18n-key="aiEndpoint"></span></div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass" placeholder="https://api.openai.com/"
+                                        autocomplete="off" id="apiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle"><span data-i18n-key="aiKey"></span></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
+                                        autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="gpt-x-xxx" id="modelInput"
+                                        autocomplete="off" />
+                                </div>
                             </div>
                         </div>
-                        <div class="setContent" style="margin-top: 83px;">
-                            <div class="setTitle" data-i18n-key="aiKey"></div>
-                            <div class="setDetail inputDetail apiDetail">
-                                <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
-                                    autocomplete="off" />
+                        <div id="geminiOption" style="display: none;">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>Gemini</span><span data-i18n-key="aiEndpoint"></span></div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass"
+                                        placeholder="https://generativelanguage.googleapis.com/" autocomplete="off"
+                                        id="geminiApiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiKey"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="xxxx-xxxx"
+                                        id="geminiKeyInput" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="gemini-xxx-xxx"
+                                        id="geminiModelInput" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="claudeOption" style="display: none;">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>Claude</span><span data-i18n-key="aiEndpoint"></span></div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass" placeholder="https://api.anthropic.com/"
+                                        autocomplete="off" id="claudeApiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiKey"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx"
+                                        id="claudeKeyInput" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="claude-x-xxx-xxxx"
+                                        id="claudeModelInput" autocomplete="off" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2943,7 +3185,7 @@
                             </div>
                             <div class="setDetail keyOptionDetail">
                                 <div id="resetHotKey">
-                                    <svg width="22" height="22" style="transform: scaleX(-1)">
+                                    <svg width="24" height="24" style="transform: scaleX(-1)">
                                         <use xlink:href="#refreshIcon" />
                                     </svg>
                                     <span data-i18n-key="resetTip"></span>
@@ -2995,7 +3237,7 @@
                                 <input type="file" style="display: none;" id="importSetInput"
                                     accept="application/json" />
                                 <div id="resetSet">
-                                    <svg width="22" height="22" style="transform: scaleX(-1)">
+                                    <svg width="24" height="24" style="transform: scaleX(-1)">
                                         <use xlink:href="#refreshIcon" />
                                     </svg>
                                     <span data-i18n-key="reset"></span>
@@ -3022,7 +3264,8 @@
     </div>
     <link crossorigin="anonymous"
         href="https://fastly.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown-light.min.css" rel="stylesheet">
-    <link crossorigin="anonymous" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css"
+    <link crossorigin="anonymous"
+        href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css"
         rel="stylesheet">
     <link crossorigin="anonymous" href="https://fastly.jsdelivr.net/npm/notyf@3.10.0/notyf.min.css" rel="stylesheet">
     <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/npm/notyf@3.10.0/notyf.min.js"></script>
@@ -3070,10 +3313,11 @@
             link.href = "https://fastly.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
             document.body.appendChild(link);
         }
-        let envAPIEndpoint, envAPIKey;
+        let envAPIEndpoint, envAPIKey, envAPIModel, envGeminiAPIEndpoint, envGeminiAPIKey, envGeminiAPIModel, envClaudeAPIEndpoint, envClaudeAPIKey, envClaudeAPIModel;
     </script>
     <script src="env.js"></script>
     <script>
+        // from fflate@0.8.2
         {const t=Uint8Array,e=Uint16Array,n=Int32Array,r=new t([0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0,0]),o=new t([0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,0,0]),l=new t([16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15]),s=(t,r)=>{const o=new e(31);for(let e=0;e<31;++e)o[e]=r+=1<<t[e-1];const l=new n(o[30]);for(let t=1;t<30;++t)for(let e=o[t];e<o[t+1];++e)l[e]=e-o[t]<<5|t;return{b:o,r:l}},{b:f,r:c}=s(r,2);f[28]=258,c[258]=28;const{b:i,r:a}=s(o,0),h=new e(32768);for(let t=0;t<32768;++t){let e=(43690&t)>>1|(21845&t)<<1;e=(52428&e)>>2|(13107&e)<<2,e=(61680&e)>>4|(3855&e)<<4,h[t]=((65280&e)>>8|(255&e)<<8)>>1}const u=(t,n,r)=>{const o=t.length;let l=0;const s=new e(n);for(;l<o;++l)t[l]&&++s[t[l]-1];const f=new e(n);for(l=1;l<n;++l)f[l]=f[l-1]+s[l-1]<<1;let c;if(r){c=new e(1<<n);const r=15-n;for(l=0;l<o;++l)if(t[l]){const e=l<<4|t[l],o=n-t[l];let s=f[t[l]-1]++<<o;for(const t=s|(1<<o)-1;s<=t;++s)c[h[s]>>r]=e}}else for(c=new e(o),l=0;l<o;++l)t[l]&&(c[l]=h[f[t[l]-1]++]>>15-t[l]);return c},w=new t(288);for(let t=0;t<144;++t)w[t]=8;for(let t=144;t<256;++t)w[t]=9;for(let t=256;t<280;++t)w[t]=7;for(let t=280;t<288;++t)w[t]=8;const g=new t(32);for(let t=0;t<32;++t)g[t]=5;const b=u(w,9,0),d=u(w,9,1),m=u(g,5,0),y=u(g,5,1),M=t=>{let e=t[0];for(let n=1;n<t.length;++n)t[n]>e&&(e=t[n]);return e},p=(t,e,n)=>{const r=e/8|0;return(t[r]|t[r+1]<<8)>>(7&e)&n},k=(t,e)=>{const n=e/8|0;return(t[n]|t[n+1]<<8|t[n+2]<<16)>>(7&e)},v=t=>(t+7)/8|0,x=(e,n,r)=>((null==n||n<0)&&(n=0),(null==r||r>e.length)&&(r=e.length),new t(e.subarray(n,r))),E=["unexpected EOF","invalid block type","invalid length/literal","invalid distance","stream finished","no stream handler",,"no callback","invalid UTF-8 data","extra field too long","date not in range 1980-2099","filename too long","stream finishing","invalid zip data"],A=(t,e,n)=>{const r=new Error(e||E[t]);if(r.code=t,Error.captureStackTrace&&Error.captureStackTrace(r,A),!n)throw r;return r},T=(e,n,s,c)=>{const a=e.length,h=c?c.length:0;if(!a||n.f&&!n.l)return s||new t(0);const w=!s,g=w||2!=n.i,b=n.i;w&&(s=new t(3*a));const m=e=>{let n=s.length;if(e>n){const r=new t(Math.max(2*n,e));r.set(s),s=r}};let E=n.f||0,T=n.p||0,U=n.b||0,z=n.l,F=n.d,S=n.m,I=n.n;const O=8*a;do{if(!z){E=p(e,T,1);const r=p(e,T+1,3);if(T+=3,!r){const t=v(T)+4,r=e[t-4]|e[t-3]<<8,o=t+r;if(o>a){b&&A(0);break}g&&m(U+r),s.set(e.subarray(t,o),U),n.b=U+=r,n.p=T=8*o,n.f=E;continue}if(1==r)z=d,F=y,S=9,I=5;else if(2==r){const n=p(e,T,31)+257,r=p(e,T+10,15)+4,o=n+p(e,T+5,31)+1;T+=14;const s=new t(o),f=new t(19);for(let t=0;t<r;++t)f[l[t]]=p(e,T+3*t,7);T+=3*r;const c=M(f),i=(1<<c)-1,a=u(f,c,1);for(let t=0;t<o;){const n=a[p(e,T,i)];T+=15&n;const r=n>>4;if(r<16)s[t++]=r;else{let n=0,o=0;for(16==r?(o=3+p(e,T,3),T+=2,n=s[t-1]):17==r?(o=3+p(e,T,7),T+=3):18==r&&(o=11+p(e,T,127),T+=7);o--;)s[t++]=n}}const h=s.subarray(0,n),w=s.subarray(n);S=M(h),I=M(w),z=u(h,S,1),F=u(w,I,1)}else A(1);if(T>O){b&&A(0);break}}g&&m(U+131072);const w=(1<<S)-1,x=(1<<I)-1;let j=T;for(;;j=T){const t=z[k(e,T)&w],n=t>>4;if(T+=15&t,T>O){b&&A(0);break}if(t||A(2),n<256)s[U++]=n;else{if(256==n){j=T,z=null;break}{let t=n-254;if(n>264){const o=n-257,l=r[o];t=p(e,T,(1<<l)-1)+f[o],T+=l}const l=F[k(e,T)&x],a=l>>4;l||A(3),T+=15&l;let u=i[a];if(a>3){const t=o[a];u+=k(e,T)&(1<<t)-1,T+=t}if(T>O){b&&A(0);break}g&&m(U+131072);const w=U+t;if(U<u){const t=h-u,e=Math.min(u,w);for(t+U<0&&A(3);U<e;++U)s[U]=c[t+U]}for(;U<w;++U)s[U]=s[U-u]}}}n.l=z,n.p=j,n.b=U,n.f=E,z&&(E=1,n.m=S,n.d=F,n.n=I)}while(!E);return U!=s.length&&w?x(s,0,U):s.subarray(0,U)},U=(t,e,n)=>{n<<=7&e;const r=e/8|0;t[r]|=n,t[r+1]|=n>>8},z=(t,e,n)=>{n<<=7&e;const r=e/8|0;t[r]|=n,t[r+1]|=n>>8,t[r+2]|=n>>16},F=(n,r)=>{const o=[];for(let t=0;t<n.length;++t)n[t]&&o.push({s:t,f:n[t]});const l=o.length,s=o.slice();if(!l)return{t:C,l:0};if(1==l){const e=new t(o[0].s+1);return e[o[0].s]=1,{t:e,l:1}}o.sort(((t,e)=>t.f-e.f)),o.push({s:-1,f:25001});let f=o[0],c=o[1],i=0,a=1,h=2;for(o[0]={s:-1,f:f.f+c.f,l:f,r:c};a!=l-1;)f=o[o[i].f<o[h].f?i++:h++],c=o[i!=a&&o[i].f<o[h].f?i++:h++],o[a++]={s:-1,f:f.f+c.f,l:f,r:c};let u=s[0].s;for(let t=1;t<l;++t)s[t].s>u&&(u=s[t].s);const w=new e(u+1);let g=S(o[a-1],w,0);if(g>r){let t=0,e=0;const n=g-r,o=1<<n;for(s.sort(((t,e)=>w[e.s]-w[t.s]||t.f-e.f));t<l;++t){const n=s[t].s;if(!(w[n]>r))break;e+=o-(1<<g-w[n]),w[n]=r}for(e>>=n;e>0;){const n=s[t].s;w[n]<r?e-=1<<r-w[n]++-1:++t}for(;t>=0&&e;--t){const n=s[t].s;w[n]==r&&(--w[n],++e)}g=r}return{t:new t(w),l:g}},S=(t,e,n)=>-1==t.s?Math.max(S(t.l,e,n+1),S(t.r,e,n+1)):e[t.s]=n,I=t=>{let n=t.length;for(;n&&!t[--n];);const r=new e(++n);let o=0,l=t[0],s=1;const f=t=>{r[o++]=t};for(let e=1;e<=n;++e)if(t[e]==l&&e!=n)++s;else{if(!l&&s>2){for(;s>138;s-=138)f(32754);s>2&&(f(s>10?s-11<<5|28690:s-3<<5|12305),s=0)}else if(s>3){for(f(l),--s;s>6;s-=6)f(8304);s>2&&(f(s-3<<5|8208),s=0)}for(;s--;)f(l);s=1,l=t[e]}return{c:r.subarray(0,o),n:n}},O=(t,e)=>{let n=0;for(let r=0;r<e.length;++r)n+=t[r]*e[r];return n},j=(t,e,n)=>{const r=n.length,o=v(e+2);t[o]=255&r,t[o+1]=r>>8,t[o+2]=255^t[o],t[o+3]=255^t[o+1];for(let e=0;e<r;++e)t[o+e+4]=n[e];return 8*(o+4+r)},q=(t,n,s,f,c,i,a,h,d,y,M)=>{U(n,M++,s),++c[256];const{t:p,l:k}=F(c,15),{t:v,l:x}=F(i,15),{c:E,n:A}=I(p),{c:T,n:S}=I(v),q=new e(19);for(let t=0;t<E.length;++t)++q[31&E[t]];for(let t=0;t<T.length;++t)++q[31&T[t]];const{t:B,l:C}=F(q,7);let D=19;for(;D>4&&!B[l[D-1]];--D);const G=y+5<<3,H=O(c,w)+O(i,g)+a,J=O(c,p)+O(i,v)+a+14+3*D+O(q,B)+2*q[16]+3*q[17]+7*q[18];if(d>=0&&G<=H&&G<=J)return j(n,M,t.subarray(d,d+y));let K,L,N,P;if(U(n,M,1+(J<H)),M+=2,J<H){K=u(p,k,0),L=p,N=u(v,x,0),P=v;const t=u(B,C,0);U(n,M,A-257),U(n,M+5,S-1),U(n,M+10,D-4),M+=14;for(let t=0;t<D;++t)U(n,M+3*t,B[l[t]]);M+=3*D;const e=[E,T];for(let r=0;r<2;++r){const o=e[r];for(let e=0;e<o.length;++e){const r=31&o[e];U(n,M,t[r]),M+=B[r],r>15&&(U(n,M,o[e]>>5&127),M+=o[e]>>12)}}}else K=b,L=w,N=m,P=g;for(let t=0;t<h;++t){const e=f[t];if(e>255){const t=e>>18&31;z(n,M,K[t+257]),M+=L[t+257],t>7&&(U(n,M,e>>23&31),M+=r[t]);const l=31&e;z(n,M,N[l]),M+=P[l],l>3&&(z(n,M,e>>5&8191),M+=o[l])}else z(n,M,K[e]),M+=L[e]}return z(n,M,K[256]),M+L[256]},B=new n([65540,131080,131088,131104,262176,1048704,1048832,2114560,2117632]),C=new t(0),D=(l,s,f,i,h,u)=>{const w=u.z||l.length,g=new t(i+w+5*(1+Math.ceil(w/7e3))+h),b=g.subarray(i,g.length-h),d=u.l;let m=7&(u.r||0);if(s){m&&(b[0]=u.r>>3);const t=B[s-1],i=t>>13,h=8191&t,g=(1<<f)-1,y=u.p||new e(32768),M=u.h||new e(g+1),p=Math.ceil(f/3),k=2*p,v=t=>(l[t]^l[t+1]<<p^l[t+2]<<k)&g,x=new n(25e3),E=new e(288),A=new e(32);let T=0,U=0,z=u.i||0,F=0,S=u.w||0,I=0;for(;z+2<w;++z){const t=v(z);let e=32767&z,n=M[t];if(y[e]=n,M[t]=e,S<=z){const s=w-z;if((T>7e3||F>24576)&&(s>423||!d)){m=q(l,b,0,x,E,A,U,F,I,z-I,m),F=T=U=0,I=z;for(let t=0;t<286;++t)E[t]=0;for(let t=0;t<30;++t)A[t]=0}let f=2,u=0,g=h,M=e-n&32767;if(s>2&&t==v(z-M)){const t=Math.min(i,s)-1,r=Math.min(32767,z),o=Math.min(258,s);for(;M<=r&&--g&&e!=n;){if(l[z+f]==l[z+f-M]){let e=0;for(;e<o&&l[z+e]==l[z+e-M];++e);if(e>f){if(f=e,u=M,e>t)break;const r=Math.min(M,e-2);let o=0;for(let t=0;t<r;++t){const e=z-M+t&32767,r=e-y[e]&32767;r>o&&(o=r,n=e)}}}e=n,n=y[e],M+=e-n&32767}}if(u){x[F++]=268435456|c[f]<<18|a[u];const t=31&c[f],e=31&a[u];U+=r[t]+o[e],++E[257+t],++A[e],S=z+f,++T}else x[F++]=l[z],++E[l[z]]}}for(z=Math.max(z,S);z<w;++z)x[F++]=l[z],++E[l[z]];m=q(l,b,d,x,E,A,U,F,I,z-I,m),d||(u.r=7&m|b[m/8|0]<<3,m-=7,u.h=M,u.p=y,u.i=z,u.w=S)}else{for(let t=u.w||0;t<w+d;t+=65535){let e=t+65535;e>=w&&(b[m/8|0]=d,e=w),m=j(b,m+1,l.subarray(t,e))}u.i=w}return x(g,0,i+v(m)+h)},G=(e,n,r,o,l)=>{if(!l&&(l={l:1},n.dictionary)){const r=n.dictionary.subarray(-32768),o=new t(r.length+e.length);o.set(r),o.set(e,r.length),e=o,l.w=r.length}return D(e,null==n.level?6:n.level,null==n.mem?l.l?Math.ceil(1.5*Math.max(8,Math.min(13,Math.log(e.length)))):20:12+n.mem,r,o,l)};function deflateSync(t,e){return G(t,e||{},0,0)}function inflateSync(t,e){return T(t,{i:2},e&&e.out,e&&e.dictionary)}}
     </script>
     <script>
@@ -3162,7 +3406,6 @@
                 "chat": "Chat",
                 "tts": "TTS",
                 "stt": "STT",
-                "gptModel": "GPT model",
                 "avatar": "Avatar",
                 "systemRole": "System role",
                 "presetRole": "Preset",
@@ -3191,6 +3434,7 @@
                 "longReply": "Long reply",
                 "ttsService": "TTS API",
                 "sttService": "STT API",
+                "openaiTTS": "OpenAI",
                 "azureTTS": "Azure",
                 "edgeTTS": "Edge",
                 "systemTTS": "System",
@@ -3241,14 +3485,15 @@
                 "customDarkTheme": "Custom dark theme",
                 "startDark": "Start",
                 "endDark": "End",
-                "aiEndpoint": "OpenAI endpoint",
-                "aiKey": "OpenAI API key",
+                "aiEndpoint": " endpoint",
+                "aiKey": " API key",
+                "aiModel": "Custom model name",
                 "used": "Used ",
                 "available": "Avail ",
                 "navKey": "Toggle nav",
                 "fullKey": "Window size",
                 "themeKey": "Toggle theme",
-                "themeKey": "Toggle lang",
+                "langKey": "Toggle lang",
                 "inputKey": "Message",
                 "voiceKey": "Voice",
                 "resetTip": "Restore default",
@@ -3318,7 +3563,6 @@
                 "chat": "会话",
                 "tts": "语音合成",
                 "stt": "语音识别",
-                "gptModel": "GPT模型",
                 "avatar": "用户头像",
                 "systemRole": "系统角色",
                 "presetRole": "预设角色",
@@ -3347,6 +3591,7 @@
                 "longReply": "长回复",
                 "ttsService": "语音合成服务",
                 "sttService": "语音识别服务",
+                "openaiTTS": "OpenAI语音",
                 "azureTTS": "Azure语音",
                 "edgeTTS": "Edge语音",
                 "systemTTS": "系统语音",
@@ -3397,8 +3642,9 @@
                 "customDarkTheme": "自定义深色主题时间",
                 "startDark": "开始时间",
                 "endDark": "结束时间",
-                "aiEndpoint": "OpenAI接口",
+                "aiEndpoint": "接口",
                 "aiKey": "API密钥",
+                "aiModel": "自定义模型",
                 "used": "已用 ",
                 "available": "可用 ",
                 "navKey": "切换导航",
@@ -3536,6 +3782,8 @@
         const inputAreaEle = document.getElementById("chatinput");
         const settingEle = document.getElementById("setting");
         const dialogEle = document.getElementById("setDialog");
+        const selectorEle = document.getElementById("selector");
+        const modelSetEle = document.getElementById("modelDialog");
         const lightEle = document.getElementById("toggleLight");
         const setLightEle = document.getElementById("setLight");
         const autoThemeEle = document.getElementById("autoDetail");
@@ -3558,7 +3806,7 @@
         let voicePitch = []; // 音调
         let enableContVoice; // 连续朗读
         let enableAutoVoice; // 自动朗读
-        let existVoice = 2; // 3:Azure语音 2:edge在线语音, 1:本地语音, 0:不支持语音
+        let existVoice = 2; // 4:OpenAI语音 3:Azure语音 2:edge在线语音, 1:本地语音, 0:不支持语音
         const azureRegions = ['southafricanorth', 'eastasia', 'southeastasia', 'australiaeast', 'centralindia', 'japaneast', 'japanwest', 'koreacentral', 'canadacentral', 'northeurope', 'westeurope', 'francecentral', 'germanywestcentral', 'norwayeast', 'swedencentral', 'switzerlandnorth', 'switzerlandwest', 'uksouth', 'uaenorth', 'brazilsouth', 'qatarcentral', 'centralus', 'eastus', 'eastus2', 'northcentralus', 'southcentralus', 'westcentralus', 'westus', 'westus2', 'westus3'];
         let azureRegion;
         let azureKey;
@@ -4526,7 +4774,7 @@
             }
         }
         recServiceEle.dispatchEvent(new Event("change"));
-        document.querySelector(".sysSwitch").onclick = document.querySelector(".setSwitch").onclick = function (ev) {
+        document.querySelector(".modelSwitch").onclick = document.querySelector(".sysSwitch").onclick = document.querySelector(".setSwitch").onclick = function (ev) {
             let activeEle = this.getElementsByClassName("activeSwitch")[0];
             if (ev.target !== activeEle) {
                 activeEle.classList.remove("activeSwitch");
@@ -4535,9 +4783,7 @@
                 document.getElementById(activeEle.dataset.id).style.display = "none";
             }
         };
-        if (!supportSpe) {
-            speechServiceEle.remove(2);
-        }
+        if (!supportSpe) speechServiceEle.remove(3);
         const initVoiceVal = () => {
             let localVoiceType = localStorage.getItem("existVoice");
             speechServiceEle.value = existVoice = parseInt(localVoiceType || "2");
@@ -4565,7 +4811,11 @@
                 checkEdgeAbort.abort();
                 checkEdgeAbort = void 0;
             }
-            if (existVoice === 3) {
+            if (existVoice === 4) {
+                toggleVoiceCheck(false);
+                clearAzureVoice();
+                loadOpenAIVoice();
+            } else if (existVoice === 3) {
                 azureKeyInput.parentElement.style.display = "block";
                 preSetAzureRegion.parentElement.style.display = "block";
                 loadAzureVoice();
@@ -4578,11 +4828,19 @@
                 loadLocalVoice();
             }
         }
-        let edgeVoiceData, systemVoiceData, checkAzureAbort, checkEdgeAbort;
+        let openaiVoiceData, edgeVoiceData, systemVoiceData, checkAzureAbort, checkEdgeAbort;
         const toggleVoiceCheck = (bool) => {
             checkVoiceLoad.style.display = bool ? "flex" : "none";
             speechDetail.style.display = bool ? "none" : "block";
         }
+        const loadOpenAIVoice = () => {
+            if (openaiVoiceData) {
+                initVoiceSetting(openaiVoiceData);
+            } else {
+                openaiVoiceData = [{ name: "alloy", displayName: "alloy" }, { name: "echo", displayName: "echo" }, { name: "fable", displayName: "fable" }, { name: "onyx", displayName: "onyx" }, { name: "nova", displayName: "nova" }, { name: "shimmer", displayName: "shimmer" }]
+                initVoiceSetting(openaiVoiceData);
+            }
+        };
         const loadAzureVoice = () => {
             let checking = false;
             const checkAzureFunc = () => {
@@ -4783,38 +5041,40 @@
         };
         const voicesEle = document.getElementById("preSetSpeech");
         const initVoiceSetting = (voices) => {
-            let isOnline = existVoice >= 2;
-            // 支持中文和英文
-            voices = isOnline ? voices.filter(item => item.Locale.match(/^(zh-|en-)/)) : voices.filter(item => item.lang.match(/^(zh-|en-)/));
-            if (isOnline) {
-                voices.map(item => {
-                    item.name = item.FriendlyName || (`${item.DisplayName} Online (${item.VoiceType}) - ${item.LocaleName}`);
-                    item.lang = item.Locale;
-                })
-            } else if (isSafari && voices[0].voiceURI.startsWith("com.apple")) {
-                voices = voices.filter(item => {
-                    return !item.voiceURI.startsWith("com.apple.voice.super-compact")
-                })
-            }
-            voices.sort((a, b) => {
-                if (a.lang.slice(0, 2) === b.lang.slice(0, 2)) {
-                    if (a.lang.slice(0, 2) === "zh") {
-                        return (a.lang === b.lang) ? 0 : (a.lang > b.lang) ? 1 : -1; // zh-CN 在前
-                    } else {
-                        return 0
+            if (existVoice < 4) {
+                let isOnline = existVoice === 2 || existVoice === 3;
+                // 支持中文和英文
+                voices = isOnline ? voices.filter(item => item.Locale.match(/^(zh-|en-)/)) : voices.filter(item => item.lang.match(/^(zh-|en-)/));
+                if (isOnline) {
+                    voices.map(item => {
+                        item.name = item.FriendlyName || (`${item.DisplayName} Online (${item.VoiceType}) - ${item.LocaleName}`);
+                        item.lang = item.Locale;
+                    })
+                } else if (isSafari && voices[0].voiceURI.startsWith("com.apple")) {
+                    voices = voices.filter(item => {
+                        return !item.voiceURI.startsWith("com.apple.voice.super-compact")
+                    })
+                }
+                voices.sort((a, b) => {
+                    if (a.lang.slice(0, 2) === b.lang.slice(0, 2)) {
+                        if (a.lang.slice(0, 2) === "zh") {
+                            return (a.lang === b.lang) ? 0 : (a.lang > b.lang) ? 1 : -1; // zh-CN 在前
+                        } else {
+                            return 0
+                        }
                     }
-                }
-                return (locale === "zh" ? (a.lang < b.lang) : (a.lang > b.lang)) ? 1 : -1; // 中文UI，则中文"z"在前
-            });
-            voices.map(item => {
-                if (item.name.match(/^(Google |Microsoft )/)) {
-                    item.displayName = item.name.replace(/^.*? /, "");
-                } else {
-                    item.displayName = item.name;
-                }
-            });
-            if (isSafari && !isOnline) {
-                voices.map(item => {item.displayName = `${item.name} (${item.lang})`});
+                    return (locale === "zh" ? (a.lang < b.lang) : (a.lang > b.lang)) ? 1 : -1; // 中文UI，则中文"z"在前
+                });
+                voices.map(item => {
+                    if (item.name.match(/^(Google |Microsoft )/)) {
+                        item.displayName = item.name.replace(/^.*? /, "");
+                    } else {
+                        item.displayName = item.name;
+                    }
+                });
+                if (isSafari && !isOnline) {
+                    voices.map(item => { item.displayName = `${item.name} (${item.lang})` });
+                };
             };
             voicesData = voices;
             voicesEle.innerHTML = "";
@@ -5019,19 +5279,23 @@
         initVoiceFunc();
         speechServiceEle.dispatchEvent(new Event("change"));
     </script>
-    <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
-    <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script crossorigin="anonymous"
+        src="https://fastly.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+    <script crossorigin="anonymous"
+        src="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
     <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script>
         // from markdown-it-texmath@1.0.1
         function escapeHTML(e){return e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;").replace(/\//g,"&sol;")}function texmath(e,t){const n=texmath.mergeDelimiters(t&&t.delimiters),a=t&&t.outerSpace||!1,o=t&&t.katexOptions||{};o.throwOnError=o.throwOnError||!1,o.macros=o.macros||t&&t.macros,texmath.katex||(t&&"object"==typeof t.engine?texmath.katex=t.engine:"object"==typeof module?texmath.katex=require("katex"):texmath.katex={renderToString:()=>"No math renderer found."});for(const t of n.inline)a&&"outerSpace"in t&&(t.outerSpace=!0),e.inline.ruler.before("escape",t.name,texmath.inline(t)),e.renderer.rules[t.name]=(e,n)=>t.tmpl.replace(/\$1/,texmath.render(e[n].content,!!t.displayMode,o));for(const t of n.block)e.block.ruler.before("fence",t.name,texmath.block(t)),e.renderer.rules[t.name]=(e,n)=>t.tmpl.replace(/\$2/,escapeHTML(e[n].info)).replace(/\$1/,texmath.render(e[n].content,!0,o))}texmath.mergeDelimiters=function(e){const t=Array.isArray(e)?e:"string"==typeof e?[e]:["dollars"],n={inline:[],block:[]};for(const e of t)e in texmath.rules&&(n.inline.push(...texmath.rules[e].inline),n.block.push(...texmath.rules[e].block));return n},texmath.inline=e=>function(t,n){const a=t.pos,o=t.src,r=o.startsWith(e.tag,e.rex.lastIndex=a)&&(!e.pre||e.pre(o,e.outerSpace,a))&&e.rex.exec(o),s=!!r&&a<e.rex.lastIndex&&(!e.post||e.post(o,e.outerSpace,e.rex.lastIndex-1));if(s){if(!n){const n=t.push(e.name,"math",0);n.content=r[1],n.markup=e.tag}t.pos=e.rex.lastIndex}return s},texmath.block=e=>function(t,n,a,o){const r=t.bMarks[n]+t.tShift[n],s=t.src,m=s.startsWith(e.tag,e.rex.lastIndex=r)&&(!e.pre||e.pre(s,!1,r))&&e.rex.exec(s),l=!!m&&r<e.rex.lastIndex&&(!e.post||e.post(s,!1,e.rex.lastIndex-1));if(l&&!o){const o=e.rex.lastIndex-1;let r;for(r=n;r<a&&!(o>=t.bMarks[r]+t.tShift[r]&&o<=t.eMarks[r]);r++);const s=t.lineMax,l=t.parentType;t.lineMax=r,t.parentType="math","blockquote"===l&&(m[1]=m[1].replace(/(\n*?^(?:\s*>)+)/gm,""));let c=t.push(e.name,"math",0);c.block=!0,c.tag=e.tag,c.markup="",c.content=m[1],c.info=m[m.length-1],c.map=[n,r+1],t.parentType=l,t.lineMax=s,t.line=r+1}return l},texmath.render=function(e,t,n){let a;n.displayMode=t;try{a=texmath.katex.renderToString(e,n)}catch(t){a=escapeHTML(`${e}:${t.message}`)}return a},texmath.inlineRuleNames=["math_inline","math_inline_double"],texmath.blockRuleNames=["math_block","math_block_eqno"],texmath.$_pre=(e,t,n)=>{const a=n>0&&e[n-1].charCodeAt(0);return t?!a||32===a:!a||92!==a&&(a<48||a>57)},texmath.$_post=(e,t,n)=>{const a=e[n+1]&&e[n+1].charCodeAt(0);return t?!a||32===a||46===a||44===a||59===a:!a||a<48||a>57},texmath.rules={brackets:{inline:[{name:"math_inline",rex:/\\\((.+?)\\\)/gy,tmpl:"<eq>$1</eq>",tag:"\\("}],block:[{name:"math_block_eqno",rex:/\\\[(((?!\\\]|\\\[)[\s\S])+?)\\\]\s*?\(([^)$\r\n]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"\\["},{name:"math_block",rex:/\\\[([\s\S]+?)\\\]/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\["}]},doxygen:{inline:[{name:"math_inline",rex:/\\f\$(.+?)\\f\$/gy,tmpl:"<eq>$1</eq>",tag:"\\f$"}],block:[{name:"math_block_eqno",rex:/\\f\[([^]+?)\\f\]\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"\\f["},{name:"math_block",rex:/\\f\[([^]+?)\\f\]/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\f["}]},gitlab:{inline:[{name:"math_inline",rex:/\$`(.+?)`\$/gy,tmpl:"<eq>$1</eq>",tag:"$`"}],block:[{name:"math_block_eqno",rex:/`{3}math\s*([^`]+?)\s*?`{3}\s*\(([^)\r\n]+?)\)/gm,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"```math"},{name:"math_block",rex:/`{3}math\s*([^`]*?)\s*`{3}/gm,tmpl:"<section><eqn>$1</eqn></section>",tag:"```math"}]},julia:{inline:[{name:"math_inline",rex:/`{2}([^`]+?)`{2}/gy,tmpl:"<eq>$1</eq>",tag:"``"},{name:"math_inline",rex:/\$((?:\S?)|(?:\S.*?\S))\$/gy,tmpl:"<eq>$1</eq>",tag:"$",spaceEnclosed:!1,pre:texmath.$_pre,post:texmath.$_post}],block:[{name:"math_block_eqno",rex:/`{3}math\s+?([^`]+?)\s+?`{3}\s*?\(([^)$\r\n]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"```math"},{name:"math_block",rex:/`{3}math\s+?([^`]+?)\s+?`{3}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"```math"}]},kramdown:{inline:[{name:"math_inline",rex:/\${2}(.+?)\${2}/gy,tmpl:"<eq>$1</eq>",tag:"$$"}],block:[{name:"math_block_eqno",rex:/\${2}([^$]+?)\${2}\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"$$"},{name:"math_block",rex:/\${2}([^$]+?)\${2}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$"}]},beg_end:{inline:[],block:[{name:"math_block",rex:/(\\(?:begin)\{([a-z]+)\}[\s\S]+?\\(?:end)\{\2\})/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"\\"}]},dollars:{inline:[{name:"math_inline_double",rex:/\${2}([^$]*?[^\\])\${2}/gy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$",displayMode:!0,pre:texmath.$_pre,post:texmath.$_post},{name:"math_inline",rex:/\$((?:[^\s\\])|(?:\S.*?[^\s\\]))\$/gy,tmpl:"<eq>$1</eq>",tag:"$",outerSpace:!1,pre:texmath.$_pre,post:texmath.$_post}],block:[{name:"math_block_eqno",rex:/\${2}([^$]*?[^\\])\${2}\s*?\(([^)\s]+?)\)/gmy,tmpl:'<section class="eqno"><eqn>$1</eqn><span>($2)</span></section>',tag:"$$"},{name:"math_block",rex:/\${2}([^$]*?[^\\])\${2}/gmy,tmpl:"<section><eqn>$1</eqn></section>",tag:"$$"}]}};
-    </script>
-    <script>
         // from morphdom@2.7.2
-        {let e,t=11,l=(e,l)=>{let n,i,r,d,o,a=l.attributes;if(l.nodeType===t||e.nodeType===t)return;for(let t=a.length-1;t>=0;t--)n=a[t],i=n.name,r=n.namespaceURI,d=n.value,r?(i=n.localName||i,o=e.getAttributeNS(r,i),o!==d&&("xmlns"===n.prefix&&(i=n.name),e.setAttributeNS(r,i,d))):(o=e.getAttribute(i),o!==d&&e.setAttribute(i,d));let u=e.attributes;for(let t=u.length-1;t>=0;t--)n=u[t],i=n.name,r=n.namespaceURI,r?(i=n.localName||i,l.hasAttributeNS(r,i)||e.removeAttributeNS(r,i)):l.hasAttribute(i)||e.removeAttribute(i)},n="http://www.w3.org/1999/xhtml",i="undefined"==typeof document?void 0:document,r=!!i&&"content"in i.createElement("template"),d=!!i&&i.createRange&&"createContextualFragment"in i.createRange(),o=e=>{let t=i.createElement("template");return t.innerHTML=e,t.content.childNodes[0]},a=t=>(e||(e=i.createRange(),e.selectNode(i.body)),e.createContextualFragment(t).childNodes[0]),u=e=>{let t=i.createElement("body");return t.innerHTML=e,t.childNodes[0]},s=e=>(e=e.trim(),r?o(e):d?a(e):u(e)),f=(e,t)=>{let l,n,i=e.nodeName,r=t.nodeName;return i===r||(l=i.charCodeAt(0),n=r.charCodeAt(0),l<=90&&n>=97?i===r.toUpperCase():n<=90&&l>=97&&r===i.toUpperCase())},c=(e,t)=>t&&t!==n?i.createElementNS(t,e):i.createElement(e),m=(e,t)=>{let l=e.firstChild;for(;l;){let e=l.nextSibling;t.appendChild(l),l=e}return t},p=(e,t,l)=>{e[l]!==t[l]&&(e[l]=t[l],e[l]?e.setAttribute(l,""):e.removeAttribute(l))},h={OPTION:(e,t)=>{let l=e.parentNode;if(l){let n=l.nodeName.toUpperCase();"OPTGROUP"===n&&(l=l.parentNode,n=l&&l.nodeName.toUpperCase()),"SELECT"!==n||l.hasAttribute("multiple")||(e.hasAttribute("selected")&&!t.selected&&(e.setAttribute("selected","selected"),e.removeAttribute("selected")),l.selectedIndex=-1)}p(e,t,"selected")},INPUT:(e,t)=>{p(e,t,"checked"),p(e,t,"disabled"),e.value!==t.value&&(e.value=t.value),t.hasAttribute("value")||e.removeAttribute("value")},TEXTAREA:(e,t)=>{let l=t.value;e.value!==l&&(e.value=l);let n=e.firstChild;if(n){let t=n.nodeValue;if(t==l||!l&&t==e.placeholder)return;n.nodeValue=l}},SELECT:(e,t)=>{if(!t.hasAttribute("multiple")){let t,l,n=-1,i=0,r=e.firstChild;for(;r;)if(l=r.nodeName&&r.nodeName.toUpperCase(),"OPTGROUP"===l)t=r,r=t.firstChild;else{if("OPTION"===l){if(r.hasAttribute("selected")){n=i;break}i++}r=r.nextSibling,!r&&t&&(r=t.nextSibling,t=null)}e.selectedIndex=n}}},N=1,b=11,A=3,C=8,T=()=>{},g=e=>{if(e)return e.getAttribute&&e.getAttribute("id")||e.id},E=e=>function(t,l,n){if(n||(n={}),"string"==typeof l)if("#document"===t.nodeName||"HTML"===t.nodeName||"BODY"===t.nodeName){let e=l;(l=i.createElement("html")).innerHTML=e}else l=s(l);else l.nodeType===b&&(l=l.firstElementChild);let r=n.getNodeKey||g,d=n.onBeforeNodeAdded||T,o=n.onNodeAdded||T,a=n.onBeforeElUpdated||T,u=n.onElUpdated||T,p=n.onBeforeNodeDiscarded||T,E=n.onNodeDiscarded||T,v=n.onBeforeElChildrenUpdated||T,x=n.skipFromChildren||T,y=n.addChild||function(e,t){return e.appendChild(t)},S=!0===n.childrenOnly,U=Object.create(null),O=[],R=e=>{O.push(e)},V=(e,t)=>{if(e.nodeType===N){let l=e.firstChild;for(;l;){let e;t&&(e=r(l))?R(e):(E(l),l.firstChild&&V(l,t)),l=l.nextSibling}}},w=(e,t,l)=>{!1!==p(e)&&(t&&t.removeChild(e),E(e),V(e,l))},I=e=>{if(e.nodeType===N||e.nodeType===b){let t=e.firstChild;for(;t;){let e=r(t);e&&(U[e]=t),I(t),t=t.nextSibling}}};I(t);let P=e=>{o(e);let t=e.firstChild;for(;t;){let e=t.nextSibling,l=r(t);if(l){let e=U[l];e&&f(t,e)?(t.parentNode.replaceChild(e,t),B(e,t)):P(t)}else P(t);t=e}},B=(t,l,n)=>{let i=r(l);if(i&&delete U[i],!n){if(!1===a(t,l))return;if(e(t,l),u(t),!1===v(t,l))return}"TEXTAREA"!==t.nodeName?L(t,l):h.TEXTAREA(t,l)},L=(e,t)=>{let l,n,o,a,u,s=x(e,t),c=t.firstChild,m=e.firstChild;e:for(;c;){for(a=c.nextSibling,l=r(c);!s&&m;){if(o=m.nextSibling,c.isEqualNode&&c.isEqualNode(m)){c=a,m=o;continue e}n=r(m);let t,i=m.nodeType;if(i===c.nodeType&&(i===N?(l?l!==n&&((u=U[l])?o===u?t=!1:(e.insertBefore(u,m),n?R(n):w(m,e,!0),m=u,n=r(m)):t=!1):n&&(t=!1),t=!1!==t&&f(m,c),t&&B(m,c)):i!==A&&i!=C||(t=!0,m.nodeValue!==c.nodeValue&&(m.nodeValue=c.nodeValue))),t){c=a,m=o;continue e}n?R(n):w(m,e,!0),m=o}if(l&&(u=U[l])&&f(u,c))s||y(e,u),B(u,c);else{let t=d(c);!1!==t&&(t&&(c=t),c.actualize&&(c=c.actualize(e.ownerDocument||i)),y(e,c),P(c))}c=a,m=o}((e,t,l)=>{for(;t;){let n=t.nextSibling;(l=r(t))?R(l):w(t,e,!0),t=n}})(e,m,n);let p=h[e.nodeName];p&&p(e,t)},D=t,z=D.nodeType,H=l.nodeType;if(!S)if(z===N)H===N?f(t,l)||(E(t),D=m(t,c(l.nodeName,l.namespaceURI))):D=l;else if(z===A||z===C){if(H===z)return D.nodeValue!==l.nodeValue&&(D.nodeValue=l.nodeValue),D;D=l}if(B(D,l,S),O)for(let e=0,t=O.length;e<t;e++){let t=U[O[e]];t&&w(t,t.parentNode,!1)}return!S&&D!==t&&t.parentNode&&(D.actualize&&(D=D.actualize(t.ownerDocument||i)),t.parentNode.replaceChild(D,t)),D};window.morphdom=E(l)}
+        {let e,t=11,l=(e,l)=>{let n,i,r,d,o,a=l.attributes;if(l.nodeType===t||e.nodeType===t)return;for(let t=a.length-1;t>=0;t--)n=a[t],i=n.name,r=n.namespaceURI,d=n.value,r?(i=n.localName||i,o=e.getAttributeNS(r,i),o!==d&&("xmlns"===n.prefix&&(i=n.name),e.setAttributeNS(r,i,d))):(o=e.getAttribute(i),o!==d&&e.setAttribute(i,d));let u=e.attributes;for(let t=u.length-1;t>=0;t--)n=u[t],i=n.name,r=n.namespaceURI,r?(i=n.localName||i,l.hasAttributeNS(r,i)||e.removeAttributeNS(r,i)):l.hasAttribute(i)||e.removeAttribute(i)},n="http://www.w3.org/1999/xhtml",i="undefined"==typeof document?void 0:document,r=!!i&&"content"in i.createElement("template"),d=!!i&&i.createRange&&"createContextualFragment"in i.createRange(),o=e=>{let t=i.createElement("template");return t.innerHTML=e,t.content.childNodes[0]},a=t=>(e||(e=i.createRange(),e.selectNode(i.body)),e.createContextualFragment(t).childNodes[0]),u=e=>{let t=i.createElement("body");return t.innerHTML=e,t.childNodes[0]},s=e=>(e=e.trim(),r?o(e):d?a(e):u(e)),f=(e,t)=>{let l,n,i=e.nodeName,r=t.nodeName;return i===r||(l=i.charCodeAt(0),n=r.charCodeAt(0),l<=90&&n>=97?i===r.toUpperCase():n<=90&&l>=97&&r===i.toUpperCase())},c=(e,t)=>t&&t!==n?i.createElementNS(t,e):i.createElement(e),m=(e,t)=>{let l=e.firstChild;for(;l;){let e=l.nextSibling;t.appendChild(l),l=e}return t},p=(e,t,l)=>{e[l]!==t[l]&&(e[l]=t[l],e[l]?e.setAttribute(l,""):e.removeAttribute(l))},h={OPTION:(e,t)=>{let l=e.parentNode;if(l){let n=l.nodeName.toUpperCase();"OPTGROUP"===n&&(l=l.parentNode,n=l&&l.nodeName.toUpperCase()),"SELECT"!==n||l.hasAttribute("multiple")||(e.hasAttribute("selected")&&!t.selected&&(e.setAttribute("selected","selected"),e.removeAttribute("selected")),l.selectedIndex=-1)}p(e,t,"selected")},INPUT:(e,t)=>{p(e,t,"checked"),p(e,t,"disabled"),e.value!==t.value&&(e.value=t.value),t.hasAttribute("value")||e.removeAttribute("value")},TEXTAREA:(e,t)=>{let l=t.value;e.value!==l&&(e.value=l);let n=e.firstChild;if(n){let t=n.nodeValue;if(t==l||!l&&t==e.placeholder)return;n.nodeValue=l}},SELECT:(e,t)=>{if(!t.hasAttribute("multiple")){let t,l,n=-1,i=0,r=e.firstChild;for(;r;)if(l=r.nodeName&&r.nodeName.toUpperCase(),"OPTGROUP"===l)t=r,r=t.firstChild;else{if("OPTION"===l){if(r.hasAttribute("selected")){n=i;break}i++}r=r.nextSibling,!r&&t&&(r=t.nextSibling,t=null)}e.selectedIndex=n}}},N=1,b=11,A=3,C=8,T=()=>{},g=e=>{if(e)return e.getAttribute&&e.getAttribute("id")||e.id},E=e=>function(t,l,n){if(n||(n={}),"string"==typeof l)if("#document"===t.nodeName||"HTML"===t.nodeName||"BODY"===t.nodeName){let e=l;(l=i.createElement("html")).innerHTML=e}else l=s(l);else l.nodeType===b&&(l=l.firstElementChild);let r=n.getNodeKey||g,d=n.onBeforeNodeAdded||T,o=n.onNodeAdded||T,a=n.onBeforeElUpdated||T,u=n.onElUpdated||T,p=n.onBeforeNodeDiscarded||T,E=n.onNodeDiscarded||T,v=n.onBeforeElChildrenUpdated||T,x=n.skipFromChildren||T,y=n.addChild||function(e,t){return e.appendChild(t)},S=!0===n.childrenOnly,U=Object.create(null),O=[],R=e=>{O.push(e)},V=(e,t)=>{if(e.nodeType===N){let l=e.firstChild;for(;l;){let e;t&&(e=r(l))?R(e):(E(l),l.firstChild&&V(l,t)),l=l.nextSibling}}},w=(e,t,l)=>{!1!==p(e)&&(t&&t.removeChild(e),E(e),V(e,l))},I=e=>{if(e.nodeType===N||e.nodeType===b){let t=e.firstChild;for(;t;){let e=r(t);e&&(U[e]=t),I(t),t=t.nextSibling}}};I(t);let P=e=>{o(e);let t=e.firstChild;for(;t;){let e=t.nextSibling,l=r(t);if(l){let e=U[l];e&&f(t,e)?(t.parentNode.replaceChild(e,t),B(e,t)):P(t)}else P(t);t=e}},B=(t,l,n)=>{let i=r(l);if(i&&delete U[i],!n){if(!1===a(t,l))return;if(e(t,l),u(t),!1===v(t,l))return}"TEXTAREA"!==t.nodeName?L(t,l):h.TEXTAREA(t,l)},L=(e,t)=>{let l,n,o,a,u,s=x(e,t),c=t.firstChild,m=e.firstChild;e:for(;c;){for(a=c.nextSibling,l=r(c);!s&&m;){if(o=m.nextSibling,c.isEqualNode&&c.isEqualNode(m)){c=a,m=o;continue e}n=r(m);let t,i=m.nodeType;if(i===c.nodeType&&(i===N?(l?l!==n&&((u=U[l])?o===u?t=!1:(e.insertBefore(u,m),n?R(n):w(m,e,!0),m=u,n=r(m)):t=!1):n&&(t=!1),t=!1!==t&&f(m,c),t&&B(m,c)):i!==A&&i!=C||(t=!0,m.nodeValue!==c.nodeValue&&(m.nodeValue=c.nodeValue))),t){c=a,m=o;continue e}n?R(n):w(m,e,!0),m=o}if(l&&(u=U[l])&&f(u,c))s||y(e,u),B(u,c);else{let t=d(c);!1!==t&&(t&&(c=t),c.actualize&&(c=c.actualize(e.ownerDocument||i)),y(e,c),P(c))}c=a,m=o}((e,t,l)=>{for(;t;){let n=t.nextSibling;(l=r(t))?R(l):w(t,e,!0),t=n}})(e,m,n);let p=h[e.nodeName];p&&p(e,t)},D=t,z=D.nodeType,H=l.nodeType;if(!S)if(z===N)H===N?f(t,l)||(E(t),D=m(t,c(l.nodeName,l.namespaceURI))):D=l;else if(z===A||z===C){if(H===z)return D.nodeValue!==l.nodeValue&&(D.nodeValue=l.nodeValue),D;D=l}if(B(D,l,S),O)for(let e=0,t=O.length;e<t;e++){let t=U[O[e]];t&&w(t,t.parentNode,!1)}return!S&&D!==t&&t.parentNode&&(D.actualize&&(D=D.actualize(t.ownerDocument||i)),t.parentNode.replaceChild(D,t)),D};window.morphdom=E(l)};   
+        // from sha1-uint8array@0.10.7
+        {const K=[1518500249,1859775393,-1894007588,-899497514];window.createHash=()=>new Hash;class Hash{constructor(){this.A=1732584193,this.B=-271733879,this.C=-1732584194,this.D=271733878,this.E=-1009589776,this._size=0,this._sp=0,(!sharedBuffer||sharedOffset>=8e3)&&(sharedBuffer=new ArrayBuffer(8e3),sharedOffset=0),this._byte=new Uint8Array(sharedBuffer,sharedOffset,80),this._word=new Int32Array(sharedBuffer,sharedOffset,20),sharedOffset+=80};update(t){if("string"==typeof t)return this._utf8(t);if(null==t)throw new TypeError("Invalid type: "+typeof t);const s=t.byteOffset,e=t.byteLength;let r=e/64|0,i=0;if(r&&!(3&s)&&!(this._size%64)){const e=new Int32Array(t.buffer,s,16*r);for(;r--;)this._int32(e,i>>2),i+=64;this._size+=i}if(1!==t.BYTES_PER_ELEMENT&&t.buffer){const r=new Uint8Array(t.buffer,s+i,e-i);return this._uint8(r)}return i===e?this:this._uint8(t,i)};_uint8(t,s){const{_byte:e,_word:r}=this,i=t.length;for(s|=0;s<i;){const h=this._size%64;let n=h;for(;s<i&&n<64;)e[n++]=t[s++];n>=64&&this._int32(r),this._size+=n-h}return this};_utf8(t){const{_byte:s,_word:e}=this,r=t.length;let i=this._sp;for(let h=0;h<r;){const n=this._size%64;let f=n;for(;h<r&&f<64;){let e=0|t.charCodeAt(h++);e<128?s[f++]=e:e<2048?(s[f++]=192|e>>>6,s[f++]=128|63&e):e<55296||e>57343?(s[f++]=224|e>>>12,s[f++]=128|e>>>6&63,s[f++]=128|63&e):i?(e=((1023&i)<<10)+(1023&e)+65536,s[f++]=240|e>>>18,s[f++]=128|e>>>12&63,s[f++]=128|e>>>6&63,s[f++]=128|63&e,i=0):i=e}f>=64&&(this._int32(e),e[0]=e[16]),this._size+=f-n}return this._sp=i,this};_int32(t,s){let{A:e,B:r,C:i,D:h,E:n}=this,f=0;for(s|=0;f<16;)W[f++]=swap32(t[s++]);for(f=16;f<80;f++)W[f]=rotate1(W[f-3]^W[f-8]^W[f-14]^W[f-16]);for(f=0;f<80;f++){const t=f/20|0,s=rotate5(e)+ft(t,r,i,h)+n+W[f]+K[t]|0;n=h,h=i,i=rotate30(r),r=e,e=s}this.A=e+this.A|0,this.B=r+this.B|0,this.C=i+this.C|0,this.D=h+this.D|0,this.E=n+this.E|0};digest(t){const{_byte:s,_word:e}=this;let r=this._size%64|0;for(s[r++]=128;3&r;)s[r++]=0;if(r>>=2,r>14){for(;r<16;)e[r++]=0;r=0,this._int32(e)}for(;r<16;)e[r++]=0;const i=8*this._size,h=(4294967295&i)>>>0,n=(i-h)/4294967296;return n&&(e[14]=swap32(n)),h&&(e[15]=swap32(h)),this._int32(e),"hex"===t?this._hex():this._bin()};_hex(){const{A:t,B:s,C:e,D:r,E:i}=this;return hex32(t)+hex32(s)+hex32(e)+hex32(r)+hex32(i)};_bin(){const{A:t,B:s,C:e,D:r,E:i,_byte:h,_word:n}=this;return n[0]=swap32(t),n[1]=swap32(s),n[2]=swap32(e),n[3]=swap32(r),n[4]=swap32(i),h.slice(0,20)}};const W=new Int32Array(80);let sharedBuffer,sharedOffset=0;const hex32=t=>(t+4294967296).toString(16).substr(-8),swapLE=t=>t<<24&4278190080|t<<8&16711680|t>>8&65280|t>>24&255,swapBE=t=>t,swap32=isBE()?swapBE:swapLE,rotate1=t=>t<<1|t>>>31,rotate5=t=>t<<5|t>>>27,rotate30=t=>t<<30|t>>>2;function ft(t,s,e,r){return 0===t?s&e|~s&r:2===t?s&e|s&r|e&r:s^e^r}function isBE(){return 254===new Uint8Array(new Uint16Array([65279]).buffer)[0]}};
     </script>
     <script>
         const API_URL = "v1/chat/completions";
+        const Gemini_API_URL = "v1/models/";
+        const Claude_API_URL = "v1/messages";
         let loading = false;
         let presetRoleData = {
             "default": translations[locale]["defaultText"],
@@ -5041,9 +5305,19 @@
             "image": translations[locale]["imageText"]
         };
         let modelVersion; // 模型版本
+        let modelType; // 1:ChatGPT，2:Gemini，3:Claude
         let apiHost; // api反代地址
+        let geminiApiHost;
+        let claudeApiHost;
         let apiSelects = []; // api地址列表
+        let geminiApiSelects = [];
+        let claudeApiSelects = [];
         let customAPIKey; // 自定义apiKey
+        let geminiAPIKey;
+        let claudeAPIKey;
+        let customAPIModel; // 自定义apiModel
+        let geminiAPIModel;
+        let claudeAPIModel;
         let systemRole; // 自定义系统角色
         let roleNature; // 角色性格
         let roleTemp; // 回答质量
@@ -5059,6 +5333,7 @@
         const voiceFormat = "audio-24khz-48kbitrate-mono-mp3";
         const voicePreLen = 130;
         const voiceSuffix = ".mp3";
+        const openAIVoiceSuffix = ".aac";
         let userAvatar; // 用户头像
         let customDarkOut;
         let isCaseSearch; // 搜索是否区分大小写
@@ -5113,7 +5388,7 @@
         }
         const parser = new DOMParser();
         const getUnescape = html => {
-            return parser.parseFromString(html, 'text/html').body.textContent;
+            return parser.parseFromString(html, 'text/html').body.innerText;
         }
         const escapeRegexExp = (str) => { // from vscode src/vs/base/common/strings.ts escapeRegExpCharacters
             return str.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
@@ -5212,6 +5487,62 @@
             state.posMax = max;
             return true;
         }
+        const mermaidMap = {};
+        const mermaidQuene = new Map();
+        let mermaidTimeout;
+        let loadingMermaid = false;
+        const loadMermaidQuene = () => {
+            mermaidQuene.forEach((content, id) => { loadSingleMermaid(id, content) });
+            mermaidQuene.clear();
+        };
+        const loadSingleMermaid = async (id, content) => {
+            let contianer = document.querySelector("#" + id);
+            if (!contianer || contianer.children.length) return;
+            let result;
+            try {
+                let { svg } = await mermaid.render(mermaid.detectType(content), content, contianer);
+                result = svg;
+            } catch (error) {
+                return;
+            }
+            result = result.replace(/(<svg[^>]*?)\sstyle="[^"]*"/i, '$1');
+            mermaidMap[id] = result;
+            document.querySelectorAll('#' + id).forEach(item => { item.innerHTML = result });
+        };
+        const loadRunMermaid = (id, content, bounce = false) => {
+            if (typeof mermaid === 'undefined') {
+                if (!loadingMermaid) {
+                    loadingMermaid = true;
+                    let script = document.createElement("script");
+                    script.crossOrigin = "anonymous";
+                    script.src = "https://fastly.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js";
+                    script.onload = async () => {
+                        loadingMermaid = false;
+                        mermaid.mermaidAPI.initialize({
+                            startOnLoad: false
+                        });
+                        loadMermaidQuene();
+                    }
+                    document.body.appendChild(script);
+                }
+                if (loading && !bounce) {
+                    clearTimeout(mermaidTimeout);
+                    mermaidTimeout = setTimeout(() => {
+                        mermaidQuene.set(id, content);
+                        if (typeof mermaid !== 'undefined') loadMermaidQuene();
+                    }, 600)
+                } else {
+                    mermaidQuene.set(id, content);
+                }
+            } else {
+                if (loading && !bounce) {
+                    clearTimeout(mermaidTimeout);
+                    mermaidTimeout = setTimeout(() => { loadSingleMermaid(id, content) }, 600)
+                } else {
+                    setTimeout(() => { loadSingleMermaid(id, content) });
+                }
+            }
+        };
         const md = markdownit({
             breaks: true,
             linkify: true,
@@ -5273,15 +5604,20 @@
             document.execCommand("copy");
             document.body.removeChild(input);
         }
+        const downloadSVG = (target, ev) => {
+            if (ev.target !== target) {
+                let blob = new Blob([target.innerHTML], { type: "image/svg+xml" });
+                downBlob(blob, "mermaid-" + target.children[0].getAttribute("aria-roledescription") + ".svg")
+            }
+        }
         const enhanceCode = (render, options = {}) => (...args) => {
-            /* args = [tokens, idx, options, env, slf] */
             const {
                 btnText = translations[locale]["copyCode"], // button text
                 successText = translations[locale]["copySuccess"], // copy-success text
                 successTextDelay = 2000, // successText show time [ms]
                 showCodeLanguage = true, // false | show code language
             } = options;
-            const [tokens = {}, idx = 0] = args;
+            const [tokens = [], idx = 0] = args;
             const originResult = render.apply(this, args);
             const langFrag = showCodeLanguage ? getCodeLangFragment(originResult) : "";
             const tpls = [
@@ -5291,7 +5627,14 @@
                 `<button class="u-mdic-copy-btn j-mdic-copy-btn" text="${btnText}" data-mdic-notify-delay="${successTextDelay}" onclick="copyClickCode(this)"></button>`,
                 '</div>',
             ];
-            return originResult.replace("<pre>", `<pre>${tpls.join("")}`);
+            if (tokens[idx].type === "fence" && langFrag.indexOf(`text="mermaid"`) !== -1) {
+                let hash = "mermaid" + createHash().update(tokens[idx].content).digest("hex");
+                if (mermaidMap[hash]) return originResult.replace("<pre>", `<pre>${tpls.join("")}`).replace("<pre>", `<div class="mermaid" id="${hash}" onclick="downloadSVG(this, event)">${mermaidMap[hash]}</div><pre>`);
+                loadRunMermaid(hash, tokens[idx].content, tokens.length - 1 > idx);
+                return originResult.replace("<pre>", `<pre>${tpls.join("")}`).replace("<pre>", `<div class="mermaid" id="${hash}" onclick="downloadSVG(this, event)"></div><pre>`)
+            } else {
+                return originResult.replace("<pre>", `<pre>${tpls.join("")}`);
+            }
         };
         md.renderer.rules.code_block = enhanceCode(md.renderer.rules.code_block);
         md.renderer.rules.fence = enhanceCode(md.renderer.rules.fence);
@@ -5370,6 +5713,7 @@
                     clearEle.classList.add("closeConv");
                 } else if (id === "refreshMd") {
                     if (noLoading()) {
+                        formatAvatarEle(chatlog.children[idx].children[0], modelVersion);
                         if (ev.target.classList.contains("refreshReq")) {
                             chatlog.children[idx].children[1].innerHTML = "<p class='cursorCls'><br /></p>";
                             chatlog.children[idx].dataset.loading = true;
@@ -5420,12 +5764,25 @@
                 }
             }
         }
+        const formatAvatarEle = (ele, model) => {
+            ele.className = "chatAvatar";
+            if (ele.parentElement.className === "request") {
+                ele.innerHTML = `<img src="${userAvatar}" />`;
+            } else {
+                if (model.startsWith("gpt")) {
+                    ele.classList.add("gptAvatar")
+                    ele.innerHTML = `<svg width="24" height="24"><use xlink:href="#aiIcon"></use></svg>`;
+                } else if (model.startsWith("gemini")) {
+                    ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#geminiIcon"></use></svg>`;
+                } else {
+                    ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#claudeIcon"></use></svg>`;
+                }
+            }
+        }
         const formatMdEle = (ele, model) => {
             let avatar = document.createElement("div");
-            avatar.className = "chatAvatar";
-            if (ele.className === "response") avatar.classList.add((model && model.startsWith("gpt-4")) ? "gpt4Avatar" : "gpt3Avatar");
-            avatar.innerHTML = ele.className === "request" ? `<img src="${userAvatar}" />` : `<svg width="22" height="22"><use xlink:href="#aiIcon"></use></svg>`;
             ele.appendChild(avatar);
+            formatAvatarEle(avatar, model);
             let realMd = document.createElement("div");
             realMd.className = ele.className === "request" ? "requestBody" : "markdown-body";
             ele.appendChild(realMd);
@@ -5437,8 +5794,8 @@
                 + (ele.className === "request" ? `<div data-id="editMd" class="optionItem" title="${translations[locale]["edit"]}">
                 <svg width="18" height="18"><use xlink:href="#chatEditIcon" /></svg>
                 </div>` : `<div data-id="refreshMd" class="refreshReq optionItem" title="${translations[locale]["refresh"]}">
-                <svg width="16" height="16" ><use xlink:href="#refreshIcon" /></svg>
-                <svg width="16" height="16" ><use xlink:href="#halfRefIcon" /></svg>
+                <svg width="18" height="18" ><use xlink:href="#refreshIcon" /></svg>
+                <svg width="18" height="18" ><use xlink:href="#halfRefIcon" /></svg>
                 </div>`) +
                 `<div data-id="copyMd" class="optionItem" title="${translations[locale]["copy"]}">
                 <svg width="20" height="20"><use xlink:href="#copyIcon" /></svg>
@@ -6212,7 +6569,7 @@
                 notyf.success(translations[locale]["clearChatSuccTip"]);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'APIHost', 'APIKey', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'existRec', 'azureRecRegion', 'azureRecKey', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'GeminiAPISelect', 'ClaudeAPISelect', 'APIHost', 'GeminiAPIHost', 'ClaudeAPIHost', 'APIKey', 'GeminiAPIKey', 'ClaudeAPIKey', 'APIModel', 'GeminiAPIModel', 'ClaudeAPIModel', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'existRec', 'azureRecRegion', 'azureRecKey', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -6383,15 +6740,40 @@
         document.addEventListener("keydown", ctrlHotKeyEv);
         document.addEventListener("keydown", ctrlAltHotKeyEv);
         const initSetting = () => {
-            const modelEle = document.getElementById("preSetModel");
-            let localModel = localStorage.getItem("modelVersion");
-            modelVersion = modelEle.value = localModel || "gpt-3.5-turbo";
-            modelEle.onchange = () => {
-                modelVersion = modelEle.value;
-                localStorage.setItem("modelVersion", modelVersion);
+            const modelsEle = Array.from(modelSetEle.children);
+            let localModelName = localStorage.getItem("modelVersion");
+            let isVailModel = modelsEle.some(item => item.dataset.value === localModelName)
+            modelVersion = isVailModel ? localModelName : "gpt-3.5-turbo";
+            const applyModelVersion = () => {
+                let activedEle = modelSetEle.querySelector(".activeModel");
+                if (activedEle) activedEle.classList.remove("activeModel");
+                activedEle = modelSetEle.querySelector(`[data-value="${modelVersion}"]`);
+                activedEle.classList.add("activeModel");
+                modelVer.textContent = activedEle.dataset.ver;
+                if (modelVersion.startsWith("gpt")) {
+                    modelType = 1;
+                    modelName.textContent = "ChatGPT";
+                } else if (modelVersion.startsWith("gemini")) {
+                    modelType = 2;
+                    modelName.textContent = "Gemini";
+                } else {
+                    modelType = 3;
+                    modelName.textContent = "Claude";
+                }
+            };
+            applyModelVersion();
+            modelSetEle.onclick = (ev) => {
+                if (ev.target.classList.contains("modelSingle")) {
+                    modelVersion = ev.target.dataset.value;
+                    localStorage.setItem("modelVersion", modelVersion);
+                    applyModelVersion();
+                    modelSetEle.style.display = "none";
+                    selectorEle.classList.remove("showModels");
+                }
             }
-            modelEle.dispatchEvent(new Event("change"));
             const apiHostEle = document.getElementById("apiHostInput");
+            const geminiHostEle = document.getElementById("geminiApiHostInput");
+            const claudeHostEle = document.getElementById("claudeApiHostInput");
             const apiSelectEle = document.getElementById("apiSelect");
             let localApiSelect = localStorage.getItem("APISelect");
             if (localApiSelect) {
@@ -6403,26 +6785,64 @@
             } else {
                 apiSelects.length = 0;
             }
+            let localGeminiApiSelect = localStorage.getItem("GeminiAPISelect");
+            if (localGeminiApiSelect) {
+                try {
+                    geminiApiSelects = JSON.parse(localGeminiApiSelect);
+                } catch (e) {
+                    geminiApiSelects.length = 0;
+                }
+            } else {
+                geminiApiSelects.length = 0;
+            }
+            let localClaudeApiSelect = localStorage.getItem("ClaudeAPISelect");
+            if (localClaudeApiSelect) {
+                try {
+                    claudeApiSelects = JSON.parse(localClaudeApiSelect);
+                } catch (e) {
+                    claudeApiSelects.length = 0;
+                }
+            } else {
+                claudeApiSelects.length = 0;
+            }
+            let selApiSelects = apiSelects;
+            let selApiKey = "APISelect";
+            let selApiEle = apiHostEle;
             const delApiOption = function (ev) {
+                ev.preventDefault();
                 ev.stopPropagation();
                 let index = Array.prototype.indexOf.call(apiSelectEle.children, this.parentElement);
-                apiSelects.splice(index, 1);
+                selApiSelects.splice(index, 1);
                 this.parentElement.remove();
-                localStorage.setItem("APISelect", JSON.stringify(apiSelects));
-                if (!apiSelects.length) apiSelectEle.style.display = "none";
+                localStorage.setItem(selApiKey, JSON.stringify(selApiSelects));
+                if (!selApiSelects.includes(selApiEle.value)) {
+                    selApiEle.value = selApiSelects[0] || "";
+                    selApiEle.dispatchEvent(new Event("change"));
+                }
+                if (!selApiSelects.length) apiSelectEle.style.display = "none";
             }
             const appendApiOption = () => {
                 apiSelects.push(apiHost);
                 initApiOption(apiHost);
                 localStorage.setItem("APISelect", JSON.stringify(apiSelects));
             }
+            const appendGeminiApiOption = () => {
+                geminiApiSelects.push(geminiApiHost);
+                initApiOption(geminiApiHost);
+                localStorage.setItem("GeminiAPISelect", JSON.stringify(geminiApiSelects));
+            }
+            const appendClaudeApiOption = () => {
+                claudeApiSelects.push(claudeApiHost);
+                initApiOption(claudeApiHost);
+                localStorage.setItem("ClaudeAPISelect", JSON.stringify(claudeApiSelects));
+            }
             const selApiOption = function (ev) {
                 ev.preventDefault();
                 ev.stopPropagation();
                 apiSelectEle.style.display = "none";
                 let index = Array.prototype.indexOf.call(apiSelectEle.children, this);
-                apiHostEle.value = apiSelects[index];
-                apiHostEle.dispatchEvent(new Event("change"));
+                selApiEle.value = selApiSelects[index];
+                selApiEle.dispatchEvent(new Event("change"));
             }
             const initApiOption = (api) => {
                 let optionEle = document.createElement("div");
@@ -6432,22 +6852,36 @@
                 optionEle.appendChild(textEle);
                 let delEle = document.createElement("div");
                 delEle.className = "delApiOption";
-                delEle.onclick = delApiOption;
+                delEle.onmousedown = delApiOption;
                 delEle.innerHTML = `<svg width="24" height="24"><use xlink:href="#closeIcon" /></svg>`;
                 optionEle.appendChild(delEle);
                 apiSelectEle.appendChild(optionEle);
             }
             const initApiSelectEle = () => {
                 apiSelectEle.innerHTML = "";
-                for (let i = 0; i < apiSelects.length; i++) {
-                    initApiOption(apiSelects[i]);
+                for (let i = 0; i < selApiSelects.length; i++) {
+                    initApiOption(selApiSelects[i]);
                 }
             }
-            initApiSelectEle();
-            apiHostEle.onfocus = () => {
-                if (apiSelects.length) apiSelectEle.style.display = "block";
+            apiHostEle.onfocus = geminiHostEle.onfocus = claudeHostEle.onfocus = () => {
+                let type = document.querySelector(".modelSwitch").querySelector(".activeSwitch").dataset.id;
+                if (type === "gptOption") {
+                    selApiSelects = apiSelects;
+                    selApiKey = "APISelect"
+                    selApiEle = apiHostEle;
+                } else if (type === "geminiOption") {
+                    selApiSelects = geminiApiSelects;
+                    selApiKey = "GeminiAPISelect";
+                    selApiEle = geminiHostEle;
+                } else {
+                    selApiSelects = claudeApiSelects;
+                    selApiKey = "ClaudeAPISelect";
+                    selApiEle = claudeHostEle;
+                }
+                initApiSelectEle();
+                if (selApiSelects.length) apiSelectEle.style.display = "block";
             }
-            apiHostEle.onblur = (ev) => {
+            apiHostEle.onblur = geminiHostEle.onblur = claudeHostEle.onblur = (ev) => {
                 if (!(ev.relatedTarget && apiSelectEle.contains(ev.relatedTarget))) apiSelectEle.style.display = "none";
             }
             let localApiHost = localStorage.getItem("APIHost");
@@ -6466,6 +6900,65 @@
                 localStorage.setItem("APIKey", customAPIKey);
             }
             keyEle.dispatchEvent(new Event("change"));
+            const modelEle = document.getElementById("modelInput");
+            let localModel = localStorage.getItem("APIModel");
+            customAPIModel = modelEle.value = envAPIModel || localModel || modelEle.getAttribute("value") || "";
+            modelEle.onchange = () => {
+                customAPIModel = modelEle.value;
+                localStorage.setItem("APIModel", customAPIModel);
+            }
+            modelEle.dispatchEvent(new Event("change"));
+
+            let localGeminiApiHost = localStorage.getItem("GeminiAPIHost");
+            geminiApiHost = geminiHostEle.value = envGeminiAPIEndpoint || localGeminiApiHost || geminiHostEle.getAttribute("value") || "";
+            geminiHostEle.onchange = () => {
+                geminiApiHost = geminiHostEle.value;
+                if (geminiApiHost && geminiApiSelects.indexOf(geminiApiHost) === -1) appendGeminiApiOption();
+                localStorage.setItem("GeminiAPIHost", geminiApiHost);
+            }
+            geminiHostEle.dispatchEvent(new Event("change"));
+            const geminiKeyEle = document.getElementById("geminiKeyInput");
+            let localGeminiKey = localStorage.getItem("GeminiAPIKey");
+            geminiAPIKey = geminiKeyEle.value = envGeminiAPIKey || localGeminiKey || geminiKeyEle.getAttribute("value") || "";
+            geminiKeyEle.onchange = () => {
+                geminiAPIKey = geminiKeyEle.value;
+                localStorage.setItem("GeminiAPIKey", geminiAPIKey);
+            }
+            geminiKeyEle.dispatchEvent(new Event("change"));
+            const geminiModelEle = document.getElementById("geminiModelInput");
+            let localGeminiModel = localStorage.getItem("GeminiAPIModel");
+            geminiAPIModel = geminiModelEle.value = envGeminiAPIModel || localGeminiModel || geminiModelEle.getAttribute("value") || "";
+            geminiModelEle.onchange = () => {
+                geminiAPIModel = geminiModelEle.value;
+                localStorage.setItem("GeminiAPIModel", geminiAPIModel);
+            }
+            geminiModelEle.dispatchEvent(new Event("change"));
+
+            let localClaudeApiHost = localStorage.getItem("ClaudeAPIHost");
+            claudeApiHost = claudeHostEle.value = envClaudeAPIEndpoint || localClaudeApiHost || claudeHostEle.getAttribute("value") || "";
+            claudeHostEle.onchange = () => {
+                claudeApiHost = claudeHostEle.value;
+                if (claudeApiHost && claudeApiSelects.indexOf(claudeApiHost) === -1) appendClaudeApiOption();
+                localStorage.setItem("ClaudeAPIHost", claudeApiHost);
+            }
+            claudeHostEle.dispatchEvent(new Event("change"));
+            const claudeKeyEle = document.getElementById("claudeKeyInput");
+            let localClaudeKey = localStorage.getItem("ClaudeAPIKey");
+            claudeAPIKey = claudeKeyEle.value = envClaudeAPIKey || localClaudeKey || claudeKeyEle.getAttribute("value") || "";
+            claudeKeyEle.onchange = () => {
+                claudeAPIKey = claudeKeyEle.value;
+                localStorage.setItem("ClaudeAPIKey", claudeAPIKey);
+            }
+            claudeKeyEle.dispatchEvent(new Event("change"));
+            const claudeModelEle = document.getElementById("claudeModelInput");
+            let localClaudeModel = localStorage.getItem("ClaudeAPIModel");
+            claudeAPIModel = claudeModelEle.value = envClaudeAPIModel || localClaudeModel || claudeModelEle.getAttribute("value") || "";
+            claudeModelEle.onchange = () => {
+                claudeAPIModel = claudeModelEle.value;
+                localStorage.setItem("ClaudeAPIModel", claudeAPIModel);
+            }
+            claudeModelEle.dispatchEvent(new Event("change"));
+
             const updateAvatar = () => {
                 setAvatarPre.src = userAvatar;
                 chatlog.querySelectorAll(".request>.chatAvatar").forEach(ele => {
@@ -6543,7 +7036,7 @@
                 styleSheet.deleteRule(0);
                 styleSheet.deleteRule(0);
                 styleSheet.insertRule(`.bottom_wrapper{max-width:${convWidth[type]}%;}`, 0);
-                styleSheet.insertRule(`.requestBody,.response .markdown-body{max-width:calc(${convWidth[type]}% - 88px);}`, 0);
+                styleSheet.insertRule(`.requestBody,.response .markdown-body{max-width:calc(${convWidth[type]}% - 84px);}`, 0);
             }
             const setConvValue = () => {
                 let type = isFull ? 1 : 0;
@@ -6759,6 +7252,24 @@
                 settingEle.classList.remove("showSetting");
             }
         }
+        const modelCloseEvent = (ev) => {
+            if (selectorEle.contains(ev.target)) return;
+            if (!modelSetEle.contains(ev.target)) {
+                document.removeEventListener("mousedown", modelCloseEvent, true);
+                modelSetEle.style.display = "none";
+                selectorEle.classList.remove("showModels");
+            }
+        }
+        selectorEle.onmousedown = () => {
+            modelSetEle.style.display = modelSetEle.style.display === "block" ? "none" : "block";
+            if (modelSetEle.style.display === "block") {
+                document.addEventListener("mousedown", modelCloseEvent, true);
+                selectorEle.classList.add("showModels");
+            } else {
+                document.removeEventListener("mousedown", modelCloseEvent, true);
+                selectorEle.classList.remove("showModels");
+            }
+        }
         let delayId;
         const delay = () => {
             return new Promise((resolve) => delayId = setTimeout(resolve, textSpeed)); //打字机时间间隔
@@ -6819,6 +7330,7 @@
                     autoVoiceSocket.close()
                 }
                 speechQuene.length = 0;
+                autoPlayingIdx = 0;
                 autoMediaSource = void 0;
                 voiceContentQuene = [];
                 voiceEndFlagQuene = [];
@@ -6847,7 +7359,7 @@
                 }
             })
         };
-        let voiceData = [];
+        let voiceData = {};
         let voiceSocket;
         let speechPushing = false;
         let speechQuene = [];
@@ -6894,8 +7406,13 @@
         const downBlob = (blob, name) => {
             let a = document.createElement("a");
             a.download = name;
-            a.href = URL.createObjectURL(blob);
+            let url = URL.createObjectURL(blob);
+            a.href = url;
             a.click();
+            setTimeout(() => {
+                URL.revokeObjectURL(url)
+            }, 1000);
+            a = null;
         }
         const initDownSocket = () => {
             return new Promise((res, rej) => {
@@ -6942,6 +7459,37 @@
                     return res();
                 }
             })
+        }
+        const getOpenAIVoice = async (input, voice, speed) => {
+            let url = apiHost + ((apiHost.length && !apiHost.endsWith("/")) ? "/" : "") + "v1/audio/speech";
+            let headers = { "Content-Type": "application/json" };
+            if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
+            let body = JSON.stringify({
+                model: "tts-1",
+                input,
+                voice,
+                response_format: "aac",
+                speed
+            });
+            let controller = new AbortController();
+            let controllerId = setTimeout(() => {
+                notyf.error(translations[locale]["timeoutTip"]);
+                controller.abort();
+            }, 20000);
+            try {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers,
+                    body,
+                    signal: controller.signal
+                });
+                clearTimeout(controllerId);
+                if (res.status === 200) {
+                    return await res.blob()
+                } else {
+                    notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] })
+                }
+            } catch (e) { }
         }
         let testVoiceBlob;
         let testVoiceIns;
@@ -6998,7 +7546,21 @@
             let rate = voiceRate[voiceType];
             let pitch = voicePitch[voiceType];
             let content = voiceTestText;
-            if (existVoice >= 2) {
+            if (existVoice === 4) {
+                let voice = voiceRole[voiceType].name;
+                let key = content + voice + rate;
+                let blob = voiceData[key];
+                if (blob) {
+                    testVoiceBlob = blob;
+                    playTestAudio();
+                } else {
+                    testVoiceBlob = await getOpenAIVoice(content, voice, rate);
+                    if (testVoiceBlob) {
+                        voiceData[key] = testVoiceBlob;
+                        playTestAudio();
+                    }
+                }
+            } else if (existVoice >= 2) {
                 let voice = existVoice === 3 ? voiceRole[voiceType].ShortName : voiceRole[voiceType].Name;
                 let style = azureStyle[voiceType];
                 let role = azureRole[voiceType];
@@ -7042,32 +7604,47 @@
                 return;
             }
             let type = data[idx].role === "user" ? 0 : 1;
-            let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
-            let volume = voiceVolume[type];
+            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].innerText.trim();
             let rate = voiceRate[type];
-            let pitch = voicePitch[type];
-            let style = azureStyle[type];
-            let role = azureRole[type];
-            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent.trim();
-            let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
-            let blob = voiceData[key];
-            if (blob) {
-                downBlob(blob, content.slice(0, 16) + voiceSuffix);
-            } else {
-                await initDownSocket();
-                let currDate = getTime();
-                let lang = voiceRole[type].lang;
-                let uuid = uuidv4(existVoice === 3);
-                if (existVoice === 3) {
-                    downSocket.send(getWSPre(currDate, uuid));
+            if (existVoice === 4) {
+                let voice = voiceRole[type].name;
+                let key = content + voice + rate;
+                let blob = voiceData[key];
+                if (blob) {
+                    downBlob(blob, content.slice(0, 16) + openAIVoiceSuffix);
+                } else {
+                    let resBlob = await getOpenAIVoice(content, voice, rate);
+                    if (resBlob) {
+                        voiceData[key] = resBlob;
+                        downBlob(voiceData[key], content.slice(0, 16) + openAIVoiceSuffix);
+                    }
                 }
-                downSocket.send(getWSAudio(currDate, uuid));
-                downSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
-                downSocket["pending"] = true;
-                downQuene[uuid] = {};
-                downQuene[uuid]["name"] = content;
-                downQuene[uuid]["key"] = key;
-                downQuene[uuid]["blob"] = [];
+            } else {
+                let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
+                let volume = voiceVolume[type];
+                let pitch = voicePitch[type];
+                let style = azureStyle[type];
+                let role = azureRole[type];
+                let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
+                let blob = voiceData[key];
+                if (blob) {
+                    downBlob(blob, content.slice(0, 16) + voiceSuffix);
+                } else {
+                    await initDownSocket();
+                    let currDate = getTime();
+                    let lang = voiceRole[type].lang;
+                    let uuid = uuidv4(existVoice === 3);
+                    if (existVoice === 3) {
+                        downSocket.send(getWSPre(currDate, uuid));
+                    }
+                    downSocket.send(getWSAudio(currDate, uuid));
+                    downSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
+                    downSocket["pending"] = true;
+                    downQuene[uuid] = {};
+                    downQuene[uuid]["name"] = content;
+                    downQuene[uuid]["key"] = key;
+                    downQuene[uuid]["blob"] = [];
+                }
             }
         }
         const NoMSEPending = (key) => {
@@ -7116,7 +7693,7 @@
             chatlog.children[systemRole ? idx - 1 : idx].classList.add("showVoiceCls");
             let voiceIconEle = chatlog.children[systemRole ? idx - 1 : idx].lastChild.lastChild;
             voiceIconEle.className = "voiceCls pauseVoice";
-            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent.trim();
+            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].innerText.trim();
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
             let pitch = voicePitch[type];
@@ -7128,67 +7705,82 @@
                     voiceIns.onpause = pauseEv;
                     voiceIns.onplay = resumeEv;
                 }
-                let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
-                let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
-                let currData = voiceData[key];
-                if (currData) {
-                    voiceIns.src = URL.createObjectURL(currData);
-                } else {
-                    let mediaSource;
-                    if (supportMSE) {
-                        mediaSource = new MediaSource;
-                        voiceIns.src = URL.createObjectURL(mediaSource);
-                        await initStreamVoice(mediaSource);
-                        if (!sourceBuffer) {
-                            sourceBuffer = mediaSource.addSourceBuffer(voiceMIME);
-                        }
-                        sourceBuffer.onupdateend = function () {
-                            speechPushing = false;
-                            if (speechQuene.length) {
-                                let buf = speechQuene.shift();
-                                if (buf["end"]) {
-                                    if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
-                                    mediaSource.endOfStream();
-                                } else {
-                                    speechPushing = true;
-                                    sourceBuffer.appendBuffer(buf);
-                                }
-                            }
-                        };
-                        let bufArray = [];
-                        voiceSocket.onmessage = (e) => {
-                            if (e.data instanceof ArrayBuffer) {
-                                let buf = e.data.slice(voicePreLen);
-                                bufArray.push(buf);
-                                speechQuene.push(buf);
-                            } else if (e.data.indexOf("Path:turn.end") !== -1) {
-                                voiceSocket["pending"] = false;
-                                if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) voiceData[key] = new Blob(bufArray, { type: voiceMIME });
-                                if (!speechQuene.length && !speechPushing) {
-                                    mediaSource.endOfStream();
-                                } else {
-                                    let buf = new ArrayBuffer();
-                                    buf["end"] = true;
-                                    speechQuene.push(buf);
-                                }
-                            }
-                        }
+                if (existVoice === 4) {
+                    let voice = voiceRole[type].name;
+                    let key = content + voice + rate;
+                    let currData = voiceData[key];
+                    if (currData) {
+                        voiceIns.src = URL.createObjectURL(currData);
                     } else {
-                        await initSocket();
+                        let blob = await getOpenAIVoice(content, voice, rate);
+                        if (blob) {
+                            voiceData[key] = blob;
+                            voiceIns.src = URL.createObjectURL(blob);
+                        } else return;
                     }
-                    let currDate = getTime();
-                    let lang = voiceRole[type].lang;
-                    let uuid = uuidv4(existVoice === 3);
-                    if (existVoice === 3) {
-                        voiceSocket.send(getWSPre(currDate, uuid));
-                    }
-                    voiceSocket.send(getWSAudio(currDate, uuid));
-                    voiceSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
-                    voiceSocket["pending"] = true;
-                    if (!supportMSE) {
-                        let blob = await NoMSEPending(key);
-                        if (blob.size === 0) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
-                        voiceIns.src = URL.createObjectURL(blob);
+                } else {
+                    let voice = existVoice === 3 ? voiceRole[type].ShortName : voiceRole[type].Name;
+                    let key = content + voice + volume + rate + pitch + (style ? style : "") + (role ? role : "");
+                    let currData = voiceData[key];
+                    if (currData) {
+                        voiceIns.src = URL.createObjectURL(currData);
+                    } else {
+                        let mediaSource;
+                        if (supportMSE) {
+                            mediaSource = new MediaSource;
+                            voiceIns.src = URL.createObjectURL(mediaSource);
+                            await initStreamVoice(mediaSource);
+                            if (!sourceBuffer) {
+                                sourceBuffer = mediaSource.addSourceBuffer(voiceMIME);
+                            }
+                            sourceBuffer.onupdateend = function () {
+                                speechPushing = false;
+                                if (speechQuene.length) {
+                                    let buf = speechQuene.shift();
+                                    if (buf["end"]) {
+                                        if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
+                                        mediaSource.endOfStream();
+                                    } else {
+                                        speechPushing = true;
+                                        sourceBuffer.appendBuffer(buf);
+                                    }
+                                }
+                            };
+                            let bufArray = [];
+                            voiceSocket.onmessage = (e) => {
+                                if (e.data instanceof ArrayBuffer) {
+                                    let buf = e.data.slice(voicePreLen);
+                                    bufArray.push(buf);
+                                    speechQuene.push(buf);
+                                } else if (e.data.indexOf("Path:turn.end") !== -1) {
+                                    voiceSocket["pending"] = false;
+                                    if (!(bufArray.length === 1 && bufArray[0].byteLength === 0)) voiceData[key] = new Blob(bufArray, { type: voiceMIME });
+                                    if (!speechQuene.length && !speechPushing) {
+                                        mediaSource.endOfStream();
+                                    } else {
+                                        let buf = new ArrayBuffer();
+                                        buf["end"] = true;
+                                        speechQuene.push(buf);
+                                    }
+                                }
+                            }
+                        } else {
+                            await initSocket();
+                        }
+                        let currDate = getTime();
+                        let lang = voiceRole[type].lang;
+                        let uuid = uuidv4(existVoice === 3);
+                        if (existVoice === 3) {
+                            voiceSocket.send(getWSPre(currDate, uuid));
+                        }
+                        voiceSocket.send(getWSAudio(currDate, uuid));
+                        voiceSocket.send(getWSText(currDate, uuid, lang, voice, volume, rate, pitch, style, role, content));
+                        voiceSocket["pending"] = true;
+                        if (!supportMSE) {
+                            let blob = await NoMSEPending(key);
+                            if (blob.size === 0) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
+                            voiceIns.src = URL.createObjectURL(blob);
+                        }
                     }
                 }
             } else {
@@ -7227,6 +7819,50 @@
                 autoOnlineVoiceFlag = true;
             }
         }
+        let autoPlayingIdx = 0;
+        const autoDirectAddQuene = async (index) => {
+            if (voiceContentQuene.length) {
+                let content = getUnescape(md.render(voiceContentQuene[voiceContentQuene.length - 1]));
+                let voice = voiceRole[1].name;
+                let rate = voiceRate[1];
+                let blob;
+                if (content !== "" && (blob = await getOpenAIVoice(content, voice, rate))) {
+                    let blobURL = URL.createObjectURL(blob);
+                    if (!voiceIns.src && autoPlayingIdx === index) {
+                        voiceIns.src = blobURL;
+                        voiceIns.play();
+                    } else voiceBlobURLQuene[index] = blobURL;
+                } else {
+                    if (!voiceIns.src && autoPlayingIdx === index) autoPlayNext();
+                    else voiceBlobURLQuene[index] = null;
+                }
+                if (voiceEndFlagQuene.shift()) {
+                    if (!voiceIns.src) endSpeak();
+                    else voiceBlobURLQuene.push("end");
+                }
+            }
+        }
+        const autoPlayNext = () => {
+            autoPlayingIdx += 1;
+            if (voiceBlobURLQuene.length) {
+                let src = voiceBlobURLQuene[autoPlayingIdx];
+                if (src === "end") {
+                    endSpeak();
+                } else if (src === null) {
+                    autoPlayNext();
+                } else if (src) {
+                    voiceIns.src = src;
+                    voiceIns.currentTime = 0;
+                    voiceIns.play();
+                } else {
+                    voiceIns.currentTime = 0;
+                    voiceIns.removeAttribute("src");
+                }
+            } else {
+                voiceIns.currentTime = 0;
+                voiceIns.removeAttribute("src");
+            }
+        }
         const autoSpeechEvent = (content, ele, force = false, end = false) => {
             if (ele.lastChild.lastChild.classList.contains("readyVoice")) {
                 ele.classList.add("showVoiceCls");
@@ -7240,111 +7876,116 @@
                     voiceIns.onpause = pauseEv;
                     voiceIns.onplay = resumeEv;
                 }
-                let url = existVoice === 3 ? getAzureWSURL() : edgeTTSURL;
-                if (!autoVoiceSocket || autoVoiceSocket.readyState > 1 || autoVoiceSocket.url !== url) {
-                    if (autoVoiceSocket && autoVoiceSocket.readyState === 1) autoVoiceSocket.close(1000);
-                    autoVoiceSocket = new WebSocket(url);
-                    autoVoiceSocket.binaryType = "arraybuffer";
-                    autoVoiceSocket.onopen = () => {
-                        autoAddQuene();
-                    };
-                    autoVoiceSocket.onerror = () => {
-                        autoOnlineVoiceFlag = false;
-                    };
-                };
-                let bufArray = [];
-                autoVoiceSocket.onmessage = (e) => {
-                    if (e.data instanceof ArrayBuffer) {
-                        (supportMSE ? speechQuene : bufArray).push(e.data.slice(voicePreLen));
-                    } else {
-                        if (e.data.indexOf("Path:turn.end") !== -1) {
-                            autoVoiceSocket["pending"] = false;
+                if (existVoice === 4) {
+                    autoDirectAddQuene(voiceContentQuene.length - 1);
+                    voiceIns.onended = voiceIns.onerror = () => { autoPlayNext() };
+                } else {
+                    let url = existVoice === 3 ? getAzureWSURL() : edgeTTSURL;
+                    if (!autoVoiceSocket || autoVoiceSocket.readyState > 1 || autoVoiceSocket.url !== url) {
+                        if (autoVoiceSocket && autoVoiceSocket.readyState === 1) autoVoiceSocket.close(1000);
+                        autoVoiceSocket = new WebSocket(url);
+                        autoVoiceSocket.binaryType = "arraybuffer";
+                        autoVoiceSocket.onopen = () => {
+                            autoAddQuene();
+                        };
+                        autoVoiceSocket.onerror = () => {
                             autoOnlineVoiceFlag = false;
-                            if (!supportMSE) {
-                                let blob = new Blob(bufArray, { type: voiceMIME });
-                                bufArray = [];
-                                if (blob.size) {
-                                    let blobURL = URL.createObjectURL(blob);
-                                    if (!voiceIns.src) {
-                                        voiceIns.src = blobURL;
-                                        voiceIns.play();
+                        };
+                    };
+                    let bufArray = [];
+                    autoVoiceSocket.onmessage = (e) => {
+                        if (e.data instanceof ArrayBuffer) {
+                            (supportMSE ? speechQuene : bufArray).push(e.data.slice(voicePreLen));
+                        } else {
+                            if (e.data.indexOf("Path:turn.end") !== -1) {
+                                autoVoiceSocket["pending"] = false;
+                                autoOnlineVoiceFlag = false;
+                                if (!supportMSE) {
+                                    let blob = new Blob(bufArray, { type: voiceMIME });
+                                    bufArray = [];
+                                    if (blob.size) {
+                                        let blobURL = URL.createObjectURL(blob);
+                                        if (!voiceIns.src) {
+                                            voiceIns.src = blobURL;
+                                            voiceIns.play();
+                                        } else {
+                                            voiceBlobURLQuene.push(blobURL);
+                                        }
                                     } else {
-                                        voiceBlobURLQuene.push(blobURL);
+                                        notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
                                     }
-                                } else {
-                                    notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
+                                    autoAddQuene();
                                 }
-                                autoAddQuene();
-                            }
-                            if (voiceEndFlagQuene.shift()) {
-                                if (supportMSE) {
-                                    if (!speechQuene.length && !speechPushing) {
-                                        autoMediaSource.endOfStream();
-                                    } else {
-                                        let buf = new ArrayBuffer();
-                                        buf["end"] = true;
-                                        speechQuene.push(buf);
-                                    }
-                                } else {
-                                    if (!voiceBlobURLQuene.length && !voiceIns.src) {
-                                        endSpeak();
-                                    } else {
-                                        voiceBlobURLQuene.push("end");
-                                    }
-                                }
-                            };
-                            if (supportMSE) {
-                                autoAddQuene();
-                            }
-                        }
-                    }
-                };
-                if (!autoOnlineVoiceFlag && autoVoiceSocket.readyState) {
-                    autoAddQuene();
-                }
-                if (supportMSE) {
-                    if (!autoMediaSource) {
-                        autoMediaSource = new MediaSource();
-                        autoMediaSource.onsourceopen = () => {
-                            if (!sourceBuffer) {
-                                sourceBuffer = autoMediaSource.addSourceBuffer(voiceMIME);
-                                sourceBuffer.onupdateend = () => {
-                                    speechPushing = false;
-                                    if (speechQuene.length) {
-                                        let buf = speechQuene.shift();
-                                        if (buf["end"]) {
-                                            if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
+                                if (voiceEndFlagQuene.shift()) {
+                                    if (supportMSE) {
+                                        if (!speechQuene.length && !speechPushing) {
                                             autoMediaSource.endOfStream();
                                         } else {
-                                            speechPushing = true;
-                                            sourceBuffer.appendBuffer(buf);
+                                            let buf = new ArrayBuffer();
+                                            buf["end"] = true;
+                                            speechQuene.push(buf);
+                                        }
+                                    } else {
+                                        if (!voiceBlobURLQuene.length && !voiceIns.src) {
+                                            endSpeak();
+                                        } else {
+                                            voiceBlobURLQuene.push("end");
                                         }
                                     }
                                 };
+                                if (supportMSE) {
+                                    autoAddQuene();
+                                }
                             }
                         }
+                    };
+                    if (!autoOnlineVoiceFlag && autoVoiceSocket.readyState) {
+                        autoAddQuene();
                     }
-                    if (!voiceIns.src) {
-                        voiceIns.src = URL.createObjectURL(autoMediaSource);
-                        voiceIns.play();
-                        voiceIns.onended = voiceIns.onerror = () => {
-                            endSpeak();
+                    if (supportMSE) {
+                        if (!autoMediaSource) {
+                            autoMediaSource = new MediaSource();
+                            autoMediaSource.onsourceopen = () => {
+                                if (!sourceBuffer) {
+                                    sourceBuffer = autoMediaSource.addSourceBuffer(voiceMIME);
+                                    sourceBuffer.onupdateend = () => {
+                                        speechPushing = false;
+                                        if (speechQuene.length) {
+                                            let buf = speechQuene.shift();
+                                            if (buf["end"]) {
+                                                if (!sourceBuffer.buffered.length) notyf.open({ type: "warning", message: translations[locale]["cantSpeechTip"] });
+                                                autoMediaSource.endOfStream();
+                                            } else {
+                                                speechPushing = true;
+                                                sourceBuffer.appendBuffer(buf);
+                                            }
+                                        }
+                                    };
+                                }
+                            }
                         }
-                    }
-                } else {
-                    voiceIns.onended = voiceIns.onerror = () => {
-                        if (voiceBlobURLQuene.length) {
-                            let src = voiceBlobURLQuene.shift();
-                            if (src === "end") {
+                        if (!voiceIns.src) {
+                            voiceIns.src = URL.createObjectURL(autoMediaSource);
+                            voiceIns.play();
+                            voiceIns.onended = voiceIns.onerror = () => {
                                 endSpeak();
-                            } else {
-                                voiceIns.src = src;
-                                voiceIns.currentTime = 0;
-                                voiceIns.play();
                             }
-                        } else {
-                            voiceIns.currentTime = 0;
-                            voiceIns.removeAttribute("src");
+                        }
+                    } else {
+                        voiceIns.onended = voiceIns.onerror = () => {
+                            if (voiceBlobURLQuene.length) {
+                                let src = voiceBlobURLQuene.shift();
+                                if (src === "end") {
+                                    endSpeak();
+                                } else {
+                                    voiceIns.src = src;
+                                    voiceIns.currentTime = 0;
+                                    voiceIns.play();
+                                }
+                            } else {
+                                voiceIns.currentTime = 0;
+                                voiceIns.removeAttribute("src");
+                            }
                         }
                     }
                 }
@@ -7361,12 +8002,24 @@
             if (window.confirm(prompt)) { return true }
             else { return false }
         };
+        const findLastSpecialCharIndex = (text) => {
+            const specialChars = new Set(['.', '?', '!', '~', '。', '？', '！', '\n']);
+            for (let i = text.length - 1; i >= 0; i--) {
+                if (specialChars.has(text[i])) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+        let currentModelName;
+        const getModelName = () => { return (modelType === 1 ? customAPIModel : modelType === 2 ? geminiAPIModel : claudeAPIModel) || modelVersion };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
         let refreshIdx;
         let currentResEle;
         let progressData = "";
         const streamGen = async (long) => {
+            currentModelName = getModelName();
             controller = new AbortController();
             controllerId = setTimeout(() => {
                 notyf.error(translations[locale]["timeoutTip"]);
@@ -7403,22 +8056,60 @@
                     dataSlice = data.slice(startIdx, idx);
                     if (systemRole && startIdx > 0) dataSlice.unshift(data[0]);
                 }
-                dataSlice = dataSlice.map(item => {
-                    if (item.role === "assistant") return { role: item.role, content: item.content };
-                    else return item;
-                })
                 let headers = { "Content-Type": "application/json" };
-                if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
-                const res = await fetch(apiHost + ((apiHost.length && !apiHost.endsWith("/")) ? "/" : "") + API_URL, {
-                    method: "POST",
-                    headers,
-                    body: JSON.stringify({
+                let url, body;
+                if (modelType === 1) {
+                    dataSlice = dataSlice.map(item => {
+                        if (item.role === "assistant") return { role: item.role, content: item.content };
+                        else return item;
+                    })
+                    url = apiHost + ((apiHost.length && !apiHost.endsWith("/")) ? "/" : "") + API_URL;
+                    if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
+                    body = JSON.stringify({
                         messages: dataSlice,
-                        model: modelVersion,
+                        model: currentModelName,
                         stream: true,
                         temperature: roleTemp,
                         top_p: roleNature
-                    }),
+                    });
+                } else if (modelType === 2) {
+                    dataSlice = dataSlice.map(item => {
+                        return { role: item.role === "assistant" ? "model" : "user", parts: [{ text: item.content }] };
+                    })
+                    url = geminiApiHost + ((geminiApiHost.length && !geminiApiHost.endsWith("/")) ? "/" : "") + Gemini_API_URL + currentModelName + `:streamGenerateContent?key=${geminiAPIKey}`;
+                    body = JSON.stringify({
+                        contents: dataSlice,
+                        generationConfig: {
+                            temperature: roleTemp,
+                            topP: roleNature
+                        }
+                    });
+                } else {
+                    let system;
+                    if (systemRole) {
+                        system = dataSlice.shift().content;
+                    }
+                    dataSlice = dataSlice.map(item => {
+                        if (item.role === "assistant") return { role: item.role, content: item.content };
+                        else return item;
+                    })
+                    url = claudeApiHost + ((claudeApiHost.length && !claudeApiHost.endsWith("/")) ? "/" : "") + Claude_API_URL;
+                    if (claudeAPIKey) headers["x-api-key"] = claudeAPIKey;
+                    headers["anthropic-version"] = "2023-06-01";
+                    body = JSON.stringify({
+                        model: currentModelName,
+                        messages: dataSlice,
+                        max_tokens: 4096,
+                        stream: true,
+                        temperature: roleTemp,
+                        top_p: roleNature,
+                        ...(system ? { system } : {})
+                    });
+                }
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers,
+                    body,
                     signal: controller.signal
                 });
                 clearTimeout(controllerId);
@@ -7441,25 +8132,110 @@
                 let container = document.createElement("div");
                 const decoder = new TextDecoder();
                 const reader = res.body.getReader();
-                const readChunk = async () => {
-                    return reader.read().then(async ({ value, done }) => {
-                        if (!done) {
-                            value = decoder.decode(value);
-                            let chunks = value.match(/[^\n]+/g);
-                            if (!chunks) return readChunk();
-                            for (let i = 0; i < chunks.length; i++) {
-                                let chunk = chunks[i];
-                                if (chunk) {
-                                    let payload;
-                                    try {
-                                        payload = JSON.parse(chunk.slice(5));
-                                    } catch (e) {
-                                        break;
+                let readChunk;
+                if (modelType === 1) {
+                    readChunk = async () => {
+                        return reader.read().then(async ({ value, done }) => {
+                            if (!done) {
+                                value = decoder.decode(value);
+                                let chunks = value.match(/[^\n]+/g);
+                                if (!chunks) return readChunk();
+                                let payload;
+                                for (let i = 0; i < chunks.length; i++) {
+                                    let chunk = chunks[i];
+                                    if (chunk) {
+                                        try {
+                                            payload = JSON.parse(chunk.slice(5));
+                                        } catch (e) {
+                                            break;
+                                        }
+                                        if (!payload.choices.length) continue;
+                                        if (payload.choices[0].finish_reason) {
+                                            let lenStop = payload.choices[0].finish_reason === "length";
+                                            longReplyFlag = enableLongReply && lenStop;
+                                            let ele = currentResEle.lastChild.children[0].children[0];
+                                            if (!enableLongReply && lenStop) { ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"] }
+                                            else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
+                                            if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                                let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
+                                                autoSpeechEvent(voiceText, currentResEle, false, stop);
+                                            }
+                                            break;
+                                        } else {
+                                            let content = payload.choices[0].delta.content;
+                                            if (content) {
+                                                if (!progressData && !content.trim()) continue;
+                                                if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                                    let spliter = content.match(/\.|\?|!|~|。|？|！|\n/);
+                                                    if (spliter) {
+                                                        let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
+                                                        autoVoiceIdx += voiceText.length;
+                                                        autoSpeechEvent(voiceText, currentResEle);
+                                                    }
+                                                }
+                                                if (progressData && textSpeed) await delay();
+                                                progressData += content;
+                                                container.innerHTML = md.render(progressData);
+                                                if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
+                                                    morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
+                                                } else {
+                                                    morphdom(currentResEle.children[1], container, { childrenOnly: true });
+                                                }
+                                                scrollToBottom();
+                                            }
+                                        }
                                     }
-                                    if (!payload.choices.length) continue;
-                                    if (payload.choices[0].finish_reason) {
-                                        let lenStop = payload.choices[0].finish_reason === "length";
-                                        let longReplyFlag = enableLongReply && lenStop;
+                                }
+                                return readChunk();
+                            } else {
+                                if (isRefresh) {
+                                    data[refreshIdx].content = progressData;
+                                    data[refreshIdx].model = currentModelName;
+                                } else {
+                                    if (long) { data[data.length - 1].content = progressData }
+                                    else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
+                                }
+                                if (longReplyFlag) return streamGen(true);
+                                stopLoading(false);
+                            }
+                        });
+                    };
+                } else if (modelType === 2) {
+                    readChunk = async () => {
+                        return reader.read().then(async ({ value, done }) => {
+                            if (!done) {
+                                value = decoder.decode(value);
+                                let payload;
+                                try {
+                                    let startIdx = value.indexOf("{");
+                                    let endIdx = value.lastIndexOf("}");
+                                    payload = JSON.parse(value.slice(startIdx, endIdx + 1));
+                                } catch (e) {
+                                    return readChunk();
+                                }
+                                let content = payload.candidates[0].content.parts[0].text;
+                                if (content) {
+                                    if (!progressData && !content.trim()) return readChunk();
+                                    if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                        let spliter = findLastSpecialCharIndex(content);
+                                        if (spliter != -1) {
+                                            let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter + 1);
+                                            autoVoiceIdx += voiceText.length;
+                                            autoSpeechEvent(voiceText, currentResEle);
+                                        }
+                                    }
+                                    if (progressData && textSpeed) await delay();
+                                    progressData += content;
+                                    container.innerHTML = md.render(progressData);
+                                    if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
+                                        morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
+                                    } else {
+                                        morphdom(currentResEle.children[1], container, { childrenOnly: true });
+                                    }
+                                    scrollToBottom();
+                                    if (value[value.length - 1] === "]") {
+                                        let lenStop = payload.candidates[0].finishReason === "MAX_TOKENS";
+                                        longReplyFlag = enableLongReply && lenStop;
                                         let ele = currentResEle.lastChild.children[0].children[0];
                                         if (!enableLongReply && lenStop) { ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"] }
                                         else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
@@ -7467,46 +8243,96 @@
                                             let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
                                             autoSpeechEvent(voiceText, currentResEle, false, stop);
                                         }
-                                        break;
-                                    } else {
-                                        let content = payload.choices[0].delta.content;
-                                        if (content) {
-                                            if (!progressData && !content.trim()) continue;
-                                            if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
-                                                let spliter = content.match(/\.|\?|!|~|。|？|！|\n/);
-                                                if (spliter) {
-                                                    let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
-                                                    autoVoiceIdx += voiceText.length;
-                                                    autoSpeechEvent(voiceText, currentResEle);
-                                                }
-                                            }
-                                            if (progressData && textSpeed) await delay();
-                                            progressData += content;
-                                            container.innerHTML = md.render(progressData);
-                                            if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
-                                                morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
+                                    }
+                                }
+                                return readChunk();
+                            } else {
+                                if (isRefresh) {
+                                    data[refreshIdx].content = progressData;
+                                    data[refreshIdx].model = currentModelName;
+                                } else {
+                                    if (long) { data[data.length - 1].content = progressData }
+                                    else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
+                                }
+                                if (longReplyFlag) return streamGen(true);
+                                stopLoading(false);
+                            }
+                        });
+                    };
+                } else {
+                    readChunk = async () => {
+                        return reader.read().then(async ({ value, done }) => {
+                            if (!done) {
+                                value = decoder.decode(value);
+                                let chunks = value.match(/[^\n]+/g);
+                                if (!chunks) return readChunk();
+                                let event;
+                                let payload;
+                                for (let i = 0; i < chunks.length; i++) {
+                                    let chunk = chunks[i];
+                                    if (chunk) {
+                                        try {
+                                            if (chunk.startsWith("event")) {
+                                                event = chunk.slice(7);
                                             } else {
-                                                morphdom(currentResEle.children[1], container, {childrenOnly: true});
+                                                payload = JSON.parse(chunk.slice(5));
                                             }
-                                            scrollToBottom();
+                                        } catch (e) {
+                                            break;
+                                        }
+                                        if (chunk.startsWith("event")) continue;
+                                        if (event === "message_delta") {
+                                            let lenStop = payload.delta.stop_reason === "max_tokens";
+                                            longReplyFlag = enableLongReply && lenStop;
+                                            let ele = currentResEle.lastChild.children[0].children[0];
+                                            if (!enableLongReply && lenStop) { ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"] }
+                                            else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
+                                            if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                                let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
+                                                autoSpeechEvent(voiceText, currentResEle, false, stop);
+                                            }
+                                            break;
+                                        } else if (event === "content_block_delta") {
+                                            if (payload.delta.type !== "text_delta") continue;
+                                            let content = payload.delta.text;
+                                            if (content) {
+                                                if (!progressData && !content.trim()) continue;
+                                                if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                                    let spliter = content.match(/\.|\?|!|~|。|？|！|\n/);
+                                                    if (spliter) {
+                                                        let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
+                                                        autoVoiceIdx += voiceText.length;
+                                                        autoSpeechEvent(voiceText, currentResEle);
+                                                    }
+                                                }
+                                                if (progressData && textSpeed) await delay();
+                                                progressData += content;
+                                                container.innerHTML = md.render(progressData);
+                                                if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
+                                                    morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
+                                                } else {
+                                                    morphdom(currentResEle.children[1], container, { childrenOnly: true });
+                                                }
+                                                scrollToBottom();
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            return readChunk();
-                        } else {
-                            if (isRefresh) {
-                                data[refreshIdx].content = progressData;
-                                if (longReplyFlag) return streamGen(true);
+                                return readChunk();
                             } else {
-                                if (long) { data[data.length - 1].content = progressData }
-                                else { data.push({ role: "assistant", content: progressData, model: modelVersion }) }
+                                if (isRefresh) {
+                                    data[refreshIdx].content = progressData;
+                                    data[refreshIdx].model = currentModelName;
+                                } else {
+                                    if (long) { data[data.length - 1].content = progressData }
+                                    else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
+                                }
                                 if (longReplyFlag) return streamGen(true);
+                                stopLoading(false);
                             }
-                            stopLoading(false);
-                        }
-                    });
-                };
+                        });
+                    };
+                }
                 await readChunk();
                 container = null;
             } catch (e) {
@@ -7536,9 +8362,15 @@
                 controller.abort();
                 if (controllerId) clearTimeout(controllerId);
                 if (delayId) clearTimeout(delayId);
-                if (refreshIdx !== void 0) { data[refreshIdx].content = progressData }
-                else if (data[data.length - 1].role === "assistant") { data[data.length - 1].content = progressData }
-                else { data.push({ role: "assistant", content: progressData, model: modelVersion }) }
+                if (refreshIdx !== void 0) {
+                    data[refreshIdx].content = progressData;
+                    data[refreshIdx].model = currentModelName;
+                }
+                else if (data[data.length - 1].role === "assistant") {
+                    data[data.length - 1].content = progressData;
+                    data[data.length - 1].model = currentModelName;
+                }
+                else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
                 if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx && progressData.length) {
                     let voiceText = progressData.slice(autoVoiceIdx);
                     autoSpeechEvent(voiceText, currentResEle, false, true);
@@ -7571,7 +8403,7 @@
                         }
                         data.splice(idx + 1, 0, { role: "assistant", content: "", model: modelVersion });
                         chatlog.insertBefore(createConvEle("response", false, modelVersion), chatlog.children[eleIdx + 1]);
-                    }
+                    } else formatAvatarEle(chatlog.children[eleIdx + 1].children[0], modelVersion);
                     chatlog.children[eleIdx + 1].children[1].innerHTML = "<p class='cursorCls'><br /></p>";
                     chatlog.children[eleIdx + 1].dataset.loading = true;
                     idx = idx + 1;
@@ -7635,7 +8467,8 @@
             }
         }
     </script>
-    <link crossorigin="anonymous" href="https://fastly.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://fastly.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+        rel="stylesheet">
     <script defer>
         let downRoleController = new AbortController();
         const loadPrompt = () => {
