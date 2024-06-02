@@ -8211,6 +8211,12 @@
                                     let endIdx = value.lastIndexOf("}");
                                     payload = JSON.parse(value.slice(startIdx, endIdx + 1));
                                 } catch (e) {
+                                    if (value === "]") {
+                                        if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                            let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx);
+                                            autoSpeechEvent(voiceText, currentResEle, false, true);
+                                        }
+                                    }
                                     return readChunk();
                                 }
                                 let content = payload.candidates[0].content.parts[0].text;
