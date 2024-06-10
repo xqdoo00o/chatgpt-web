@@ -2851,6 +2851,7 @@
                         <div class="presetSelect presetModelCls">
                             <label for="preRecService" data-i18n-key="sttService"></label>
                             <select id="preRecService">
+                                <option value="3" data-i18n-key="openaiTTS"></option>
                                 <option value="2" data-i18n-key="azureTTS"></option>
                                 <option value="1" data-i18n-key="systemTTS"></option>
                             </select>
@@ -2884,17 +2885,17 @@
                                 <select id="selectDiaOption">
                                 </select>
                             </div>
-                            <div>
+                            <div data-feat="forStream">
                                 <div data-i18n-key="autoSendKey"></div>
                                 <input class="inputTextClass" id="autoSendText" autocomplete="off"
                                     data-i18n-place="send" placeholder />
                             </div>
-                            <div>
+                            <div data-feat="forStream">
                                 <div data-i18n-key="autoStopKey"></div>
                                 <input class="inputTextClass" id="autoStopText" autocomplete="off"
                                     data-i18n-place="stop" placeholder />
                             </div>
-                            <div>
+                            <div data-feat="forStream">
                                 <span data-i18n-key="autoSendDelay"></span>
                                 <input type="range" id="autoSendTimeout" min="0" max="10" value="0" step="1" />
                                 <div class="selectDef">
@@ -2902,6 +2903,7 @@
                                     <span>10<span data-i18n-key="second"></span></span>
                                 </div>
                             </div>
+                            <div data-i18n-key="noStreamTip" data-feat="forNoStream"></div>
                             <div>
                                 <span class="inlineTitle" data-i18n-key="keepListenMic"></span>
                                 <label class="switch-slide">
@@ -2999,7 +3001,7 @@
                                         <use xlink:href="#lightThemeIcon"></use>
                                     </svg>
                                 </div>
-                                <div data-i18n-title="autoTheme" title>
+                                <div data-i18n-title="autoWord" title>
                                     <svg width="24" height="24">
                                         <use xlink:href="#autoThemeIcon"></use>
                                     </svg>
@@ -3486,7 +3488,7 @@
                 "theme": "Theme",
                 "darkTheme": "Dark",
                 "lightTheme": "Light",
-                "autoTheme": "Auto",
+                "autoWord": "Auto",
                 "systemTheme": "System",
                 "customDarkTheme": "Custom dark theme",
                 "startDark": "Start",
@@ -3549,6 +3551,8 @@
                 "badEndpointTip": "Failed to access the endpoint, please check the endpoint!",
                 "clearChatTip": "Clear this chat?",
                 "cantSpeechTip": "Current voice cannot synthesize this message, please choose another voice or message!",
+                "cantTranscribeTip": "Voice recognition failed, please try again!",
+                "noStreamTip": "Automatic features aren't available for non-realtime speech recognition service!",
                 "localQuotaExceedTip": "Local storage exceeded limit, please export chats data and clear or delete some chats!",
             },
             "zh": {
@@ -3643,7 +3647,7 @@
                 "theme": "主题",
                 "darkTheme": "深色",
                 "lightTheme": "浅色",
-                "autoTheme": "自动",
+                "autoWord": "自动",
                 "systemTheme": "跟随系统",
                 "customDarkTheme": "自定义深色主题时间",
                 "startDark": "开始时间",
@@ -3706,6 +3710,8 @@
                 "badEndpointTip": "访问接口失败，请检查接口！",
                 "clearChatTip": "是否清空此会话？",
                 "cantSpeechTip": "当前语音无法合成此消息，请选择其他语音或消息！",
+                "cantTranscribeTip": "语音识别失败，请重试！",
+                "noStreamTip": "非实时语音识别服务无法使用自动功能！",
                 "localQuotaExceedTip": "本地存储超出限额，请导出会话并清空或删除部分会话！",
             },
         };
@@ -3728,7 +3734,7 @@
             document.querySelectorAll("[data-i18n-value]").forEach(ele => { translateElement(ele, "value") });
             document.querySelectorAll("[data-i18n-key]").forEach(ele => { translateElement(ele, "key") });
             document.querySelectorAll("[data-i18n-theme]").forEach(ele => {
-                let key = themeMode === 2 ? "autoTheme" : themeMode === 1 ? "lightTheme" : "darkTheme";
+                let key = themeMode === 2 ? "autoWord" : themeMode === 1 ? "lightTheme" : "darkTheme";
                 ele.setAttribute("title", translations[locale][key])
             })
             document.querySelectorAll("[data-i18n-window]").forEach(ele => {
@@ -3821,8 +3827,9 @@
         const supportSpe = !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
         const isSafeEnv = window.isSecureContext; // 安全上下文
         const supportLocalRec = isSafeEnv && !!window.webkitSpeechRecognition; // 是否支持本地语音识别输入
-        const supportOnlineRec = isSafeEnv && navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.AudioContext && ("audioWorklet" in window.AudioContext.prototype || "createScriptProcessor" in window.AudioContext.prototype); // 是否支持在线语音识别
-        const supportRec = supportLocalRec || supportOnlineRec;
+        const supportOnlineRec = isSafeEnv && navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.AudioContext && ("audioWorklet" in window.AudioContext.prototype || "createScriptProcessor" in window.AudioContext.prototype);
+        const supportOnlineLegacyRec = isSafeEnv && navigator.mediaDevices && navigator.mediaDevices.getUserMedia && !!window.MediaRecorder && (MediaRecorder.isTypeSupported("audio/webm") || MediaRecorder.isTypeSupported("audio/mp4"));
+        const supportRec = supportLocalRec || supportOnlineRec || supportOnlineLegacyRec;
         let existRec = 1; // 2:Azure语音，1:系统语音
         let azureRecRegion;
         let azureRecKey;
@@ -3913,12 +3920,9 @@
                 autoSendTimer = void 0;
             }
         }
-        if (!supportLocalRec) {
-            recServiceEle.remove(1);
-        }
-        if (!supportOnlineRec) {
-            recServiceEle.remove(0);
-        }
+        if (!supportLocalRec) recServiceEle.remove(2);
+        if (!supportOnlineRec) recServiceEle.remove(1);
+        if (!supportOnlineLegacyRec) recServiceEle.remove(0);
         const initRecVal = () => {
             if (!supportRec) {
                 noRecTip.style.display = "block"
@@ -3938,6 +3942,10 @@
             azureRecKeyInput.parentElement.style.display = "none";
             preRecAzureRegion.parentElement.style.display = "none";
         }
+        const featStreamRec = (hide) => {
+            document.querySelectorAll('[data-feat="forStream"]').forEach(item => item.style.display = (hide ? "none" : "block"))
+            document.querySelectorAll('[data-feat="forNoStream"]').forEach(item => item.style.display = (hide ? "block" : "none"))
+        }
         let azureRecData, systemRecData, checkAzureRecAbort;
         const toggleRecCheck = (bool) => {
             checkRecLoad.style.display = bool ? "flex" : "none";
@@ -3956,18 +3964,23 @@
                 checkAzureRecAbort.abort();
                 checkAzureRecAbort = void 0;
             }
-            if (existRec === 2) {
+            if (existRec === 3) {
+                clearAzureRec();
+                loadOpenAIRec();
+                featStreamRec(true);
+            } else if (existRec === 2) {
                 azureRecKeyInput.parentElement.style.display = "block";
                 preRecAzureRegion.parentElement.style.display = "block";
                 loadAzureRec();
-            } else if (existRec === 1) {
+                featStreamRec();
+            } else {
                 clearAzureRec();
                 loadLocalRec();
+                featStreamRec();
             }
         }
-        const loadLocalRec = () => {
-            initRecSetting();
-        }
+        const loadLocalRec = () => { initRecSetting() };
+        const loadOpenAIRec = () => { initRecSetting() };
         const loadAzureRec = () => {
             let checking = false;
             const checkAzureFunc = () => {
@@ -4103,6 +4116,12 @@
                         else langs[0].push([lowCase, dialectName]);
                     }
                 })
+            } else if (existRec === 3) {
+                langs = [
+                    ['自动检测', ['', '自动检测']],
+                    ['中文', ['zh', '汉语']],
+                    ['English', ['en', 'English']]
+                ];
             } else {
                 langs = [ // from https://www.google.com/intl/en/chrome/demos/speech.html
                     ['中文', ['cmn-Hans-CN', '普通话 (大陆)'],
@@ -4124,7 +4143,14 @@
                 ];
             };
             toggleRecCheck(false);
-            if (locale !== "zh") langs = langs.reverse();
+            if (locale !== "zh") {
+                if (existRec === 3) {
+                    langs[0][0] = langs[0][1][1] = translations[locale]["autoWord"];
+                    let idx = langs.findIndex((item) => { return item[1][0] === locale });
+                    let [temp] = langs.splice(idx, 1);
+                    langs.splice(1, 0, temp);
+                } else langs = langs.reverse();
+            }
             selectLangOption.options.length = select_language.options.length = 0;
             langs.forEach((lang, i) => {
                 select_language.options.add(new Option(lang[0], i));
@@ -4307,7 +4333,7 @@
                 this.wavHeader = new Uint8Array([67, 111, 110, 116, 101, 110, 116, 45, 84, 121, 112, 101, 58, 32, 97, 117, 100, 105, 111, 47, 120, 45, 119, 97, 118, 13, 10, 82, 73, 70, 70, 0, 0, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32, 16, 0, 0, 0, 1, 0, 1, 0, 128, 62, 0, 0, 0, 125, 0, 0, 2, 0, 16, 0, 100, 97, 116, 97, 0, 0, 0, 0])
             }
             initRecorder() {
-                return new Promise((res, rej) => {
+                return new Promise((res) => {
                     // microsoft cognitive-services-speech-sdk-js
                     this.context = navigator.mediaDevices.getSupportedConstraints().sampleRate ? new AudioContext({ sampleRate: this.sampleRate }) : new AudioContext();
                     this.audioInput = this.context.createMediaStreamSource(this.stream);
@@ -4367,33 +4393,23 @@
                         }
                         this.context.audioWorklet.addModule(this.processScriptURL).then(() => {
                             this.recorder = new AudioWorkletNode(this.context, "speech-processor", {
-                                processorOptions: {
-                                    sampleRate: this.context.sampleRate
-                                }
+                                processorOptions: { sampleRate: this.context.sampleRate }
                             });
                             this.ready = true;
-                            this.recorder.port.onmessage = (e) => {
-                                if (e.data && this.ready) recSocket.send(this.getRecBin(e.data));
-                            };
+                            this.recorder.port.onmessage = (e) => { if (e.data && this.ready) recSocket.send(this.getRecBin(e.data)) };
                             if (isFirefox) { // tested firefox need volume gain
                                 this.gain = this.context.createGain();
                                 this.gain.gain.value = 3;
                                 this.audioInput.connect(this.gain);
                                 this.gain.connect(this.recorder);
-                            } else {
-                                this.audioInput.connect(this.recorder);
-                            }
+                            } else this.audioInput.connect(this.recorder);
                             this.recorder.connect(this.context.destination);
                             res();
-                        }).catch(e => {
-                            this.attachScriptProcessor(res, rej)
-                        })
-                    } else {
-                        this.attachScriptProcessor(res, rej)
-                    }
+                        }).catch(e => { this.attachScriptProcessor(res) })
+                    } else this.attachScriptProcessor(res);
                 })
             }
-            attachScriptProcessor(res, rej) {
+            attachScriptProcessor(res) {
                 this.encoder = new RiffPcmEncoder(this.context.sampleRate, this.sampleRate);
                 this.recorder = (() => {
                     let bufferSize = 0;
@@ -4420,9 +4436,7 @@
                     this.gain.gain.value = 3;
                     this.audioInput.connect(this.gain);
                     this.gain.connect(this.recorder);
-                } else {
-                    this.audioInput.connect(this.recorder);
-                }
+                } else this.audioInput.connect(this.recorder);
                 this.recorder.connect(this.context.destination);
                 res();
             }
@@ -4586,7 +4600,7 @@
                         this.stream = stream;
                         res();
                     }).catch(e => {
-                        notyf.error(translations[locale]["noMicPerTip"]);
+                        notyf.error(translations[locale][e.name === "NotAllowedError" ? "noMicPerTip" : "noMicTip"]);
                         rej();
                     })
                 })
@@ -4603,6 +4617,7 @@
                             this.stream.getAudioTracks().forEach(track => { track.stop() });
                             this.stream = null;
                         }
+                        rej(e);
                     })
                 })
             }
@@ -4647,7 +4662,97 @@
                 }
             }
         }
-        let recorder;
+        class LegacyRecorder {
+            constructor() {
+                this.mimeType = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "audio/webm";
+                this.suffix = this.mimeType === "audio/mp4" ? ".mp4" : ".webm";
+                this.bytesPerSecond = 128000;
+                this.chunks = [];
+            }
+            initRecorder() {
+                this.recorder = new MediaRecorder(this.stream, { mimeType: this.mimeType, audioBitsPerSecond: this.bytesPerSecond });
+                this.chunks.length = 0;
+                this.recorder.ondataavailable = e => { this.chunks.push(e.data) };
+                this.recorder.start(1e3);
+            }
+            async processData(blob) {
+                let formData = new FormData();
+                formData.append("model", "whisper-1");
+                formData.append("file", blob, "audio" + this.suffix);
+                if (select_dialect.value !== "") formData.append("language", select_dialect.value);
+                let url = apiHost + ((apiHost.length && !apiHost.endsWith("/")) ? "/" : "") + "v1/audio/transcriptions";
+                let controller = new AbortController();
+                let controllerId = setTimeout(() => {
+                    notyf.error(translations[locale]["timeoutTip"]);
+                    controller.abort();
+                }, 15000);
+                try {
+                    const res = await fetch(url, {
+                        method: "POST",
+                        body: formData,
+                        signal: controller.signal,
+                        ...(customAPIKey ? { headers: { Authorization: "Bearer " + customAPIKey } } : {})
+                    });
+                    clearTimeout(controllerId);
+                    if (res.status === 200) {
+                        let result = await res.json();
+                        if (result && result.text) {
+                            inputAreaEle.value = preRes + result.text + affRes;
+                            textInputEvent();
+                            inputAreaEle.focus();
+                            inputAreaEle.selectionEnd = inputAreaEle.value.length - affRes.length;
+                            return true;
+                        }
+                    } else notyf.open({ type: "warning", message: translations[locale]["cantTranscribeTip"] });
+                } catch (e) { }
+            }
+            getMedia() {
+                return new Promise((res, rej) => {
+                    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                        this.stream = stream;
+                        res();
+                    }).catch(e => {
+                        notyf.error(translations[locale][e.name === "NotAllowedError" ? "noMicPerTip" : "noMicTip"]);
+                        rej(e);
+                    })
+                })
+            }
+            async startRecorder() {
+                return new Promise((res, rej) => {
+                    this.getMedia().then(() => {
+                        this.initRecorder();
+                        res();
+                    }).catch(e => { rej(e) })
+                })
+            }
+            stopRecorder(forceStop) {
+                return new Promise((res, rej) => {
+                    clearAutoSendTimer();
+                    if (this.recorder && this.recorder.state === "recording") {
+                        this.recorder.onstop = async (e) => {
+                            let blob = new Blob(this.chunks, { type: this.mimeType });
+                            this.chunks.length = 0;
+                            try {
+                                let result = await this.processData(blob);
+                                if (result) res();
+                                else rej();
+                            } catch (error) { rej() };
+                            if (!forceStop && keepListenMic) this.recorder.start(1e3);
+                        };
+                        this.recorder.stop();
+                    } else res();
+                    if (!forceStop && keepListenMic) return;
+                    voiceRecEle.classList.remove("voiceRecing");
+                    recing = false;
+                    if (this.recorder) this.recorder = null;
+                    if (this.stream) {
+                        this.stream.getAudioTracks().forEach(track => { track.stop() });
+                        this.stream = null;
+                    }
+                })
+            }
+        }
+        let recorder, legacyRecorder, initingRecorder;
         let recRes = tempRes = "";
         let preRes, affRes;
         resetRecRes = () => {
@@ -4656,7 +4761,43 @@
             recRes = tempRes = "";
         }
         const initRecEvent = () => {
-            if (existRec === 1) {
+            if (existRec === 3) {
+                if (legacyRecorder === void 0) legacyRecorder = new LegacyRecorder();
+                toggleRecEv = async (force = true) => {
+                    if (voiceRecEle.classList.contains("voiceRecing")) await legacyRecorder.stopRecorder(force);
+                    else {
+                        if (initingRecorder) return;
+                        resetRecRes();
+                        initingRecorder = true;
+                        legacyRecorder.startRecorder().then(() => {
+                            recing = true;
+                            initingRecorder = false;
+                            voiceRecEle.classList.add("voiceRecing");
+                        }).catch(e => {
+                            legacyRecorder.stopRecorder(force);
+                            initingRecorder = false;
+                        })
+                    }
+                }
+            } else if (existRec === 2) {
+                if (recorder === void 0) recorder = new Recorder();
+                toggleRecEv = (force = true) => {
+                    if (voiceRecEle.classList.contains("voiceRecing")) recorder.stopRecorder(force);
+                    else {
+                        if (initingRecorder) return;
+                        resetRecRes();
+                        initingRecorder = true;
+                        recorder.startRecorder().then(() => {
+                            recing = true;
+                            initingRecorder = false;
+                            voiceRecEle.classList.add("voiceRecing");
+                        }).catch(e => {
+                            recorder.stopRecorder(force)
+                            initingRecorder = false;
+                        })
+                    }
+                }
+            } else {
                 let recIns = new webkitSpeechRecognition();
                 // prevent some Android bug
                 recIns.continuous = !isAndroid;
@@ -4742,8 +4883,7 @@
                         notyf.error(translations[locale]["noMicPerTip"])
                         endEvent(ev);
                     }
-                }
-
+                };
                 toggleRecEv = () => {
                     if (voiceRecEle.classList.toggle("voiceRecing")) {
                         try {
@@ -4759,22 +4899,6 @@
                         }
                     } else {
                         endEvent(false, false);
-                    }
-                };
-            } else {
-                if (recorder === void 0) recorder = new Recorder();
-                toggleRecEv = (force = true) => {
-                    if (voiceRecEle.classList.contains("voiceRecing")) recorder.stopRecorder(force);
-                    else {
-                        try {
-                            resetRecRes();
-                            recorder.startRecorder().then(() => {
-                                recing = true;
-                                voiceRecEle.classList.add("voiceRecing");
-                            });
-                        } catch (e) {
-                            recorder.stopRecorder(force)
-                        }
                     }
                 };
             }
@@ -7182,7 +7306,7 @@
                         initAutoThemeEle();
                     }
                     themeClass = "autoTheme";
-                    title = translations[locale]["autoTheme"];
+                    title = translations[locale]["autoWord"];
                 } else if (themeMode === 1) {
                     setDarkTheme(false);
                     themeClass = "lightTheme";
@@ -8438,10 +8562,11 @@
                 resetRecRes();
             }
         };
-        const genFunc = function () {
+        const genFunc = async function () {
             clearAutoSendTimer();
             if (recing) {
-                if (existRec === 2) toggleRecEv(false);
+                if (existRec === 3) await toggleRecEv(false);
+                else if (existRec === 2) toggleRecEv(false);
                 else if (!keepListenMic) toggleRecEv();
             }
             let message = inputAreaEle.value.trim();
