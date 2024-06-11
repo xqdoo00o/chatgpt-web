@@ -3865,7 +3865,7 @@
             );
             return upper ? uuid.toUpperCase() : uuid;
         };
-        inputAreaEle.focus();
+        if (!isMobile) inputAreaEle.focus();
         const textInputEvent = () => {
             if (noLoading()) sendBtnEle.classList.toggle("activeSendBtn", inputAreaEle.value.trim().length);
             inputAreaEle.style.height = "47px";
@@ -4666,11 +4666,11 @@
             constructor() {
                 this.mimeType = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "audio/webm";
                 this.suffix = this.mimeType === "audio/mp4" ? ".mp4" : ".webm";
-                this.bytesPerSecond = 128000;
+                this.bitsPerSecond = 88888;
                 this.chunks = [];
             }
             initRecorder() {
-                this.recorder = new MediaRecorder(this.stream, { mimeType: this.mimeType, audioBitsPerSecond: this.bytesPerSecond });
+                this.recorder = new MediaRecorder(this.stream, { mimeType: this.mimeType, audioBitsPerSecond: this.bitsPerSecond });
                 this.chunks.length = 0;
                 this.recorder.ondataavailable = e => { this.chunks.push(e.data) };
                 this.recorder.start(1e3);
