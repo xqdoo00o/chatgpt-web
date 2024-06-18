@@ -4666,7 +4666,7 @@
             constructor() {
                 this.mimeType = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "audio/webm";
                 this.suffix = this.mimeType === "audio/mp4" ? ".mp4" : ".webm";
-                this.bitsPerSecond = 88888;
+                this.bitsPerSecond = 128000;
                 this.chunks = [];
             }
             initRecorder() {
