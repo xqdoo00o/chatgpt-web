@@ -290,7 +290,6 @@
             padding: 0 4px 0 10px;
             cursor: pointer;
             font-size: 20px;
-            line-height: 40px;
             transform: translate(-50%, -50%);
             pointer-events: auto;
             border-radius: 4px;
@@ -305,8 +304,10 @@
         }
 
         #modelVer {
-            margin-left: 4px;
-            margin-right: 2px;
+            margin-left: 6px;
+            margin-right: 4px;
+            height: 40px;
+            line-height: 38px;
         }
 
         .messages {
@@ -2256,6 +2257,15 @@
     </svg>
     <div style="display: none">
         <svg>
+            <symbol viewBox="299 299 1808 1808" id="aiIcon">
+                <path fill="currentColor"
+                    d="M1107.3 299.1c-198 0-373.9 127.3-435.2 315.3C544.8 640.6 434.9 720.2 370.5 833c-99.3 171.4-76.6 386.9 56.4 533.8-41.1 123.1-27 257.7 38.6 369.2 98.7 172 297.3 260.2 491.6 219.2 86.1 97 209.8 152.3 339.6 151.8 198 0 373.9-127.3 435.3-315.3 127.5-26.3 237.2-105.9 301-218.5 99.9-171.4 77.2-386.9-55.8-533.9v-.6c41.1-123.1 27-257.8-38.6-369.8-98.7-171.4-297.3-259.6-491-218.6-86.6-96.8-210.5-151.8-340.3-151.2zm0 117.5-.6.6c79.7 0 156.3 27.5 217.6 78.4-2.5 1.2-7.4 4.3-11 6.1L952.8 709.3c-18.4 10.4-29.4 30-29.4 51.4V1248l-155.1-89.4V755.8c-.1-187.1 151.6-338.9 339-339.2zm434.2 141.9c121.6-.2 234 64.5 294.7 169.8 39.2 68.6 53.9 148.8 40.4 226.5-2.5-1.8-7.3-4.3-10.4-6.1l-360.4-208.2c-18.4-10.4-41-10.4-59.4 0L1024 984.2V805.4L1372.7 604c51.3-29.7 109.5-45.4 168.8-45.5zM650 743.5v427.9c0 21.4 11 40.4 29.4 51.4l421.7 243-155.7 90L597.2 1355c-162-93.8-217.4-300.9-123.8-462.8C513.1 823.6 575.5 771 650 743.5zm807.9 106 348.8 200.8c162.5 93.7 217.6 300.6 123.8 462.8l.6.6c-39.8 68.6-102.4 121.2-176.5 148.2v-428c0-21.4-11-41-29.4-51.4l-422.3-243.7 155-89.3zM1201.7 997l177.8 102.8v205.1l-177.8 102.8-177.8-102.8v-205.1L1201.7 997zm279.5 161.6 155.1 89.4v402.2c0 187.3-152 339.2-339 339.2v-.6c-79.1 0-156.3-27.6-217-78.4 2.5-1.2 8-4.3 11-6.1l360.4-207.5c18.4-10.4 30-30 29.4-51.4l.1-486.8zM1380 1421.9v178.8l-348.8 200.8c-162.5 93.1-369.6 38-463.4-123.7h.6c-39.8-68-54-148.8-40.5-226.5 2.5 1.8 7.4 4.3 10.4 6.1l360.4 208.2c18.4 10.4 41 10.4 59.4 0l421.9-243.7z" />
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="deepseekIcon">
+                <path
+                    d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 01-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 00-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 01-.465.137 9.597 9.597 0 00-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 001.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 011.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 01.415-.287.302.302 0 01.2.288.306.306 0 01-.31.307.303.303 0 01-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 01-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 01.016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 01-.254-.078c-.11-.054-.2-.19-.114-.358.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z"
+                    fill="#4D6BFE" />
+            </symbol>
             <symbol viewBox="0 0 28 28" id="geminiIcon">
                 <path
                     d="M14 28C14 26.0633 13.6267 24.2433 12.88 22.54C12.1567 20.8367 11.165 19.355 9.905 18.095C8.645 16.835 7.16333 15.8433 5.46 15.12C3.75667 14.3733 1.93667 14 0 14C1.93667 14 3.75667 13.6383 5.46 12.915C7.16333 12.1683 8.645 11.165 9.905 9.905C11.165 8.645 12.1567 7.16333 12.88 5.46C13.6267 3.75667 14 1.93667 14 0C14 1.93667 14.3617 3.75667 15.085 5.46C15.8317 7.16333 16.835 8.645 18.095 9.905C19.355 11.165 20.8367 12.1683 22.54 12.915C24.2433 13.6383 26.0633 14 28 14C26.0633 14 24.2433 14.3733 22.54 15.12C20.8367 15.8433 19.355 16.835 18.095 18.095C16.835 19.355 15.8317 20.8367 15.085 22.54C14.3617 24.2433 14 26.0633 14 28Z"
@@ -2415,10 +2425,6 @@
                 </path>
                 <circle fill="currentColor" cx="12" cy="12" r="3.5"></circle>
             </symbol>
-            <symbol viewBox="299 299 1808 1808" id="aiIcon">
-                <path fill="currentColor"
-                    d="M1107.3 299.1c-198 0-373.9 127.3-435.2 315.3C544.8 640.6 434.9 720.2 370.5 833c-99.3 171.4-76.6 386.9 56.4 533.8-41.1 123.1-27 257.7 38.6 369.2 98.7 172 297.3 260.2 491.6 219.2 86.1 97 209.8 152.3 339.6 151.8 198 0 373.9-127.3 435.3-315.3 127.5-26.3 237.2-105.9 301-218.5 99.9-171.4 77.2-386.9-55.8-533.9v-.6c41.1-123.1 27-257.8-38.6-369.8-98.7-171.4-297.3-259.6-491-218.6-86.6-96.8-210.5-151.8-340.3-151.2zm0 117.5-.6.6c79.7 0 156.3 27.5 217.6 78.4-2.5 1.2-7.4 4.3-11 6.1L952.8 709.3c-18.4 10.4-29.4 30-29.4 51.4V1248l-155.1-89.4V755.8c-.1-187.1 151.6-338.9 339-339.2zm434.2 141.9c121.6-.2 234 64.5 294.7 169.8 39.2 68.6 53.9 148.8 40.4 226.5-2.5-1.8-7.3-4.3-10.4-6.1l-360.4-208.2c-18.4-10.4-41-10.4-59.4 0L1024 984.2V805.4L1372.7 604c51.3-29.7 109.5-45.4 168.8-45.5zM650 743.5v427.9c0 21.4 11 40.4 29.4 51.4l421.7 243-155.7 90L597.2 1355c-162-93.8-217.4-300.9-123.8-462.8C513.1 823.6 575.5 771 650 743.5zm807.9 106 348.8 200.8c162.5 93.7 217.6 300.6 123.8 462.8l.6.6c-39.8 68.6-102.4 121.2-176.5 148.2v-428c0-21.4-11-41-29.4-51.4l-422.3-243.7 155-89.3zM1201.7 997l177.8 102.8v205.1l-177.8 102.8-177.8-102.8v-205.1L1201.7 997zm279.5 161.6 155.1 89.4v402.2c0 187.3-152 339.2-339 339.2v-.6c-79.1 0-156.3-27.6-217-78.4 2.5-1.2 8-4.3 11-6.1l360.4-207.5c18.4-10.4 30-30 29.4-51.4l.1-486.8zM1380 1421.9v178.8l-348.8 200.8c-162.5 93.1-369.6 38-463.4-123.7h.6c-39.8-68-54-148.8-40.5-226.5 2.5 1.8 7.4 4.3 10.4 6.1l360.4 208.2c18.4 10.4 41 10.4 59.4 0l421.9-243.7z" />
-            </symbol>
             <symbol viewBox="0 0 24 24" id="importSetIcon">
                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="m12 21l-8-4.5v-9L12 3l8 4.5V12m-8 0l8-4.5M12 12v9m0-9L4 7.5M22 18h-7m3-3l-3 3l3 3" />
@@ -2544,10 +2550,13 @@
                     <div class="button maximize"></div>
                 </div>
                 <div class="title">
-                    <div id="selector"><span id="modelName">ChatGPT</span><span id="modelVer">3.5</span><svg width="16"
-                            height="16" style="transform: translateY(1px);">
+                    <div id="selector"><svg id="modelIcon" width="24" height="24">
+                            <use xlink:href="#aiIcon"></use>
+                        </svg><span id="modelVer">3.5</span><svg width="16" height="16"
+                            style="transform: translateY(1px);">
                             <use xlink:href="#expandIcon" />
-                        </svg></div>
+                        </svg>
+                    </div>
                 </div>
                 <div class="settings">
                     <button class="setBtn" id="toggleFull" data-i18n-window title>
@@ -2581,14 +2590,6 @@
                         </div>
                         <div>GPT-4</div>
                     </div>
-                    <div class="modelSingle" data-value="gpt-4-turbo" data-ver="4 Turbo">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
-                                <use xlink:href="#aiIcon"></use>
-                            </svg>
-                        </div>
-                        <div>GPT-4 Turbo</div>
-                    </div>
                     <div class="modelSingle" data-value="gpt-4o" data-ver="4o">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
@@ -2597,7 +2598,31 @@
                         </div>
                         <div>GPT-4o</div>
                     </div>
-                    <div class="modelSingle" data-value="gemini-1.0-pro" data-ver="1.0">
+                    <div class="modelSingle" data-value="gpt-4o-mini" data-ver="4o mini">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>GPT-4o-mini</div>
+                    </div>
+                    <div class="modelSingle" data-value="deepseek-chat" data-ver="Chat">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#deepseekIcon"></use>
+                            </svg>
+                        </div>
+                        <div>DeepSeek Chat</div>
+                    </div>
+                    <div class="modelSingle" data-value="deepseek-reasoner" data-ver="Reasoner">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#deepseekIcon"></use>
+                            </svg>
+                        </div>
+                        <div>DeepSeek Reasoner</div>
+                    </div>
+                    <div class="modelSingle" data-value="gemini-1.0-pro" data-ver="1.0 Pro">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#geminiIcon"></use>
@@ -2621,7 +2646,7 @@
                         </div>
                         <div>Gemini 1.5 Flash</div>
                     </div>
-                    <div class="modelSingle" data-value="claude-3-haiku-20240307" data-ver="3 Haiku">
+                    <div class="modelSingle" data-value="claude-3-haiku-latest" data-ver="3 Haiku">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#claudeIcon"></use>
@@ -2629,7 +2654,7 @@
                         </div>
                         <div>Claude 3 Haiku</div>
                     </div>
-                    <div class="modelSingle" data-value="claude-3-sonnet-20240229" data-ver="3 Sonnet">
+                    <div class="modelSingle" data-value="claude-3-sonnet-latest" data-ver="3 Sonnet">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#claudeIcon"></use>
@@ -2637,7 +2662,7 @@
                         </div>
                         <div>Claude 3 Sonnet</div>
                     </div>
-                    <div class="modelSingle" data-value="claude-3-opus-20240229" data-ver="3 Opus">
+                    <div class="modelSingle" data-value="claude-3-opus-latest" data-ver="3 Opus">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#claudeIcon"></use>
@@ -3047,6 +3072,7 @@
                         </div>
                         <div class="modelSwitch">
                             <div data-id="gptOption" class="activeSwitch">ChatGPT</div>
+                            <div data-id="deepseekOption">DeepSeek</div>
                             <div data-id="geminiOption">Gemini</div>
                             <div data-id="claudeOption">Claude</div>
                         </div>
@@ -3073,6 +3099,30 @@
                                 <div class="setDetail inputDetail">
                                     <input class="inputTextClass" type="text" placeholder="gpt-x-xxx" id="modelInput"
                                         autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="deepseekOption" style="display: none;">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>DeepSeek</span><span data-i18n-key="aiEndpoint"></span>
+                                </div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass" placeholder="https://api.deepseek.com/"
+                                        autocomplete="off" id="deepseekApiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiKey"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx"
+                                        id="deepseekKeyInput" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="deepseek-xxx"
+                                        id="deepseekModelInput" autocomplete="off" />
                                 </div>
                             </div>
                         </div>
@@ -3315,7 +3365,7 @@
             link.href = "https://fastly.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
             document.body.appendChild(link);
         }
-        let envAPIEndpoint, envAPIKey, envAPIModel, envGeminiAPIEndpoint, envGeminiAPIKey, envGeminiAPIModel, envClaudeAPIEndpoint, envClaudeAPIKey, envClaudeAPIModel;
+        let envAPIEndpoint, envAPIKey, envAPIModel, envDeepSeekAPIEndpoint, envDeepSeekAPIKey, envDeepSeekAPIModel, envGeminiAPIEndpoint, envGeminiAPIKey, envGeminiAPIModel, envClaudeAPIEndpoint, envClaudeAPIKey, envClaudeAPIModel;
     </script>
     <script src="env.js"></script>
     <script>
@@ -5416,6 +5466,7 @@
     <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script>
         const API_URL = "v1/chat/completions";
+        const DeepSeek_API_URL = "chat/completions";
         const Gemini_API_URL = "v1/models/";
         const Claude_API_URL = "v1/messages";
         let loading = false;
@@ -5429,15 +5480,19 @@
         let modelVersion; // 模型版本
         let modelType; // 1:ChatGPT，2:Gemini，3:Claude
         let apiHost; // api反代地址
+        let deepseekApiHost;
         let geminiApiHost;
         let claudeApiHost;
         let apiSelects = []; // api地址列表
+        let deepseekApiSelects = [];
         let geminiApiSelects = [];
         let claudeApiSelects = [];
         let customAPIKey; // 自定义apiKey
+        let deepseekAPIKey;
         let geminiAPIKey;
         let claudeAPIKey;
         let customAPIModel; // 自定义apiModel
+        let deepseekAPIModel;
         let geminiAPIModel;
         let claudeAPIModel;
         let systemRole; // 自定义系统角色
@@ -5894,6 +5949,8 @@
                 if (model.startsWith("gpt")) {
                     ele.classList.add("gptAvatar")
                     ele.innerHTML = `<svg width="24" height="24"><use xlink:href="#aiIcon"></use></svg>`;
+                } else if (model.startsWith("deepseek")) {
+                    ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#deepseekIcon"></use></svg>`;
                 } else if (model.startsWith("gemini")) {
                     ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#geminiIcon"></use></svg>`;
                 } else {
@@ -6691,7 +6748,7 @@
                 notyf.success(translations[locale]["clearChatSuccTip"]);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'GeminiAPISelect', 'ClaudeAPISelect', 'APIHost', 'GeminiAPIHost', 'ClaudeAPIHost', 'APIKey', 'GeminiAPIKey', 'ClaudeAPIKey', 'APIModel', 'GeminiAPIModel', 'ClaudeAPIModel', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'existRec', 'azureRecRegion', 'azureRecKey', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'DeepSeekAPISelect', 'GeminiAPISelect', 'ClaudeAPISelect', 'APIHost', 'DeepSeekAPIHost', 'GeminiAPIHost', 'ClaudeAPIHost', 'APIKey', 'DeepSeekAPIKey', 'GeminiAPIKey', 'ClaudeAPIKey', 'APIModel', 'DeepSeekAPIModel', 'GeminiAPIModel', 'ClaudeAPIModel', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'existRec', 'azureRecRegion', 'azureRecKey', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -6874,13 +6931,16 @@
                 modelVer.textContent = activedEle.dataset.ver;
                 if (modelVersion.startsWith("gpt")) {
                     modelType = 1;
-                    modelName.textContent = "ChatGPT";
-                } else if (modelVersion.startsWith("gemini")) {
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#aiIcon");
+                } else if (modelVersion.startsWith("deepseek")) {
                     modelType = 2;
-                    modelName.textContent = "Gemini";
-                } else {
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deepseekIcon");
+                } else if (modelVersion.startsWith("gemini")) {
                     modelType = 3;
-                    modelName.textContent = "Claude";
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#geminiIcon");
+                } else {
+                    modelType = 4;
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#claudeIcon");
                 }
             };
             applyModelVersion();
@@ -6894,6 +6954,7 @@
                 }
             }
             const apiHostEle = document.getElementById("apiHostInput");
+            const deepseekHostEle = document.getElementById("deepseekApiHostInput");
             const geminiHostEle = document.getElementById("geminiApiHostInput");
             const claudeHostEle = document.getElementById("claudeApiHostInput");
             const apiSelectEle = document.getElementById("apiSelect");
@@ -6906,6 +6967,16 @@
                 }
             } else {
                 apiSelects.length = 0;
+            }
+            let localDeepSeekApiSelect = localStorage.getItem("DeepSeekAPISelect");
+            if (localDeepSeekApiSelect) {
+                try {
+                    deepseekApiSelects = JSON.parse(localDeepSeekApiSelect);
+                } catch (e) {
+                    deepseekApiSelects.length = 0;
+                }
+            } else {
+                deepseekApiSelects.length = 0;
             }
             let localGeminiApiSelect = localStorage.getItem("GeminiAPISelect");
             if (localGeminiApiSelect) {
@@ -6948,6 +7019,11 @@
                 initApiOption(apiHost);
                 localStorage.setItem("APISelect", JSON.stringify(apiSelects));
             }
+            const appendDeepSeekApiOption = () => {
+                deepseekApiSelects.push(deepseekApiHost);
+                initApiOption(deepseekApiHost);
+                localStorage.setItem("DeepSeekAPISelect", JSON.stringify(deepseekApiSelects));
+            }
             const appendGeminiApiOption = () => {
                 geminiApiSelects.push(geminiApiHost);
                 initApiOption(geminiApiHost);
@@ -6985,12 +7061,16 @@
                     initApiOption(selApiSelects[i]);
                 }
             }
-            apiHostEle.onfocus = geminiHostEle.onfocus = claudeHostEle.onfocus = () => {
+            apiHostEle.onfocus = deepseekHostEle.onfocus = geminiHostEle.onfocus = claudeHostEle.onfocus = () => {
                 let type = document.querySelector(".modelSwitch").querySelector(".activeSwitch").dataset.id;
                 if (type === "gptOption") {
                     selApiSelects = apiSelects;
                     selApiKey = "APISelect"
                     selApiEle = apiHostEle;
+                } else if (type === "deepseekOption") {
+                    selApiSelects = deepseekApiSelects;
+                    selApiKey = "DeepSeekAPISelect";
+                    selApiEle = deepseekHostEle;
                 } else if (type === "geminiOption") {
                     selApiSelects = geminiApiSelects;
                     selApiKey = "GeminiAPISelect";
@@ -7003,7 +7083,7 @@
                 initApiSelectEle();
                 if (selApiSelects.length) apiSelectEle.style.display = "block";
             }
-            apiHostEle.onblur = geminiHostEle.onblur = claudeHostEle.onblur = (ev) => {
+            apiHostEle.onblur = deepseekHostEle.onblur = geminiHostEle.onblur = claudeHostEle.onblur = (ev) => {
                 if (!(ev.relatedTarget && apiSelectEle.contains(ev.relatedTarget))) apiSelectEle.style.display = "none";
             }
             let localApiHost = localStorage.getItem("APIHost");
@@ -7030,6 +7110,31 @@
                 localStorage.setItem("APIModel", customAPIModel);
             }
             modelEle.dispatchEvent(new Event("change"));
+
+            let localDeepSeekApiHost = localStorage.getItem("DeepSeekAPIHost");
+            deepseekApiHost = deepseekHostEle.value = envDeepSeekAPIEndpoint || localDeepSeekApiHost || deepseekHostEle.getAttribute("value") || "";
+            deepseekHostEle.onchange = () => {
+                deepseekApiHost = deepseekHostEle.value;
+                if (deepseekApiHost && deepseekApiSelects.indexOf(deepseekApiHost) === -1) appendDeepSeekApiOption();
+                localStorage.setItem("DeepSeekAPIHost", deepseekApiHost);
+            }
+            deepseekHostEle.dispatchEvent(new Event("change"));
+            const deepseekKeyEle = document.getElementById("deepseekKeyInput");
+            let localDeepSeekKey = localStorage.getItem("DeepSeekAPIKey");
+            deepseekAPIKey = deepseekKeyEle.value = envDeepSeekAPIKey || localDeepSeekKey || deepseekKeyEle.getAttribute("value") || "";
+            deepseekKeyEle.onchange = () => {
+                deepseekAPIKey = deepseekKeyEle.value;
+                localStorage.setItem("DeepSeekAPIKey", deepseekAPIKey);
+            }
+            deepseekKeyEle.dispatchEvent(new Event("change"));
+            const deepseekModelEle = document.getElementById("deepseekModelInput");
+            let localDeepSeekModel = localStorage.getItem("DeepSeekAPIModel");
+            deepseekAPIModel = deepseekModelEle.value = envDeepSeekAPIModel || localDeepSeekModel || deepseekModelEle.getAttribute("value") || "";
+            deepseekModelEle.onchange = () => {
+                deepseekAPIModel = deepseekModelEle.value;
+                localStorage.setItem("DeepSeekAPIModel", deepseekAPIModel);
+            }
+            deepseekModelEle.dispatchEvent(new Event("change"));
 
             let localGeminiApiHost = localStorage.getItem("GeminiAPIHost");
             geminiApiHost = geminiHostEle.value = envGeminiAPIEndpoint || localGeminiApiHost || geminiHostEle.getAttribute("value") || "";
@@ -8134,7 +8239,7 @@
             return -1;
         };
         let currentModelName;
-        const getModelName = () => { return (modelType === 1 ? customAPIModel : modelType === 2 ? geminiAPIModel : claudeAPIModel) || modelVersion };
+        const getModelName = () => { return (modelType === 1 ? customAPIModel : modelType === 2 ? deepseekAPIModel : modelType === 3 ? geminiAPIModel : claudeAPIModel) || modelVersion };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
         let refreshIdx;
@@ -8196,6 +8301,20 @@
                     });
                 } else if (modelType === 2) {
                     dataSlice = dataSlice.map(item => {
+                        if (item.role === "assistant") return { role: item.role, content: item.content };
+                        else return item;
+                    })
+                    url = deepseekApiHost + ((deepseekApiHost.length && !deepseekApiHost.endsWith("/")) ? "/" : "") + DeepSeek_API_URL;
+                    if (deepseekAPIKey) headers["Authorization"] = "Bearer " + deepseekAPIKey;
+                    body = JSON.stringify({
+                        messages: dataSlice,
+                        model: currentModelName,
+                        stream: true,
+                        temperature: roleTemp,
+                        top_p: roleNature
+                    });
+                } else if (modelType === 3) {
+                    dataSlice = dataSlice.map(item => {
                         return { role: item.role === "assistant" ? "model" : "user", parts: [{ text: item.content }] };
                     })
                     url = geminiApiHost + ((geminiApiHost.length && !geminiApiHost.endsWith("/")) ? "/" : "") + Gemini_API_URL + currentModelName + `:streamGenerateContent?key=${geminiAPIKey}`;
@@ -8255,7 +8374,7 @@
                 const decoder = new TextDecoder();
                 const reader = res.body.getReader();
                 let readChunk;
-                if (modelType === 1) {
+                if (modelType === 1 || modelType === 2) {
                     readChunk = async () => {
                         return reader.read().then(async ({ value, done }) => {
                             if (!done) {
@@ -8322,7 +8441,7 @@
                             }
                         });
                     };
-                } else if (modelType === 2) {
+                } else if (modelType === 3) {
                     let stop_reason;
                     let endGeminiFunc = () => {
                         let lenStop = stop_reason === "MAX_TOKENS";

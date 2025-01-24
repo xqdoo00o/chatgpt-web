@@ -40,15 +40,10 @@ ___
     - OpenAI接口也可以在[环境变量](#环境变量)中单独配置。
 - **同时部署HTML和OpenAI反代接口**
 
-    **注意：服务器需正常访问`api.openai.com`，不用设置OpenAI接口了**
+    **注意：服务器需正常访问官方api接口，可统一所有api接口为一个自定义密钥**
     - 使用nginx，示例配置如下
 
         ```
-        map $http_authorization $gptauth {
-            default $http_authorization;
-            #配置默认API密钥，在Bearer 后填写。如只允许在网页端设置API密钥使用，请删除下一行。
-            ""      "Bearer sk-your-token";
-        }
         server {
             listen      80;
             server_name example.com;
@@ -57,20 +52,61 @@ ___
             gzip_min_length 1k;
             gzip_types text/event-stream;
 
-            #如需部署在网站子路径，如"example.com/chatgpt"，配置如下
-            #location ^~ /chatgpt/v1 {
+            #统一所有api接口为一个自定义密钥
+            set $custom_key "sk-12345678";
+            set $openai_key "sk-xxxxxx";
+            set $deepseek_key "sk-xxxxxx";
+            set $gemini_key "xxx-xxx";
+            set $claude_key "sk-ant-xxx";
+
+            #DeepSeek, 网页端需单独设置DeepSeek接口为deepseek
+            location ^~ /deepseek {
+                if ($http_authorization != "Bearer ${custom_key}") {
+                    return 401;
+                }
+                proxy_pass https://api.deepseek.com/;
+                proxy_set_header Host api.deepseek.com;
+                proxy_ssl_name api.deepseek.com;
+                proxy_ssl_server_name on;
+                proxy_set_header Authorization "Bearer ${deepseek_key}";
+                proxy_buffering off;
+            }
+
+            #Gemini
+            location ^~ /v1/models {
+                if ($arg_key != $custom_key) {
+                    return 401;
+                }
+                proxy_pass https://generativelanguage.googleapis.com$uri?key=$gemini_key;
+                proxy_buffering off;
+            }
+
+            #Claude
+            location ^~ /v1/messages {
+                if ($http_x_api_key != $custom_key) {
+                    return 401;
+                }
+                proxy_pass https://api.anthropic.com/v1/messages;
+                proxy_set_header Host api.anthropic.com;
+                proxy_ssl_name api.anthropic.com;
+                proxy_ssl_server_name on;
+                proxy_set_header X-Api-Key $claude_key;
+                proxy_buffering off;
+            }
+
+            #Openai
             location ^~ /v1 {
+                if ($http_authorization != "Bearer ${custom_key}") {
+                    return 401;
+                }
                 proxy_pass https://api.openai.com/v1;
                 proxy_set_header Host api.openai.com;
                 proxy_ssl_name api.openai.com;
                 proxy_ssl_server_name on;
-                proxy_set_header Authorization $gptauth;
-                proxy_pass_header Authorization;
-                #流式传输，不关闭buffering缓存会卡死，必须配置！！！
+                proxy_set_header Authorization "Bearer ${openai_key}";
                 proxy_buffering off;
             }
-            #与上面反代接口的路径保持一致
-            #location /chatgpt {
+
             location / {
                 alias /usr/share/nginx/html/;
                 index index.html;
