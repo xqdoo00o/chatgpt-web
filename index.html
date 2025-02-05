@@ -2574,22 +2574,6 @@
                     </button>
                 </div>
                 <div id="modelDialog" style="display:none;">
-                    <div class="modelSingle" data-value="gpt-3.5-turbo" data-ver="3.5">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
-                                <use xlink:href="#aiIcon"></use>
-                            </svg>
-                        </div>
-                        <div>GPT-3.5</div>
-                    </div>
-                    <div class="modelSingle" data-value="gpt-4" data-ver="4">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
-                                <use xlink:href="#aiIcon"></use>
-                            </svg>
-                        </div>
-                        <div>GPT-4</div>
-                    </div>
                     <div class="modelSingle" data-value="gpt-4o" data-ver="4o">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
@@ -2605,6 +2589,22 @@
                             </svg>
                         </div>
                         <div>GPT-4o-mini</div>
+                    </div>
+                    <div class="modelSingle" data-value="o1" data-ver="o1">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>o1</div>
+                    </div>
+                    <div class="modelSingle" data-value="o3" data-ver="o3 mini">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div>o3-mini</div>
                     </div>
                     <div class="modelSingle" data-value="deepseek-chat" data-ver="Chat">
                         <div class="modelAvatar gptAvatar">
@@ -2622,13 +2622,13 @@
                         </div>
                         <div>DeepSeek Reasoner</div>
                     </div>
-                    <div class="modelSingle" data-value="gemini-1.0-pro" data-ver="1.0 Pro">
+                    <div class="modelSingle" data-value="gemini-1.5-flash" data-ver="1.5 Flash">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#geminiIcon"></use>
                             </svg>
                         </div>
-                        <div>Gemini 1.0 Pro</div>
+                        <div>Gemini 1.5 Flash</div>
                     </div>
                     <div class="modelSingle" data-value="gemini-1.5-pro" data-ver="1.5 Pro">
                         <div class="modelAvatar">
@@ -2638,13 +2638,13 @@
                         </div>
                         <div>Gemini 1.5 Pro</div>
                     </div>
-                    <div class="modelSingle" data-value="gemini-1.5-flash" data-ver="1.5 Flash">
+                    <div class="modelSingle" data-value="gemini-2.0-flash" data-ver="2.0 Flash">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#geminiIcon"></use>
                             </svg>
                         </div>
-                        <div>Gemini 1.5 Flash</div>
+                        <div>Gemini 2.0 Flash</div>
                     </div>
                     <div class="modelSingle" data-value="claude-3-haiku-latest" data-ver="3 Haiku">
                         <div class="modelAvatar">
@@ -5478,7 +5478,7 @@
             "image": translations[locale]["imageText"]
         };
         let modelVersion; // 模型版本
-        let modelType; // 1:ChatGPT，2:Gemini，3:Claude
+        let modelType; // 1:ChatGPT，2:DeepSeek，3:Gemini，4:Claude
         let apiHost; // api反代地址
         let deepseekApiHost;
         let geminiApiHost;
@@ -5946,7 +5946,7 @@
             if (ele.parentElement.className === "request") {
                 ele.innerHTML = `<img src="${userAvatar}" />`;
             } else {
-                if (model.startsWith("gpt")) {
+                if (model.startsWith("gpt") || model.startsWith("o")) {
                     ele.classList.add("gptAvatar")
                     ele.innerHTML = `<svg width="24" height="24"><use xlink:href="#aiIcon"></use></svg>`;
                 } else if (model.startsWith("deepseek")) {
@@ -6922,14 +6922,14 @@
             const modelsEle = Array.from(modelSetEle.children);
             let localModelName = localStorage.getItem("modelVersion");
             let isVailModel = modelsEle.some(item => item.dataset.value === localModelName)
-            modelVersion = isVailModel ? localModelName : "gpt-3.5-turbo";
+            modelVersion = isVailModel ? localModelName : "gpt-4o";
             const applyModelVersion = () => {
                 let activedEle = modelSetEle.querySelector(".activeModel");
                 if (activedEle) activedEle.classList.remove("activeModel");
                 activedEle = modelSetEle.querySelector(`[data-value="${modelVersion}"]`);
                 activedEle.classList.add("activeModel");
                 modelVer.textContent = activedEle.dataset.ver;
-                if (modelVersion.startsWith("gpt")) {
+                if (modelVersion.startsWith("gpt") || modelVersion.startsWith("o")) {
                     modelType = 1;
                     modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#aiIcon");
                 } else if (modelVersion.startsWith("deepseek")) {
@@ -8317,7 +8317,7 @@
                     dataSlice = dataSlice.map(item => {
                         return { role: item.role === "assistant" ? "model" : "user", parts: [{ text: item.content }] };
                     })
-                    url = geminiApiHost + ((geminiApiHost.length && !geminiApiHost.endsWith("/")) ? "/" : "") + Gemini_API_URL + currentModelName + `:streamGenerateContent?key=${geminiAPIKey}`;
+                    url = geminiApiHost + ((geminiApiHost.length && !geminiApiHost.endsWith("/")) ? "/" : "") + Gemini_API_URL + currentModelName + `:streamGenerateContent?alt=sse&key=${geminiAPIKey}`;
                     body = JSON.stringify({
                         contents: dataSlice,
                         generationConfig: {
