@@ -77,7 +77,7 @@ ___
                 if ($arg_key != $custom_key) {
                     return 401;
                 }
-                proxy_pass https://generativelanguage.googleapis.com$uri?key=$gemini_key;
+                proxy_pass https://generativelanguage.googleapis.com$uri?alt=sse&key=$gemini_key;
                 proxy_buffering off;
             }
 

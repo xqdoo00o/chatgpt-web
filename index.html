@@ -779,6 +779,10 @@
             background: var(--active-btn) !important;
         }
 
+        .showModels>svg:last-child {
+            transform: scaleY(-1);
+        }
+
         #modelDialog {
             color: var(--btn-color);
             position: absolute;
@@ -2163,6 +2167,57 @@
         .response[data-loading="true"]>.markdown-body>*:not(.cursorCls) {
             animation: textInOut 0.48s ease-in-out forwards;
         }
+
+        .cotBtn {
+            width: 120px;
+            height: 32px;
+            font-size: 14px;
+            user-select: none;
+            background-color: var(--lighter-active-color);
+            position: relative;
+            padding-left: 14px;
+            line-height: 32px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .cotBtn:hover {
+            background: var(--active-btn);
+        }
+
+        .cotBtn.endCot {
+            width: 142px;
+        }
+
+        .cotBtn::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: 15px;
+            top: 14px;
+            width: 6px;
+            height: 6px;
+            border-top: 1px solid var(--chat-text-color);
+            border-right: 1px solid var(--chat-text-color);
+            transform: rotate(-45deg);
+        }
+
+        .cotBtn.down::after {
+            top: 11px;
+            transform: rotate(135deg);
+        }
+
+        .cotContent {
+            border-left: 2px solid var(--lighter-active-color);
+            padding-left: 12px;
+            font-size: 14px;
+            color: var(--svg-color);
+        }
+
+        .hide {
+            display: none;
+        }
     </style>
     <style>
         /* for katex */
@@ -2254,6 +2309,77 @@
                 <stop offset="0.672076" stop-color="#1BA1E3" />
             </radialGradient>
         </defs>
+        <defs>
+            <style>
+                .cls-1 {
+                    fill: none;
+                }
+
+                .cls-1,
+                .cls-2,
+                .cls-3,
+                .cls-4 {
+                    stroke-width: 0px;
+                }
+
+                .cls-2 {
+                    fill: url(#linear-gradient);
+                }
+
+                .cls-2,
+                .cls-3 {
+                    fill-rule: evenodd;
+                }
+
+                .cls-3 {
+                    fill: url(#linear-gradient-3);
+                }
+
+                .cls-4 {
+                    fill: url(#linear-gradient-2);
+                }
+            </style>
+            <linearGradient id="linear-gradient" x1="12.76" y1="11.97" x2="10.26" y2="1.96"
+                gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#712575" />
+                <stop offset=".09" stop-color="#9a2884" />
+                <stop offset=".18" stop-color="#bf2c92" />
+                <stop offset=".27" stop-color="#da2e9c" />
+                <stop offset=".34" stop-color="#eb30a2" />
+                <stop offset=".4" stop-color="#f131a5" />
+                <stop offset=".5" stop-color="#ec30a3" />
+                <stop offset=".61" stop-color="#df2f9e" />
+                <stop offset=".72" stop-color="#c92d96" />
+                <stop offset=".83" stop-color="#aa2a8a" />
+                <stop offset=".95" stop-color="#83267c" />
+                <stop offset="1" stop-color="#712575" />
+            </linearGradient>
+            <linearGradient id="linear-gradient-2" x1="13.71" y1="1.8" x2="13.71" y2="15.92"
+                gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#da7ed0" />
+                <stop offset=".08" stop-color="#b17bd5" />
+                <stop offset=".19" stop-color="#8778db" />
+                <stop offset=".3" stop-color="#6276e1" />
+                <stop offset=".41" stop-color="#4574e5" />
+                <stop offset=".54" stop-color="#2e72e8" />
+                <stop offset=".67" stop-color="#1d71eb" />
+                <stop offset=".81" stop-color="#1471ec" />
+                <stop offset="1" stop-color="#1171ed" />
+            </linearGradient>
+            <linearGradient id="linear-gradient-3" x1="12.86" y1="2.12" x2="3.5" y2="17.13"
+                gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#da7ed0" />
+                <stop offset=".05" stop-color="#b77bd4" />
+                <stop offset=".11" stop-color="#9079da" />
+                <stop offset=".18" stop-color="#6e77df" />
+                <stop offset=".25" stop-color="#5175e3" />
+                <stop offset=".33" stop-color="#3973e7" />
+                <stop offset=".42" stop-color="#2772e9" />
+                <stop offset=".54" stop-color="#1a71eb" />
+                <stop offset=".68" stop-color="#1371ec" />
+                <stop offset="1" stop-color="#1171ed" />
+            </linearGradient>
+        </defs>
     </svg>
     <div style="display: none">
         <svg>
@@ -2265,6 +2391,14 @@
                 <path
                     d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 01-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 00-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 01-.465.137 9.597 9.597 0 00-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 001.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 011.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 01.415-.287.302.302 0 01.2.288.306.306 0 01-.31.307.303.303 0 01-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 01-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 01.016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 01-.254-.078c-.11-.054-.2-.19-.114-.358.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z"
                     fill="#4D6BFE" />
+            </symbol>
+            <symbol viewBox="0 0 18 18" id="azureAIIcon">
+                <path class="cls-2" d="m11.52,1.59c.44,0,.83.33.97.81s.96,3.45.96,3.45v5.9h-2.97l.06-10.17h.98Z" />
+                <path class="cls-4"
+                    d="m15.88,6.2c0-.21-.17-.37-.37-.37h-1.75c-1.23,0-2.23,1-2.23,2.23v3.7h2.12c1.23,0,2.23-1,2.23-2.23v-3.33Z" />
+                <path class="cls-3"
+                    d="m11.52,1.59c-.34,0-.61.27-.61.61l-.06,11.23c0,1.64-1.33,2.97-2.97,2.97H2.49c-.26,0-.43-.25-.35-.49L6.46,3.58c.42-1.19,1.54-1.99,2.8-1.99h2.27Z" />
+                <rect class="cls-1" width="18" height="18" />
             </symbol>
             <symbol viewBox="0 0 28 28" id="geminiIcon">
                 <path
@@ -2419,11 +2553,22 @@
                 <path fill="currentColor"
                     d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6L6.4 19Z" />
             </symbol>
+            <symbol viewBox="0 0 32 32" id="modelsIcon">
+                <path fill="currentColor"
+                    d="M28.447 16.106L23 13.381V7a1 1 0 0 0-.553-.894l-6-3a1 1 0 0 0-.894 0l-6 3A1 1 0 0 0 9 7v6.382l-5.447 2.723A1 1 0 0 0 3 17v7a1 1 0 0 0 .553.895l6 3a1 1 0 0 0 .894 0L16 25.118l5.553 2.777a1 1 0 0 0 .894 0l6-3A1 1 0 0 0 29 24v-7a1 1 0 0 0-.553-.895M21 13.381l-4 2v-4.764l4-2Zm-5-8.264L19.764 7L16 8.882L12.236 7Zm-5 3.5l4 2v4.764l-4-2ZM9 25.382l-4-2v-4.764l4 2Zm1-6.5L6.236 17L10 15.118L13.764 17Zm1 1.736l4-2v4.764l-4 2Zm10 4.764l-4-2v-4.764l4 2Zm1-6.5L18.236 17L22 15.118L25.764 17Zm5 4.5l-4 2v-4.764l4-2Z" />
+            </symbol>
             <symbol viewBox="0 0 24 24" id="settingIcon">
                 <path fill="currentColor"
                     d="M13.85 22.25h-3.7c-.74 0-1.36-.54-1.45-1.27l-.27-1.89c-.27-.14-.53-.29-.79-.46l-1.8.72c-.7.26-1.47-.03-1.81-.65L2.2 15.53c-.35-.66-.2-1.44.36-1.88l1.53-1.19c-.01-.15-.02-.3-.02-.46 0-.15.01-.31.02-.46l-1.52-1.19c-.59-.45-.74-1.26-.37-1.88l1.85-3.19c.34-.62 1.11-.9 1.79-.63l1.81.73c.26-.17.52-.32.78-.46l.27-1.91c.09-.7.71-1.25 1.44-1.25h3.7c.74 0 1.36.54 1.45 1.27l.27 1.89c.27.14.53.29.79.46l1.8-.72c.71-.26 1.48.03 1.82.65l1.84 3.18c.36.66.2 1.44-.36 1.88l-1.52 1.19c.01.15.02.3.02.46s-.01.31-.02.46l1.52 1.19c.56.45.72 1.23.37 1.86l-1.86 3.22c-.34.62-1.11.9-1.8.63l-1.8-.72c-.26.17-.52.32-.78.46l-.27 1.91c-.1.68-.72 1.22-1.46 1.22zm-3.23-2h2.76l.37-2.55.53-.22c.44-.18.88-.44 1.34-.78l.45-.34 2.38.96 1.38-2.4-2.03-1.58.07-.56c.03-.26.06-.51.06-.78s-.03-.53-.06-.78l-.07-.56 2.03-1.58-1.39-2.4-2.39.96-.45-.35c-.42-.32-.87-.58-1.33-.77l-.52-.22-.37-2.55h-2.76l-.37 2.55-.53.21c-.44.19-.88.44-1.34.79l-.45.33-2.38-.95-1.39 2.39 2.03 1.58-.07.56a7 7 0 0 0-.06.79c0 .26.02.53.06.78l.07.56-2.03 1.58 1.38 2.4 2.39-.96.45.35c.43.33.86.58 1.33.77l.53.22.38 2.55z">
                 </path>
                 <circle fill="currentColor" cx="12" cy="12" r="3.5"></circle>
+            </symbol>
+            <symbol viewBox="0 0 24 24" id="uiIcon">
+                <g fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path
+                        d="M2 9c0-2.828 0-4.243.879-5.121C3.757 3 5.172 3 8 3h8c2.828 0 4.243 0 5.121.879C22 4.757 22 6.172 22 9v1c0 2.828 0 4.243-.879 5.121C20.243 16 18.828 16 16 16H8c-2.828 0-4.243 0-5.121-.879C2 14.243 2 12.828 2 10z" />
+                    <path stroke-linecap="round" d="M12 19v-2.5m0 2.5l6 2m-6-2l-6 2" />
+                </g>
             </symbol>
             <symbol viewBox="0 0 24 24" id="importSetIcon">
                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -2552,8 +2697,7 @@
                 <div class="title">
                     <div id="selector"><svg id="modelIcon" width="24" height="24">
                             <use xlink:href="#aiIcon"></use>
-                        </svg><span id="modelVer">3.5</span><svg width="16" height="16"
-                            style="transform: translateY(1px);">
+                        </svg><span id="modelVer">4o</span><svg width="16" height="16" style="margin-top: 1px">
                             <use xlink:href="#expandIcon" />
                         </svg>
                     </div>
@@ -2606,6 +2750,14 @@
                         </div>
                         <div>o3-mini</div>
                     </div>
+                    <div class="modelSingle hide" id="customGPTDOM" data-value="" data-ver="">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#aiIcon"></use>
+                            </svg>
+                        </div>
+                        <div></div>
+                    </div>
                     <div class="modelSingle" data-value="deepseek-chat" data-ver="Chat">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
@@ -2621,6 +2773,30 @@
                             </svg>
                         </div>
                         <div>DeepSeek Reasoner</div>
+                    </div>
+                    <div class="modelSingle hide" id="customDeepSeekDOM" data-value="" data-ver="">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#deepseekIcon"></use>
+                            </svg>
+                        </div>
+                        <div></div>
+                    </div>
+                    <div class="modelSingle" data-value="azure-gpt-4o" data-ver="4o">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
+                                <use xlink:href="#azureAIIcon"></use>
+                            </svg>
+                        </div>
+                        <div>Azure gpt-4o</div>
+                    </div>
+                    <div class="modelSingle hide" id="customAzureAIDOM" data-value="" data-ver="">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#azureAIIcon"></use>
+                            </svg>
+                        </div>
+                        <div></div>
                     </div>
                     <div class="modelSingle" data-value="gemini-1.5-flash" data-ver="1.5 Flash">
                         <div class="modelAvatar">
@@ -2646,6 +2822,14 @@
                         </div>
                         <div>Gemini 2.0 Flash</div>
                     </div>
+                    <div class="modelSingle hide" id="customGeminiDOM" data-value="" data-ver="">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#geminiIcon"></use>
+                            </svg>
+                        </div>
+                        <div></div>
+                    </div>
                     <div class="modelSingle" data-value="claude-3-haiku-latest" data-ver="3 Haiku">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
@@ -2669,6 +2853,14 @@
                             </svg>
                         </div>
                         <div>Claude 3 Opus</div>
+                    </div>
+                    <div class="modelSingle hide" id="customClaudeDOM" data-value="" data-ver="">
+                        <div class="modelAvatar gptAvatar">
+                            <svg width="24" height="24">
+                                <use xlink:href="#claudeIcon"></use>
+                            </svg>
+                        </div>
+                        <div></div>
                     </div>
                 </div>
                 <div id="setDialog" style="display:none;">
@@ -2742,6 +2934,13 @@
                                 <span>0</span>
                                 <span>50</span>
                             </div>
+                        </div>
+                        <div>
+                            <span class="inlineTitle" data-i18n-key="COT"></span>
+                            <label class="switch-slide">
+                                <input type="checkbox" id="enableCOT" checked="true" hidden />
+                                <label for="enableCOT" class="switch-slide-label"></label>
+                            </label>
                         </div>
                         <div>
                             <span class="inlineTitle" data-i18n-key="longReply"></span>
@@ -2995,10 +3194,15 @@
             <div class="sysTitle" data-i18n-key="setting"></div>
             <div class="sysContent">
                 <div class="sysSwitch">
-                    <div data-id="generalOption" class="activeSwitch">
+                    <div data-id="modelsOption" class="activeSwitch">
                         <svg width="24" height="24">
-                            <use xlink:href="#settingIcon" />
-                        </svg><span data-i18n-key="general"></span>
+                            <use xlink:href="#modelsIcon" />
+                        </svg><span data-i18n-key="models"></span>
+                    </div>
+                    <div data-id="uiOption">
+                        <svg width="24" height="24">
+                            <use xlink:href="#uiIcon" />
+                        </svg><span data-i18n-key="ui"></span>
                     </div>
                     <div data-id="hotkeyOption">
                         <svg width="24" height="24">
@@ -3012,7 +3216,137 @@
                     </div>
                 </div>
                 <div class="sysDetail">
-                    <div id="generalOption">
+                    <div id="modelsOption">
+                        <div class="modelSwitch">
+                            <div data-id="gptOption" class="activeSwitch">ChatGPT</div>
+                            <div data-id="deepseekOption">DeepSeek</div>
+                            <div data-id="azureOption">Azure</div>
+                            <div data-id="geminiOption">Gemini</div>
+                            <div data-id="claudeOption">Claude</div>
+                        </div>
+                        <div class="apiSelsContainer">
+                            <div id="apiSelect" tabindex="-1" style="display: none;"></div>
+                        </div>
+                        <div id="gptOption">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>ChatGPT</span><span data-i18n-key="aiEndpoint"></span></div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass" placeholder="https://api.openai.com/"
+                                        autocomplete="off" id="apiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle"><span data-i18n-key="aiKey"></span></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
+                                        autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="gpt-x-xxx" id="modelInput"
+                                        autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="deepseekOption" style="display: none;">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>DeepSeek</span><span data-i18n-key="aiEndpoint"></span>
+                                </div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass" placeholder="https://api.deepseek.com/"
+                                        autocomplete="off" id="deepseekApiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiKey"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx"
+                                        id="deepseekKeyInput" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="deepseek-xxx"
+                                        id="deepseekModelInput" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="azureOption" style="display: none;">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>Azure</span><span data-i18n-key="aiEndpoint"></span></div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass"
+                                        placeholder="https://ai-xx.services.ai.azure.com/models/chat/completions?api-version=2024-05-01-preview"
+                                        autocomplete="off" id="azureAIApiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiKey"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="xxxxxxxx"
+                                        id="azureAIKeyInput" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="xxxx-xx"
+                                        id="azureAIModelInput" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="geminiOption" style="display: none;">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>Gemini</span><span data-i18n-key="aiEndpoint"></span></div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass"
+                                        placeholder="https://generativelanguage.googleapis.com/" autocomplete="off"
+                                        id="geminiApiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiKey"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="xxxx-xxxx"
+                                        id="geminiKeyInput" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="gemini-xxx-xxx"
+                                        id="geminiModelInput" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="claudeOption" style="display: none;">
+                            <div class="setContent setNotNormalFlow">
+                                <div class="setTitle"><span>Claude</span><span data-i18n-key="aiEndpoint"></span></div>
+                                <div class="setDetail inputDetail" style="position: relative;">
+                                    <input class="inputTextClass" placeholder="https://api.anthropic.com/"
+                                        autocomplete="off" id="claudeApiHostInput" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiKey"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx"
+                                        id="claudeKeyInput" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="setContent">
+                                <div class="setTitle" data-i18n-key="aiModel"></div>
+                                <div class="setDetail inputDetail">
+                                    <input class="inputTextClass" type="text" placeholder="claude-x-xxx-xxxx"
+                                        id="claudeModelInput" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="uiOption" style="display: none;">
                         <div class="setContent">
                             <div class="setTitle" data-i18n-key="theme"></div>
                             <div class="setDetail themeDetail lightTheme" id="setLight">
@@ -3067,109 +3401,6 @@
                                     <svg width="24" height="24">
                                         <use xlink:href="#zhIcon"></use>
                                     </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modelSwitch">
-                            <div data-id="gptOption" class="activeSwitch">ChatGPT</div>
-                            <div data-id="deepseekOption">DeepSeek</div>
-                            <div data-id="geminiOption">Gemini</div>
-                            <div data-id="claudeOption">Claude</div>
-                        </div>
-                        <div class="apiSelsContainer">
-                            <div id="apiSelect" tabindex="-1" style="display: none;"></div>
-                        </div>
-                        <div id="gptOption">
-                            <div class="setContent setNotNormalFlow">
-                                <div class="setTitle"><span>ChatGPT</span><span data-i18n-key="aiEndpoint"></span></div>
-                                <div class="setDetail inputDetail" style="position: relative;">
-                                    <input class="inputTextClass" placeholder="https://api.openai.com/"
-                                        autocomplete="off" id="apiHostInput" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle"><span data-i18n-key="aiKey"></span></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx" id="keyInput"
-                                        autocomplete="off" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle" data-i18n-key="aiModel"></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="text" placeholder="gpt-x-xxx" id="modelInput"
-                                        autocomplete="off" />
-                                </div>
-                            </div>
-                        </div>
-                        <div id="deepseekOption" style="display: none;">
-                            <div class="setContent setNotNormalFlow">
-                                <div class="setTitle"><span>DeepSeek</span><span data-i18n-key="aiEndpoint"></span>
-                                </div>
-                                <div class="setDetail inputDetail" style="position: relative;">
-                                    <input class="inputTextClass" placeholder="https://api.deepseek.com/"
-                                        autocomplete="off" id="deepseekApiHostInput" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle" data-i18n-key="aiKey"></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx"
-                                        id="deepseekKeyInput" autocomplete="off" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle" data-i18n-key="aiModel"></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="text" placeholder="deepseek-xxx"
-                                        id="deepseekModelInput" autocomplete="off" />
-                                </div>
-                            </div>
-                        </div>
-                        <div id="geminiOption" style="display: none;">
-                            <div class="setContent setNotNormalFlow">
-                                <div class="setTitle"><span>Gemini</span><span data-i18n-key="aiEndpoint"></span></div>
-                                <div class="setDetail inputDetail" style="position: relative;">
-                                    <input class="inputTextClass"
-                                        placeholder="https://generativelanguage.googleapis.com/" autocomplete="off"
-                                        id="geminiApiHostInput" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle" data-i18n-key="aiKey"></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="password" placeholder="xxxx-xxxx"
-                                        id="geminiKeyInput" autocomplete="off" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle" data-i18n-key="aiModel"></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="text" placeholder="gemini-xxx-xxx"
-                                        id="geminiModelInput" autocomplete="off" />
-                                </div>
-                            </div>
-                        </div>
-                        <div id="claudeOption" style="display: none;">
-                            <div class="setContent setNotNormalFlow">
-                                <div class="setTitle"><span>Claude</span><span data-i18n-key="aiEndpoint"></span></div>
-                                <div class="setDetail inputDetail" style="position: relative;">
-                                    <input class="inputTextClass" placeholder="https://api.anthropic.com/"
-                                        autocomplete="off" id="claudeApiHostInput" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle" data-i18n-key="aiKey"></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="password" placeholder="sk-xxxxxx"
-                                        id="claudeKeyInput" autocomplete="off" />
-                                </div>
-                            </div>
-                            <div class="setContent">
-                                <div class="setTitle" data-i18n-key="aiModel"></div>
-                                <div class="setDetail inputDetail">
-                                    <input class="inputTextClass" type="text" placeholder="claude-x-xxx-xxxx"
-                                        id="claudeModelInput" autocomplete="off" />
                                 </div>
                             </div>
                         </div>
@@ -3315,9 +3546,9 @@
         </div>
     </div>
     <link crossorigin="anonymous"
-        href="https://fastly.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown-light.min.css" rel="stylesheet">
+        href="https://fastly.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown-light.min.css" rel="stylesheet">
     <link crossorigin="anonymous"
-        href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css"
+        href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/github.min.css"
         rel="stylesheet">
     <link crossorigin="anonymous" href="https://fastly.jsdelivr.net/npm/notyf@3.10.0/notyf.min.css" rel="stylesheet">
     <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/npm/notyf@3.10.0/notyf.min.js"></script>
@@ -3365,7 +3596,7 @@
             link.href = "https://fastly.jsdelivr.net/gh/timruffles/mobile-drag-drop@3.0.0-rc.0/release/default.css";
             document.body.appendChild(link);
         }
-        let envAPIEndpoint, envAPIKey, envAPIModel, envDeepSeekAPIEndpoint, envDeepSeekAPIKey, envDeepSeekAPIModel, envGeminiAPIEndpoint, envGeminiAPIKey, envGeminiAPIModel, envClaudeAPIEndpoint, envClaudeAPIKey, envClaudeAPIModel;
+        let envAPIEndpoint, envAPIKey, envAPIModel, envDeepSeekAPIEndpoint, envDeepSeekAPIKey, envDeepSeekAPIModel, envAzureAIAPIEndpoint, envAzureAIAPIKey, envAzureAIAPIModel, envGeminiAPIEndpoint, envGeminiAPIKey, envGeminiAPIModel, envClaudeAPIEndpoint, envClaudeAPIKey, envClaudeAPIModel;
     </script>
     <script src="env.js"></script>
     <script>
@@ -3376,7 +3607,9 @@
         // from morphdom@2.7.2
         {let e,t=11,l=(e,l)=>{let n,i,r,d,o,a=l.attributes;if(l.nodeType===t||e.nodeType===t)return;for(let t=a.length-1;t>=0;t--)n=a[t],i=n.name,r=n.namespaceURI,d=n.value,r?(i=n.localName||i,o=e.getAttributeNS(r,i),o!==d&&("xmlns"===n.prefix&&(i=n.name),e.setAttributeNS(r,i,d))):(o=e.getAttribute(i),o!==d&&e.setAttribute(i,d));let u=e.attributes;for(let t=u.length-1;t>=0;t--)n=u[t],i=n.name,r=n.namespaceURI,r?(i=n.localName||i,l.hasAttributeNS(r,i)||e.removeAttributeNS(r,i)):l.hasAttribute(i)||e.removeAttribute(i)},n="http://www.w3.org/1999/xhtml",i="undefined"==typeof document?void 0:document,r=!!i&&"content"in i.createElement("template"),d=!!i&&i.createRange&&"createContextualFragment"in i.createRange(),o=e=>{let t=i.createElement("template");return t.innerHTML=e,t.content.childNodes[0]},a=t=>(e||(e=i.createRange(),e.selectNode(i.body)),e.createContextualFragment(t).childNodes[0]),u=e=>{let t=i.createElement("body");return t.innerHTML=e,t.childNodes[0]},s=e=>(e=e.trim(),r?o(e):d?a(e):u(e)),f=(e,t)=>{let l,n,i=e.nodeName,r=t.nodeName;return i===r||(l=i.charCodeAt(0),n=r.charCodeAt(0),l<=90&&n>=97?i===r.toUpperCase():n<=90&&l>=97&&r===i.toUpperCase())},c=(e,t)=>t&&t!==n?i.createElementNS(t,e):i.createElement(e),m=(e,t)=>{let l=e.firstChild;for(;l;){let e=l.nextSibling;t.appendChild(l),l=e}return t},p=(e,t,l)=>{e[l]!==t[l]&&(e[l]=t[l],e[l]?e.setAttribute(l,""):e.removeAttribute(l))},h={OPTION:(e,t)=>{let l=e.parentNode;if(l){let n=l.nodeName.toUpperCase();"OPTGROUP"===n&&(l=l.parentNode,n=l&&l.nodeName.toUpperCase()),"SELECT"!==n||l.hasAttribute("multiple")||(e.hasAttribute("selected")&&!t.selected&&(e.setAttribute("selected","selected"),e.removeAttribute("selected")),l.selectedIndex=-1)}p(e,t,"selected")},INPUT:(e,t)=>{p(e,t,"checked"),p(e,t,"disabled"),e.value!==t.value&&(e.value=t.value),t.hasAttribute("value")||e.removeAttribute("value")},TEXTAREA:(e,t)=>{let l=t.value;e.value!==l&&(e.value=l);let n=e.firstChild;if(n){let t=n.nodeValue;if(t==l||!l&&t==e.placeholder)return;n.nodeValue=l}},SELECT:(e,t)=>{if(!t.hasAttribute("multiple")){let t,l,n=-1,i=0,r=e.firstChild;for(;r;)if(l=r.nodeName&&r.nodeName.toUpperCase(),"OPTGROUP"===l)t=r,r=t.firstChild;else{if("OPTION"===l){if(r.hasAttribute("selected")){n=i;break}i++}r=r.nextSibling,!r&&t&&(r=t.nextSibling,t=null)}e.selectedIndex=n}}},N=1,b=11,A=3,C=8,T=()=>{},g=e=>{if(e)return e.getAttribute&&e.getAttribute("id")||e.id},E=e=>function(t,l,n){if(n||(n={}),"string"==typeof l)if("#document"===t.nodeName||"HTML"===t.nodeName||"BODY"===t.nodeName){let e=l;(l=i.createElement("html")).innerHTML=e}else l=s(l);else l.nodeType===b&&(l=l.firstElementChild);let r=n.getNodeKey||g,d=n.onBeforeNodeAdded||T,o=n.onNodeAdded||T,a=n.onBeforeElUpdated||T,u=n.onElUpdated||T,p=n.onBeforeNodeDiscarded||T,E=n.onNodeDiscarded||T,v=n.onBeforeElChildrenUpdated||T,x=n.skipFromChildren||T,y=n.addChild||function(e,t){return e.appendChild(t)},S=!0===n.childrenOnly,U=Object.create(null),O=[],R=e=>{O.push(e)},V=(e,t)=>{if(e.nodeType===N){let l=e.firstChild;for(;l;){let e;t&&(e=r(l))?R(e):(E(l),l.firstChild&&V(l,t)),l=l.nextSibling}}},w=(e,t,l)=>{!1!==p(e)&&(t&&t.removeChild(e),E(e),V(e,l))},I=e=>{if(e.nodeType===N||e.nodeType===b){let t=e.firstChild;for(;t;){let e=r(t);e&&(U[e]=t),I(t),t=t.nextSibling}}};I(t);let P=e=>{o(e);let t=e.firstChild;for(;t;){let e=t.nextSibling,l=r(t);if(l){let e=U[l];e&&f(t,e)?(t.parentNode.replaceChild(e,t),B(e,t)):P(t)}else P(t);t=e}},B=(t,l,n)=>{let i=r(l);if(i&&delete U[i],!n){if(!1===a(t,l))return;if(e(t,l),u(t),!1===v(t,l))return}"TEXTAREA"!==t.nodeName?L(t,l):h.TEXTAREA(t,l)},L=(e,t)=>{let l,n,o,a,u,s=x(e,t),c=t.firstChild,m=e.firstChild;e:for(;c;){for(a=c.nextSibling,l=r(c);!s&&m;){if(o=m.nextSibling,c.isEqualNode&&c.isEqualNode(m)){c=a,m=o;continue e}n=r(m);let t,i=m.nodeType;if(i===c.nodeType&&(i===N?(l?l!==n&&((u=U[l])?o===u?t=!1:(e.insertBefore(u,m),n?R(n):w(m,e,!0),m=u,n=r(m)):t=!1):n&&(t=!1),t=!1!==t&&f(m,c),t&&B(m,c)):i!==A&&i!=C||(t=!0,m.nodeValue!==c.nodeValue&&(m.nodeValue=c.nodeValue))),t){c=a,m=o;continue e}n?R(n):w(m,e,!0),m=o}if(l&&(u=U[l])&&f(u,c))s||y(e,u),B(u,c);else{let t=d(c);!1!==t&&(t&&(c=t),c.actualize&&(c=c.actualize(e.ownerDocument||i)),y(e,c),P(c))}c=a,m=o}((e,t,l)=>{for(;t;){let n=t.nextSibling;(l=r(t))?R(l):w(t,e,!0),t=n}})(e,m,n);let p=h[e.nodeName];p&&p(e,t)},D=t,z=D.nodeType,H=l.nodeType;if(!S)if(z===N)H===N?f(t,l)||(E(t),D=m(t,c(l.nodeName,l.namespaceURI))):D=l;else if(z===A||z===C){if(H===z)return D.nodeValue!==l.nodeValue&&(D.nodeValue=l.nodeValue),D;D=l}if(B(D,l,S),O)for(let e=0,t=O.length;e<t;e++){let t=U[O[e]];t&&w(t,t.parentNode,!1)}return!S&&D!==t&&t.parentNode&&(D.actualize&&(D=D.actualize(t.ownerDocument||i)),t.parentNode.replaceChild(D,t)),D};window.morphdom=E(l)};   
         // from sha1-uint8array@0.10.7
-        {const K=[1518500249,1859775393,-1894007588,-899497514];window.createHash=()=>new Hash;class Hash{constructor(){this.A=1732584193,this.B=-271733879,this.C=-1732584194,this.D=271733878,this.E=-1009589776,this._size=0,this._sp=0,(!sharedBuffer||sharedOffset>=8e3)&&(sharedBuffer=new ArrayBuffer(8e3),sharedOffset=0),this._byte=new Uint8Array(sharedBuffer,sharedOffset,80),this._word=new Int32Array(sharedBuffer,sharedOffset,20),sharedOffset+=80};update(t){if("string"==typeof t)return this._utf8(t);if(null==t)throw new TypeError("Invalid type: "+typeof t);const s=t.byteOffset,e=t.byteLength;let r=e/64|0,i=0;if(r&&!(3&s)&&!(this._size%64)){const e=new Int32Array(t.buffer,s,16*r);for(;r--;)this._int32(e,i>>2),i+=64;this._size+=i}if(1!==t.BYTES_PER_ELEMENT&&t.buffer){const r=new Uint8Array(t.buffer,s+i,e-i);return this._uint8(r)}return i===e?this:this._uint8(t,i)};_uint8(t,s){const{_byte:e,_word:r}=this,i=t.length;for(s|=0;s<i;){const h=this._size%64;let n=h;for(;s<i&&n<64;)e[n++]=t[s++];n>=64&&this._int32(r),this._size+=n-h}return this};_utf8(t){const{_byte:s,_word:e}=this,r=t.length;let i=this._sp;for(let h=0;h<r;){const n=this._size%64;let f=n;for(;h<r&&f<64;){let e=0|t.charCodeAt(h++);e<128?s[f++]=e:e<2048?(s[f++]=192|e>>>6,s[f++]=128|63&e):e<55296||e>57343?(s[f++]=224|e>>>12,s[f++]=128|e>>>6&63,s[f++]=128|63&e):i?(e=((1023&i)<<10)+(1023&e)+65536,s[f++]=240|e>>>18,s[f++]=128|e>>>12&63,s[f++]=128|e>>>6&63,s[f++]=128|63&e,i=0):i=e}f>=64&&(this._int32(e),e[0]=e[16]),this._size+=f-n}return this._sp=i,this};_int32(t,s){let{A:e,B:r,C:i,D:h,E:n}=this,f=0;for(s|=0;f<16;)W[f++]=swap32(t[s++]);for(f=16;f<80;f++)W[f]=rotate1(W[f-3]^W[f-8]^W[f-14]^W[f-16]);for(f=0;f<80;f++){const t=f/20|0,s=rotate5(e)+ft(t,r,i,h)+n+W[f]+K[t]|0;n=h,h=i,i=rotate30(r),r=e,e=s}this.A=e+this.A|0,this.B=r+this.B|0,this.C=i+this.C|0,this.D=h+this.D|0,this.E=n+this.E|0};digest(t){const{_byte:s,_word:e}=this;let r=this._size%64|0;for(s[r++]=128;3&r;)s[r++]=0;if(r>>=2,r>14){for(;r<16;)e[r++]=0;r=0,this._int32(e)}for(;r<16;)e[r++]=0;const i=8*this._size,h=(4294967295&i)>>>0,n=(i-h)/4294967296;return n&&(e[14]=swap32(n)),h&&(e[15]=swap32(h)),this._int32(e),"hex"===t?this._hex():this._bin()};_hex(){const{A:t,B:s,C:e,D:r,E:i}=this;return hex32(t)+hex32(s)+hex32(e)+hex32(r)+hex32(i)};_bin(){const{A:t,B:s,C:e,D:r,E:i,_byte:h,_word:n}=this;return n[0]=swap32(t),n[1]=swap32(s),n[2]=swap32(e),n[3]=swap32(r),n[4]=swap32(i),h.slice(0,20)}};const W=new Int32Array(80);let sharedBuffer,sharedOffset=0;const hex32=t=>(t+4294967296).toString(16).substr(-8),swapLE=t=>t<<24&4278190080|t<<8&16711680|t>>8&65280|t>>24&255,swapBE=t=>t,swap32=isBE()?swapBE:swapLE,rotate1=t=>t<<1|t>>>31,rotate5=t=>t<<5|t>>>27,rotate30=t=>t<<30|t>>>2;function ft(t,s,e,r){return 0===t?s&e|~s&r:2===t?s&e|s&r|e&r:s^e^r}function isBE(){return 254===new Uint8Array(new Uint16Array([65279]).buffer)[0]}};
+        {const K=[1518500249,1859775393,-1894007588,-899497514];window.createSHA1=()=>new Hash;class Hash{constructor(){this.A=1732584193,this.B=-271733879,this.C=-1732584194,this.D=271733878,this.E=-1009589776,this._size=0,this._sp=0,(!sharedBuffer||sharedOffset>=8e3)&&(sharedBuffer=new ArrayBuffer(8e3),sharedOffset=0),this._byte=new Uint8Array(sharedBuffer,sharedOffset,80),this._word=new Int32Array(sharedBuffer,sharedOffset,20),sharedOffset+=80};update(t){if("string"==typeof t)return this._utf8(t);if(null==t)throw new TypeError("Invalid type: "+typeof t);const s=t.byteOffset,e=t.byteLength;let r=e/64|0,i=0;if(r&&!(3&s)&&!(this._size%64)){const e=new Int32Array(t.buffer,s,16*r);for(;r--;)this._int32(e,i>>2),i+=64;this._size+=i}if(1!==t.BYTES_PER_ELEMENT&&t.buffer){const r=new Uint8Array(t.buffer,s+i,e-i);return this._uint8(r)}return i===e?this:this._uint8(t,i)};_uint8(t,s){const{_byte:e,_word:r}=this,i=t.length;for(s|=0;s<i;){const h=this._size%64;let n=h;for(;s<i&&n<64;)e[n++]=t[s++];n>=64&&this._int32(r),this._size+=n-h}return this};_utf8(t){const{_byte:s,_word:e}=this,r=t.length;let i=this._sp;for(let h=0;h<r;){const n=this._size%64;let f=n;for(;h<r&&f<64;){let e=0|t.charCodeAt(h++);e<128?s[f++]=e:e<2048?(s[f++]=192|e>>>6,s[f++]=128|63&e):e<55296||e>57343?(s[f++]=224|e>>>12,s[f++]=128|e>>>6&63,s[f++]=128|63&e):i?(e=((1023&i)<<10)+(1023&e)+65536,s[f++]=240|e>>>18,s[f++]=128|e>>>12&63,s[f++]=128|e>>>6&63,s[f++]=128|63&e,i=0):i=e}f>=64&&(this._int32(e),e[0]=e[16]),this._size+=f-n}return this._sp=i,this};_int32(t,s){let{A:e,B:r,C:i,D:h,E:n}=this,f=0;for(s|=0;f<16;)W[f++]=swap32(t[s++]);for(f=16;f<80;f++)W[f]=rotate1(W[f-3]^W[f-8]^W[f-14]^W[f-16]);for(f=0;f<80;f++){const t=f/20|0,s=rotate5(e)+ft(t,r,i,h)+n+W[f]+K[t]|0;n=h,h=i,i=rotate30(r),r=e,e=s}this.A=e+this.A|0,this.B=r+this.B|0,this.C=i+this.C|0,this.D=h+this.D|0,this.E=n+this.E|0};digest(t){const{_byte:s,_word:e}=this;let r=this._size%64|0;for(s[r++]=128;3&r;)s[r++]=0;if(r>>=2,r>14){for(;r<16;)e[r++]=0;r=0,this._int32(e)}for(;r<16;)e[r++]=0;const i=8*this._size,h=(4294967295&i)>>>0,n=(i-h)/4294967296;return n&&(e[14]=swap32(n)),h&&(e[15]=swap32(h)),this._int32(e),"hex"===t?this._hex():this._bin()};_hex(){const{A:t,B:s,C:e,D:r,E:i}=this;return hex32(t)+hex32(s)+hex32(e)+hex32(r)+hex32(i)};_bin(){const{A:t,B:s,C:e,D:r,E:i,_byte:h,_word:n}=this;return n[0]=swap32(t),n[1]=swap32(s),n[2]=swap32(e),n[3]=swap32(r),n[4]=swap32(i),h.slice(0,20)}};const W=new Int32Array(80);let sharedBuffer,sharedOffset=0;const hex32=t=>(t+4294967296).toString(16).substr(-8),swapLE=t=>t<<24&4278190080|t<<8&16711680|t>>8&65280|t>>24&255,swapBE=t=>t,swap32=isBE()?swapBE:swapLE,rotate1=t=>t<<1|t>>>31,rotate5=t=>t<<5|t>>>27,rotate30=t=>t<<30|t>>>2;function ft(t,s,e,r){return 0===t?s&e|~s&r:2===t?s&e|s&r|e&r:s^e^r}function isBE(){return 254===new Uint8Array(new Uint16Array([65279]).buffer)[0]}};
+        // from sha256-uint8array@0.10.7
+        {const K=[1116352408,1899447441,-1245643825,-373957723,961987163,1508970993,-1841331548,-1424204075,-670586216,310598401,607225278,1426881987,1925078388,-2132889090,-1680079193,-1046744716,-459576895,-272742522,264347078,604807628,770255983,1249150122,1555081692,1996064986,-1740746414,-1473132947,-1341970488,-1084653625,-958395405,-710438585,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,-2117940946,-1838011259,-1564481375,-1474664885,-1035236496,-949202525,-778901479,-694614492,-200395387,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,-2067236844,-1933114872,-1866530822,-1538233109,-1090935817,-965641998],algorithms={sha256:1};window.createSHA256=()=>new Hash;class Hash{constructor(){this.A=1779033703,this.B=-1150833019,this.C=1013904242,this.D=-1521486534,this.E=1359893119,this.F=-1694144372,this.G=528734635,this.H=1541459225,this._size=0,this._sp=0,(!sharedBuffer||sharedOffset>=8e3)&&(sharedBuffer=new ArrayBuffer(8e3),sharedOffset=0),this._byte=new Uint8Array(sharedBuffer,sharedOffset,80),this._word=new Int32Array(sharedBuffer,sharedOffset,20),sharedOffset+=80};update(t){if("string"==typeof t)return this._utf8(t);if(null==t)throw new TypeError("Invalid type: "+typeof t);const s=t.byteOffset,e=t.byteLength;let i=e/64|0,h=0;if(i&&!(3&s)&&!(this._size%64)){const e=new Int32Array(t.buffer,s,16*i);for(;i--;)this._int32(e,h>>2),h+=64;this._size+=h}if(1!==t.BYTES_PER_ELEMENT&&t.buffer){const i=new Uint8Array(t.buffer,s+h,e-h);return this._uint8(i)}return h===e?this:this._uint8(t,h)};_uint8(t,s){const{_byte:e,_word:i}=this,h=t.length;for(s|=0;s<h;){const r=this._size%64;let n=r;for(;s<h&&n<64;)e[n++]=t[s++];n>=64&&this._int32(i),this._size+=n-r}return this};_utf8(t){const{_byte:s,_word:e}=this,i=t.length;let h=this._sp;for(let r=0;r<i;){const n=this._size%64;let a=n;for(;r<i&&a<64;){let e=0|t.charCodeAt(r++);e<128?s[a++]=e:e<2048?(s[a++]=192|e>>>6,s[a++]=128|63&e):e<55296||e>57343?(s[a++]=224|e>>>12,s[a++]=128|e>>>6&63,s[a++]=128|63&e):h?(e=((1023&h)<<10)+(1023&e)+65536,s[a++]=240|e>>>18,s[a++]=128|e>>>12&63,s[a++]=128|e>>>6&63,s[a++]=128|63&e,h=0):h=e}a>=64&&(this._int32(e),e[0]=e[16]),this._size+=a-n}return this._sp=h,this};_int32(t,s){let{A:e,B:i,C:h,D:r,E:n,F:a,G:f,H:o}=this,_=0;for(s|=0;_<16;)W[_++]=swap32(t[s++]);for(_=16;_<64;_++)W[_]=gamma1(W[_-2])+W[_-7]+gamma0(W[_-15])+W[_-16]|0;for(_=0;_<64;_++){const t=o+sigma1(n)+ch(n,a,f)+K[_]+W[_]|0,s=sigma0(e)+maj(e,i,h)|0;o=f,f=a,a=n,n=r+t|0,r=h,h=i,i=e,e=t+s|0}this.A=e+this.A|0,this.B=i+this.B|0,this.C=h+this.C|0,this.D=r+this.D|0,this.E=n+this.E|0,this.F=a+this.F|0,this.G=f+this.G|0,this.H=o+this.H|0};digest(t){const{_byte:s,_word:e}=this;let i=this._size%64|0;for(s[i++]=128;3&i;)s[i++]=0;if(i>>=2,i>14){for(;i<16;)e[i++]=0;i=0,this._int32(e)}for(;i<16;)e[i++]=0;const h=8*this._size,r=(4294967295&h)>>>0,n=(h-r)/4294967296;return n&&(e[14]=swap32(n)),r&&(e[15]=swap32(r)),this._int32(e),"hex"===t?this._hex():this._bin()};_hex(){const{A:t,B:s,C:e,D:i,E:h,F:r,G:n,H:a}=this;return hex32(t)+hex32(s)+hex32(e)+hex32(i)+hex32(h)+hex32(r)+hex32(n)+hex32(a)};_bin(){const{A:t,B:s,C:e,D:i,E:h,F:r,G:n,H:a,_byte:f,_word:o}=this;return o[0]=swap32(t),o[1]=swap32(s),o[2]=swap32(e),o[3]=swap32(i),o[4]=swap32(h),o[5]=swap32(r),o[6]=swap32(n),o[7]=swap32(a),f.slice(0,32)}}const W=new Int32Array(64);let sharedBuffer,sharedOffset=0;const hex32=t=>(t+4294967296).toString(16).substr(-8),swapLE=t=>t<<24&4278190080|t<<8&16711680|t>>8&65280|t>>24&255,swapBE=t=>t,swap32=isBE()?swapBE:swapLE,ch=(t,s,e)=>e^t&(s^e),maj=(t,s,e)=>t&s|e&(t|s),sigma0=t=>(t>>>2|t<<30)^(t>>>13|t<<19)^(t>>>22|t<<10),sigma1=t=>(t>>>6|t<<26)^(t>>>11|t<<21)^(t>>>25|t<<7),gamma0=t=>(t>>>7|t<<25)^(t>>>18|t<<14)^t>>>3,gamma1=t=>(t>>>17|t<<15)^(t>>>19|t<<13)^t>>>10;function isBE(){return 254===new Uint8Array(new Uint16Array([65279]).buffer)[0]}}
     </script>
     <script>
         const stringToArray = string => {
@@ -3489,6 +3722,9 @@
                 "msgAbbr": " msgs.",
                 "slow": "Slow",
                 "fast": "Fast",
+                "COT": "Chain of Thought",
+                "thinking": "Thinking...",
+                "thinked": "Deeply thought",
                 "longReply": "Long reply",
                 "ttsService": "TTS API",
                 "sttService": "STT API",
@@ -3532,7 +3768,8 @@
                 "send": "Send",
                 "askTip": "Type message here",
                 "clearChat": "Clear chat",
-                "general": "General",
+                "models": "Models",
+                "ui": "UI",
                 "hotkey": "Hotkey",
                 "data": "Data",
                 "theme": "Theme",
@@ -3648,6 +3885,9 @@
                 "msgAbbr": "条",
                 "slow": "慢",
                 "fast": "快",
+                "COT": "思维链",
+                "thinking": "思考中...",
+                "thinked": "已深度思考",
                 "longReply": "长回复",
                 "ttsService": "语音合成服务",
                 "sttService": "语音识别服务",
@@ -3691,7 +3931,8 @@
                 "send": "发送",
                 "askTip": "来问点什么吧",
                 "clearChat": "清空会话",
-                "general": "通用",
+                "models": "模型",
+                "ui": "界面",
                 "hotkey": "快捷键",
                 "data": "数据",
                 "theme": "主题",
@@ -5017,7 +5258,7 @@
             if (openaiVoiceData) {
                 initVoiceSetting(openaiVoiceData);
             } else {
-                openaiVoiceData = [{ name: "alloy", displayName: "alloy" }, { name: "echo", displayName: "echo" }, { name: "fable", displayName: "fable" }, { name: "onyx", displayName: "onyx" }, { name: "nova", displayName: "nova" }, { name: "shimmer", displayName: "shimmer" }]
+                openaiVoiceData = [{ name: "alloy", displayName: "alloy" }, { name: "ash", displayName: "ash" }, { name: "coral", displayName: "coral" }, { name: "echo", displayName: "echo" }, { name: "fable", displayName: "fable" }, { name: "onyx", displayName: "onyx" }, { name: "nova", displayName: "nova" }, { name: "sage", displayName: "sage" }, { name: "shimmer", displayName: "shimmer" }]
                 initVoiceSetting(openaiVoiceData);
             }
         };
@@ -5462,8 +5703,8 @@
     <script crossorigin="anonymous"
         src="https://fastly.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
     <script crossorigin="anonymous"
-        src="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
-    <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+        src="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js"></script>
+    <script crossorigin="anonymous" src="https://fastly.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
     <script>
         const API_URL = "v1/chat/completions";
         const DeepSeek_API_URL = "chat/completions";
@@ -5478,21 +5719,25 @@
             "image": translations[locale]["imageText"]
         };
         let modelVersion; // 模型版本
-        let modelType; // 1:ChatGPT，2:DeepSeek，3:Gemini，4:Claude
+        let modelType; // 1:ChatGPT，2:DeepSeek， 3，Azure，4:Gemini，5:Claude
         let apiHost; // api反代地址
         let deepseekApiHost;
+        let azureAIApiHost;
         let geminiApiHost;
         let claudeApiHost;
         let apiSelects = []; // api地址列表
         let deepseekApiSelects = [];
+        let azureAIApiSelects = [];
         let geminiApiSelects = [];
         let claudeApiSelects = [];
         let customAPIKey; // 自定义apiKey
         let deepseekAPIKey;
+        let azureAIAPIKey;
         let geminiAPIKey;
         let claudeAPIKey;
         let customAPIModel; // 自定义apiModel
         let deepseekAPIModel;
+        let azureAIAPIModel;
         let geminiAPIModel;
         let claudeAPIModel;
         let systemRole; // 自定义系统角色
@@ -5501,6 +5746,7 @@
         let convWidth = []; // 会话宽度，0:窗口宽度，1:全屏宽度
         let textSpeed; // 打字机速度，越小越快
         let contLen; // 连续会话长度，默认25，对话包含25条上下文信息。设置为0即关闭连续会话
+        let enableCOT; // 是否输出思维链，默认开启。
         let enableLongReply; // 是否开启长回复，默认关闭，开启可能导致api费用增加。
         let longReplyFlag;
         let voiceIns; // Audio or SpeechSynthesisUtterance
@@ -5558,14 +5804,9 @@
             ele.offsetHeight;
             ele.style.display = null;
         }
-        const escapeTextarea = document.createElement("textarea");
-        const getEscape = str => {
-            escapeTextarea.textContent = str;
-            return escapeTextarea.innerHTML;
-        }
         const parser = new DOMParser();
         const getUnescape = html => {
-            return parser.parseFromString(html, 'text/html').body.innerText;
+            return parser.parseFromString(html, 'text/html').body.textContent;
         }
         const escapeRegexExp = (str) => { // from vscode src/vs/base/common/strings.ts escapeRegExpCharacters
             return str.replace(/[\\\{\}\*\+\?\|\^\$\.\[\]\(\)]/g, '\\$&');
@@ -5692,7 +5933,7 @@
                     loadingMermaid = true;
                     let script = document.createElement("script");
                     script.crossOrigin = "anonymous";
-                    script.src = "https://fastly.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js";
+                    script.src = "https://fastly.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js";
                     script.onload = async () => {
                         loadingMermaid = false;
                         mermaid.mermaidAPI.initialize({
@@ -5805,7 +6046,7 @@
                 '</div>',
             ];
             if (tokens[idx].type === "fence" && langFrag.indexOf(`text="mermaid"`) !== -1) {
-                let hash = "mermaid" + createHash().update(tokens[idx].content).digest("hex");
+                let hash = "mermaid" + createSHA1().update(tokens[idx].content).digest("hex");
                 if (mermaidMap[hash]) return originResult.replace("<pre>", `<pre>${tpls.join("")}`).replace("<pre>", `<div class="mermaid" id="${hash}" onclick="downloadSVG(this, event)">${mermaidMap[hash]}</div><pre>`);
                 loadRunMermaid(hash, tokens[idx].content, tokens.length - 1 > idx);
                 return originResult.replace("<pre>", `<pre>${tpls.join("")}`).replace("<pre>", `<div class="mermaid" id="${hash}" onclick="downloadSVG(this, event)"></div><pre>`)
@@ -5951,6 +6192,8 @@
                     ele.innerHTML = `<svg width="24" height="24"><use xlink:href="#aiIcon"></use></svg>`;
                 } else if (model.startsWith("deepseek")) {
                     ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#deepseekIcon"></use></svg>`;
+                } else if (model.startsWith("azure-")) {
+                    ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#azureAIIcon"></use></svg>`;
                 } else if (model.startsWith("gemini")) {
                     ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#geminiIcon"></use></svg>`;
                 } else {
@@ -6478,6 +6721,11 @@
                 }
             }
         }
+        const renderData = (dat) => {
+            let contentHTML = md.render(dat.content) || "<br />";
+            if (dat.reasoning_content) return `<div><div class="cotBtn endCot" data-i18n-key="thinked" onclick="toggleCot(this, event)">${translations[locale]["thinked"]}</div><div class="cotContent">${md.render(dat.reasoning_content)}</div></div><div>${contentHTML}</div>`;
+            else return contentHTML;
+        }
         const activeChat = (ele) => {
             data = chatsData[activeChatIdx]["data"];
             allListEle.querySelectorAll(".activeChatLi").forEach(ele => {
@@ -6508,7 +6756,7 @@
                     if (data[i].role === "user") {
                         createConvEle("request").children[1].textContent = data[i].content;
                     } else {
-                        createConvEle("response", true, data[i].model).children[1].innerHTML = md.render(data[i].content) || "<br />";
+                        createConvEle("response", true, data[i].model).children[1].innerHTML = renderData(data[i]);
                     }
                 }
             }
@@ -6748,7 +6996,7 @@
                 notyf.success(translations[locale]["clearChatSuccTip"]);
             }
         };
-        let localSetKeys = ['modelVersion', 'APISelect', 'DeepSeekAPISelect', 'GeminiAPISelect', 'ClaudeAPISelect', 'APIHost', 'DeepSeekAPIHost', 'GeminiAPIHost', 'ClaudeAPIHost', 'APIKey', 'DeepSeekAPIKey', 'GeminiAPIKey', 'ClaudeAPIKey', 'APIModel', 'DeepSeekAPIModel', 'GeminiAPIModel', 'ClaudeAPIModel', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'existRec', 'azureRecRegion', 'azureRecKey', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
+        let localSetKeys = ['modelVersion', 'APISelect', 'DeepSeekAPISelect', 'AzureAIAPISelect', 'GeminiAPISelect', 'ClaudeAPISelect', 'APIHost', 'DeepSeekAPIHost', 'AzureAIAPIHost', 'GeminiAPIHost', 'ClaudeAPIHost', 'APIKey', 'DeepSeekAPIKey', 'AzureAIAPIKey', 'GeminiAPIKey', 'ClaudeAPIKey', 'APIModel', 'DeepSeekAPIModel', 'AzureAIAPIModel', 'GeminiAPIModel', 'ClaudeAPIModel', 'hotKeys', 'userAvatar', 'system', 'temp', 'top_p', 'convWidth0', 'convWidth1', 'textSpeed', 'contLen', 'enableCOT', 'enableLongReply', 'existVoice', 'voiceTestText', 'azureRegion', 'azureKey', 'enableContVoice', 'enableAutoVoice', 'existRec', 'azureRecRegion', 'azureRecKey', 'voiceRecLang', 'autoVoiceSendWord', 'autoVoiceStopWord', 'autoVoiceSendOut', 'keepListenMic', 'fullWindow', 'themeMode', 'autoThemeMode', 'customDarkTime', 'UILang', 'pinNav', 'voice0', 'voicePitch0', 'voiceVolume0', 'voiceRate0', 'azureRole0', 'azureStyle0', 'voice1', 'voicePitch1', 'voiceVolume1', 'voiceRate1', 'azureRole1', 'azureStyle1', 'searchFlag'];
         document.getElementById("exportSet").onclick = () => {
             let data = {}
             for (let i = 0; i < localSetKeys.length; i++) {
@@ -6919,42 +7167,9 @@
         document.addEventListener("keydown", ctrlHotKeyEv);
         document.addEventListener("keydown", ctrlAltHotKeyEv);
         const initSetting = () => {
-            const modelsEle = Array.from(modelSetEle.children);
-            let localModelName = localStorage.getItem("modelVersion");
-            let isVailModel = modelsEle.some(item => item.dataset.value === localModelName)
-            modelVersion = isVailModel ? localModelName : "gpt-4o";
-            const applyModelVersion = () => {
-                let activedEle = modelSetEle.querySelector(".activeModel");
-                if (activedEle) activedEle.classList.remove("activeModel");
-                activedEle = modelSetEle.querySelector(`[data-value="${modelVersion}"]`);
-                activedEle.classList.add("activeModel");
-                modelVer.textContent = activedEle.dataset.ver;
-                if (modelVersion.startsWith("gpt") || modelVersion.startsWith("o")) {
-                    modelType = 1;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#aiIcon");
-                } else if (modelVersion.startsWith("deepseek")) {
-                    modelType = 2;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deepseekIcon");
-                } else if (modelVersion.startsWith("gemini")) {
-                    modelType = 3;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#geminiIcon");
-                } else {
-                    modelType = 4;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#claudeIcon");
-                }
-            };
-            applyModelVersion();
-            modelSetEle.onclick = (ev) => {
-                if (ev.target.classList.contains("modelSingle")) {
-                    modelVersion = ev.target.dataset.value;
-                    localStorage.setItem("modelVersion", modelVersion);
-                    applyModelVersion();
-                    modelSetEle.style.display = "none";
-                    selectorEle.classList.remove("showModels");
-                }
-            }
             const apiHostEle = document.getElementById("apiHostInput");
             const deepseekHostEle = document.getElementById("deepseekApiHostInput");
+            const azureAIHostEle = document.getElementById("azureAIApiHostInput");
             const geminiHostEle = document.getElementById("geminiApiHostInput");
             const claudeHostEle = document.getElementById("claudeApiHostInput");
             const apiSelectEle = document.getElementById("apiSelect");
@@ -6977,6 +7192,16 @@
                 }
             } else {
                 deepseekApiSelects.length = 0;
+            }
+            let localAzureAIApiSelect = localStorage.getItem("AzureAIAPISelect");
+            if (localAzureAIApiSelect) {
+                try {
+                    azureAIApiSelects = JSON.parse(localAzureAIApiSelect);
+                } catch (e) {
+                    azureAIApiSelects.length = 0;
+                }
+            } else {
+                azureAIApiSelects.length = 0;
             }
             let localGeminiApiSelect = localStorage.getItem("GeminiAPISelect");
             if (localGeminiApiSelect) {
@@ -7024,6 +7249,11 @@
                 initApiOption(deepseekApiHost);
                 localStorage.setItem("DeepSeekAPISelect", JSON.stringify(deepseekApiSelects));
             }
+            const appendAzureAIApiOption = () => {
+                azureAIApiSelects.push(azureAIApiHost);
+                initApiOption(azureAIApiHost);
+                localStorage.setItem("AzureAIAPISelect", JSON.stringify(azureAIApiSelects));
+            }
             const appendGeminiApiOption = () => {
                 geminiApiSelects.push(geminiApiHost);
                 initApiOption(geminiApiHost);
@@ -7061,7 +7291,7 @@
                     initApiOption(selApiSelects[i]);
                 }
             }
-            apiHostEle.onfocus = deepseekHostEle.onfocus = geminiHostEle.onfocus = claudeHostEle.onfocus = () => {
+            apiHostEle.onfocus = deepseekHostEle.onfocus = azureAIHostEle.onfocus = geminiHostEle.onfocus = claudeHostEle.onfocus = () => {
                 let type = document.querySelector(".modelSwitch").querySelector(".activeSwitch").dataset.id;
                 if (type === "gptOption") {
                     selApiSelects = apiSelects;
@@ -7071,6 +7301,10 @@
                     selApiSelects = deepseekApiSelects;
                     selApiKey = "DeepSeekAPISelect";
                     selApiEle = deepseekHostEle;
+                } else if (type === "azureAIOption") {
+                    selApiSelects = azureAIApiSelects;
+                    selApiKey = "AzureAIAPISelect";
+                    selApiEle = azureAIHostEle;
                 } else if (type === "geminiOption") {
                     selApiSelects = geminiApiSelects;
                     selApiKey = "GeminiAPISelect";
@@ -7083,7 +7317,7 @@
                 initApiSelectEle();
                 if (selApiSelects.length) apiSelectEle.style.display = "block";
             }
-            apiHostEle.onblur = deepseekHostEle.onblur = geminiHostEle.onblur = claudeHostEle.onblur = (ev) => {
+            apiHostEle.onblur = deepseekHostEle.onblur = azureAIHostEle.onblur = geminiHostEle.onblur = claudeHostEle.onblur = (ev) => {
                 if (!(ev.relatedTarget && apiSelectEle.contains(ev.relatedTarget))) apiSelectEle.style.display = "none";
             }
             let localApiHost = localStorage.getItem("APIHost");
@@ -7107,6 +7341,12 @@
             customAPIModel = modelEle.value = envAPIModel || localModel || modelEle.getAttribute("value") || "";
             modelEle.onchange = () => {
                 customAPIModel = modelEle.value;
+                if (customAPIModel !== "") {
+                    customGPTDOM.classList.remove("hide");
+                    customGPTDOM.lastChild.textContent = customGPTDOM.dataset.value = customGPTDOM.dataset.ver = customAPIModel;
+                } else {
+                    customGPTDOM.classList.add("hide");
+                }
                 localStorage.setItem("APIModel", customAPIModel);
             }
             modelEle.dispatchEvent(new Event("change"));
@@ -7132,9 +7372,49 @@
             deepseekAPIModel = deepseekModelEle.value = envDeepSeekAPIModel || localDeepSeekModel || deepseekModelEle.getAttribute("value") || "";
             deepseekModelEle.onchange = () => {
                 deepseekAPIModel = deepseekModelEle.value;
+                if (deepseekAPIModel !== "") {
+                    customDeepSeekDOM.classList.remove("hide");
+                    customDeepSeekDOM.lastChild.textContent = customDeepSeekDOM.dataset.value = customDeepSeekDOM.dataset.ver = deepseekAPIModel;
+                } else {
+                    customDeepSeekDOM.classList.add("hide");
+                }
                 localStorage.setItem("DeepSeekAPIModel", deepseekAPIModel);
             }
             deepseekModelEle.dispatchEvent(new Event("change"));
+
+            let localAzureAIApiHost = localStorage.getItem("AzureAIAPIHost");
+            azureAIApiHost = azureAIHostEle.value = envAzureAIAPIEndpoint || localAzureAIApiHost || azureAIHostEle.getAttribute("value") || "";
+            azureAIHostEle.onchange = () => {
+                azureAIApiHost = azureAIHostEle.value;
+                if (azureAIApiHost && azureAIApiSelects.indexOf(azureAIApiHost) === -1) appendAzureAIApiOption();
+                localStorage.setItem("AzureAIAPIHost", azureAIApiHost);
+            }
+            azureAIHostEle.dispatchEvent(new Event("change"));
+            const azureAIKeyEle = document.getElementById("azureAIKeyInput");
+            let localAzureAIKey = localStorage.getItem("AzureAIAPIKey");
+            azureAIAPIKey = azureAIKeyEle.value = envAzureAIAPIKey || localAzureAIKey || azureAIKeyEle.getAttribute("value") || "";
+            azureAIKeyEle.onchange = () => {
+                azureAIAPIKey = azureAIKeyEle.value;
+                localStorage.setItem("AzureAIAPIKey", azureAIAPIKey);
+            }
+            azureAIKeyEle.dispatchEvent(new Event("change"));
+            const azureAIModelEle = document.getElementById("azureAIModelInput");
+            let localAzureAIModel = localStorage.getItem("AzureAIAPIModel");
+            azureAIAPIModel = envAzureAIAPIModel || localAzureAIModel || azureAIModelEle.getAttribute("value") || "";
+            azureAIModelEle.value = azureAIAPIModel.slice(6);
+            azureAIModelEle.onchange = () => {
+                azureAIAPIModel = azureAIModelEle.value != "" ? "azure-" + azureAIModelEle.value : "";
+                if (azureAIModelEle.value !== "") {
+                    customAzureAIDOM.classList.remove("hide");
+                    customAzureAIDOM.lastChild.textContent = "Azure " + azureAIModelEle.value;
+                    customAzureAIDOM.dataset.ver = azureAIModelEle.value;
+                    customAzureAIDOM.dataset.value = azureAIAPIModel;
+                } else {
+                    customAzureAIDOM.classList.add("hide");
+                }
+                localStorage.setItem("AzureAIAPIModel", azureAIAPIModel);
+            }
+            azureAIModelEle.dispatchEvent(new Event("change"));
 
             let localGeminiApiHost = localStorage.getItem("GeminiAPIHost");
             geminiApiHost = geminiHostEle.value = envGeminiAPIEndpoint || localGeminiApiHost || geminiHostEle.getAttribute("value") || "";
@@ -7157,6 +7437,12 @@
             geminiAPIModel = geminiModelEle.value = envGeminiAPIModel || localGeminiModel || geminiModelEle.getAttribute("value") || "";
             geminiModelEle.onchange = () => {
                 geminiAPIModel = geminiModelEle.value;
+                if (geminiAPIModel !== "") {
+                    customGeminiDOM.classList.remove("hide");
+                    customGeminiDOM.lastChild.textContent = customGeminiDOM.dataset.value = customGeminiDOM.dataset.ver = geminiAPIModel;
+                } else {
+                    customGeminiDOM.classList.add("hide");
+                }
                 localStorage.setItem("GeminiAPIModel", geminiAPIModel);
             }
             geminiModelEle.dispatchEvent(new Event("change"));
@@ -7182,9 +7468,53 @@
             claudeAPIModel = claudeModelEle.value = envClaudeAPIModel || localClaudeModel || claudeModelEle.getAttribute("value") || "";
             claudeModelEle.onchange = () => {
                 claudeAPIModel = claudeModelEle.value;
+                if (claudeAPIModel !== "") {
+                    customClaudeDOM.classList.remove("hide");
+                    customClaudeDOM.lastChild.textContent = customClaudeDOM.dataset.value = customClaudeDOM.dataset.ver = claudeAPIModel;
+                } else {
+                    customClaudeDOM.classList.add("hide");
+                }
                 localStorage.setItem("ClaudeAPIModel", claudeAPIModel);
             }
             claudeModelEle.dispatchEvent(new Event("change"));
+
+            const modelsEle = Array.from(modelSetEle.children);
+            let localModelName = localStorage.getItem("modelVersion");
+            let isVailModel = modelsEle.some(item => item.dataset.value === localModelName)
+            modelVersion = isVailModel ? localModelName : "gpt-4o";
+            const applyModelVersion = () => {
+                let activedEle = modelSetEle.querySelector(".activeModel");
+                if (activedEle) activedEle.classList.remove("activeModel");
+                activedEle = modelSetEle.querySelector(`[data-value="${modelVersion}"]`);
+                activedEle.classList.add("activeModel");
+                modelVer.textContent = activedEle.dataset.ver;
+                if (modelVersion.startsWith("gpt") || modelVersion.startsWith("o")) {
+                    modelType = 1;
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#aiIcon");
+                } else if (modelVersion.startsWith("deepseek")) {
+                    modelType = 2;
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deepseekIcon");
+                } else if (modelVersion.startsWith("azure-")) {
+                    modelType = 3;
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#azureAIIcon");
+                } else if (modelVersion.startsWith("gemini")) {
+                    modelType = 4;
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#geminiIcon");
+                } else {
+                    modelType = 5;
+                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#claudeIcon");
+                }
+            };
+            applyModelVersion();
+            modelSetEle.onclick = (ev) => {
+                if (ev.target.classList.contains("modelSingle")) {
+                    modelVersion = ev.target.dataset.value;
+                    localStorage.setItem("modelVersion", modelVersion);
+                    applyModelVersion();
+                    modelSetEle.style.display = "none";
+                    selectorEle.classList.remove("showModels");
+                }
+            }
 
             const updateAvatar = () => {
                 setAvatarPre.src = userAvatar;
@@ -7318,6 +7648,14 @@
                 localStorage.setItem("contLength", contLenEle.value);
             }
             contLenEle.dispatchEvent(new Event("input"));
+            const cotEle = document.getElementById("enableCOT");
+            let localCOT = localStorage.getItem("enableCOT");
+            cotEle.checked = enableCOT = (localCOT || cotEle.getAttribute("checked")) === "true";
+            cotEle.onchange = () => {
+                enableCOT = cotEle.checked;
+                localStorage.setItem("enableCOT", enableCOT);
+            }
+            cotEle.dispatchEvent(new Event("change"));
             const longEle = document.getElementById("enableLongReply");
             let localLong = localStorage.getItem("enableLongReply");
             longEle.checked = enableLongReply = (localLong || longEle.getAttribute("checked")) === "true";
@@ -7519,7 +7857,6 @@
             let fmtVolume = (volume >= 1 ? "+" : "") + (volume * 100 - 100) + "%";
             let fmtRate = (rate >= 1 ? "+" : "") + (rate * 100 - 100) + "%";
             let fmtPitch = (pitch >= 1 ? "+" : "") + (pitch - 1) + "Hz";
-            msg = getEscape(msg);
             if (existVoice === 3) {
                 let fmtStyle = style ? ` style="${style}"` : ` style="Default"`;
                 let fmtRole = role ? ` role="${role}"` : "";
@@ -7532,7 +7869,20 @@
         const getAzureWSURL = () => {
             return `wss://${azureRegion}.tts.speech.microsoft.com/cognitiveservices/websocket/v1?Ocp-Apim-Subscription-Key=${azureKey}`
         }
-        const edgeTTSURL = "wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4";
+        let edgeTTSURLTmp = "";
+        const WIN_EPOCH = 11644473600;
+        const TRUSTED_CLIENT_TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
+        const getEdgeTTSURL = () => {
+            if (edgeTTSURLTmp) return edgeTTSURLTmp;
+            let currentUnix = Math.floor(Date.now() / 1e3);
+            let ticks = currentUnix + WIN_EPOCH;
+            let timeOut = ticks % 300;
+            setTimeout(() => { edgeTTSURLTmp = "" }, (300 - timeOut) * 1e3);
+            ticks = ticks - timeOut + "0000000";
+            let secMsGec = createSHA256().update(ticks + TRUSTED_CLIENT_TOKEN).digest("hex").toUpperCase();
+            edgeTTSURLTmp = `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${TRUSTED_CLIENT_TOKEN}&Sec-MS-GEC=${secMsGec}&Sec-MS-GEC-Version=1-133.0.3065.51`;
+            return edgeTTSURLTmp;
+        }
         const resetSpeakIcon = () => {
             if (currentVoiceIdx !== void 0) {
                 chatlog.children[systemRole ? currentVoiceIdx - 1 : currentVoiceIdx].classList.remove("showVoiceCls");
@@ -7601,7 +7951,7 @@
         }
         const initSocket = () => {
             return new Promise((res, rej) => {
-                let url = existVoice === 3 ? getAzureWSURL() : edgeTTSURL;
+                let url = existVoice === 3 ? getAzureWSURL() : getEdgeTTSURL();
                 if (!voiceSocket || voiceSocket.readyState > 1 || voiceSocket.url !== url) {
                     if (voiceSocket && voiceSocket.readyState === 1) voiceSocket.close(1000);
                     voiceSocket = new WebSocket(url);
@@ -7643,7 +7993,7 @@
         }
         const initDownSocket = () => {
             return new Promise((res, rej) => {
-                let url = existVoice === 3 ? getAzureWSURL() : edgeTTSURL;
+                let url = existVoice === 3 ? getAzureWSURL() : getEdgeTTSURL();
                 if (!downSocket || downSocket.readyState > 1 || downSocket.url !== url) {
                     if (downSocket && downSocket.readyState === 1) downSocket.close(1000);
                     downSocket = new WebSocket(url);
@@ -7831,7 +8181,7 @@
                 return;
             }
             let type = data[idx].role === "user" ? 0 : 1;
-            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].innerText.trim();
+            let content = data[idx].reasoning_content ? chatlog.children[systemRole ? idx - 1 : idx].children[1].lastChild.textContent.trim() : chatlog.children[systemRole ? idx - 1 : idx].children[1].textContent.trim();
             let rate = voiceRate[type];
             if (existVoice === 4) {
                 let voice = voiceRole[type].name;
@@ -7917,10 +8267,11 @@
                 else { return endSpeak() }
             };
             let type = data[idx].role === "user" ? 0 : 1;
-            chatlog.children[systemRole ? idx - 1 : idx].classList.add("showVoiceCls");
-            let voiceIconEle = chatlog.children[systemRole ? idx - 1 : idx].lastChild.lastChild;
+            let dom = chatlog.children[systemRole ? idx - 1 : idx];
+            dom.classList.add("showVoiceCls");
+            let voiceIconEle = dom.lastChild.lastChild;
             voiceIconEle.className = "voiceCls pauseVoice";
-            let content = chatlog.children[systemRole ? idx - 1 : idx].children[1].innerText.trim();
+            let content = data[idx].reasoning_content ? dom.children[1].lastChild.textContent.trim() : dom.children[1].textContent.trim();
             let volume = voiceVolume[type];
             let rate = voiceRate[type];
             let pitch = voicePitch[type];
@@ -8107,7 +8458,7 @@
                     autoDirectAddQuene(voiceContentQuene.length - 1);
                     voiceIns.onended = voiceIns.onerror = () => { autoPlayNext() };
                 } else {
-                    let url = existVoice === 3 ? getAzureWSURL() : edgeTTSURL;
+                    let url = existVoice === 3 ? getAzureWSURL() : getEdgeTTSURL();
                     if (!autoVoiceSocket || autoVoiceSocket.readyState > 1 || autoVoiceSocket.url !== url) {
                         if (autoVoiceSocket && autoVoiceSocket.readyState === 1) autoVoiceSocket.close(1000);
                         autoVoiceSocket = new WebSocket(url);
@@ -8238,15 +8589,26 @@
             }
             return -1;
         };
+        const toggleCot = (dom) => {
+            dom.classList.toggle("down");
+            dom.nextElementSibling.classList.toggle("hide");
+        };
+        const endCot = (dom) => {
+            dom.classList.add("endCot");
+            dom.setAttribute("data-i18n-key", "thinked");
+            dom.textContent = translations[locale]["thinked"];
+        };
         let currentModelName;
-        const getModelName = () => { return (modelType === 1 ? customAPIModel : modelType === 2 ? deepseekAPIModel : modelType === 3 ? geminiAPIModel : claudeAPIModel) || modelVersion };
         let autoVoiceIdx = 0;
         let autoVoiceDataIdx;
         let refreshIdx;
         let currentResEle;
+        let cotData = "";
+        let loadingCOT = 0;
+        let unexpectedCutOff = "";
         let progressData = "";
         const streamGen = async (long) => {
-            currentModelName = getModelName();
+            currentModelName = modelVersion;
             controller = new AbortController();
             controllerId = setTimeout(() => {
                 notyf.error(translations[locale]["timeoutTip"]);
@@ -8315,6 +8677,20 @@
                     });
                 } else if (modelType === 3) {
                     dataSlice = dataSlice.map(item => {
+                        if (item.role === "assistant") return { role: item.role, content: item.content };
+                        else return item;
+                    })
+                    url = azureAIApiHost;
+                    if (azureAIAPIKey) headers["Api-Key"] = azureAIAPIKey;
+                    body = JSON.stringify({
+                        messages: dataSlice,
+                        model: currentModelName.slice(6),
+                        stream: true,
+                        temperature: roleTemp,
+                        top_p: roleNature
+                    });
+                } else if (modelType === 4) {
+                    dataSlice = dataSlice.map(item => {
                         return { role: item.role === "assistant" ? "model" : "user", parts: [{ text: item.content }] };
                     })
                     url = geminiApiHost + ((geminiApiHost.length && !geminiApiHost.endsWith("/")) ? "/" : "") + Gemini_API_URL + currentModelName + `:streamGenerateContent?alt=sse&key=${geminiAPIKey}`;
@@ -8371,14 +8747,20 @@
                     return;
                 }
                 let container = document.createElement("div");
+                let cotBody;
+                let mdBody = currentResEle.children[1];
                 const decoder = new TextDecoder();
                 const reader = res.body.getReader();
                 let readChunk;
-                if (modelType === 1 || modelType === 2) {
+                if (modelType <= 3) {
                     readChunk = async () => {
                         return reader.read().then(async ({ value, done }) => {
                             if (!done) {
                                 value = decoder.decode(value);
+                                if (unexpectedCutOff) {
+                                    value += unexpectedCutOff;
+                                    unexpectedCutOff = "";
+                                };
                                 let chunks = value.match(/[^\n]+/g);
                                 if (!chunks) return readChunk();
                                 let payload;
@@ -8388,7 +8770,8 @@
                                         try {
                                             payload = JSON.parse(chunk.slice(5));
                                         } catch (e) {
-                                            break;
+                                            if (chunk.startsWith("data:")) unexpectedCutOff = chunk;
+                                            continue;
                                         }
                                         if (!payload.choices.length) continue;
                                         if (payload.choices[0].finish_reason) {
@@ -8403,13 +8786,70 @@
                                             }
                                             break;
                                         } else {
+                                            if (enableCOT && payload.choices[0].delta.reasoning_content != null) {
+                                                loadingCOT = 1;
+                                                if (cotBody == void 0) {
+                                                    cotBody = document.createElement("div");
+                                                    cotBody.innerHTML = `<div class="cotBtn" data-i18n-key="thinking" onclick="toggleCot(this, event)"></div><div class="cotContent"></div>`
+                                                    mdBody.innerHTML = "";
+                                                    mdBody.appendChild(cotBody);
+                                                    cotBody.firstChild.textContent = translations[locale]["thinking"];
+                                                    let newMdBody = document.createElement("div");
+                                                    mdBody.appendChild(newMdBody);
+                                                    mdBody = newMdBody;
+                                                }
+                                                cotData += payload.choices[0].delta.reasoning_content;
+                                                container.innerHTML = md.render(cotData);
+                                                if (container.children.length > 1 && cotBody.lastChild.children.length === container.children.length) {
+                                                    morphdom(cotBody.lastChild.lastElementChild, container.lastElementChild);
+                                                } else {
+                                                    morphdom(cotBody.lastChild, container, { childrenOnly: true });
+                                                }
+                                                scrollToBottom();
+                                            }
                                             let content = payload.choices[0].delta.content;
-                                            if (content) {
-                                                if (!progressData && !content.trim()) continue;
+                                            if (content != null && content !== "") {
+                                                if (loadingCOT == 1 && cotData) {
+                                                    loadingCOT = 0;
+                                                    endCot(cotBody.firstChild);
+                                                }
+                                                if (content === "<think>") {
+                                                    loadingCOT = 2;
+                                                    if (!enableCOT) continue;
+                                                    if (cotBody == void 0) {
+                                                        cotBody = document.createElement("div");
+                                                        cotBody.innerHTML = `<div class="cotBtn" data-i18n-key="thinking" onclick="toggleCot(this, event)"></div><div class="cotContent"></div>`
+                                                        mdBody.innerHTML = "";
+                                                        mdBody.appendChild(cotBody);
+                                                        cotBody.firstChild.textContent = translations[locale]["thinking"];
+                                                        let newMdBody = document.createElement("div");
+                                                        mdBody.appendChild(newMdBody);
+                                                        mdBody = newMdBody;
+                                                    }
+                                                    continue;
+                                                }
+                                                if (content === "</think>") {
+                                                    loadingCOT = 0;
+                                                    if (!enableCOT) continue;
+                                                    endCot(cotBody.firstChild);
+                                                    continue;
+                                                }
+                                                if (loadingCOT === 2) {
+                                                    if (!enableCOT) continue;
+                                                    cotData += content;
+                                                    container.innerHTML = md.render(cotData);
+                                                    if (container.children.length > 1 && cotBody.lastChild.children.length === container.children.length) {
+                                                        morphdom(cotBody.lastChild.lastElementChild, container.lastElementChild);
+                                                    } else {
+                                                        morphdom(cotBody.lastChild, container, { childrenOnly: true });
+                                                    }
+                                                    scrollToBottom();
+                                                    continue;
+                                                }
                                                 if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
-                                                    let spliter = content.match(/\.|\?|!|~|。|？|！|\n/);
-                                                    if (spliter) {
-                                                        let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
+                                                    let spliter = findLastSpecialCharIndex(content);
+                                                    if (spliter != -1) {
+                                                        let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter + 1);
                                                         autoVoiceIdx += voiceText.length;
                                                         autoSpeechEvent(voiceText, currentResEle);
                                                     }
@@ -8417,10 +8857,10 @@
                                                 if (progressData && textSpeed) await delay();
                                                 progressData += content;
                                                 container.innerHTML = md.render(progressData);
-                                                if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
-                                                    morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
+                                                if (container.children.length > 1 && mdBody.children.length === container.children.length) {
+                                                    morphdom(mdBody.lastElementChild, container.lastElementChild);
                                                 } else {
-                                                    morphdom(currentResEle.children[1], container, { childrenOnly: true });
+                                                    morphdom(mdBody, container, { childrenOnly: true });
                                                 }
                                                 scrollToBottom();
                                             }
@@ -8432,72 +8872,88 @@
                                 if (isRefresh) {
                                     data[refreshIdx].content = progressData;
                                     data[refreshIdx].model = currentModelName;
+                                    if (cotData) data[refreshIdx].reasoning_content = cotData;
+                                    else delete data[refreshIdx].reasoning_content;
                                 } else {
-                                    if (long) { data[data.length - 1].content = progressData }
-                                    else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
+                                    if (long) {
+                                        data[data.length - 1].content = progressData;
+                                        if (cotData) data[data.length - 1].reasoning_content = cotData;
+                                        else delete data[data.length - 1].reasoning_content;
+                                    } else {
+                                        let dat = { role: "assistant", content: progressData, model: currentModelName };
+                                        if (cotData) dat.reasoning_content = cotData;
+                                        data.push(dat);
+                                    }
                                 }
                                 if (longReplyFlag) return streamGen(true);
                                 stopLoading(false);
                             }
                         });
                     };
-                } else if (modelType === 3) {
-                    let stop_reason;
-                    let endGeminiFunc = () => {
-                        let lenStop = stop_reason === "MAX_TOKENS";
-                        longReplyFlag = enableLongReply && lenStop;
-                        let ele = currentResEle.lastChild.children[0].children[0];
-                        if (!enableLongReply && lenStop) { ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"] }
-                        else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
-                        if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
-                            let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
-                            autoSpeechEvent(voiceText, currentResEle, false, stop);
-                        }
-                    };
+                } else if (modelType === 4) {
                     readChunk = async () => {
                         return reader.read().then(async ({ value, done }) => {
                             if (!done) {
                                 value = decoder.decode(value);
+                                let chunks = value.match(/[^\r\n]+/g);
+                                if (!chunks) return readChunk();
                                 let payload;
-                                try {
-                                    let startIdx = value.indexOf("{");
-                                    let endIdx = value.lastIndexOf("}");
-                                    payload = JSON.parse(value.slice(startIdx, endIdx + 1));
-                                } catch (e) {
-                                    if (value === "]") endGeminiFunc();
-                                    return readChunk();
-                                }
-                                let content = payload.candidates[0].content.parts[0].text;
-                                if (content) {
-                                    if (!progressData && !content.trim()) return readChunk();
-                                    if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
-                                        let spliter = findLastSpecialCharIndex(content);
-                                        if (spliter != -1) {
-                                            let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter + 1);
-                                            autoVoiceIdx += voiceText.length;
-                                            autoSpeechEvent(voiceText, currentResEle);
+                                for (let i = 0; i < chunks.length; i++) {
+                                    let chunk = chunks[i];
+                                    if (chunk) {
+                                        try {
+                                            payload = JSON.parse(chunk.slice(5));
+                                        } catch (e) {
+                                            break;
+                                        }
+                                        if (!payload.candidates.length) continue;
+                                        let content = payload.candidates[0].content.parts[0].text;
+                                        if (content != null && content !== "") {
+                                            if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                                let spliter = findLastSpecialCharIndex(content);
+                                                if (spliter != -1) {
+                                                    let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter + 1);
+                                                    autoVoiceIdx += voiceText.length;
+                                                    autoSpeechEvent(voiceText, currentResEle);
+                                                }
+                                            }
+                                            if (progressData && textSpeed) await delay();
+                                            progressData += content;
+                                            container.innerHTML = md.render(progressData);
+                                            if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
+                                                morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
+                                            } else {
+                                                morphdom(currentResEle.children[1], container, { childrenOnly: true });
+                                            }
+                                            scrollToBottom();
+                                        }
+                                        if (payload.candidates[0].finishReason) {
+                                            let lenStop = payload.candidates[0].finishReason === "MAX_TOKENS";
+                                            longReplyFlag = enableLongReply && lenStop;
+                                            let ele = currentResEle.lastChild.children[0].children[0];
+                                            if (!enableLongReply && lenStop) { ele.className = "halfRefReq optionItem"; ele.title = translations[locale]["continue"] }
+                                            else { ele.className = "refreshReq optionItem"; ele.title = translations[locale]["refresh"] };
+                                            if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
+                                                let voiceText = longReplyFlag ? "" : progressData.slice(autoVoiceIdx), stop = !longReplyFlag;
+                                                autoSpeechEvent(voiceText, currentResEle, false, stop);
+                                            }
+                                            break;
                                         }
                                     }
-                                    if (progressData && textSpeed) await delay();
-                                    progressData += content;
-                                    container.innerHTML = md.render(progressData);
-                                    if (container.children.length > 1 && currentResEle.children[1].children.length === container.children.length) {
-                                        morphdom(currentResEle.children[1].lastElementChild, container.lastElementChild);
-                                    } else {
-                                        morphdom(currentResEle.children[1], container, { childrenOnly: true });
-                                    }
-                                    scrollToBottom();
-                                    stop_reason = payload.candidates[0].finishReason;
-                                    if (value[value.length - 1] === "]") endGeminiFunc();
                                 }
                                 return readChunk();
                             } else {
                                 if (isRefresh) {
                                     data[refreshIdx].content = progressData;
                                     data[refreshIdx].model = currentModelName;
+                                    if (cotData) data[refreshIdx].reasoning_content = cotData;
+                                    else delete data[refreshIdx].reasoning_content;
                                 } else {
-                                    if (long) { data[data.length - 1].content = progressData }
-                                    else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
+                                    if (long) {
+                                        data[data.length - 1].content = progressData
+                                        if (cotData) data[data.length - 1].reasoning_content = cotData;
+                                        else delete data[data.length - 1].reasoning_content;
+                                    } else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
                                 }
                                 if (longReplyFlag) return streamGen(true);
                                 stopLoading(false);
@@ -8540,12 +8996,11 @@
                                         } else if (event === "content_block_delta") {
                                             if (payload.delta.type !== "text_delta") continue;
                                             let content = payload.delta.text;
-                                            if (content) {
-                                                if (!progressData && !content.trim()) continue;
+                                            if (content != null && content !== "") {
                                                 if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx) {
-                                                    let spliter = content.match(/\.|\?|!|~|。|？|！|\n/);
-                                                    if (spliter) {
-                                                        let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter.index + 1);
+                                                    let spliter = findLastSpecialCharIndex(content);
+                                                    if (spliter != -1) {
+                                                        let voiceText = progressData.slice(autoVoiceIdx) + content.slice(0, spliter + 1);
                                                         autoVoiceIdx += voiceText.length;
                                                         autoSpeechEvent(voiceText, currentResEle);
                                                     }
@@ -8568,8 +9023,14 @@
                                 if (isRefresh) {
                                     data[refreshIdx].content = progressData;
                                     data[refreshIdx].model = currentModelName;
+                                    if (cotData) data[refreshIdx].reasoning_content = cotData;
+                                    else delete data[refreshIdx].reasoning_content;
                                 } else {
-                                    if (long) { data[data.length - 1].content = progressData }
+                                    if (long) {
+                                        data[data.length - 1].content = progressData
+                                        if (cotData) data[data.length - 1].reasoning_content = cotData;
+                                        else delete data[data.length - 1].reasoning_content;
+                                    }
                                     else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
                                 }
                                 if (longReplyFlag) return streamGen(true);
@@ -8610,12 +9071,20 @@
                 if (refreshIdx !== void 0) {
                     data[refreshIdx].content = progressData;
                     data[refreshIdx].model = currentModelName;
+                    if (cotData) data[refreshIdx].reasoning_content = cotData;
+                    else delete data[refreshIdx].reasoning_content;
                 }
                 else if (data[data.length - 1].role === "assistant") {
                     data[data.length - 1].content = progressData;
                     data[data.length - 1].model = currentModelName;
+                    if (cotData) data[data.length - 1].reasoning_content = cotData;
+                    else delete data[data.length - 1].reasoning_content;
                 }
-                else { data.push({ role: "assistant", content: progressData, model: currentModelName }) }
+                else {
+                    let dat = { role: "assistant", content: progressData, model: currentModelName };
+                    if (cotData) dat.reasoning_content = cotData;
+                    data.push(dat);
+                }
                 if (existVoice && enableAutoVoice && currentVoiceIdx === autoVoiceDataIdx && progressData.length) {
                     let voiceText = progressData.slice(autoVoiceIdx);
                     autoSpeechEvent(voiceText, currentResEle, false, true);
@@ -8628,6 +9097,9 @@
             currentResEle.dataset.loading = false;
             currentResEle = null;
             progressData = "";
+            cotData = "";
+            loadingCOT = 0;
+            unexpectedCutOff = "";
             loadAction(false);
         };
         const generateText = (message) => {
@@ -8713,7 +9185,7 @@
             }
         }
     </script>
-    <link crossorigin="anonymous" href="https://fastly.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+    <link crossorigin="anonymous" href="https://fastly.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
         rel="stylesheet">
     <script defer>
         let downRoleController = new AbortController();
