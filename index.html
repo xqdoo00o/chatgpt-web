@@ -17,7 +17,7 @@
     <title>ChatGPT</title>
     <style>
         .requestBody,
-        .response .markdown-body {
+        .response .responseBody {
             max-width: calc(100% - 84px);
         }
 
@@ -321,7 +321,7 @@
         }
 
         .messages::-webkit-scrollbar,
-        #chatlog .markdown-body pre>code::-webkit-scrollbar,
+        #chatlog .responseBody pre>code::-webkit-scrollbar,
         #setDialog::-webkit-scrollbar,
         .allList::-webkit-scrollbar,
         .sysDetail::-webkit-scrollbar,
@@ -331,7 +331,7 @@
         }
 
         .messages::-webkit-scrollbar-track,
-        #chatlog .markdown-body pre>code::-webkit-scrollbar-track,
+        #chatlog .responseBody pre>code::-webkit-scrollbar-track,
         #setDialog::-webkit-scrollbar-track,
         .allList::-webkit-scrollbar-track,
         .sysDetail::-webkit-scrollbar-track,
@@ -342,7 +342,7 @@
         }
 
         .messages::-webkit-scrollbar-corner,
-        #chatlog .markdown-body pre>code::-webkit-scrollbar-corner,
+        #chatlog .responseBody pre>code::-webkit-scrollbar-corner,
         #setDialog::-webkit-scrollbar-corner,
         .allList::-webkit-scrollbar-corner,
         .sysDetail::-webkit-scrollbar-corner,
@@ -351,7 +351,7 @@
         }
 
         .messages::-webkit-scrollbar-thumb,
-        #chatlog .markdown-body pre>code::-webkit-scrollbar-thumb,
+        #chatlog .responseBody pre>code::-webkit-scrollbar-thumb,
         #setDialog::-webkit-scrollbar-thumb,
         .allList::-webkit-scrollbar-thumb,
         .sysDetail::-webkit-scrollbar-thumb,
@@ -363,7 +363,7 @@
         }
 
         .messages::-webkit-scrollbar-thumb:hover,
-        #chatlog .markdown-body pre>code::-webkit-scrollbar-thumb:hover,
+        #chatlog .responseBody pre>code::-webkit-scrollbar-thumb:hover,
         #setDialog::-webkit-scrollbar-thumb:hover,
         .allList::-webkit-scrollbar-thumb:hover,
         .sysDetail::-webkit-scrollbar-thumb:hover,
@@ -426,9 +426,12 @@
             justify-content: center;
         }
 
-        .response .markdown-body {
+        .response .responseBody {
             margin: 18px 0;
             flex: 1;
+        }
+
+        .response .markdown-body {
             background: var(--response-color) !important;
         }
 
@@ -2164,7 +2167,7 @@
             }
         }
 
-        .response[data-loading="true"]>.markdown-body>*:not(.cursorCls) {
+        .response[data-loading="true"]>.responseBody>*:not(.cursorCls) {
             animation: textInOut 0.48s ease-in-out forwards;
         }
 
@@ -2213,6 +2216,10 @@
             padding-left: 12px;
             font-size: 14px;
             color: var(--svg-color);
+        }
+
+        .cotContent>:last-child{
+            margin-bottom: 12px !important;
         }
 
         .hide {
@@ -2564,11 +2571,7 @@
                 <circle fill="currentColor" cx="12" cy="12" r="3.5"></circle>
             </symbol>
             <symbol viewBox="0 0 24 24" id="uiIcon">
-                <g fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path
-                        d="M2 9c0-2.828 0-4.243.879-5.121C3.757 3 5.172 3 8 3h8c2.828 0 4.243 0 5.121.879C22 4.757 22 6.172 22 9v1c0 2.828 0 4.243-.879 5.121C20.243 16 18.828 16 16 16H8c-2.828 0-4.243 0-5.121-.879C2 14.243 2 12.828 2 10z" />
-                    <path stroke-linecap="round" d="M12 19v-2.5m0 2.5l6 2m-6-2l-6 2" />
-                </g>
+                <path fill="currentColor" d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-7v2h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2H4a2 2 0 0 1-2-2zm18 11V5H4v11z"/>
             </symbol>
             <symbol viewBox="0 0 24 24" id="importSetIcon">
                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -6206,7 +6209,7 @@
             ele.appendChild(avatar);
             formatAvatarEle(avatar, model);
             let realMd = document.createElement("div");
-            realMd.className = ele.className === "request" ? "requestBody" : "markdown-body";
+            realMd.className = ele.className === "request" ? "requestBody" : "responseBody markdown-body";
             ele.appendChild(realMd);
             let mdOption = document.createElement("div");
             mdOption.className = "mdOption";
@@ -6723,7 +6726,7 @@
         }
         const renderData = (dat) => {
             let contentHTML = md.render(dat.content) || "<br />";
-            if (dat.reasoning_content) return `<div><div class="cotBtn endCot" data-i18n-key="thinked" onclick="toggleCot(this, event)">${translations[locale]["thinked"]}</div><div class="cotContent">${md.render(dat.reasoning_content)}</div></div><div>${contentHTML}</div>`;
+            if (dat.reasoning_content) return `<div><div class="cotBtn endCot" data-i18n-key="thinked" onclick="toggleCot(this, event)">${translations[locale]["thinked"]}</div><div class="cotContent">${md.render(dat.reasoning_content)}</div></div><div class="markdown-body">${contentHTML}</div>`;
             else return contentHTML;
         }
         const activeChat = (ele) => {
@@ -7593,7 +7596,7 @@
                 styleSheet.deleteRule(0);
                 styleSheet.deleteRule(0);
                 styleSheet.insertRule(`.bottom_wrapper{max-width:${convWidth[type]}%;}`, 0);
-                styleSheet.insertRule(`.requestBody,.response .markdown-body{max-width:calc(${convWidth[type]}% - 84px);}`, 0);
+                styleSheet.insertRule(`.requestBody,.response .responseBody{max-width:calc(${convWidth[type]}% - 84px);}`, 0);
             }
             const setConvValue = () => {
                 let type = isFull ? 1 : 0;
@@ -8795,6 +8798,7 @@
                                                     mdBody.appendChild(cotBody);
                                                     cotBody.firstChild.textContent = translations[locale]["thinking"];
                                                     let newMdBody = document.createElement("div");
+                                                    newMdBody.classList.add("markdown-body");
                                                     mdBody.appendChild(newMdBody);
                                                     mdBody = newMdBody;
                                                 }
@@ -8823,6 +8827,7 @@
                                                         mdBody.appendChild(cotBody);
                                                         cotBody.firstChild.textContent = translations[locale]["thinking"];
                                                         let newMdBody = document.createElement("div");
+                                                        newMdBody.classList.add("markdown-body");
                                                         mdBody.appendChild(newMdBody);
                                                         mdBody = newMdBody;
                                                     }
