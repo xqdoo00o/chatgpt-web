@@ -2218,7 +2218,7 @@
             color: var(--svg-color);
         }
 
-        .cotContent>:last-child{
+        .cotContent>:last-child {
             margin-bottom: 12px !important;
         }
 
@@ -2571,7 +2571,8 @@
                 <circle fill="currentColor" cx="12" cy="12" r="3.5"></circle>
             </symbol>
             <symbol viewBox="0 0 24 24" id="uiIcon">
-                <path fill="currentColor" d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-7v2h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2H4a2 2 0 0 1-2-2zm18 11V5H4v11z"/>
+                <path fill="currentColor"
+                    d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-7v2h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2H4a2 2 0 0 1-2-2zm18 11V5H4v11z" />
             </symbol>
             <symbol viewBox="0 0 24 24" id="importSetIcon">
                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -2721,7 +2722,7 @@
                     </button>
                 </div>
                 <div id="modelDialog" style="display:none;">
-                    <div class="modelSingle" data-value="gpt-4o" data-ver="4o">
+                    <div class="modelSingle" data-value="gpt-4o" data-type="1" data-ver="4o">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
                                 <use xlink:href="#aiIcon"></use>
@@ -2729,7 +2730,7 @@
                         </div>
                         <div>GPT-4o</div>
                     </div>
-                    <div class="modelSingle" data-value="gpt-4o-mini" data-ver="4o mini">
+                    <div class="modelSingle" data-value="gpt-4o-mini" data-type="1" data-ver="4o mini">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
                                 <use xlink:href="#aiIcon"></use>
@@ -2737,7 +2738,7 @@
                         </div>
                         <div>GPT-4o-mini</div>
                     </div>
-                    <div class="modelSingle" data-value="o1" data-ver="o1">
+                    <div class="modelSingle" data-value="o1" data-type="1" data-ver="o1">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
                                 <use xlink:href="#aiIcon"></use>
@@ -2745,7 +2746,7 @@
                         </div>
                         <div>o1</div>
                     </div>
-                    <div class="modelSingle" data-value="o3" data-ver="o3 mini">
+                    <div class="modelSingle" data-value="o3" data-type="1" data-ver="o3 mini">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
                                 <use xlink:href="#aiIcon"></use>
@@ -2753,7 +2754,7 @@
                         </div>
                         <div>o3-mini</div>
                     </div>
-                    <div class="modelSingle hide" id="customGPTDOM" data-value="" data-ver="">
+                    <div class="modelSingle hide" id="customGPTDOM" data-type="1" data-value="" data-ver="">
                         <div class="modelAvatar gptAvatar">
                             <svg width="24" height="24">
                                 <use xlink:href="#aiIcon"></use>
@@ -2761,31 +2762,31 @@
                         </div>
                         <div></div>
                     </div>
-                    <div class="modelSingle" data-value="deepseek-chat" data-ver="Chat">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
+                    <div class="modelSingle" data-value="deepseek-chat" data-type="2" data-ver="Chat">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
                                 <use xlink:href="#deepseekIcon"></use>
                             </svg>
                         </div>
                         <div>DeepSeek Chat</div>
                     </div>
-                    <div class="modelSingle" data-value="deepseek-reasoner" data-ver="Reasoner">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
+                    <div class="modelSingle" data-value="deepseek-reasoner" data-type="2" data-ver="Reasoner">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
                                 <use xlink:href="#deepseekIcon"></use>
                             </svg>
                         </div>
                         <div>DeepSeek Reasoner</div>
                     </div>
-                    <div class="modelSingle hide" id="customDeepSeekDOM" data-value="" data-ver="">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
+                    <div class="modelSingle hide" id="customDeepSeekDOM" data-type="2" data-value="" data-ver="">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
                                 <use xlink:href="#deepseekIcon"></use>
                             </svg>
                         </div>
                         <div></div>
                     </div>
-                    <div class="modelSingle" data-value="azure-gpt-4o" data-ver="4o">
+                    <div class="modelSingle" data-value="azure|gpt-4o" data-type="3" data-ver="4o">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#azureAIIcon"></use>
@@ -2793,15 +2794,15 @@
                         </div>
                         <div>Azure gpt-4o</div>
                     </div>
-                    <div class="modelSingle hide" id="customAzureAIDOM" data-value="" data-ver="">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
+                    <div class="modelSingle hide" id="customAzureAIDOM" data-type="3" data-value="" data-ver="">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
                                 <use xlink:href="#azureAIIcon"></use>
                             </svg>
                         </div>
                         <div></div>
                     </div>
-                    <div class="modelSingle" data-value="gemini-1.5-flash" data-ver="1.5 Flash">
+                    <div class="modelSingle" data-value="gemini-1.5-flash" data-type="4" data-ver="1.5 Flash">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#geminiIcon"></use>
@@ -2809,7 +2810,7 @@
                         </div>
                         <div>Gemini 1.5 Flash</div>
                     </div>
-                    <div class="modelSingle" data-value="gemini-1.5-pro" data-ver="1.5 Pro">
+                    <div class="modelSingle" data-value="gemini-1.5-pro" data-type="4" data-ver="1.5 Pro">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#geminiIcon"></use>
@@ -2817,7 +2818,7 @@
                         </div>
                         <div>Gemini 1.5 Pro</div>
                     </div>
-                    <div class="modelSingle" data-value="gemini-2.0-flash" data-ver="2.0 Flash">
+                    <div class="modelSingle" data-value="gemini-2.0-flash" data-type="4" data-ver="2.0 Flash">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#geminiIcon"></use>
@@ -2825,15 +2826,15 @@
                         </div>
                         <div>Gemini 2.0 Flash</div>
                     </div>
-                    <div class="modelSingle hide" id="customGeminiDOM" data-value="" data-ver="">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
+                    <div class="modelSingle hide" id="customGeminiDOM" data-type="4" data-value="" data-ver="">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
                                 <use xlink:href="#geminiIcon"></use>
                             </svg>
                         </div>
                         <div></div>
                     </div>
-                    <div class="modelSingle" data-value="claude-3-haiku-latest" data-ver="3 Haiku">
+                    <div class="modelSingle" data-value="claude-3-haiku-latest" data-type="5" data-ver="3 Haiku">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#claudeIcon"></use>
@@ -2841,7 +2842,7 @@
                         </div>
                         <div>Claude 3 Haiku</div>
                     </div>
-                    <div class="modelSingle" data-value="claude-3-sonnet-latest" data-ver="3 Sonnet">
+                    <div class="modelSingle" data-value="claude-3-sonnet-latest" data-type="5" data-ver="3 Sonnet">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#claudeIcon"></use>
@@ -2849,7 +2850,7 @@
                         </div>
                         <div>Claude 3 Sonnet</div>
                     </div>
-                    <div class="modelSingle" data-value="claude-3-opus-latest" data-ver="3 Opus">
+                    <div class="modelSingle" data-value="claude-3-opus-latest" data-type="5" data-ver="3 Opus">
                         <div class="modelAvatar">
                             <svg width="30" height="30">
                                 <use xlink:href="#claudeIcon"></use>
@@ -2857,9 +2858,9 @@
                         </div>
                         <div>Claude 3 Opus</div>
                     </div>
-                    <div class="modelSingle hide" id="customClaudeDOM" data-value="" data-ver="">
-                        <div class="modelAvatar gptAvatar">
-                            <svg width="24" height="24">
+                    <div class="modelSingle hide" id="customClaudeDOM" data-type="5" data-value="" data-ver="">
+                        <div class="modelAvatar">
+                            <svg width="30" height="30">
                                 <use xlink:href="#claudeIcon"></use>
                             </svg>
                         </div>
@@ -6195,7 +6196,7 @@
                     ele.innerHTML = `<svg width="24" height="24"><use xlink:href="#aiIcon"></use></svg>`;
                 } else if (model.startsWith("deepseek")) {
                     ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#deepseekIcon"></use></svg>`;
-                } else if (model.startsWith("azure-")) {
+                } else if (model.startsWith("azure")) {
                     ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#azureAIIcon"></use></svg>`;
                 } else if (model.startsWith("gemini")) {
                     ele.innerHTML = `<svg width="30" height="30"><use xlink:href="#geminiIcon"></use></svg>`;
@@ -7341,12 +7342,14 @@
             keyEle.dispatchEvent(new Event("change"));
             const modelEle = document.getElementById("modelInput");
             let localModel = localStorage.getItem("APIModel");
-            customAPIModel = modelEle.value = envAPIModel || localModel || modelEle.getAttribute("value") || "";
+            customAPIModel = envAPIModel || localModel || modelEle.getAttribute("value") || "";
+            modelEle.value = customAPIModel.slice(4);
             modelEle.onchange = () => {
-                customAPIModel = modelEle.value;
-                if (customAPIModel !== "") {
+                customAPIModel = modelEle.value != "" ? "gpt|" + modelEle.value : "";
+                if (modelEle.value !== "") {
                     customGPTDOM.classList.remove("hide");
-                    customGPTDOM.lastChild.textContent = customGPTDOM.dataset.value = customGPTDOM.dataset.ver = customAPIModel;
+                    customGPTDOM.dataset.ver = customGPTDOM.lastElementChild.textContent = modelEle.value;
+                    customGPTDOM.dataset.value = customAPIModel;
                 } else {
                     customGPTDOM.classList.add("hide");
                 }
@@ -7372,12 +7375,14 @@
             deepseekKeyEle.dispatchEvent(new Event("change"));
             const deepseekModelEle = document.getElementById("deepseekModelInput");
             let localDeepSeekModel = localStorage.getItem("DeepSeekAPIModel");
-            deepseekAPIModel = deepseekModelEle.value = envDeepSeekAPIModel || localDeepSeekModel || deepseekModelEle.getAttribute("value") || "";
+            deepseekAPIModel = envDeepSeekAPIModel || localDeepSeekModel || deepseekModelEle.getAttribute("value") || "";
+            deepseekModelEle.value = deepseekAPIModel.slice(9);
             deepseekModelEle.onchange = () => {
-                deepseekAPIModel = deepseekModelEle.value;
-                if (deepseekAPIModel !== "") {
+                deepseekAPIModel = deepseekModelEle.value != "" ? "deepseek|" + deepseekModelEle.value : "";
+                if (deepseekModelEle.value !== "") {
                     customDeepSeekDOM.classList.remove("hide");
-                    customDeepSeekDOM.lastChild.textContent = customDeepSeekDOM.dataset.value = customDeepSeekDOM.dataset.ver = deepseekAPIModel;
+                    customDeepSeekDOM.dataset.ver = customDeepSeekDOM.lastElementChild.textContent = deepseekModelEle.value;
+                    customDeepSeekDOM.dataset.value = deepseekAPIModel;
                 } else {
                     customDeepSeekDOM.classList.add("hide");
                 }
@@ -7406,10 +7411,10 @@
             azureAIAPIModel = envAzureAIAPIModel || localAzureAIModel || azureAIModelEle.getAttribute("value") || "";
             azureAIModelEle.value = azureAIAPIModel.slice(6);
             azureAIModelEle.onchange = () => {
-                azureAIAPIModel = azureAIModelEle.value != "" ? "azure-" + azureAIModelEle.value : "";
+                azureAIAPIModel = azureAIModelEle.value != "" ? "azure|" + azureAIModelEle.value : "";
                 if (azureAIModelEle.value !== "") {
                     customAzureAIDOM.classList.remove("hide");
-                    customAzureAIDOM.lastChild.textContent = "Azure " + azureAIModelEle.value;
+                    customAzureAIDOM.lastElementChild.textContent = "Azure " + azureAIModelEle.value;
                     customAzureAIDOM.dataset.ver = azureAIModelEle.value;
                     customAzureAIDOM.dataset.value = azureAIAPIModel;
                 } else {
@@ -7437,12 +7442,14 @@
             geminiKeyEle.dispatchEvent(new Event("change"));
             const geminiModelEle = document.getElementById("geminiModelInput");
             let localGeminiModel = localStorage.getItem("GeminiAPIModel");
-            geminiAPIModel = geminiModelEle.value = envGeminiAPIModel || localGeminiModel || geminiModelEle.getAttribute("value") || "";
+            geminiAPIModel = envGeminiAPIModel || localGeminiModel || geminiModelEle.getAttribute("value") || "";
+            geminiModelEle.value = geminiAPIModel.slice(7);
             geminiModelEle.onchange = () => {
-                geminiAPIModel = geminiModelEle.value;
-                if (geminiAPIModel !== "") {
+                geminiAPIModel = geminiModelEle.value != "" ? "gemini|" + geminiModelEle.value : "";
+                if (geminiModelEle.value !== "") {
                     customGeminiDOM.classList.remove("hide");
-                    customGeminiDOM.lastChild.textContent = customGeminiDOM.dataset.value = customGeminiDOM.dataset.ver = geminiAPIModel;
+                    customGeminiDOM.dataset.ver = customGeminiDOM.lastElementChild.textContent = geminiModelEle.value;
+                    customGeminiDOM.dataset.value = geminiAPIModel;
                 } else {
                     customGeminiDOM.classList.add("hide");
                 }
@@ -7468,12 +7475,14 @@
             claudeKeyEle.dispatchEvent(new Event("change"));
             const claudeModelEle = document.getElementById("claudeModelInput");
             let localClaudeModel = localStorage.getItem("ClaudeAPIModel");
-            claudeAPIModel = claudeModelEle.value = envClaudeAPIModel || localClaudeModel || claudeModelEle.getAttribute("value") || "";
+            claudeAPIModel = envClaudeAPIModel || localClaudeModel || claudeModelEle.getAttribute("value") || "";
+            claudeModelEle.value = claudeAPIModel.slice(7);
             claudeModelEle.onchange = () => {
-                claudeAPIModel = claudeModelEle.value;
-                if (claudeAPIModel !== "") {
+                claudeAPIModel = claudeModelEle.value != "" ? "claude|" + claudeModelEle.value : "";
+                if (claudeModelEle.value !== "") {
                     customClaudeDOM.classList.remove("hide");
-                    customClaudeDOM.lastChild.textContent = customClaudeDOM.dataset.value = customClaudeDOM.dataset.ver = claudeAPIModel;
+                    customClaudeDOM.dataset.ver = customClaudeDOM.lastElementChild.textContent = claudeModelEle.value;
+                    customClaudeDOM.dataset.value = claudeAPIModel;
                 } else {
                     customClaudeDOM.classList.add("hide");
                 }
@@ -7491,22 +7500,8 @@
                 activedEle = modelSetEle.querySelector(`[data-value="${modelVersion}"]`);
                 activedEle.classList.add("activeModel");
                 modelVer.textContent = activedEle.dataset.ver;
-                if (modelVersion.startsWith("gpt") || modelVersion.startsWith("o")) {
-                    modelType = 1;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#aiIcon");
-                } else if (modelVersion.startsWith("deepseek")) {
-                    modelType = 2;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#deepseekIcon");
-                } else if (modelVersion.startsWith("azure-")) {
-                    modelType = 3;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#azureAIIcon");
-                } else if (modelVersion.startsWith("gemini")) {
-                    modelType = 4;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#geminiIcon");
-                } else {
-                    modelType = 5;
-                    modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", "#claudeIcon");
-                }
+                modelType = parseInt(activedEle.dataset.type);
+                modelIcon.children[0].setAttributeNS("http://www.w3.org/1999/xlink", "href", (modelType == 1 ? "#aiIcon" : modelType == 2 ? "#deepseekIcon" : modelType == 3 ? "#azureAIIcon" : modelType == 4 ? "#geminiIcon" : "#claudeIcon"));
             };
             applyModelVersion();
             modelSetEle.onclick = (ev) => {
@@ -8649,7 +8644,7 @@
                     if (systemRole && startIdx > 0) dataSlice.unshift(data[0]);
                 }
                 let headers = { "Content-Type": "application/json" };
-                let url, body;
+                let url, body, model = currentModelName.split("|").pop();
                 if (modelType === 1) {
                     dataSlice = dataSlice.map(item => {
                         if (item.role === "assistant") return { role: item.role, content: item.content };
@@ -8659,7 +8654,7 @@
                     if (customAPIKey) headers["Authorization"] = "Bearer " + customAPIKey;
                     body = JSON.stringify({
                         messages: dataSlice,
-                        model: currentModelName,
+                        model,
                         stream: true,
                         temperature: roleTemp,
                         top_p: roleNature
@@ -8673,7 +8668,7 @@
                     if (deepseekAPIKey) headers["Authorization"] = "Bearer " + deepseekAPIKey;
                     body = JSON.stringify({
                         messages: dataSlice,
-                        model: currentModelName,
+                        model,
                         stream: true,
                         temperature: roleTemp,
                         top_p: roleNature
@@ -8687,7 +8682,7 @@
                     if (azureAIAPIKey) headers["Api-Key"] = azureAIAPIKey;
                     body = JSON.stringify({
                         messages: dataSlice,
-                        model: currentModelName.slice(6),
+                        model,
                         stream: true,
                         temperature: roleTemp,
                         top_p: roleNature
@@ -8696,7 +8691,7 @@
                     dataSlice = dataSlice.map(item => {
                         return { role: item.role === "assistant" ? "model" : "user", parts: [{ text: item.content }] };
                     })
-                    url = geminiApiHost + ((geminiApiHost.length && !geminiApiHost.endsWith("/")) ? "/" : "") + Gemini_API_URL + currentModelName + `:streamGenerateContent?alt=sse&key=${geminiAPIKey}`;
+                    url = geminiApiHost + ((geminiApiHost.length && !geminiApiHost.endsWith("/")) ? "/" : "") + Gemini_API_URL + model + `:streamGenerateContent?alt=sse&key=${geminiAPIKey}`;
                     body = JSON.stringify({
                         contents: dataSlice,
                         generationConfig: {
@@ -8717,7 +8712,7 @@
                     if (claudeAPIKey) headers["x-api-key"] = claudeAPIKey;
                     headers["anthropic-version"] = "2023-06-01";
                     body = JSON.stringify({
-                        model: currentModelName,
+                        model,
                         messages: dataSlice,
                         max_tokens: 4096,
                         stream: true,
