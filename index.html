@@ -8812,7 +8812,7 @@
                                                     loadingCOT = 0;
                                                     endCot(cotBody.firstChild);
                                                 }
-                                                if (content === "<think>") {
+                                                if (cotData == "" && content === "<think>") {
                                                     loadingCOT = 2;
                                                     if (!enableCOT) continue;
                                                     if (cotBody == void 0) {
